@@ -1,0 +1,710 @@
+@node Module -FM
+@chapter Tessellation Free Meshing: neper -FM
+
+@MFM{} is the module to generate a free mesh of a tessellation, that is,
+a mesh comprised of tetrahedral elements that conform to the
+tessellation morphology.  The aim is to generate a mesh into elements of
+size as close as possible to a desired target value, and of high
+quality, that is, of equilateral shape.
+The input file is a tessellation file (@file{.tess}), as provided by
+@mT{}.  The output mesh can be written in several formats.
+
+Several options are available for specifying the desired mesh properties. 
+The target element size of the mesh can be specified through the
+following parameters:
+
+@itemize
+@item The @dfn{characteristic length (@code{cl})}. It corresponds to the
+target size of the elements.  This size is the length of a line element
+(1D), and the length of the edge of a triangle element (2D) and
+of a tetrahedral element (3D). For convenience, a value
+relative to the average polyhedron size, @code{rcl}, is also defined:
+@iftex
+@math{@code{rcl} = 2 * @code{cl} / (@code{average_poly_volume}^{1/3})}.
+@end iftex
+@ifinfo
+2 x @code{cl} / @code{average_poly_volume}@^{1/3}.
+@end ifinfo
+
+@c @item The @dfn{progression factor (@code{pl})} controls the gradient in
+@c element size. It is the maximum ratio allowed between two neighbouring
+@c elements.
+@end itemize
+
+For ensuring mesh quality to the greatest extent possible, Neper
+includes several advanced capabilities:
+
+@itemize
+
+@item Geometry regularization.  It consists in removing the small
+features of the tessellation (the edges and faces), which are smaller
+than the target element size and as a consequence would need local mesh
+over-refinements.  Using this capability is done by allowing some level
+of geometrical distortion, the face @dfn{flatness fault}, through option
+@option{-maxff} (value in degree).
+
+@item Multimeshing.  Each tessellation face and volume is meshed
+separately of the others, with several meshing algorithms, and to the
+mesh of best quality is retained.  This is needed for meshing Voronoi
+tessellations, and has the advantage of ensuring meshing robustness and
+optimizing mesh quality.  This is controlled by options
+@option{-mesh2dalgo} and @option{-mesh3dalgo}.
+
+@c The Gmsh library is used for both 2D and 3D meshings.  For 2D
+@c meshing, four algorithms are available: {@code{made}
+@c (MeshAdapt+Delaunay)}, {@code{mead} (MeshAdapt)}, {@code{dela}
+@c (Delaunay)} and {@code{fron} (Frontal)}.  For 3D meshing, there is
+@c currently only one available meshing algorithm: {@code{netg} (Netgen)},
+@c but it can be coupled to three different optimization algorithms:
+@c {@code{gmsh} (Gmsh)}, {@code{netg} (Netgen)}, and {@code{gmne}
+@c (Gmsh+Netgen)}.  For 2D meshing, an entry like @code{fron,made} (which
+@c is actually the default entry) leads to each face being meshed by
+@c @code{netg} and @code{mage} and the better-quality mesh being used.  For
+@c 3D meshing, the algorithm includes a meshing and an optimization
+@c algorithm, combined @w{by @code{/}}, @w{e.g.@ @code{netg/gmsh}}.  A
+@c valid entry could be @code{netg/gmsh,netg/netg,netg/gmne} (leading to
+@c maximum quality). 
+
+@item Remeshing can also be applied to generate a new, good-quality mesh on
+a mesh containing poor-quality elements (options starting by
+@option{-remesh}).  The variables defined on the old mesh can be
+transported on the new mesh (options starting by
+@option{-transport}).
+@end itemize
+
+Mesh partitioning capabilities enable to divide the mesh nodes and
+elements into several sets while minimizing the interfaces between
+them@footnote{Each partition being assigned to a processor in the finite
+element calculation, the minimization of the interfaces between the
+partitions is done in terms of the number of necessary communications
+between processors.}, for parallel finite element calculations.
+Partitioning can return any number of partitions, or more efficiently,
+can be carried out according to a given parallel computer architecture,
+in which case the number of partition must be a power of 2 (options
+starting by @option{-part}). 
+
+In the output mesh, the individual entities of the tessellations (the
+volumes, the faces, the edges and the vertices) are described by element
+sets (option @option{-outdim}).  Node sets of the faces, the edges and
+the vertices of the surface of the tessellation are also provided for
+prescribing the boundary conditions (option @option{-nset}).  The
+surface element sets (triangles) are also provided (option
+@option{-faset}).  The mesh order can be 1 or 2, corresponding to 3-node
+tetrahedral elements and 10-node tetrahedral elements, respectively
+(option @option{-order}).  Statistical data can be obtained on the
+properties of the tessellations and meshes (options starting by
+@option{-stat}).
+
+Options are also available to work on an existing mesh
+(options starting by @option{-loadmesh}).
+
+@page
+Here is what a typical run of @mFM{} looks like:
+@sp 2
+
+@c typical_start
+@verbatim 
+    $ neper -FM n10-id1.tess -maxff 20
+    
+    ========================    N   e   p   e   r    =======================
+    Info   : A 3D random polycrystal generator for the finite element method
+    Info   : Version 1.10.0
+    Info   : (compiled with: gsl libmatheval)
+    Info   : Loading initialization file `/home/rquey/.neperrc'...
+    Info   : ---------------------------------------------------------------
+    Info   : MODULE -FM loaded with arguments:
+    Info   : [ini file] -nset faces -mo 2 -gmsh /home/rquey/bin/gmsh -surf z1
+             -partrenumber 1
+    Info   : [com line] n10-id1.tess -maxff 20
+    Info   : ---------------------------------------------------------------
+    Info   : Reading input data ...
+    Info   :   - Reading arguments ...
+    Info   : Creating geometry ...
+    Info   :   - Loading tessellation ...
+    Info   :     [i] Parsing file `n10-id1.tess' ...
+    Info   :     [i] Parsed file `n10-id1.tess'.
+    Info   :   - Regularizing tessellation ... (sel = 0.12)
+    Info   :     > loop    length   deleted
+    Info   :     >    1      100%        16
+    Info   :     >    2      100%         0
+    Info   : Meshing ... (cl = 0.232, pl = 2)
+    Info   :   - Preparing  ...  100%
+    Info   :   - 0D meshing ...  100%
+    Info   :   - 1D meshing ...  100%
+    Info   :   - 2D meshing ...  100% (0.26|0.85/16%|83%)
+    Info   :   - 3D meshing ...  100% (0.89|0.91/100%| 0%)
+    Info   :   - Switching mesh to order 2 ...
+    Info   :   - Searching nsets ...
+    Info   : Writing mesh results ...
+    Info   :   - Preparing mesh ...
+    Info   :   - Mesh properties:
+    Info   :     > Node number:     1852
+    Info   :     > Elt  number:     1041
+    Info   :     > Mesh volume:    1.000
+    Info   :   - Writing mesh ...
+    Info   :     [o] Writing file `n10-id1.msh' ...
+    Info   :     [o] Wrote file `n10-id1.msh'.
+    Info   : Elapsed time: 13.353 secs.
+    ========================================================================
+    
+@end verbatim
+@c typical_end
+
+@page
+@section Arguments
+
+@subsection Input Data
+
+In normal use, the input data is a tessellation file:
+
+@inp{,file_name,
+Name of the tessellation file.,
+any,none}
+
+It is also possible to load a mesh from a file.
+(Using @w{option @option{-o}} along with this capability
+avoids overwriting the input data.)
+
+@inp{-loadmesh, file_name,
+Load a mesh from a file (@file{.msh} format).
+,
+any,none}
+
+@inp{-loadmeshnodecoo, file_name,
+Overwrite the node coordinates.  The file must contain the list of
+coordinates (3 real values per node).
+,
+any,none}
+
+@subsection General Options
+
+@req{-gmsh,full_path_name,
+Specify the @emph{full} path of the Gmsh binary.,
+any,/usr/local/bin/gmsh}
+
+@opt{-o,file_name,
+Specify output file name.,
+any, none}
+
+@c @opt{-v,integer,
+@c Set verbosity level.,
+@c 0 to 1, 0}
+
+@subsection Geometry Regularization Options
+
+A non-zero value of @var{maxff} is necessary to enable geometry
+regularization; the other options are for fine tuning.
+
+@opt{-maxff,real,
+Maximum face flatness fault which is allowed (in degree).,
+0 to 180 (recommended: 20),0}
+
+@optsec{-sel or -rsel,real,
+Absolute or Relative Small Edge (maximum) Length.  The relative small
+edge length is defined relative to the default value.  By
+default@comma{} @code{@var{sel}} is set so as to avoid mesh
+over-refinement (@code{@var{cl}}/@code{@var{pl}}).  Use this option if
+you want to choose a different length.,
+any,-sel @code{@var{cl}}/@code{@var{pl}}}
+
+@optsec{-mloop,integer,
+Maximum number of edge deletion loops.@*
+During each loop@comma{} the small edges are considered in turn
+from the shortest to the largest.  One loop already leads to very
+satisfactory results. Use more to get better results. The deletion
+process completes as soon as no edges are deleted within a loop.,
+any,2}
+
+@subsection Meshing and Multimeshing Options
+
+@opt{-cl or -rcl,real,
+Absolute or relative characteristic length of the elements.
+@code{rcl} is defined relative to the average polyhedron
+volume.
+The default @code{-rcl 1} leads to a mesh density of about 100
+tetrahedral elements per grain.
+,
+any, -rcl 1}
+
+@opt{-dim,integer,
+Specify the mesh dimension.,
+0 to 3,3}
+
+@opt{-order,integer,
+Specify the mesh order.,
+1 or 2,1}
+
+@optsec{-pl,real,
+Progression factor for the element characteristic lengths. This value is
+the maximum ratio between the lengths of two adjacent 1D elements.,
+any >= 1, 2}
+
+@optsec{-cl3 or -rcl3,real real real,
+Absolute or relative characteristic length of the elements in the
+x@comma{} y and z directions.  @code{rcl3} is defined relative to the
+average polyhedron volume. Note that options @option{-[r]cl} and
+@option{-[r]cl3} are mutually exclusive.,
+any, none}
+
+@optsec{-clmin,real,
+Minimum characteristic length of the elements.  Using this option is not recommended.,
+any, none}
+
+
+@sp 1
+The following options define the 2D and 3D-meshing algorithms.  The
+algorithms have the format @samp{@var{mesh}} or
+@samp{@var{mesh}/@var{opti}}, where @code{@var{mesh}} and
+@code{@var{opti}} stand for the meshing and optimization algorithms and
+are 4-character long. @emph{Multimeshing} can be used by providing
+several algorithms combined with commas, e.g@.
+@code{@var{mesh1}/@var{opti1},@var{mesh1}/@var{opti2},@var{mesh2}/@var{opti2}}.
+The 2D and 3D meshings are carried out using the Gmsh@footnote{Ch.@
+Geuzaine and J.-F. Remacle, Gmsh: a three-dimensional finite element
+mesh generator with built-in pre- and post-processing facilities,
+International Journal for Numerical Methods in Engineering, 79,
+1309--1331, 2009.} and Netgen@footnote{J. Schoberl, Netgen, an advancing
+front 2d/3d-mesh generator based on abstract rules.  Comput.  Visual.
+Sci., 52, 1--41, 1997.} libraries (see the Gmsh reference manual for
+information on the algorithms).@*
+
+For 2D meshing, the available values of @code{@var{mesh}} are
+@code{made} (MeshAdapt+Delaunay), @code{mead} (MeshAdapt), @code{dela}
+(Delaunay) and @code{fron} (Frontal). There is no optimization.  The
+default is @code{fron,made} and it is recommended to retain multimeshing
+in use for meshing robustness sake. For 3D meshing, the available
+values of @code{@var{mesh}} are currently limited to @code{netg}
+(Netgen).  The available values of @code{@var{opti}} are @code{gmsh}
+(Gmsh), @code{netg} (Netgen) and @code{gmne} (Gmsh+Netgen).
+@c While the
+@c default algorithm, @code{netg/gmne}, provides quite good quality
+@c meshing, multimeshing can improve results significantly.
+For convenience, two generic entries are also defined.  The entry
+@code{default}, which is the default value, provides a good balance
+between mesh quality and computation time.  The entry @code{qualmax}
+provides the best results on mesh quality (full use of multimeshing).
+The values of @code{default} are @code{fron,made} for the 2D case and
+@code{netg/gmsh,netg/gmne} for the 3D case.  The values of
+@code{qualmax} are @code{made,mead,dela,fron} for the 2D case and
+@code{netg/gmsh,netg/netg,netg/gmne} for the 3D case.
+
+@opt{-mesh2dalgo, char_string,
+Specify the 2D meshing algorithm.
+Multimeshing is allowed by providing several algorithms@comma{}
+(combine with commas).,
+made@comma{} mead@comma{} dela@comma{} fron@comma{},
+default @w{(= fron@comma{}made)}}
+
+@opt{-mesh3dalgo, char_string,
+Specify the 3D meshing algorithm.
+Multimeshing is allowed by providing several algorithms@comma{}
+(combine with commas).,
+netg@comma{} netg/netg@comma{} netg/gmsh@comma{} netg/gmne@comma{},
+default @w{(= netg/gmsh@comma{}netg/gmne)}}
+
+@optsec{-mesh3doptiexpr, string,
+Specify the value of @math{@var{O}} for the multimeshing
+optimization@comma{} as a function of @var{Odis} and @var{Osize} (see
+the Neper paper).,
+any, Odis^0.8*Osize^0.2}
+
+@optsec{-mesh3doptidisexpr, string,
+Specify the value of @math{@var{Odis}} for the multimeshing
+optimization@comma{} as a function of the element distortion parameter
+@var{dis} (see the Neper paper).,
+any, dis^(exp((dis^0.1)/(dis^0.1-1)))}
+
+
+@subsection Domain Boundary Meshing Options
+
+These options are for specifying geometry regularization and meshing
+conditions for the polyhedra at the domain boundary different than those
+that apply to the inner polyhedra.  This is useful for coarsening the
+meshes of the boundary grains when they are disregarded in the analysis
+due to possible boundary effects.
+The domain boundary polyhedra can be defined using the
+following variables: 
+@itemize
+@item @code{@var{body}}: the minimum number of polyhedra between the
+considered polyhedron and the domain boundary. Its value is 0 for
+polyhedra intersecting the domain boundary, and increases with the
+distance to the domain boundary.
+
+@item @code{@var{true}}: a polyhedron is said to be @dfn{true} if its
+shape is not biased by the domain boundary.  This requires the
+polyhedron not to be cut by the domain boundary, but actually the
+condition is a bit more restrictive.  The value of @code{@var{true}}
+is an integer equal to 0 for polyhedra which do not match the
+above-mentionned criterion, and higher values otherwise.
+For the latter cases, the value of @code{@var{true}} is defined to be
+equal to @math{n} for true polyhedra surrounded by polyhedra whose value
+of @code{@var{true}} is higher than or equal to @math{(n-1)}.  This
+definition is consistent with the one of the @code{@var{body}} variable,
+in terms of how the values of neighbouring grains compare.  As for
+@code{@var{body}}, the value of @code{@var{true}} increases with the
+distance to the domain boundary, but typically
+@iftex
+@math{@var{true} @leq @var{body}}.
+@end iftex
+@ifinfo
+true <= body.
+@end ifinfo
+
+@end itemize
+
+@opt{-dbound,char_string,
+Define which polyhedra belong to the domain boundary.  The expression
+can be based on the following arguments: @code{body} and @code{true}.
+An example is @code{"body<=1"}.
+,
+any, none}
+
+@opt{-dboundcl and -dboundrcl,real,
+Absolute or relative characteristic length of the elements at the domain
+boundary.  @code{rcl} is defined relative to the average polyhedron
+volume.
+,
+any, none}
+
+@optsec{-dboundsel and -dboundrsel,real,
+Absolute or Relative Small Edge (maximum) Length at the domain boundary.
+The relative small edge length is defined relative to the default value.
+By default@comma{} @code{@var{sel}} is set so as to avoid mesh
+over-refinement (@code{@var{cl}}/@code{@var{pl}}).  Use this option if
+you want to choose a different length.,
+any,-sel @code{@var{cl}}/@code{@var{pl}}}
+
+@optsec{-dboundpl,real,
+Progression factor for the element characteristic lengths. This value is
+the maximum ratio between the lengths of two adjacent 1D elements.,
+any >= 1, 2}
+
+@subsection Mesh Partitioning Options
+
+Mesh partitionning is achieved through the libScotch
+library@footnote{F. Pellegrini, Scotch and libScotch 5.1 User's Guide,
+INRIA Bordeaux Sud-Ouest, ENSEIRB & LaBRI, UMR CNRS 5800, 2008.}. In
+Neper, The two following options enable to turn on mesh
+partitioning; they are mutually exclusive,
+
+@optf{-partqty,integer,
+Use this option to specify the quantity of partitions.,
+any,0,
+.[e@comma{}n]part}
+
+@optf{-partarchfile, file_name,
+Use this option to specify the architecture of the target machine.  Give
+as argument the name of the file describing the architecture.,
+any,none,
+.[e@comma{}n]part}
+
+@need 1000
+Here are additional options,
+
+@optsec{-partbalancing, real,
+Use this option to set the level of partition balancing (0: none@comma{}
+1:full). This is a highly CPU-sensitive capability (full balancing
+requires a lot of time).,
+0 to 1,0.5}
+
+@optsec{-partmethod,char_string,
+Specify the partitioning method@comma{} expressed in Scotch's jargon.,
+any (including none), see_the_source}
+
+@optsec{-partrenumbering,logical,
+Use this option to renumber the nodes and elements according to
+partitioning.,
+0 or 1,0}
+
+@optsec{-partsets,logical,
+Use this option to print the partitions as nsets and elsets in the mesh
+  file (@code{geof} format only).,
+0 or 1,1}
+
+@subsection Remeshing Options
+
+@opt{-remesh,file_name,
+Use this option for remeshing a mesh.  Provide as
+  argument the mesh file.,
+any,none}
+
+@opt{-remeshtess,file_name,
+Use this option to specify a tessellation associated to the mesh to
+remesh.  This can be useful@comma{} for example@comma{} when the meshed
+domain is not a regular box@comma{} to determine the node sets.  Provide
+as argument the tessellation file.,
+any,none}
+
+@opt{-transport, file_name integer char_string char_string file_name ...,
+Use this option for transporting data from a parent mesh to a child mesh
+(typically obtained by remeshing).  First provide the name of the
+parent mesh file. The child mesh is taken as the result mesh
+(usually obtained by remeshing@comma{} but it can also be loaded
+with @option{-loadmesh}).  Then provide as argument the number of
+different data to transport; then@comma{} for each of them@comma{}
+@code{elt} (mandatory)@comma{} the type of data (under the format
+@code{[integer@comma{}real]X}@comma{} where @code{X} is the dimension) and
+the name of the file containing the parent data.,
+any,0}
+
+@opt{-transporttess,file_name,
+Use this option to specify a tessellation associated to the mesh from
+which the data are transported.  This is not mandatory.
+Provide as argument the tessellation file.,
+any,none}
+
+@subsection Output Options
+
+@opt{-outdim,char_string,
+Specify the dimensions of the mesh to output. It can go from 0 to
+3@comma{} for point to volume elements (combine with commas).,
+0@comma{} 1@comma{} 2@comma{} 3@comma{},
+0@comma{}1@comma{}2@comma{}3}
+
+@opt{-format,char_string,
+Specify the format of the output file(s). For the mesh@comma{} the
+available formats are: @code{msh} for Gmsh@comma{} @code{abq} for
+Abaqus@comma{} @code{geof} for Zset/Z@'ebulon@comma{} and @code{fev} for
+Fem-Evps.  For the tessellation geometry@comma{} the available formats
+are: @code{tess} and @code{geo}.  Combine arguments with commas.,
+anyone of the above list,msh}
+
+@opt{-nset, char_string,
+Specify the node sets to provide@comma{} among:
+@code{faces}@comma{} @code{edges}@comma{} @code{vertices} for all
+domain faces@comma{} edges and vertices@comma{}
+and @code{facebodies} and @code{edgebodies} for all face and edge
+bodies. To get the nset corresponding to individual entities@comma{}
+provide their names@comma{} that is@comma{} for a cubic domain@comma{}
+@code{[x-z][0@comma{}1]} for the
+domain faces@comma{} @code{[x-z][0@comma{}1][x-z][0@comma{}1]} for the
+edges@comma{} and
+@code{[x-z][0@comma{}1][x-z][0@comma{}1][x-z][0@comma{}1]} for the
+vertices.  Append @samp{body} to the name to get only the body nodes of
+the sets. Combine them with commas.
+,
+any, faces}
+
+@opt{-faset, char_string,
+Specify the domain surfaces to provide. Use @samp{faces} for all faces.
+Combine them with commas.
+@c @file{.surf} for Fem-Evps
+,
+faces@comma{} [x-z][0@comma{}1] (for a cubic domain),none}
+
+@subsection Post-Processing Options
+
+@post{-stattess,logical,
+Provide statistics on the tessellation.
+,
+0 or 1, 0,
+.stt#}
+
+@post{-statmesh,logical,
+Provide information and statistics on the elements and element
+sets.
+,
+0 or 1, 0,
+.stm#}
+
+@subsection Advanced Options
+
+These advanced options set running conditions for the mesher.
+
+@optsec{-mesh2dmaxtime,real,
+Maximum processing time allowed to the mesher for meshing a tessellation face
+(in seconds).
+,
+any, 1000}
+
+@optsec{-mesh2drmaxtime,real,
+This option is similar to @option{-mesh2dmaxtime}@comma{} but the actual
+maximum time is the product of the maximum processing time of
+the previous meshings by the value provided in argument.
+,
+any, 100}
+
+@optsec{-mesh2diter,integer,
+Maximum iterations in 3D meshing for a particular face (in case of
+failure). 
+,
+any, 3}
+
+@optsec{-mesh3dmaxtime,real,
+Maximum processing time allowed to the mesher for meshing a tessellation
+  volume
+(in seconds).
+,
+any, 1000}
+
+@optsec{-mesh3drmaxtime,real,
+This option is similar to @option{-mesh3dmaxtime}@comma{} but the actual
+maximum time is the product of the maximum processing time of
+the previous meshings by the value provided in argument.
+,
+any, 100}
+
+@optsec{-mesh3diter,integer,
+Maximum iterations in 3D meshing for a particular volume (in case of
+failure). 
+,
+any, 3}
+
+@optsec{-mesh3dclconv,real,
+Maximum tolerated difference between the characteristic length @code{cl}
+and the average element length (for each polyhedron).  Neper tries its
+best to get the average element size to match @code{cl}.  Use this
+option to change the tolerance on the relative difference between the
+two. This is a highly CPU-sensitive capability (using a high value can
+be an efficient way to speed up meshing).
+,
+any, 0.02}
+
+@need 1000
+@section Output Files
+
+@subsection Mesh
+
+The mesh can be written in the following formats:
+
+@itemize
+@item Gmsh format: file @file{.msh}
+
+@item Abaqus format: file @file{.inp}
+
+@item Zset/Z@'ebulon format: file @file{.geof}
+
+@item Fem-Evps format: files @file{.parms}, @file{.mesh}, @file{.surf}, @file{.opt} and @file{.bcs}
+@end itemize
+
+The following files are for describing the partitions:
+
+@itemize
+@item Node partition description, file @file{.npart}:
+@w{@code{@var{node_id partition_id}}}.
+The partition identifier ranges from 1 to the total number of
+partitions.
+
+@item Element partition description, file @file{.epart}:
+@w{@code{@var{elt_id partition_id}}}.
+The partition identifier ranges from 1 to the total number of
+partitions.
+
+@item Remeshing file, @file{.rem}:
+@w{@code{@var{elt_id corresponding_old_elt_id}}}.
+
+@end itemize
+
+@subsection Tessellation
+
+@itemize
+@item Neper-native tessellation file: @file{.tess}
+
+It contains an exhaustive description of the tessellation.
+See @ref{File Formats} for the file syntax.
+
+@item Gmsh geometry file: @file{.geo}
+
+It contains a minimal description of the tessellation, written under the
+Gmsh geometry file format @file{.geo}.  This file can be opened with
+Gmsh for visualization.  If the tessellation has been regularized, Gmsh
+will complain about surfaces not being plane, but for visualization this
+can be disregarded. (Note that you can even get
+a mesh of the tessellation out from Gmsh, but it will be of lower
+quality than by using module @code{-FM}.)
+
+@item Ply file: @file{.ply}
+
+It contains a description of the tessellation written under the
+standard ``Polygon File Format'' @file{.ply}.
+
+@end itemize
+
+@subsection Statistics
+
+Several files are provided for statistics on tessellations, whose
+formats are provided below.  All files are formatted with one entity
+(vertex, edge, face or polyhedron) per line.
+
+@itemize
+@item Tessellation vertex statistics, @file{.stt0}: @code{@var{id true body state x y z}}
+
+@item Tessellation edge statistics, @file{.stt1}: @code{@var{id true body state length}}
+
+@item Tessellation face statistics, @file{.stt2}: @code{@var{id true body state ver_qty area ff}}
+
+@item Tessellation polyhedron statistics, @file{.stt3}:@*
+@w{@code{@var{id true body state x y z ver_qty edge_qty face_qty vol xc yc zc}}}
+@end itemize
+
+@code{@var{xc}}, @code{@var{yc}} and @code{@var{zc}} denote the centroid
+(centre of mass) coordinates.
+
+@need 2000
+The following are for statistics on the mesh.
+
+@itemize
+@item Mesh non-quality statistics file, @file{.stm1}:
+@w{@code{@var{id elset_id true vol mean_length x y z}}}.
+
+@item Mesh quality statistics file, @file{.stm2}:
+@w{@code{@var{id elset_id true radius_ratio angle_min}}}.
+
+@end itemize
+
+@section Examples
+
+Below are some examples of use of neper -FM.  Illustrations can be found
+at @url{http://neper.sourceforge.net/neper_fm.html}.
+
+@enumerate
+@c Example_beg
+@item    Mesh tessellation n100-id1.tess.
+@com{neper -FM n100-id1.tess}
+@item    Mesh tessellation n100-id1.tess using geometry regularization.
+@com{neper -FM n100-id1.tess -maxff 20 -sel 0.05}
+@item    Mesh tessellation n100-id1.tess with a mesh size of rcl = 0.5 and in 2nd-order elements.
+@com{neper -FM n100-id1.tess -maxff 20 -sel 0.05 -rcl 0.5 -order 2}
+@item    Mesh tessellation n100-id1.tess with small elements for the inner grains and bigger elements for the surface grains.
+@com{neper -FM n100-id1.tess -maxff 20 -rcl 0.2 -dbound "body==0" }
+@comx{-dboundrcl 0.5 -dboundsel 0.05}
+@item    Remesh mesh n150_def.msh (comprising poor-quality elements) into a clean, new mesh. Transport the scalar data of file `n150_def.data' from the deformed mesh to the new mesh.
+@com{neper -FM -remeshtess n150.tess -remesh n150_def.msh -transport }
+@comx{n150_def.msh 1 elt real1 n150_def.data -rcl 0.5 -o n150_new}
+@c Example_end
+@end enumerate
+
+@enumerate
+
+Below are some examples of advanced use.
+
+@item @emph{Multimeshing.} Improve mesh quality as far as possible through 3D multimeshing.
+@com{neper -FM n10-id1.tess -maxff 20 -rcl 0.8 -order 2}
+@comx{-format tess,msh,abq -o n10}
+@comx{-mesh3dalgo netg/gmsh,netg/netg,netg/gmne}
+
+@item @emph{Mesh partitionning.} Like 2., but partition in 8 partitions
+and renumber the nodes and elements accordingly.
+@com{neper -FM n10-id1.tess -maxff 20 -rcl 0.8 -order 2}
+@comx{-format tess,msh,abq -o n10}
+@comx{-partq 8 -partrenum 1}
+
+@item @emph{Orthotropic mesh refinement.} Mesh tessellation
+@file{n10-id1.tess} with different element characteristic lengths
+along x, y and z: @math{@var{rcl}=1}, @math{@var{rcl}=0.5} and
+@math{@var{rcl}=0.25}, respectively. Use geometry regularization.
+@com{neper -FM n10-id1.tess -rcl3 1 0.5 0.25 -maxff 20}
+
+@item @emph{Data transport 1/2.} Like 7., and transport data defined on
+@file{n10.msh} to @file{n10-b.msh}.  The data are 3D vectors given in
+file @file{data} (format = 3 coordinates per line).
+@com{neper -FM -remesh n10.msh -remeshtess n10.tess -rcl 0.5}
+@comx{-transport n10.msh 1 elt real3 data -o n10-b}
+
+@item @emph{Data transport 2/2.} Transport data from an existing old mesh
+@file{n10.msh} to an existing new mesh @file{n10-b.msh}.  The data are
+3D vectors given in file @file{data} (format = 3 coordinates per line). 
+@com{neper -FM -loadmesh n10-b.msh}
+@comx{-transport n10.msh 1 elt real3 data -o n10-b}
+
+@end enumerate

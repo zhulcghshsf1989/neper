@@ -1,0 +1,273 @@
+\input texinfo.tex 
+@afourpaper
+@c =========================================================================
+@c
+@c This is the Neper documentation texinfo source file
+@c
+@c =========================================================================
+@c %**start of header
+@setfilename        neper.info
+@include version.texi
+@set COPYRIGHT @copyright{} 2003--2012 Romain Quey
+@c
+@settitle Neper @value{FULL_VERSION}
+@footnotestyle separate
+@setchapternewpage odd
+@paragraphindent 0
+@finalout
+@c
+
+@c merge function index into type index
+@syncodeindex fn tp
+
+@c =========================================================================
+@c Info directives
+@c =========================================================================
+
+@ifinfo
+@dircategory Math
+@direntry
+* Neper: (neper). A 3D random polycrystal generator for the
+* finite element method
+@end direntry
+@noindent
+This is the @cite{Neper Reference Manual} for Neper
+@value{FULL_VERSION}
+(@today{}).
+@noindent
+Copyright @value{COPYRIGHT}
+@end ifinfo
+
+@c =========================================================================
+@c Title page
+@c =========================================================================
+
+@c @shorttitlepage Neper
+
+@titlepage
+
+@title Neper Reference Manual
+
+@subtitle The documentation for Neper @value{FULL_VERSION}
+@subtitle A 3D random polycrystal generator for the finite element method
+@subtitle 
+@subtitle @today{}
+@c @subtitle Edition @value{FULL_VERSION} @today{}
+
+@author Romain Quey
+
+@page
+@vskip 0pt plus 1filll
+Copyright @value{COPYRIGHT}
+
+@sp 1
+Permission is granted to make and distribute verbatim copies of this manual
+provided the copyright notice and this permission notice are preserved on
+all copies.
+
+@end titlepage
+
+@c =========================================================================
+@c Table of contents
+@c =========================================================================
+
+@c @summarycontents
+@contents
+
+@c =========================================================================
+@c Top node (for all output, except TeX)
+@c =========================================================================
+
+@ifnottex
+@node Top, Copying, (dir), (dir)
+@top Neper
+
+Romain Quey
+
+Neper is a 3D random polycrystal generator for the finite element method.
+This is the @cite{Neper Reference Manual} for Neper
+@value{FULL_VERSION}
+(@today{}).
+@end ifnottex
+
+@c =========================================================================
+@c Master menu
+@c =========================================================================
+
+@menu
+* Copying::           Copying
+* Introduction::      Introduction
+* Module -T::         The module to generate tessellations. 
+* Module -FM::        The module to generate free meshes of tessellations.
+* Module -MM::        The module to generate mapped meshes of tessellations.
+* Module -O::         The module to generate crystallographic orientations.
+* Module -VS::        The module for visualization.
+* File Formats::      File Formats.
+* Mathematical Expressions:: Details on Mathematical expressions.
+* Colours::           Colours
+* Versions::          Versions
+* GNU General Public License::           GNU General Public License
+@end menu
+
+@c DEFINING MACROS
+
+@c NEPER
+@macro neper
+Neper
+@end macro
+
+@macro mT
+@w{module -T}
+@end macro
+
+@macro mMM
+@w{module -MM}
+@end macro
+
+@macro mFM
+@w{module -FM}
+@end macro
+
+@macro mO
+@w{module -O}
+@end macro
+
+
+@macro mVS
+@w{module -VS}
+@end macro
+
+@macro MT
+@w{Module -T}
+@end macro
+
+@macro MMM
+@w{Module -MM}
+@end macro
+
+@macro MFM
+@w{Module -FM}
+@end macro
+
+@macro MO
+@w{Module -O}
+@end macro
+
+
+@macro MVS
+@w{Module -VS}
+@end macro
+
+@c COM
+@macro com{a}
+@iftex
+@sp 0
+@ @phantom{XX}
+@t{$} @code{\a\}
+@ @phantom{XX}
+@end iftex
+@ifinfo
+$ \a\
+@end ifinfo
+@end macro
+
+@macro comx{a}
+@iftex
+@sp 0
+@ @phantom{XX}
+@phantom{@t{$}} @code{\a\}
+@ @phantom{XX}
+@sp 0
+@end iftex
+@ifinfo
+$ \a\
+@end ifinfo
+@end macro
+
+@c @macro comx{a}
+@c @multitable @columnfractions 0.05 0.95
+@c @item
+@c @tab @t{ } @t{\a\}
+@c @end multitable
+@c @end macro
+
+@c @tab @t{@phantom{$}} @t{\a\}
+
+@c below, @var has been change to @emph because makeinfo does not
+@c tolerate `[' charaacters in @var{}, while it is used for optional
+@c arguments.
+
+@c REQ
+@macro req{a, e, b, c, d }
+@deftypefn {Requirement} @t{\a\} @emph{\e\}
+\b\@*
+Possible values: @code{\c\}. Default value: @code{\d\}.
+@end deftypefn
+@end macro
+
+@c OPT
+@macro opt{a, e, b, c, d }
+@deftypefn {Option} @t{\a\} @emph{\e\}
+\b\@*
+Possible values: @code{\c\}. Default value: @code{\d\}.
+@end deftypefn
+@end macro
+
+@c SOPT
+@macro optsec{a, e, b, c, d }
+@deftypefn {Secondary option} @t{\a\} @emph{\e\}
+\b\@*
+Possible values: @code{\c\}. Default value: @code{\d\}.
+@end deftypefn
+@end macro
+
+
+@c OPTF
+@macro optf{a, f, b, c, d, e}
+@deftypefn {Option} @t{\a\} @emph{\f\}
+\b\@*
+Possible values: @code{\c\}. Default value: @code{\d\}.@*
+Result file: extension @file{\e\}.
+@end deftypefn
+@end macro
+
+@c INPUT
+@macro inp{a, e, b, c, d }
+@deftypefn {Input data} @t{\a\} @emph{\e\}
+\b\@*
+Possible values: @code{\c\}. Default value: @code{\d\}.
+@end deftypefn
+@end macro
+
+@c INPUT
+@macro inpdevel{a, e, b, c, d }
+@deftypefn {Development input data} @t{\a\} @emph{\e\}
+\b\@*
+Possible values: @code{\c\}. Default value: @code{\d\}.
+@end deftypefn
+@end macro
+
+@c POST
+@macro post{a, f, b, c, d, e}
+@deftypefn {Post-processing} @t{\a\} @emph{\f\}
+\b\@*
+Possible values: @code{\c\}. Default value: @code{\d\}.@*
+Result file: extension @file{\e\}.
+@end deftypefn
+@end macro
+
+@include copying.texi
+@include introduction.texi
+@include neper_t.texi
+@include neper_fm.texi
+@include neper_mm.texi
+@include neper_o.texi
+@include neper_vs.texi
+@include appendix.texi
+@include license.texi
+
+@c @node Function Index
+@c @appendix Function Index 
+@c @printindex fn
+
+@bye

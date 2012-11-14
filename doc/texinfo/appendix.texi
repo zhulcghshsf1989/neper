@@ -1,0 +1,515 @@
+@c This file is part of Neper
+@c Copyright (C) 2003-2012, Romain Quey.
+
+@node File Formats
+@appendix File Formats
+
+@section Tessellation file @file{.tess}
+
+Here are details on the @file{.tess} file format version
+@code{1.10}.  The developers may note that read and write functions are
+available as @code{neut_geo_fscanf ()} and @code{neut_geo_fprintf ()},
+defined in directories @file{neut/neut_geo/neut_geo_fscanf}
+and
+@file{neut/neut_geo/neut_geo_fprintf}.
+
+@c The '@ ' are necessary for .info compliance (@phantom{} and others
+@c not supported.
+@sp 1
+@code{
+***tess                                                              @*
+@  **format                                                          @*
+@ @ @  @var{format}                                                     @*
+@  **general                                                         @*
+@ @ @  @var{n} @var{id} @var{type} @var{morphology}                      @*
+@  **vertex                                                          @*
+@ @ @  @var{total_number_of_vertices}                                    @*
+@ @ @  @var{ver_id} @ @var{dom_entity_type} @var{dom_entity_id}      @*
+@ @ @ @ @ @ @ @ @ @ @ @var{number_of_edges} @var{edge_1} @var{edge_2} ...               @*
+@ @ @ @ @ @ @ @ @ @ @ @var{ver_x} @var{ver_y} @var{ver_z} @var{ver_state}               @*
+@ @ @  ...                                                               @*
+@  **edge                                                            @*
+@ @ @  @var{total_number_of_edges}                                       @*
+@ @ @  @var{edge_id} @var{dom_entity_type} @var{dom_entity_id}      @*
+@ @ @ @ @ @ @ @ @ @ @ @var{ver_1} @var{ver_2}                             @*
+@ @ @ @ @ @ @ @ @ @ @ @var{number_of_faces} @var{face_1} @var{face_2} ...               @*
+@ @ @ @ @ @ @ @ @ @ @ @var{edge_state}                                                  @*
+@ @ @  ...                                                               @*
+@  **face                                                            @*
+@ @ @  @var{total_number_of_faces}                                       @*
+@ @ @  @var{face_id} @var{dom_entity_type} @var{dom_entity_id}      @*
+@ @ @ @ @ @ @ @ @ @ @ @var{poly_1} @var{poly_2}          @*
+@ @ @ @ @ @ @ @ @ @ @ @var{face_eq_a} @var{face_eq_b} @var{face_eq_c} @var{face_eq_d}   @*
+@ @ @ @ @ @ @ @ @ @ @ @var{number_of_vertices} @var{ver_1} @ @ @var{ver_2} @ @ ...      @*
+@ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @var{edge_1*} @var{edge_2*} ... (As many edges as vertices.)      @*
+@ @ @ @ @ @ @ @ @ @ @ @var{face_state} @var{face_point}
+		    @var{face_point_x} @var{face_point_y} @var{face_point_z}  @*
+@ @ @ @ @ @ @ @ @ @ @ @var{face_ff}                                                     @*
+@ @ @  ...                                                               @*
+@  **polyhedron                                                      @*
+@ @ @  @var{total_number_of_polyhedra}                                   @*
+@ @ @  @var{poly_id} @var{poly_centre_x} @var{poly_centre_y}
+		                                          @var{poly_centre_z} @*
+@ @ @ @ @ @ @ @ @ @ @ @var{poly_true} @var{poly_body}                                   @*
+@ @ @ @ @ @ @ @ @ @ @ @var{number_of_faces} @var{face_1*} @var{face_2*} ...             @*
+@ @ @  ...                                                               @*
+@  **domain                                                          @*
+@ @  *general                                                          @*
+@ @ @  @var{dom_type}                                                    @*
+@ @  *vertex                                                           @*
+@ @ @  @var{total_number_of_dom_vertices}                                @*
+@ @ @  @var{dom_ver_id} @ @var{ver_1}                                    @*
+@ @ @ @ @ @ @ @ @ @ @ @ @ @ @  @var{number_of_edges} @var{dom_edge_1} @var{dom_edge_2} ...       @*
+@ @ @  ...                                                               @*
+@ @  *edge                                                             @*
+@ @ @  @var{total_number_of_dom_edges}                                   @*
+@ @ @  @var{dom_edge_id} @var{number_of_dom_tess_edges} @var{edge_1}
+							      @var{edge_2} ...@*
+@ @ @ @ @ @ @ @ @ @ @ @ @ @ @  @var{dom_ver_1} @var{dom_ver_2}                                   @*
+@ @ @ @ @ @ @ @ @ @ @ @ @ @ @  @var{dom_face_1} @var{dom_face_2}                                   @*
+@ @ @  ...                                                               @*
+@ @  *face                                                             @*
+@ @ @  @var{total_number_of_dom_faces}                                   @*
+@ @ @  @var{dom_face_id} @var{number_of_dom_tess_faces} 				 
+			@var{dom_tess_face_1} @var{dom_tess_face_2} @var{...} @*
+@ @ @ @ @ @ @ @ @ @ @ @ @ @ @  @var{dom_face_eq_a} @var{dom_face_eq_b} @var{dom_face_eq_c} 
+							  @var{dom_face_eq_d} @*
+@ @ @ @ @ @ @ @ @ @ @ @ @ @ @  @var{number_of_dom_vertices} @var{dom_ver_1} @ @var{dom_ver_2} @ @var{...} @*
+@ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @var{dom_edge_1} @var{dom_edge_2}
+							            @var{...} @*
+@ @ @ ...                                                               @*
+***end                                                                        @*
+}
+
+where (with identifiers being integer numbers)
+
+@itemize
+
+@item @code{@var{format}} is the file format, currently @samp{1.10}
+(character string).
+
+@item @code{@var{n}} is the number of polyhedra of the tessellation
+(option @option{-n}).
+
+@item @code{@var{id}} is the identifier of the tessellation (option
+@option{-id}).
+
+@item @code{@var{type}} is the type of tessellation (always
+@samp{standard}).
+
+@item @code{@var{morphology}} is a character string indicating the
+morphology of the tessellation or polyhedra (option @option{-morpho}).
+It equals to @samp{poisson} for a Poisson Voronoi tessellation,
+@samp{tocta} for truncated octahedra, @samp{columnar[x,y,z]} for
+columnar grains, @samp{bamboo[x,y,z]} for bamboo grains or @samp{custom}
+for user-specified coordinates of the polyhedron germs (use of option
+@option{-centrecoo}).
+
+@item @code{@var{total_number_of_vertices}} is the total number of
+vertices.
+
+@item @code{@var{dom_entity_type}} is an integer equal to the type of 
+domain entity that a tessellation vertex, edge or face belongs to.  The
+value is equal to @code{0} for a domain vertex, @code{1} for a domain
+edge and @code{2} for a domain face, and @code{-1} for none.
+
+@item @code{@var{dom_entity_id}} is the identifier of a domain entity
+that a tessellation vertex, edge or face belongs to.  The domain entity
+can be a domain vertex, edge or face, as indicated by
+@code{@var{dom_entity_type}}. If @code{@var{dom_entity_type} = -1},
+@code{@var{dom_entity_id}} carries on no information and has a value of
+@code{0}.
+
+@item @code{@var{ver_id}} is the identifier of a vertex and ranges from
+@code{1} to @code{total_number_of_vertices}.
+
+@item @code{@var{number_of_edges}} is the number of edges a
+vertex belongs to.
+
+@item @code{@var{edge_1}}, @code{@var{edge_2}}, @code{...} are
+identifiers of edges.
+
+@item @code{@var{edge_1*}}, @code{@var{edge_2*}}, @code{...} are
+identifiers of the edges of a face, signed according to their
+orientation in the face.
+
+@item @code{@var{ver_x}}, @code{@var{ver_y}} and @code{ver_z} are
+the three coordinates of a vertex (real numbers).
+
+@item @code{@var{ver_state}} is an integer indicating the state of a
+vertex. For a standard tessellation (no regularization), it equals
+@code{0}.  For a regularized tessellation, it equals @code{0} if the
+vertex has not been modified by regularization and is higher than
+@code{0} otherwise.
+
+@item @code{@var{total_number_of_edges}} is the total number of edges.
+
+@item @code{@var{edge_id}} is the identifier of an edge and ranges from
+@code{1} to @code{total_number_of_edges}.
+
+@item @code{@var{ver_1}}, @code{@var{ver_2}}, @code{...} are
+identifiers of vertices.
+
+@item @code{@var{number_of_faces}} is the number of faces an edge
+belongs to, or to the number of faces a polyhedron has, depending on the
+context.
+
+@item @code{@var{face_1}}, @code{@var{face_2}}, @code{...} are
+identifiers of faces.
+
+@item @code{@var{face_1*}}, @code{@var{face_2*}}, @code{...} are
+identifiers of the faces of a polyhedron, signed according to their
+orientations in the polyhedron (positive if the normal of the face is
+pointing outwards and negative if it is pointing inwards).
+
+@item @code{@var{edge_state}} is an integer indicating the state of an
+edge (always @code{0}).
+
+@item @code{@var{total_number_of_faces}} is the total number of faces.
+
+@item @code{@var{face_id}} is the identifier of a face and ranges from
+@code{1} to @code{total_number_of_faces}.
+
+@item @code{@var{poly_1}} and @code{@var{poly_2}} are identifiers of
+polyhedra. @code{@var{poly2}} is negative if the face belongs to a
+domain face, thereby having only one parent polyhedron In that case, its
+value is negative @code{@var{dom_entity_id}}.
+
+@item @code{@var{face_eq_a}}, @code{@var{face_eq_b}},
+@code{@var{face_eq_c}} and @code{@var{face_eq_d}} are the parameters of
+the equation of a face: @math{@var{face_eq_a}@,x + @var{face_eq_b}@,y +
+@var{face_eq_c}@,z = @var{face_eq_d}}.  The parameters are scaled so
+that
+@iftex
+@math{@var{face_eq_a}^2+@var{face_eq_b}^2+@var{face_eq_c}^2=1}.
+@end iftex
+
+@item @code{@var{number_of_vertices}} is the number of vertices that a
+face has.
+
+@item @code{@var{face_state}} is an integer indicating the state of a
+face. For a standard tessellation (no regularization), it equals
+@code{0}.  For a regularized tessellation, it equals @code{0} if it has
+not been modified by regularization and @code{1} otherwise.
+
+@item @code{@var{face_point}} is an integer indicating the point used
+for the interpolation of a face. For a standard tessellation (no
+regularization), it equals @code{0}.  For a regularized tessellation: if
+the point is the face barycentre, it equals @code{0}; if the point is
+one of the face vertices, it equals to the position of the vertex in the
+list of vertices of the face (the list being: @code{ver_1 ver_2
+...}). It equals @code{-1} if the point is undefined.
+
+@item @code{@var{face_point_x}}, @code{@var{face_point_y}} and
+@code{@var{face_point_z}} are the coordinates of the point used for the
+interpolation of a face (equal @code{0} if undefined).
+
+@item @code{@var{face_ff}} is a real value equal to the ``flatness
+fault'' of a face. For a standard tessellation, it equals @code{0}.  For
+a regularized tessellation, it is the maximum angle between the
+normals at two points of a face, expressed in degrees.
+
+@item @code{@var{total_number_of_polyhedra}} is the total number of polyhedra.
+
+@item @code{@var{poly_id}} is the identifier of a polyhedron and ranges
+from @code{1} to @code{total_number_of_polyhedra}.
+
+@item @code{@var{poly_centre_x}}, @code{@var{poly_centre_y}} and
+@code{@var{poly_centre_z}} are the coordinates of the centre of a
+polyhedron.
+
+@item @code{@var{poly_true}} is an integer equal to the ``true'' value
+of a polyhedron (@pxref{Module -FM}).
+
+@item @code{@var{poly_body}} is an integer equal to the ``body'' value
+of a polyhedron (@pxref{Module -FM}). 
+
+@item @code{@var{dom_type}} is the type of the domain (one of
+@code{cube}, @code{cylinder}, @code{poly} and @code{planes}).
+
+@item @code{@var{total_number_of_dom_vertices}} is the total number of
+domain vertices.
+
+@item @code{@var{dom_ver_id}} is the identifier of a domain vertex and
+ranges between @code{1} to @code{total_number_of_dom_vertices}.
+
+@item @code{@var{total_number_of_dom_edges}} is the total number of
+domain edges.
+
+@item @code{@var{dom_edge_id}} is the identifier of a domain edge and
+ranges between @code{1} to @code{total_number_of_dom_edges}.
+
+@item @code{@var{number_of_dom_tess_edges}} is the number of
+tessellation edges that a domain edge has. 
+
+@item @code{@var{dom_ver_1}}, @code{@var{dom_ver_2}}, @code{...} are
+identifiers of the domain vertices that a domain edge or face has.
+
+@item @code{@var{dom_face_1}} and @code{@var{dom_face_2}} are
+identifiers of the domain faces that a domain edge has.
+
+@item @code{@var{total_number_of_dom_faces}} is the total number of
+domain faces.
+
+@item @code{@var{dom_face_id}} is the identifier of a domain face and ranges from
+@code{1} to @code{total_number_of_dom_faces}.
+
+@item @code{@var{number_of_dom_tess_faces}} is the number of
+tessellation faces that a domain face has.
+
+@item @code{@var{dom_tess_face_1}}, @code{@var{dom_tess_face_2}},
+@code{...} are the identifiers of the tessellation faces that a domain
+face has.
+
+@item @code{@var{dom_face_eq_a}}, @code{@var{dom_face_eq_b}},
+@code{@var{dom_face_eq_c}} and @code{@var{dom_face_eq_d}} are the
+parameters of the equation of a domain face and are defined in the same
+way than @code{@var{face_eq_a}}, etc.@ (see above).
+
+@item @code{@var{number_of_dom_vertices}} is the number of
+domain vertices (and edges) that a domain face has. 
+
+@item @code{@var{dom_edge_1}}, @code{@var{dom_edge_2}}, @code{...} are
+identifiers of the domain edges that a domain face has.
+
+@end itemize
+
+@node Mathematical Expressions
+@appendix Mathematical and Logical Expressions
+
+@section Mathematical Expressions
+
+@neper{} can handle mathematical expressions.  It makes use of the GNU
+@code{libmatheval} library. The expression must contain no space,
+tabulation or new-line characters, and match the following
+syntax@footnote{Taken from the @code{libmatheval} documentation.}:
+
+@sp 1
+Supported constants are (names that should be used are given in
+parenthesis): e (@code{e}), log2(e) (@code{log2e}), log10(e)
+(@code{log10e}), ln(2) (@code{ln2}), ln(10) (@code{ln10}), pi
+(@code{pi}), pi / 2 (@code{pi_2}), pi / 4 (@code{pi_4}), 1 / pi
+(@code{1_pi}), 2 / pi (@code{2_pi}), 2 / sqrt(pi) (@code{2_sqrtpi}),
+sqrt(2) (@code{sqrt}) and sqrt(1 / 2) (@code{sqrt1_2}).
+
+Variable name is any combination of alphanumericals and @code{_}
+characters beginning with a non-digit that is not elementary function
+name.
+
+Supported elementary functions are (names that should be used are
+given
+in parenthesis): exponential (@code{exp}), logarithmic
+(@code{log}),
+square root (@code{sqrt}), sine (@code{sin}), cosine (@code{cos}),
+tangent (@code{tan}), cotangent (@code{cot}), secant (@code{sec}),
+cosecant (@code{csc}), inverse sine (@code{asin}), inverse cosine
+(@code{acos}), inverse tangent (@code{atan}), inverse cotangent
+(@code{acot}), inverse secant (@code{asec}), inverse cosecant
+(@code{acsc}), hyperbolic sine (@code{sinh}), cosine (@code{cosh}),
+hyperbolic tangent (@code{tanh}), hyperbolic cotangent (@code{coth}),
+hyperbolic secant (@code{sech}), hyperbolic cosecant (@code{csch}),
+hyperbolic inverse sine (@code{asinh}), hyperbolic inverse cosine
+(@code{acosh}), hyperbolic inverse tangent (@code{atanh}), hyperbolic
+inverse cotangent (@code{acoth}), hyperbolic inverse secant
+(@code{asech}), hyperbolic inverse cosecant (@code{acsch}), absolute
+value (@code{abs}), Heaviside step function (@code{step}) with value 1
+defined for x = 0, Dirac delta function with infinity (@code{delta})
+and
+not-a-number (@code{nandelta}) values defined for x = 0, and error
+function (@code{erf}).
+
+Supported unary operation is unary minus (@code{'-'}).
+
+Supported binary operations are addition (@code{'+'}), subtraction
+(@code{'+'}), multiplication (@code{'*'}), division multiplication
+(@code{'/'}) and exponentiation (@code{'^'}).
+
+Usual mathematical rules regarding operation precedence
+apply. Parenthesis (@code{'('} and @code{')'}) could be used to change
+priority order.
+
+@sp 1
+@neper{} includes additional functions: the minimum function
+(@code{min(@var{a},@var{b})}) and the maximum function
+(@code{max(@var{a},@var{b})}). @code{@var{a}} and @code{@var{b}} can be
+any expression following the above-described syntax. Moreover, square
+brackets (@code{'['} and @code{']'}) and curly brackets (@code{'@{'} and
+@code{'@}'}) can be used instead of the parentheses.
+
+@section Logical Expressions
+
+The logical operators supported are:
+@math{=} (@code{==}),
+@math{\neq} (@code{!=}),
+@math{\geq} (@code{>=}),
+@math{\leq} (@code{<=}),
+@math{>} (@code{>}),
+@math{<} (@code{<}),
+AND (@code{&&}) and
+OR (@code{||}).
+
+@node Colours
+@appendix Colours
+
+Colours can be specified in two ways: by name or by RGB channel values,
+as detailed in the following.
+
+Here is the list of the available colours (character string and RGB
+channel values):@*
+aliceblue (240, 248, 255),
+antiquewhite (250, 235, 215),
+aqua (0, 255, 255),
+aquamarine (127, 255, 212),
+azure (240, 255, 255),
+beige (245, 245, 220),
+bisque (255, 228, 196),
+black (0, 0, 0),
+blanchedalmond (255, 235, 205),
+blue (0, 0, 255),
+blueviolet (138, 43, 226),
+brown (165, 42, 42),
+burlywood (222, 184, 135),
+cadetblue (95, 158, 160),
+chartreuse (127, 255, 0),
+chocolate (210, 105, 30),
+coral (255, 127, 80),
+cornflowerblue (100, 149, 237),
+cornsilk (255, 248, 220),
+crimson (220, 20, 60),
+cyan (0, 255, 255),
+darkblue (0, 0, 139),
+darkcyan (0, 139, 139),
+darkgoldenrod (184, 134, 11),
+darkgray (64, 64, 64),
+darkgreen (0, 100, 0),
+darkgrey (64, 64, 64),
+darkkhaki (189, 183, 107),
+darkmagenta (139, 0, 139),
+darkolivegreen (85, 107, 47),
+darkorange (255, 140, 0),
+darkorchid (153, 50, 204),
+darkred (139, 0, 0),
+darksalmon (233, 150, 122),
+darkseagreen (143, 188, 143),
+darkslateblue (72, 61, 139),
+darkslategray (47, 79, 79),
+darkslategrey (47, 79, 79),
+darkturquoise (0, 206, 209),
+darkviolet (148, 0, 211),
+deeppink (255, 20, 147),
+deepskyblue (0, 191, 255),
+dimgray (105, 105, 105),
+dimgrey (105, 105, 105),
+dodgerblue (30, 144, 255),
+firebrick (178, 34, 34),
+floralwhite (255, 250, 240),
+forestgreen (34, 139, 34),
+fuchsia (255, 0, 255),
+gainsboro (220, 220, 220),
+ghostwhite (248, 248, 255),
+gold (255, 215, 0),
+goldenrod (218, 165, 32),
+gray (128, 128, 128),
+grey (128, 128, 128),
+green (0, 255, 0),
+greenyellow (173, 255, 47),
+honeydew (240, 255, 240),
+hotpink (255, 105, 180),
+indianred (205, 92, 92),
+indigo (75, 0, 130),
+ivory (255, 255, 240),
+khaki (240, 230, 140),
+lavender (230, 230, 250),
+lavenderblush (255, 240, 245),
+lawngreen (124, 252, 0),
+lemonchiffon (255, 250, 205),
+lightblue (173, 216, 230),
+lightcoral (240, 128, 128),
+lightcyan (224, 255, 255),
+lightgoldenrodyellow (250, 250, 210),
+lightgray (211, 211, 211),
+lightgreen (144, 238, 144),
+lightgrey (211, 211, 211),
+lightpink (255, 182, 193),
+lightsalmon (255, 160, 122),
+lightseagreen (32, 178, 170),
+lightskyblue (135, 206, 250),
+lightslategray (119, 136, 153),
+lightslategrey (119, 136, 153),
+lightsteelblue (176, 196, 222),
+lightyellow (255, 255, 224),
+lime (0, 255, 0),
+limegreen (50, 205, 50),
+linen (250, 240, 230),
+magenta (255, 0, 255),
+maroon (128, 0, 0),
+mediumaquamarine (102, 205, 170),
+mediumblue (0, 0, 205),
+mediumorchid (186, 85, 211),
+mediumpurple (147, 112, 219),
+mediumseagreen (60, 179, 113),
+mediumslateblue (123, 104, 238),
+mediumspringgreen (0, 250, 154),
+mediumturquoise (72, 209, 204),
+mediumvioletred (199, 21, 133),
+midnightblue (25, 25, 112),
+mintcream (245, 255, 250),
+mistyrose (255, 228, 225),
+moccasin (255, 228, 181),
+navajowhite (255, 222, 173),
+navy (0, 0, 128),
+oldlace (253, 245, 230),
+olive (128, 128, 0),
+olivedrab (107, 142, 35),
+orange (255, 165, 0),
+orangered (255, 69, 0),
+orchid (218, 112, 214),
+palegoldenrod (238, 232, 170),
+palegreen (152, 251, 152),
+paleturquoise (175, 238, 238),
+palevioletred (219, 112, 147),
+papayawhip (255, 239, 213),
+peachpuff (255, 218, 185),
+peru (205, 133, 63),
+pink (255, 192, 203),
+plum (221, 160, 221),
+powderblue (176, 224, 230),
+purple (128, 0, 128),
+red (255, 0, 0),
+rosybrown (188, 143, 143),
+royalblue (65, 105, 225),
+saddlebrown (139, 69, 19),
+salmon (250, 128, 114),
+sandybrown (244, 164, 96),
+seagreen (46, 139, 87),
+seashell (255, 245, 238),
+sienna (160, 82, 45),
+silver (192, 192, 192),
+skyblue (135, 206, 235),
+slateblue (106, 90, 205),
+slategray (112, 128, 144),
+slategrey (112, 128, 144),
+snow (255, 250, 250),
+springgreen (0, 255, 127),
+steelblue (70, 130, 180),
+tan (210, 180, 140),
+teal (0, 128, 128),
+thistle (216, 191, 216),
+tomato (255, 99, 71),
+turquoise (64, 224, 208),
+violet (238, 130, 238),
+wheat (245, 222, 179),
+white (255, 255, 255),
+whitesmoke (245, 245, 245),
+yellow (255, 255, 0),
+yellowgreen (154, 205, 50).
+
+Any other colour of known RGB channel values can be defined by forming a
+character string of format: @samp{@w{R_value,G_value,B_value}}.  The
+@samp{,} separator can be changed to one of @samp{/},  @samp{.},
+@samp{:} and @samp{;}.
+
+@node Versions
+@appendix Versions
+
+@verbatiminclude ../../VERSIONS

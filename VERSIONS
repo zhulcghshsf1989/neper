@@ -1,0 +1,79 @@
+New in 1.10.0 (June 2012):
+- General: New (hopefully simpler) installation procedure based on Cmake.
+  Added support for domains of any convex polyhedral shape.
+- module -VS: major code rewriting and option changes. New capabilities
+  for defining the colours and sizes of the tessellation / mesh
+  (including gradients).  Added options to show only specific parts of the
+  tessellation / mesh and to view slices of a mesh. Other small
+  enhancements.
+- module -T : added option `-domain' to specify the shape of the domain
+  (cuboidal, cylindrical or of any convex shape), small bug fixes, added
+  centroid Voronoi tessellation generation (option -centroid), merged
+  option -centrecoo into option -morpho, added polyhedron centroid
+  coordinates in file .stt3, changed option -load to -loadtess, added
+  output format `.ply' (thanks Ehsan!).
+- module -FM: mesh partitionning needs libscotch version 5.1.12 or later,
+  small bug fixes, changed default value of -faset to "" (i.e. no faset
+  in output), fixed bug for Abaqus output, added polyhedron centroid
+  coordinates in file .stt3, added output format `.ply' (geometry only).
+- module -MM: new options -dsize and -scale, new option -loadmesh, new
+  option -outdim, changed arguments of -ttype, changed default value of
+  -faset to "" (i.e. no faset in output), fixed bug for Abaqus output,
+  small bug fixes.
+
+New in 1.9.2 (September 2011):
+- module -T: added option -morpho for specifying the type of grain
+  structure (equiaxed, columnar or bamboo), merged option -regular
+  with -morpho, added post-processing -neighbour option for information
+  on the polyhedron neighbours, added geo (Gmsh geometry) output format
+  (mostly for visualization), fixed bugs.
+- module -MM: proper processing of the input tess files, added msh
+  (Gmsh) and inp (Abaqus) output formats, added options -morpho and
+  -centrecoo (as in module -T), small bug fixes, code cleaning.
+- module -FM: added geo (Gmsh geometry) output format (mostly for
+  visualization), small bug fixes.
+- documentation: small corrections.
+
+New in 1.9.1 (May 2011):
+- module -FM: fixed bug occurring when -mesh3dalgo is not set by the
+  user.  Small other bug fixes.
+- module -MM: small bug fixes.
+
+New in 1.9.0 (Apr 2011):
+This is a major release.  Neper now has its own paper:
+"R.Quey, P.R. Dawson and F. Barbe.  Large-scale 3D random polycrystal
+ for the finite element method: Generation, meshing and remeshing.
+ Computer Methods in Applied Mechanics and Engineering,
+ Vol. 200, pp. 1729--1745, 2011."
+Please cite it in your works if you use Neper.
+- General: added option --rcfile to disregard / change the
+  initialization file; big distribution and source clean up; bug fixes.
+- module -T: added capability to generate regular morphologies
+  (truncated octahedra), tess file format bumped to 1.9; big clean up.
+- module -FM: included multimeshing, remeshing and mesh partitioning
+  capabilities; big clean up.  Neper now uses the *standard* Gmsh
+  distribution for 2D and 3D meshings (versions >=2.4.2).  Strongly
+  reduced memory usage.
+- module -O: added capability to handle different orientation
+  descriptors. 
+- module -VS: new visualization module to generate publication-quality
+  images (PNG format) of the tessellations, meshes and more...
+
+New in 1.8.1 (Aug 2009):
+- upgraded website at http://neper.sourceforge.net
+- module -T: new file format ***tess1.8, new option -restart to load an
+  existing tessellation (not through std input any more), new option
+  -printformat, bug fixes.
+- module -MM: bug fixes.
+- module -FM: new output format mae, new option -restart to restart from
+  an existing geometry or mesh (options -mesh and -conv removed); new
+  options -printformat and -maeextension; better mesh numbering (+ new
+  options -elementfirstid and -nodefirstid), new way to choose the node
+  sets to output (-nset 4), fixed option -estat, renamed -bwcy-clmin to
+  -clmin, cleaned bunch of options, bug fixes.
+- module -O: added option -euleranglesconvention (Bunge, Roe & Kocks);
+  new output formats mae and geof (option -format).
+- manual: some corrections.
+
+New in 1.8.0 (Jul 2009):
+- First GPL-distributed version of Neper.

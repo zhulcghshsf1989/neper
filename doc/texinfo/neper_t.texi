@@ -1,0 +1,338 @@
+@node Module -T
+@chapter Tessellation Generation: neper -T
+
+@MT{} enables one to generate Voronoi tessellations of a space
+@dfn{domain}.  The domain can be cuboidal, cylindrical or of any other
+convex shape.  The centres of the polyhedra can be randomly distributed
+in the domain, which leads to @dfn{random Voronoi tessellations} (also
+called @dfn{Poisson Voronoi tessellations}).  It is also possible to
+generate columnar (2D) and bamboo (1D) grain morphologies, as well as
+regular, periodic, arrangment of polyhedra (truncated octahedra are
+currently available).  It is also possible to generate centroidal
+Voronoi tessellations@footnote{Q. Du, V.  Faber and M. Gunzburger,
+Centroidal Voronoi Tessellations: Applications and Algorithms, SIAM
+Review, 41, 637--676, 1999.}, or even to load a user-defined
+distribution of centres.  The tessellations can be scaled to generate
+morphological textures (flat or elongated grains).  The module generates
+as output a tessellation file @file{.tess} that describes exhaustively
+the polycrystal morphology (@pxref{File Formats}).  The @file{.tess}
+file is an input file of the meshing modules, -FM @w{ and -MM}
+(@pxref{Module -FM} and @ref{Module -MM}).  @MT{} also generates as
+output a @file{.oin} file, which contains input data for the
+crystallographic orientation generation with @mO{} (@pxref{Module -O}).
+The generated tessellation (@file{.tess} file) can be visualized with
+@mVS{} (@ref{Module -VS}).
+
+@sp 1
+Here is what a typical run of @mT{} looks like:
+
+@sp 4
+@c typical_start
+@verbatim 
+    $ neper -T -n 10 -id 1
+    
+    ========================    N   e   p   e   r    =======================
+    Info   : A 3D random polycrystal generator for the finite element method
+    Info   : Version 1.10.0
+    Info   : (compiled with: gsl libmatheval)
+    Info   : Loading initialization file `/home/rquey/.neperrc'...
+    Info   : ---------------------------------------------------------------
+    Info   : MODULE  -T loaded with arguments:
+    Info   : [ini file] (none)
+    Info   : [com line] -n 10 -id 1
+    Info   : ---------------------------------------------------------------
+    Info   : Reading input data ...
+    Info   : Creating domain ...
+    Info   : Creating polyhedron centres ...
+    Info   : Creating tessellation ...
+    Info   : Writing results ...
+    Info   :     [o] Writing file `n10-id1.tess' ...
+    Info   :     [o] Wrote file `n10-id1.tess'.
+    Info   :     [o] Writing file `n10-id1.oin' ...
+    Info   :     [o] Wrote file `n10-id1.oin'.
+    Info   : Elapsed time: 0.004 secs.
+    ========================================================================
+    
+@end verbatim
+@c typical_end
+
+@page
+@section Arguments
+
+@subsection Input Data
+
+By default, the domain to tessellate is taken as a cube of unit size.
+For defining another domain, see option @option{-domain}.
+
+@inp{-n,integer, 
+Number of polyhedra of the tessellation@comma{} except for regular
+morphologies (truncated octahedra@comma{} etc.@comma{} see option
+@option{-morpho} for details).,
+any, none}
+
+@inp{-id,integer,
+Identifier of the tessellation.,
+any, @var{random}}
+
+@inp{-morpho,char_string,
+Type of morphology of the polyhedra. For random Voronoi
+tessellations@comma{} it can be either equiaxed
+(@code{equiaxed})@comma{} columnar
+(@code{columnar@{x@comma{}y@comma{}z@}}) or bamboo-like
+(@code{bamboo@{x@comma{}y@comma{}z@}}).@*
+To load a particular set of polyhedron centres@comma{} use the syntax
+@samp{@@@var{file_name}} where @code{@var{file_name}} is the name of a
+file containing the @w{@math{3 * n}} coordinates.@*
+Regular morphologies can also be obtained: truncated octahedra
+(@code{tocta})@comma{} in which case the value of option @option{-n}
+stands for the number of polyhedra along an edge of the domain instead
+of the total number of polyhedra.
+,
+see above list, equiaxed}
+
+@inp{-centroid,logical,
+Use this option to turn the tessellation centroidal.
+,
+0 or 1, 0}
+
+The generation of a centroidal Voronoi tessellation is based on Lloyd's
+algorithm and can be two to three orders of magnitude as long as for the
+equivalent Voronoi tessellation.  The convergence criteria can be
+adjusted using options @option{-centroidfact}, @option{-centroidconv}
+and @option{-centroiditermax}.
+
+Is it also possible to load a tessellation from a file,
+
+@inp{-loadtess,file_name,
+Load a tessellation from a file.  Provide as argument the file name.  
+,
+any,none}
+
+@subsection General Options
+
+@opt{-o,file_name,
+Specify the output file name.,
+any,none}
+
+@c @opt{-v,integer,
+@c Set verbosity level.,
+@c 0 to 1 , 0}
+
+@subsection Domain Options 
+
+@opt{-domain,char_string @dots{},
+Specify the type of domain and its size.  For a cuboidal shape@comma{}
+provide @samp{cube} followed by the sizes along the x@comma{} y and z
+directions.  For a cylindrical shape@comma{} provide @samp{cylinder}
+followed by the height and diameter.  For a tessellation
+polyhedron@comma{} provide @samp{tesspoly} followed by the name of the
+tessellation file (@file{.tess}) and the number of the polyhedron (the
+tessellation must not be regularized).  For an arbitrary shape@comma{}
+provide @samp{planes} followed by the name of a file containing the
+total number of planes then@comma{} for each plane@comma{} the
+parameters of its equation (@math{a}@comma{} @math{b}@comma{} @math{c}
+and @math{d} for an equation of the form @math{a@,x+b@,y+c@,z=d}). The
+plane normal must be an outgoing vector of the polyhedron.
+, 
+see above list, cube 1 1 1}
+
+@optsec{-cylinderfacet, integer,
+Specify the number of facets along the circular part of a cylindrical
+domain.
+,
+any >= 3, function of the poly rad}
+
+@subsection Tessellation Options 
+
+@opt{-scale,real real real,
+Specify the factors in the x@comma{} y and z directions by which the
+tessellation is to be scaled (once generated).
+, 
+any,none}
+
+@optsec{-sort,char_string char_string,
+This option can be used to sort the tessellation entities (typically to
+facilitate data post-processing).  The first argument is the type of
+entity to sort (must be @code{poly}) and the second argument is the
+mathematical expression used for sorting (@pxref{Mathematical
+Expressions}).  For polyhedra@comma{} the available variables are the
+centre coordinates@comma{} @var{cenx}@comma{} @var{ceny} and
+@var{cenz}@comma{} the true and body parameters @var{true} and
+@var{body}@comma{} and the volume @var{vol}., any,none}
+
+@optsec{-randomize,real integer,
+This option can be used to ``randomize'' the coordinates of the 
+polyhedron centres.  Provide as argument the maximum shift distance and
+an identifier for the randomization. The resulting centre shift
+distances are uniformly distributed between 0 and the maximum shift
+distance.
+, 
+any > 0 any,none}
+ 
+@optsec{-randomizedir,char_string,
+This option can be used with option @option{-randomize}@comma{} to
+specify the possible directions in which the polyhedron centres are to
+be shifted.  Provide as argument the directions. Combine them
+with @samp{@comma{}}.
+, 
+x@comma{} y@comma{} z,x@comma{}y@comma{}z}
+
+@optsec{-centroidfact,real,
+This option can be used with option @option{-morpho centroid}@comma{} to
+specify the factor by which the germ positions are shifted between
+their current positions and the centroid positions@comma{} at each
+iteration.  (Lloyd's algorithm is obtained for a value of 1@comma{} but
+a lower value can lead to faster convergence.)
+, 
+0 to 1,0.5}
+
+@optsec{-centroidconv,real,
+This option can be used with option @option{-morpho centroid}@comma{} to
+specify the maximum tolerance on the distance between the polyhedron
+centres and centroids. 
+The tolerance is relative to the average grain radius.
+, 
+any > 0,0.02}
+
+@optsec{-centroiditermax,integer,
+This option can be used with option @option{-morpho centroid}@comma{} to
+specify the maximum number of iterations. You should consider using option
+@option{-centroidconv} instead.
+, 
+any, 1000}
+ 
+@subsection Output Options
+
+@opt{-format,char_string,
+Specify the format of the output file(s). 
+The available formats are the Neper @code{tess} and @code{oin}@comma{}
+the Gmsh @code{geo} and the Ply @code{ply} (combine with commas).
+,
+tess@comma{} oin@comma{} geo@comma{} ply,tess@comma{}oin}
+
+@subsection Post-Processing Options
+
+@post{-stat,logical,
+Provide statistics on the tessellation.
+,
+0 or 1, 0,
+.stt#}
+
+@post{-neighbour,logical,
+Provide a file with information on the first neighbours of the
+  polyhedra.
+,
+any,none,
+.neigh}
+
+@post{-pointpoly,file_name,
+Provide the numbers of the polyhedra of which specific points belong.
+Give as argument the name of the file containing the coordinates of the
+points.
+,
+any,none,
+.polyid}
+
+@section Output Files
+
+@subsection Tessellation
+
+@itemize
+@item Neper-native tessellation file: @file{.tess}
+
+It contains an exhaustive description of the tessellation.
+See @ref{File Formats} for the file syntax.
+
+@item Gmsh geometry file: @file{.geo}
+
+It contains a minimal description of the tessellation written under the
+Gmsh geometry file format @file{.geo}.  This file can be opened with
+Gmsh for visualization.  (Note that you can even get a mesh of the
+tessellation out from Gmsh, but it will be of lower quality than by
+using module @code{-FM}.)
+
+@item Ply file: @file{.ply}
+
+It contains a description of the tessellation written under the
+standard ``Polygon File Format'' @file{.ply}.
+
+@end itemize
+
+@subsection Orientation
+
+@itemize
+@item orientation input file: @file{.oin}
+
+It contains data for generating the grain orientations, and
+is an input file for @mO{} (@pxref{Module -O}).
+@end itemize
+
+@need 400
+@subsection Statistics
+
+Several files are provided for statistics on tessellations, whose
+formats are provided below.  All files are formatted with one entity
+(vertex, edge, face or polyhedron) per line.
+
+@itemize
+@item tessellation vertex statistics, @file{.stt0}: @code{@var{id true body state x y z}}
+
+@item tessellation edge statistics, @file{.stt1}: @code{@var{id true body state length}}
+
+@item tessellation face statistics, @file{.stt2}: @code{@var{id true body state ver_qty area ff}}
+
+@item tessellation polyhedron statistics, @file{.stt3}:@*
+@w{@code{@var{id true body state x y z ver_qty edge_qty face_qty vol xc yc zc}}}
+@end itemize
+
+@code{@var{xc}}, @code{@var{yc}} and @code{@var{zc}} denote the centroid
+(centre of mass) coordinates.
+
+@subsection Post-Processing
+
+@itemize
+@item polyhedron identifier file: @file{.polyid}
+
+It contains the identifiers of the polyhedra of which specific points
+belong (see option @option{-pointpoly}).  By definition, they range from
+@code{1} to the maximum number of polyhedra in the tessellation. In the
+case of a point which does not belong to any polyhedron, the returned
+value is @code{0}.
+
+@item polyhedron neighbours file: @file{.neigh}
+
+It contains information on the neighbours of the polyhedra.  The file is
+formatted with one polyhedron per line, with the following entries:
+@code{@var{id neighbour_qty neighbour1_id neighbour2_id ...
+neighbour1_facearea neighbour2_facearea ...
+@w{neighbour1_faceeq} neighbour2_faceeq ... }}.
+@code{@var{neighbour#_id}} is a positive integer, except for a polyhedron face
+which belongs to the boundary of the domain (in this case, the value
+ranges between @math{-6} and @math{-1}). A face equation is specified by
+the parameters @math{d}, @math{a}, @math{b} and @math{c} (in this
+order), with the equation being: @math{a x + b y + c z = d}.  The vector
+@math{(a, b, c)} is pointing outwards of the polyhedron.
+
+@end itemize
+
+@section Examples
+
+Below are some examples of use of neper -T.  Illustrations can be found
+at @url{http://neper.sourceforge.net/neper_t.html}.
+
+@enumerate
+@c Example_beg
+@item    Generate a polycrystal made of 100 grains, with identifier = 1. 
+@com{neper -T -n 100 -id 1}
+@item    Use an elongated domain and generate a polycrystal made of 100 grains, with identifier = 1.
+@com{neper -T -n 100 -id 1 -domain cube 3 1 0.33}
+@item    Generate a polycrystal made of 100 grains, with identifier = 1, and stretch it to model a morphological texture.
+@com{neper -T -n 100 -id 1 -scale 3 1 0.33}
+@item    Generate a polycrystal made of 100 columnar grains.
+@com{neper -T -n 100 -id 1 -morpho columnarz}
+@item    Generate a polycrystal made of approximately 5x5x5 truncated octahedra. 
+@com{neper -T -n 5 -morpho tocta}
+@item    Generate a polycrystal made of 100 grains in a cylindrical domain of height 2 and diameter 1.
+@com{neper -T -n 100 -id 1 -domain cylinder 2 1}
+@c Example_end
+@end enumerate
