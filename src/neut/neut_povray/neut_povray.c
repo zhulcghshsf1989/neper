@@ -7,16 +7,7 @@
 int
 neut_povray_check (void)
 {
-  int qty;
-
-  system ("which povray 2> /dev/null > neper.tmp");
-  qty = ut_file_nbwords ("neper.tmp");
-  remove ("neper.tmp");
-
-  if (qty == 0)
-    return -1;
-  else
-    return 0;
+  return system ("which povray 2> /dev/null > neper.tmp");
 }
 
 int

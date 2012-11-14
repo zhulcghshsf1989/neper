@@ -1,3 +1,7 @@
+# This file is part of the 'orilib' software.
+# Copyright (C) 2007-2009, 2012 Romain Quey
+# see the COPYING file in the top-level directory.
+
 cmake_minimum_required(VERSION 2.6)
 project(orilib C)
 
@@ -23,6 +27,7 @@ include_directories("${PROJECT_SOURCE_DIR}/ut")
 
 
 add_definitions(-Wall -W -O3)
+set (CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
 
 add_library (orilib 
 ol_cal/ol_com.c
@@ -31,6 +36,7 @@ ol_cal/ol_dis.c
 ol_cal/ol_inv.c
 ol_cal/ol_sym.c
 ol_cal/ol_mis.c
+ol_des/ol_des_gen.c
 ol_des/ol_e.c
 ol_des/ol_g.c
 ol_des/ol_m.c

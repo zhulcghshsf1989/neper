@@ -13,9 +13,9 @@
 
 #include"TestFace0.h"
 
-extern int TestFaceReciprocityEdge (struct GEO, int);
-extern int TestFaceReciprocityVer (struct GEO, int);
-extern int TestFaceReciprocityPoly (struct GEO, int);
-extern int TestFaceState (struct GEO, int);
-extern int TestFaceBound (struct GEO, int);
-extern int TestFaceSelfIntersect (struct GEO, int);
+extern int TestFaceReciprocityEdge (struct GEO, int, int);
+extern int TestFaceReciprocityVer (struct GEO, int, int);
+extern int TestFaceReciprocityPoly (struct GEO, int, int);
+extern int TestFaceState (struct GEO, int, int);
+extern int TestFaceBound (struct GEO, int, int);
+extern int TestFaceSelfIntersect (struct GEO, int, int);

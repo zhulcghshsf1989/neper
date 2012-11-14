@@ -39,7 +39,7 @@ information about this license is available from the GNU Project webpage
 
 @sp 1
 The Neper software package can be downloaded from
-@url{http://neper.sourceforge.net}. It has also two dedicated mailing
+@url{http://neper.sourceforge.net}. It also has two dedicated mailing
 lists,
 
 @itemize
@@ -62,10 +62,10 @@ The list is archived at
 @url{http://sourceforge.net/mailarchive/forum.php?forum_name=neper-users}.
 @end itemize
 
-The best way to get help is by sending a message to
-@email{neper-users@@lists.sourceforge.net}.  Note that you do not have
-to subscribe to the list to be able to send a message, nor to receive
-the reply.  If you wish to contact the developer directly, use
+The best way to get help is by checking out the list archives or by
+sending a message to the neper-users list.  Note that subscribing to
+the list is not required to send a message, nor to receive a reply.
+If you wish to contact the developer directly, use
 @email{rquey@@users.sourceforge.net}.
 
 @section User Guidelines

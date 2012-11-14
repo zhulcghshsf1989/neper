@@ -12,9 +12,9 @@ RMeshingFNId (struct IN In, struct MESH* pMesh, struct GERMSET *pGermSet)
   double* size = ut_alloc_1d (7);
   size[2] = size[4] = size[6] = 1;
   double** dsize = ut_alloc_2d (3, 2);
-  dsize[0][1] = In.domainparms[0] * In.F[0];
-  dsize[1][1] = In.domainparms[1] * In.F[1];
-  dsize[2][1] = In.domainparms[2] * In.F[2];
+  dsize[0][1] = In.domainparms[0];
+  dsize[1][1] = In.domainparms[1];
+  dsize[2][1] = In.domainparms[2];
   
   struct POLY Domain; 
   Domain.VerQty = 0;
@@ -22,6 +22,14 @@ RMeshingFNId (struct IN In, struct MESH* pMesh, struct GERMSET *pGermSet)
 
   // Setting germs coo
   (*pGermSet).Random = neut_rand_nnid2rand ((*pGermSet).NDensity, (*pGermSet).Id);
+
+  (*pGermSet).Size = ut_alloc_1d (7);
+  (*pGermSet).Size[1] = dsize[0][0];
+  (*pGermSet).Size[2] = dsize[0][1];
+  (*pGermSet).Size[3] = dsize[1][0];
+  (*pGermSet).Size[4] = dsize[1][1];
+  (*pGermSet).Size[5] = dsize[2][0];
+  (*pGermSet).Size[6] = dsize[2][1];
 
   // N
   if (! strcmp ((*pGermSet).ttype, "subdomain") == 0)

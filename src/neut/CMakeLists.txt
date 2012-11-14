@@ -8,6 +8,7 @@ option (HAVE_LIBSCOTCH   "Use libscotch"                        OFF)
 include_directories("${PROJECT_BINARY_DIR}")
 
 add_definitions(-Wall -W -g -O3)
+set (CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
 
 add_library (neut 
 ./neut_tess/neut_tess.c
@@ -85,6 +86,7 @@ endif ()
 if (HAVE_GSL)
   find_package(GSL REQUIRED)
   set (EXTRA_LIBS ${EXTRA_LIBS} ${GSL_LIBRARIES})
+  include_directories(${GSL_INCLUDE_DIRS})
 endif (HAVE_GSL)
 
 if (HAVE_LIBSCOTCH)

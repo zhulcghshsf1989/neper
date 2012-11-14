@@ -1,3 +1,4 @@
+/* This file is part of the 'orilib' software. */
 /* Copyright (C) 2007-2009, 2012 Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 #include "ol_sym.h"
@@ -423,8 +424,8 @@ ol_rtheta_rthetacrysym (double *r, double theta, char* crysym, double *r2, doubl
   mintheta = ol_q_qcrysym (q, crysym, q2);
   ol_q_rtheta (q2, r2, ptheta2);
 
-  ol_q_free (r);
-  ol_q_free (r2);
+  ol_q_free (q);
+  ol_q_free (q2);
 
   return mintheta;
 }

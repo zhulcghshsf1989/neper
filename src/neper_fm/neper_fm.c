@@ -104,17 +104,18 @@ neper_fm (int fargc, char **fargv, int argc, char **argv)
   {
     ut_print_message (0, 1, "Loading mesh ...\n");
     ReadMesh (In.loadmesh, &Nodes, &Mesh0D, &Mesh1D, &Mesh2D, &Mesh3D);
+  }
+
+  // remeshing
+  else if (In.remesh)
+  {
     if (strcmp (Mesh3D.EltType, "tri") != 0)
     {
       ut_print_message (2, 0, "Input mesh is not a free mesh.\n");
       printf ("elttype = %s\n", Mesh3D.EltType);
       abort ();
     }
-  }
 
-  // remeshing
-  else if (In.remesh)
-  {
     struct NODES RNodes;
     struct MESH RMesh0D, RMesh1D, RMesh2D, RMesh3D;
 
@@ -237,11 +238,11 @@ neper_fm (int fargc, char **fargv, int argc, char **argv)
     }
   }
 
-  if (In.printstattess == 1)
+  if (! strcmp (In.printstattess, "none"))
   {
     if (header_printed == 0)
       ut_print_message (0, 1, "Writing geometry results ...\n");
-    WriteStatGeo (In.body, Geo);
+    WriteStatGeo (In.printstattess, In.body, Geo);
   }
 
 /*********************************************************************** 
@@ -299,7 +300,7 @@ neper_fm (int fargc, char **fargv, int argc, char **argv)
 /*********************************************************************** 
  * mesh output (statistics) */
   
-  if (Mesh3D.EltQty > 0 && In.printstatmesh == 1)
+  if (Mesh3D.EltQty > 0 && strcmp (In.printstatmesh, "none") != 0)
   {
     ut_print_message (0, 1, "Writing mesh statistics ...\n");
     if (Geo.PolyTrue == NULL)

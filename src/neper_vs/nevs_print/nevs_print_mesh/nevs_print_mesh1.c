@@ -298,6 +298,7 @@ nevs_print_mesh (FILE* file, struct PRINT Print,
     }
 
   neut_mesh_renumber (&M2D, nodes_old_new, NULL, NULL);
+  neut_mesh_init_nodeelts (&M2D, Nodes.NodeQty);
 
   if (MeshData.col[elt3d_id] != NULL)
   {
@@ -344,19 +345,26 @@ nevs_print_mesh (FILE* file, struct PRINT Print,
   
   int edge_qty = 0;
   int** edges = ut_alloc_1d_pint (1);
+  int* elts_tmp = ut_alloc_1d_int (1000);
+  int eltqty;
   // Element edges
   if (M2D.EltQty > 0)
     for (i = 1; i <= M2D.EltQty; i++)
+      if (Print.showeltedge[elt2delt3d[i]] == 1)
       for (j = 0; j < elt2dnodeqty; j++)
       {
 	for (k = 0; k < 2; k++)
 	  tmp[k] = M2D.EltNodes[i][seq2[j][k]];
 
-	// add condition
-	edge_qty++;
-	edges = ut_realloc_2d_int_addline (edges, edge_qty, 2);
-	ut_array_1d_int_memcpy (edges[edge_qty - 1], 2, tmp);
+	neut_nodes_commonelts (M2D, tmp, 2, elts_tmp, &eltqty);
+	if (ut_array_1d_int_min (elts_tmp, eltqty) == i)
+	{
+	  edge_qty++;
+	  edges = ut_realloc_2d_int_addline (edges, edge_qty, 2);
+	  ut_array_1d_int_memcpy (edges[edge_qty - 1], 2, tmp);
+	}
       }
+  ut_free_1d_int (elts_tmp);
 
   if (M2D.EltQty > 0)
     ut_print_message (0, 4, "Number of face edges reduced by %3.0f\%% (to %d).\n", \
@@ -390,24 +398,53 @@ nevs_print_mesh (FILE* file, struct PRINT Print,
   {
     int printelt1d_qty = 0;
 
+    int texture_unique = 1;
+    int* col = ut_alloc_1d_int (3);
     for (i = 1; i <= Mesh1D.EltQty; i++)
       if (Print.showelt1d[i] == 1)
       {
-	fprintf (file,
-     "#declare elt1d%d =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f} }\n",
-	  i,
-	  MeshData.col[elt1d_id][i][0] / 255., \
-	  MeshData.col[elt1d_id][i][1] / 255., \
-	  MeshData.col[elt1d_id][i][2] / 255., \
-	  ambient);
+	if (col == NULL)
+	{
+	  col = ut_alloc_1d_int (3);
+	  ut_array_1d_int_memcpy (col, 3, MeshData.col[elt1d_id][i]);
+	}
+	else
+	  if (ut_array_1d_int_diff (MeshData.col[elt1d_id][i], 3, col, 3))
+	  {
+	    texture_unique = 0;
+	    break;
+	  }
+      }
+
+    if (texture_unique)
+    {
+      fprintf (file,
+   "#declare elt1d =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f} }\n",
+	col[0] / 255., col[1] / 255., col[2] / 255., ambient);
+  
+	sprintf (texture, "elt1d");
+    }
+
+    for (i = 1; i <= Mesh1D.EltQty; i++)
+      if (Print.showelt1d[i] == 1)
+      {
+	if (! texture_unique)
+	{
+	  fprintf (file,
+       "#declare elt1d%d =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f} }\n",
+	    i,
+	    MeshData.col[elt1d_id][i][0] / 255., \
+	    MeshData.col[elt1d_id][i][1] / 255., \
+	    MeshData.col[elt1d_id][i][2] / 255., \
+	    ambient);
     
-	sprintf (texture, "elt1d%d", i);
+	  sprintf (texture, "elt1d%d", i);
+	}
 
 	neut_nodes_commonelts (Mesh3D, Mesh1D.EltNodes[i], 2,
 	                       elts3d, &elt3dqty);
 
 	int l, print = 0;
-	/*
 	for (j = 0; j < elt3dqty; j++)
 	{
 	  elt3d = elts3d[j];
@@ -428,9 +465,10 @@ nevs_print_mesh (FILE* file, struct PRINT Print,
 	      }
 	    }
 	}
-	*/
-	l = 1;
+	/*
+        l = 1;
 	print = l;
+	*/
 
 	if (print == 1)
 	{

@@ -56,9 +56,10 @@ neut_mmesh_elset_fscanf (FILE* file, struct ELSET *pElset, int MaxElsetQty)
   for (elset = 1; elset <= (*pElset).Qty; elset++)
   {
     ut_file_skip (file, 1);
-    fscanf (file, "%s", (*pElset).Names[elset]);
-    for (i = 1; i <= (*pElset).Elset[elset][0]; i++)
-      fscanf (file, "%d", &(*pElset).Elset[elset][i]);
+    if (fscanf (file, "%s", (*pElset).Names[elset]) != 1)
+      abort ();
+    ut_array_1d_int_fscanf (file, (*pElset).Elset[elset] + 1,
+				  (*pElset).Elset[elset][0]);
   }
 
   /* Extracting name Body and id */

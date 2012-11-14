@@ -17,11 +17,9 @@ TestVerEdgeQtyNNb (struct GEO Geo, int i, int verbosity)
 
   if (Geo.VerEdgeQty[i] < 3)
   {
-    if (verbosity >= 2)
-    {
-      ut_print_lineheader (1);
-      printf ("ver %d has less than 3 = %d edges\n", i, Geo.VerEdgeQty[i]);
-    }
+    if (verbosity)
+      ut_print_message (2, 3, "Number of edges = %d < 3.\n", i, Geo.VerEdgeQty[i]);
+
     return 1;
   }
 
@@ -29,22 +27,21 @@ TestVerEdgeQtyNNb (struct GEO Geo, int i, int verbosity)
   ut_array_1d_int_uniq (Geo.VerEdgeNb[i], &res);
   if (res != Geo.VerEdgeQty[i] - 1)
   {
-    /*
-       ut_print_lineheader(1);
-       printf("ver %d has two identical edges\n",i);
-     */
+    if (verbosity)
+      ut_print_message (2, 3, "2 identical edges in edge list.\n");
+
     return 1;
   }
 
-  for (j = 0; j <= Geo.VerEdgeQty[i] - 1; j++)
+  for (j = 0; j < Geo.VerEdgeQty[i]; j++)
   {
     edge = Geo.VerEdgeNb[i][j];
     if (Geo.EdgeState[edge] == -1)
     {
-      /*
-         ut_print_lineheader(1);
-         printf("ver %d has a useless edge: nb %d\n",i,edge);
-       */
+      if (verbosity)
+	ut_print_message (2, 3, "edge %d is in edge list, but also marked as removed.\n",
+	    i, edge);
+
       return 1;
     }
   }
@@ -54,7 +51,7 @@ TestVerEdgeQtyNNb (struct GEO Geo, int i, int verbosity)
 
 /* we check the reciprocity of each ver edge */
 int
-TestVerEdgeReciprocity (struct GEO Geo, int i)
+TestVerEdgeReciprocity (struct GEO Geo, int i, int verbosity)
 {
   int j;
   int edge;
@@ -64,10 +61,10 @@ TestVerEdgeReciprocity (struct GEO Geo, int i)
     edge = Geo.VerEdgeNb[i][j];
     if (ut_array_1d_int_eltpos (Geo.EdgeVerNb[edge], 2, i) == -1)
     {
-      /*
-         ut_print_lineheader(2);
-         printf("edge %d of ver %d = edge nb %d has not ver %d as ver.\n",j,i,edge,i);
-       */
+      if (verbosity)
+	ut_print_message (2, 3, "edge %d is in edge list, but edge not based on ver.\n",
+	    edge);
+
       return 1;
     }
   }
@@ -77,9 +74,9 @@ TestVerEdgeReciprocity (struct GEO Geo, int i)
 
 // Chacking that the ver is at the right place on the domain
 int
-TestVerBoundNCoo (struct GEO Geo, int ver)
+TestVerBoundNCoo (struct GEO Geo, int ver, int verbosity)
 {
-  int i, j;
+  int i;
   int qty;
   int* face = NULL;
   double dist;
@@ -91,17 +88,10 @@ TestVerBoundNCoo (struct GEO Geo, int ver)
     ut_space_point_plane_dist (Geo.VerCoo[ver], Geo.DomFaceEq[face[i]], &dist);
     if (dist > 1e-8)
     {
-      printf ("ver %d has ", ver);
-      printf ("boundary: ");
-      ut_array_1d_int_fprintf (stdout, Geo.VerDom[ver], 2, "%d");
-      printf ("and faces: ");
-      ut_array_1d_int_fprintf (stdout, face, qty, "%d");
-      printf ("of equations:\n");
-      for (j = 0; j < qty; j++)
-	ut_array_1d_fprintf (stdout, Geo.DomFaceEq[face[j]], 4, "%f");
-      printf ("coo: ");
-      ut_array_1d_fprintf (stdout, Geo.VerCoo[ver], 3, "%f");
-      ut_error_reportbug ();
+      if (verbosity)
+	ut_print_message (2, 3, "belongs to domain face %d, but does not lie on the face plane (dist = %.g > 1e-8)\n", face[i], dist);
+
+      return 1;
     }
   }
 
@@ -111,26 +101,23 @@ TestVerBoundNCoo (struct GEO Geo, int ver)
 }
 
 int
-TestVerFaceCoplaneity (struct GEO Geo, int ver)
+TestVerFaceCoplaneity (struct GEO Geo, int ver, int verbosity)
 {
   int i, j, k;
   int edge1, edge2;
   int face;
   int common;
 
-  for (i = 0; i <= Geo.VerEdgeQty[ver] - 2; i++)
+  for (i = 0; i < Geo.VerEdgeQty[ver] - 1; i++)
   {
     edge1 = Geo.VerEdgeNb[ver][i];
 
-    for (j = i + 1; j <= Geo.VerEdgeQty[ver] - 1; j++)
+    for (j = i + 1; j < Geo.VerEdgeQty[ver]; j++)
     {
       edge2 = Geo.VerEdgeNb[ver][j];
 
-      /* printf ("i = %d j = %d; edge1 = %d  edge2 = %d\n", i, j, edge1, edge2); */
-
-      /* searching the number of common faces of edge1 and edge2 */
       common = 0;
-      for (k = 0; k <= Geo.EdgeFaceQty[edge1] - 1; k++)
+      for (k = 0; k < Geo.EdgeFaceQty[edge1]; k++)
       {
 	face = Geo.EdgeFaceNb[edge1][k];
 	if (ut_array_1d_int_eltpos
@@ -139,7 +126,12 @@ TestVerFaceCoplaneity (struct GEO Geo, int ver)
       }
 
       if (common > 1)
+      {
+	if (verbosity)
+	  ut_print_message (2, 3, "has edges %d and %d, but these edges share more than 1 (= %d) face.\n", edge1, edge2, common);
+
 	return 2;
+      }
     }
   }
 

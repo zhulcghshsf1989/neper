@@ -313,10 +313,10 @@ ut_math_eval_substitute (char* in, char** pout)
   char* tmp = NULL;
   char* in_cpy = ut_alloc_1d_char (strlen (in) + 1);
 
-  sprintf (in_cpy, in);
+  strcpy (in_cpy, in);
 
   (*pout) = ut_alloc_1d_char (strlen (in_cpy) + 1);
-  sprintf ((*pout), in_cpy);
+  strcpy ((*pout), in_cpy);
 
   ut_string_fnr (*pout, '[', '(');
   ut_string_fnr (*pout, '{', '(');
@@ -327,7 +327,7 @@ ut_math_eval_substitute (char* in, char** pout)
   {
     ut_free_1d_char (*pout);
     (*pout) = ut_alloc_1d_char (strlen (tmp) + 1);
-    sprintf ((*pout), tmp);
+    strcpy ((*pout), tmp);
     ut_free_1d_char (tmp);
   }
   
@@ -335,7 +335,7 @@ ut_math_eval_substitute (char* in, char** pout)
   {
     ut_free_1d_char (*pout);
     (*pout) = ut_alloc_1d_char (strlen (tmp) + 1);
-    sprintf ((*pout), tmp);
+    strcpy ((*pout), tmp);
     ut_free_1d_char (tmp);
   }
 

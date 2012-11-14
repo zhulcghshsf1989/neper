@@ -37,9 +37,9 @@ RMeshing (struct NODES *pNodes, struct MESH *pMesh,
   }
   else
   {
-    dsize[0][1] = In.domainparms[0] * In.F[0];
-    dsize[1][1] = In.domainparms[1] * In.F[1];
-    dsize[2][1] = In.domainparms[2] * In.F[2];
+    dsize[0][1] = In.domainparms[0];
+    dsize[1][1] = In.domainparms[1];
+    dsize[2][1] = In.domainparms[2];
   }
 
   nemm_in_msize (In, dsize, msize);

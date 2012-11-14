@@ -44,10 +44,12 @@ SetOptions_t_inputdata (struct GERMSET *pGermSet,
 	|| strcmp (Arg, "-centercoo") == 0
 	|| strcmp (Arg,   "-gcoo"   ) == 0)
   {
+    ut_print_messagewnc (1, 72, "Option `-centrecoo' or `-gcoo' is deprecated and will be removed from future neper versions.  Use -morpho instead.");
+
     if ((*pGermSet).Id > 0)
     {
       ut_print_message (2, 0,
-			"Options `-id' and `-centrecoo' are mutually exclusive!");
+			"Options `-id' and `-centrecoo/-gcoo' are mutually exclusive!");
       abort ();
     }
     (*pGermSet).Id = 0;

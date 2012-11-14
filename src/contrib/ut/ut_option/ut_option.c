@@ -15,7 +15,7 @@ ut_option_read (char *optionsfile, int *pfargc, char **fargv,
 {
   char Trash[1000];
   int test;
-  FILE *file;
+  FILE* file = NULL;
 
   if (ut_file_exist (optionsfile) == 0)
   {
@@ -27,18 +27,14 @@ ut_option_read (char *optionsfile, int *pfargc, char **fargv,
   file = ut_file_open (optionsfile, "R");
 
   /* Skipping data until `neper -S' is reached. */
-  test = fscanf (file, "%s", Trash);
-  while (test != -1)
+  while (fscanf (file, "%s", Trash) == 1)
   {
     if (strcmp (Trash, pname) == 0)
     {
-      fscanf (file, "%s", Trash);
-
-      if (strcmp (Trash, mname) == 0)
-	break;
+      if (fscanf (file, "%s", Trash) == 1)
+	if (strcmp (Trash, mname) == 0)
+	  break;
     }
-
-    test = fscanf (file, "%s", Trash);
   }
 
   /* Reading options */

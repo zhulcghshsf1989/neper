@@ -18,6 +18,7 @@ Res_mm (struct IN In, struct GEO Geo, struct NODES Nodes,
   char *expandnset = NULL;
   char *expandfaset = NULL;
 
+  // CLEAN by replacing neut_utils_nset_expand by neut_set_expand
   neut_utils_nset_expand (In.nset, &expandnset);
   neut_utils_nset_expand (In.faset, &expandfaset);
 

@@ -28,8 +28,10 @@ SetDefaultOptions_fm (struct IN *pIn, struct GEOPARA *pGeoPara)
   (*pIn).fev3 = NULL;
   (*pIn).printfod = 1;
   (*pIn).fod = NULL;
-  (*pIn).printstatmesh = 0;
-  (*pIn).printstattess = 0;
+  (*pIn).printstatmesh = ut_alloc_1d_char (5);
+  strcpy ((*pIn).printstatmesh, "none");
+  (*pIn).printstattess = ut_alloc_1d_char (5);
+  strcpy ((*pIn).printstattess, "none");
   (*pIn).stt0 = NULL;
   (*pIn).stt1 = NULL;
   (*pIn).stt2 = NULL;
@@ -49,7 +51,7 @@ SetDefaultOptions_fm (struct IN *pIn, struct GEOPARA *pGeoPara)
   (*pGeoPara).maxff = 0;
   (*pIn).mloop = 2;
   (*pIn).morder = 1;
-  (*pIn).meshdim = 3;
+  (*pIn).meshdim = -1;
   (*pIn).mesh = 0;
   (*pIn).remesh = 0;
   
@@ -379,9 +381,15 @@ SetOptions_fm (struct IN *pIn, struct GEOPARA *pGeoPara,
       else if (strcmp (Arg, "-dim") == 0 && i < argc - 1)
 	(*pIn).meshdim = ut_arg_nextasint (argv, &i, Arg, 0, 3);
       else if (strcmp (Arg, "-stattess") == 0 && i < argc - 1)
-	(*pIn).printstattess = ut_arg_nextasint (argv, &i, Arg, 0, 1);
+      {
+	ut_free_1d_char ((*pIn).printstattess);
+	(*pIn).printstattess = ut_arg_nextaschar (argv, &i, Arg);
+      }
       else if (strcmp (Arg, "-statmesh") == 0 && i < argc - 1)
-	(*pIn).printstatmesh = ut_arg_nextasint (argv, &i, Arg, 0, 1);
+      {
+	ut_free_1d_char ((*pIn).printstatmesh);
+	(*pIn).printstatmesh = ut_arg_nextaschar (argv, &i, Arg);
+      }
       else if (strcmp (Arg, "-mesh3dmaxtime") == 0 && i < argc - 1)
 	(*pIn).mesh3dmaxtime = ut_arg_nextasreal (argv, &i, Arg, 0, DBL_MAX);
       else if (strcmp (Arg, "-mesh2drmaxtime") == 0 && i < argc - 1)

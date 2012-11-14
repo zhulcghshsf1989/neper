@@ -21,6 +21,9 @@ ut_array_1d_scale (double *array, int qty, double scale)
 {
   int i;
 
+  if (scale == 1)
+    return;
+
   for (i = 0; i < qty; i++)
     array[i] *= scale;
 
@@ -31,6 +34,9 @@ void
 ut_array_1d_int_scale (int *array, int qty, int scale)
 {
   int i;
+
+  if (scale == 1)
+    return;
 
   for (i = 0; i < qty; i++)
     array[i] *= scale;
@@ -547,6 +553,9 @@ ut_array_2d_scale (double **a, int d1, int d2, double scale)
 {
   int i, j;
 
+  if (scale == 1)
+    return;
+
   for (i = 0; i < d1; i++)
     for (j = 0; j < d2; j++)
       a[i][j] *= scale;
@@ -583,6 +592,22 @@ ut_array_1d_mean (double *a, int size)
   for (i = 0; i < size; i++)
     mean += a[i];
   mean /= size;
+
+  return mean;
+}
+
+double
+ut_array_1d_gmean (double *a, int size)
+{
+  int i;
+  double mean = 1;
+
+  if (size <= 0)
+    abort ();
+
+  for (i = 0; i < size; i++)
+    mean *= a[i];
+  mean = pow (mean, 1./size);
 
   return mean;
 }
@@ -1260,6 +1285,25 @@ ut_array_2d_mean (double **a, int size1, int size2)
   return mean;
 }
 
+
+double
+ut_array_2d_gmean (double **a, int size1, int size2)
+{
+  int i, j;
+  double mean;
+
+  if (size1 <= 0 || size2 <= 0)
+    abort ();
+
+  mean = 1;
+  for (i = 0; i < size1; i++)
+    for (j = 0; j < size2; j++)
+      mean *= a[i][j];
+  mean = pow (mean, 1. / (size1 * size2));
+
+  return mean;
+}
+
 double
 ut_array_3d_mean (double ***a, int size1, int size2, int size3)
 {
@@ -1275,6 +1319,25 @@ ut_array_3d_mean (double ***a, int size1, int size2, int size3)
       for (k = 0; k < size3; k++)
 	mean += a[i][j][k];
   mean /= (size1 * size2 * size3);
+
+  return mean;
+}
+
+double
+ut_array_3d_gmean (double ***a, int size1, int size2, int size3)
+{
+  int i, j, k;
+  double mean;
+
+  if (size1 <= 0 || size2 <= 0 || size3 <= 0)
+    abort ();
+
+  mean = 1;
+  for (i = 0; i < size1; i++)
+    for (j = 0; j < size2; j++)
+      for (k = 0; k < size3; k++)
+	mean *= a[i][j][k];
+  mean = pow (mean, 1. / (size1 * size2 * size3));
 
   return mean;
 }
@@ -1298,6 +1361,25 @@ ut_array_3d_int_mean (int ***a, int size1, int size2, int size3)
   return mean;
 }
 
+double
+ut_array_3d_int_gmean (int ***a, int size1, int size2, int size3)
+{
+  int i, j, k;
+  double mean;
+
+  if (size1 <= 0 || size2 <= 0 || size3 <= 0)
+    abort ();
+
+  mean = 1;
+  for (i = 0; i < size1; i++)
+    for (j = 0; j < size2; j++)
+      for (k = 0; k < size3; k++)
+	mean *= a[i][j][k];
+  mean = pow (mean, 1. / (size1 * size2 * size3));
+
+  return mean;
+}
+
 float
 ut_array_3d_float_mean (float ***a, int size1, int size2, int size3)
 {
@@ -1313,6 +1395,25 @@ ut_array_3d_float_mean (float ***a, int size1, int size2, int size3)
       for (k = 0; k < size3; k++)
 	mean += a[i][j][k];
   mean /= (size1 * size2 * size3);
+
+  return mean;
+}
+
+float
+ut_array_3d_float_gmean (float ***a, int size1, int size2, int size3)
+{
+  int i, j, k;
+  float mean;
+
+  if (size1 <= 0 || size2 <= 0 || size3 <= 0)
+    abort ();
+
+  mean = 1;
+  for (i = 0; i < size1; i++)
+    for (j = 0; j < size2; j++)
+      for (k = 0; k < size3; k++)
+	mean *= a[i][j][k];
+  mean = pow (mean, 1. / (size1 * size2 * size3));
 
   return mean;
 }
@@ -1337,6 +1438,25 @@ ut_array_3d_ushort_mean (unsigned short ***a, int size1, int size2, int size3)
 }
 
 double
+ut_array_3d_ushort_gmean (unsigned short ***a, int size1, int size2, int size3)
+{
+  int i, j, k;
+  double mean;
+
+  if (size1 <= 0 || size2 <= 0 || size3 <= 0)
+    abort ();
+
+  mean = 1;
+  for (i = 0; i < size1; i++)
+    for (j = 0; j < size2; j++)
+      for (k = 0; k < size3; k++)
+	mean *= a[i][j][k];
+  mean = pow (mean, 1. / (size1 * size2 * size3));
+
+  return mean;
+}
+
+double
 ut_array_3d_uchar_mean (unsigned char ***a, int size1, int size2, int size3)
 {
   int i, j, k;
@@ -1351,6 +1471,25 @@ ut_array_3d_uchar_mean (unsigned char ***a, int size1, int size2, int size3)
       for (k = 0; k < size3; k++)
 	mean += a[i][j][k];
   mean /= (size1 * size2 * size3);
+
+  return mean;
+}
+
+double
+ut_array_3d_uchar_gmean (unsigned char ***a, int size1, int size2, int size3)
+{
+  int i, j, k;
+  double mean;
+
+  if (size1 <= 0 || size2 <= 0 || size3 <= 0)
+    abort ();
+
+  mean = 1;
+  for (i = 0; i < size1; i++)
+    for (j = 0; j < size2; j++)
+      for (k = 0; k < size3; k++)
+	mean *= a[i][j][k];
+  mean = pow (mean, 1. / (size1 * size2 * size3));
 
   return mean;
 }
@@ -2168,6 +2307,17 @@ ut_array_1d_int_abs (int *data, int n)
 }
 
 void
+ut_array_1d_int_sgn (int *data, int n, int* sgn)
+{
+  int i;
+
+  for (i = 0; i < n; i++)
+    sgn[i] = (data[i] < 0) ? -1 : 1;
+
+  return;
+}
+
+void
 ut_array_1d_set (double *data, int n, double val)
 {
   int i;
@@ -2680,13 +2830,25 @@ ut_array_1d_int_inter (int* b1, int b1qty, int* b2, int b2qty,
   int i;
   int* inter = ut_alloc_1d_int (b1qty + b2qty);
   int qty = 0;
+  int* b2cpy = NULL;
+
+  if (b2 == b3)
+  {
+    b2cpy = ut_alloc_1d_int (b2qty);
+    ut_array_1d_int_memcpy (b2cpy, b2qty, b2);
+  }
+  else
+    b2cpy = b2;
 
   for (i = 0; i < b2qty; i++)
-    if (ut_array_1d_int_eltpos (b1, b1qty, b2[i]) != -1)
-      inter[qty++] = b2[i];
+    if (ut_array_1d_int_eltpos (b1, b1qty, b2cpy[i]) != -1)
+      inter[qty++] = b2cpy[i];
 
   (*pb3qty) = qty;
   ut_array_1d_int_memcpy (b3, qty, inter);
+
+  if (b2cpy != b2)
+    ut_free_1d_int (b2cpy);
 
   ut_free_1d_int (inter);
 
@@ -2988,3 +3150,17 @@ ut_array_1d_int_valqty (int* array, int size, int*** parray2, int* parray2qty)
   return;
 }
 
+int
+ut_array_1d_int_diff (int* array1, int size1, int* array2, int size2)
+{
+  int i;
+  
+  if (size1 != size2)
+    return 1;
+  else
+    for (i = 0; i < size1; i++)
+      if (array1[i] != array2[i])
+	return 1;
+
+  return 0;
+}

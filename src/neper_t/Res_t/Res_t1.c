@@ -56,6 +56,18 @@ Res_t (struct IN In, struct GERMSET GermSet, struct TESS Tess,
       ut_print_message (1, 0, "Geo is void; cannot export; skipping\n");
   }
 
+  if (ut_string_inlist (In.format, ',', "3dec")) // gmsh ply file
+  {
+    if (Geo.PolyQty != 0)
+    {
+      file = ut_file_open (In.dec, "w");
+      neut_geo_fprintf_dec (file, Geo);
+      ut_file_close (file, In.dec, "w");
+    }
+    else
+      ut_print_message (1, 0, "Geo is void; cannot export; skipping\n");
+  }
+
   /* 
   if (strcmp (In.printentity, "none") != 0)
   {
@@ -80,8 +92,8 @@ Res_t (struct IN In, struct GERMSET GermSet, struct TESS Tess,
   if (In.printneighbour)
     PrintConnectivity (In, Tess);
 
-  if (In.stattess)
-    WriteStatGeo (In.body, Geo);
+  if (In.printstattess)
+    WriteStatGeo (In.printstattess, In.body, Geo);
 
   if (ut_string_inlist (In.format, ',', "oin"))
   {

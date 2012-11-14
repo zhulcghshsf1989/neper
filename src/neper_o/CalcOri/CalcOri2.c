@@ -12,9 +12,8 @@ neo_oin_fscanf (FILE* file, struct ORI* pOri)
   int n; // is -n in -T but ndensity in -MM
   int id;
 
-  fscanf (file, "%s", type);
-
-  fscanf (file, "%d%d", &n, &id);
+  if (fscanf (file, "%s%d%d", type, &n, &id) != 3)
+    abort ();
 
   if (strcmp  (type, "poisson"    ) == 0
    || strcmp  (type, "equiaxed"   ) == 0
@@ -33,9 +32,8 @@ neo_oin_fscanf (FILE* file, struct ORI* pOri)
   else
     abort ();
   
-  fscanf (file, "%d", &(*pOri).N);
-
-  fscanf (file, "%s", type);
+  if (fscanf (file, "%d%s", &(*pOri).N, type) != 2)
+    abort ();
 
   (*pOri).id = id;
   (*pOri).rngid = ut_alloc_1d_int ((*pOri).N + 1);
@@ -43,8 +41,7 @@ neo_oin_fscanf (FILE* file, struct ORI* pOri)
     for (i = 1; i <= (*pOri).N; i++)
       (*pOri).rngid[i] = i;
   else if (strcmp (type, "list") == 0)
-    for (i = 1; i <= (*pOri).N; i++)
-      fscanf (file, "%d", &(*pOri).rngid[i]);
+    ut_array_1d_int_fscanf (file, (*pOri).rngid + 1, (*pOri).N);
     
   ut_free_1d_char (type);
 

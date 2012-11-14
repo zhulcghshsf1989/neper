@@ -112,6 +112,13 @@ nevs_camera (char** argv, int* pi, struct GEO Geo, struct NODES Nodes,
   else if (strcmp (argv[*pi], "-cameraangle") == 0)
     sscanf (argv[++(*pi)], "%lf", &((*pPrint).cameraangle));
 
+  else if (strcmp (argv[*pi], "-camerasky") == 0)
+  {
+    sscanf (argv[++(*pi)], "%lf", &((*pPrint).camerasky[0]));
+    sscanf (argv[++(*pi)], "%lf", &((*pPrint).camerasky[1]));
+    sscanf (argv[++(*pi)], "%lf", &((*pPrint).camerasky[2]));
+  }
+
   else if (strcmp (argv[*pi], "-cameraprojection") == 0)
     sprintf ((*pPrint).cameraprojection, "%s", argv[++(*pi)]);
 

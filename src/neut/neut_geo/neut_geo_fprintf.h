@@ -8,5 +8,6 @@
 extern void neut_geo_fprintf (FILE*, struct GEO);
 extern void neut_geo_fprintf_gmsh (FILE*, struct GEO);
 extern void neut_geo_fprintf_ply  (FILE*, struct GEO);
+extern void neut_geo_fprintf_dec  (FILE*, struct GEO);
 
 #endif /* GEOEXPORT0_H */

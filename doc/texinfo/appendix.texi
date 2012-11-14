@@ -102,8 +102,7 @@ morphology of the tessellation or polyhedra (option @option{-morpho}).
 It equals to @samp{poisson} for a Poisson Voronoi tessellation,
 @samp{tocta} for truncated octahedra, @samp{columnar[x,y,z]} for
 columnar grains, @samp{bamboo[x,y,z]} for bamboo grains or @samp{custom}
-for user-specified coordinates of the polyhedron germs (use of option
-@option{-centrecoo}).
+for user-specified coordinates of the polyhedron germs.
 
 @item @code{@var{total_number_of_vertices}} is the total number of
 vertices.

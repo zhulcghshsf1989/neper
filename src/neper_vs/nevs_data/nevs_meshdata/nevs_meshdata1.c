@@ -324,7 +324,7 @@ nevs_meshdata_fscanf (struct NODES Nodes, struct MESH Mesh1D, struct MESH Mesh,
     (*pMeshData).raddatatype[id] = ut_alloc_1d_char (100);
 
     if (argqty == 1)
-      sprintf ((*pMeshData).raddatatype[id], type);
+      strcpy ((*pMeshData).raddatatype[id], type);
     else
       strcpy ((*pMeshData).raddatatype[id], args[0]);
 
@@ -340,29 +340,29 @@ nevs_meshdata_fscanf (struct NODES Nodes, struct MESH Mesh1D, struct MESH Mesh,
   else if (! strcmp (type, "colscheme"))
   {
     (*pMeshData).colscheme[id] = ut_alloc_1d_char (100);
-    sprintf ((*pMeshData).colscheme[id], argument);
+    strcpy ((*pMeshData).colscheme[id], argument);
   }
   else if (! strcmp (type, "scalemin"))
   {
     (*pMeshData).scalemin[id] = ut_alloc_1d_char (100);
-    sprintf ((*pMeshData).scalemin[id], argument);
+    strcpy ((*pMeshData).scalemin[id], argument);
   }
   else if (! strcmp (type, "scalemax"))
   {
     (*pMeshData).scalemax[id] = ut_alloc_1d_char (100);
-    sprintf ((*pMeshData).scalemax[id], argument);
+    strcpy ((*pMeshData).scalemax[id], argument);
   }
   else if (! strcmp (type, "scaleticks"))
   {
     (*pMeshData).scaleticks[id] = ut_alloc_1d_char (100);
-    sprintf ((*pMeshData).scaleticks[id], argument);
+    strcpy ((*pMeshData).scaleticks[id], argument);
   }
   else if (! strcmp (type, "coo"))
   {
     (*pMeshData).coodatatype[id] = ut_alloc_1d_char (100);
 
     if (argqty == 1)
-      sprintf ((*pMeshData).coodatatype[id], type);
+      strcpy ((*pMeshData).coodatatype[id], type);
     else
       strcpy ((*pMeshData).coodatatype[id], args[0]);
 

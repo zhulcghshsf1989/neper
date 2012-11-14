@@ -139,14 +139,19 @@ CalcRRatio (struct NODES Nodes, struct MESH Mesh3D, double **pRRatio)
   /* for every element */
   for (i = 1; i <= Mesh3D.EltQty; i++)
   {
-    /* its nodes are recorded: we record their nodeitions. */
-    for (j = 0; j < 4; j++)
-      node[j] = Mesh3D.EltNodes[i][j];
+    if (! strcmp (Mesh3D.EltType, "tri"))
+    {
+      /* its nodes are recorded: we record their positions. */
+      for (j = 0; j < 4; j++)
+	node[j] = Mesh3D.EltNodes[i][j];
 
-    for (j = 0; j < 4; j++)
-      ut_array_1d_memcpy (p[j], 3, Nodes.NodeCoo[node[j]]);
+      for (j = 0; j < 4; j++)
+	ut_array_1d_memcpy (p[j], 3, Nodes.NodeCoo[node[j]]);
 
-    (*pRRatio)[i] = neut_elt_3d_radiusratio (p[0], p[1], p[2], p[3]);
+      (*pRRatio)[i] = neut_elt_3d_radiusratio (p[0], p[1], p[2], p[3]);
+    }
+    else
+      (*pRRatio)[i] = -1;
   }
 
   ut_free_1d_int (node);

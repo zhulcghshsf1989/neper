@@ -38,7 +38,7 @@ RegularizeGeo (struct GEO *pGeo, struct GEOPARA GeoPara,
   /*********************************************************************** 
    * testing full geometry */
 
-  if (neut_geo_test (*pGeo) != 0 || neut_geo_test_dom (*pGeo) != 0)
+  if (neut_geo_test (*pGeo, 0) != 0 || neut_geo_test_dom (*pGeo, 0) != 0)
   {
     ut_print_message (2, 0, "The tessellation is not valid.\n");
     abort ();

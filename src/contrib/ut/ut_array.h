@@ -55,6 +55,7 @@ extern int ut_array_1d_min_index (double *, int);
 extern int ut_array_1d_min2_index (double *, int);
 extern double ut_array_1d_max (double *, int);
 extern double ut_array_1d_mean (double *, int);
+extern double ut_array_1d_gmean (double *, int);
 extern double ut_array_1d_wmean (double *, double *, int);
 extern double ut_array_1d_stddev (double *, double, int);
 extern double ut_array_2d_stddev (double **, double, int, int);
@@ -69,22 +70,28 @@ extern float ut_array_2d_float_min (float **, int, int);
 extern float ut_array_2d_float_max (float **, int, int);
 extern double ut_array_2d_min (double **, int, int);
 extern double ut_array_2d_mean (double **, int, int);
+extern double ut_array_2d_gmean (double **, int, int);
 extern double ut_array_3d_mean (double ***, int, int, int);
+extern double ut_array_3d_gmean (double ***, int, int, int);
 extern double ut_array_3d_min (double ***, int, int, int);
 extern double ut_array_3d_max (double ***, int, int, int);
 extern double ut_array_3d_stddev (double ***, double, int, int, int);
 extern float  ut_array_3d_float_mean (float ***, int, int, int);
+extern float  ut_array_3d_float_gmean (float ***, int, int, int);
 extern float  ut_array_3d_float_min (float ***, int, int, int);
 extern float  ut_array_3d_float_max (float ***, int, int, int);
 extern float  ut_array_3d_float_stddev (float ***, float, int, int, int);
 extern double ut_array_3d_int_mean (int ***, int, int, int);
+extern double ut_array_3d_int_gmean (int ***, int, int, int);
 extern int    ut_array_3d_int_min (int ***, int, int, int);
 extern int    ut_array_3d_int_max (int ***, int, int, int);
 extern double ut_array_3d_int_stddev (int ***, double, int, int, int);
 extern double ut_array_3d_uchar_mean (unsigned char ***, int, int, int);
+extern double ut_array_3d_uchar_gmean (unsigned char ***, int, int, int);
 extern unsigned char ut_array_3d_uchar_min (unsigned char ***, int, int, int);
 extern unsigned char ut_array_3d_uchar_max (unsigned char ***, int, int, int);
 extern double ut_array_3d_uchar_mean (unsigned char ***, int, int, int);
+extern double ut_array_3d_uchar_gmean (unsigned char ***, int, int, int);
 extern unsigned short ut_array_3d_ushort_min (unsigned short ***, int, int, int);
 extern unsigned short ut_array_3d_ushort_max (unsigned short ***, int, int, int);
 extern double ut_array_3d_ushort_stddev (unsigned short ***, double, int, int, int);
@@ -98,6 +105,7 @@ extern double ut_array_1d_abssum (double *, int);
 extern int ut_array_1d_int_abssum (int *, int);
 extern void ut_array_1d_abs (double *, int);
 extern void ut_array_1d_int_abs (int *, int);
+extern void ut_array_1d_int_sgn (int *, int, int*);
 
 extern void ut_array_1d_memcpy (double *, int, double *);
 extern void ut_array_1d_int_memcpy (int *, int, int *);
@@ -214,5 +222,7 @@ extern int ut_array_1d_char_find (char *, int, char);
 
 extern int ut_array_1d_int_list_addelt (int** parray, int* psize, int val);
 extern void ut_array_1d_int_valqty (int* array, int size, int*** parray2, int* parray2qty);
+
+extern int ut_array_1d_int_diff (int*, int, int*, int);
 
 #endif /* UT_ARRAY0_H */

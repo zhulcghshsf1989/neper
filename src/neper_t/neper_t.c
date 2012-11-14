@@ -52,39 +52,40 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
     GermDistrib (In, Domain, &GermSet);
 
     char* message = ut_alloc_1d_char (1000);
-    int message_length;
     double rdistmax = -1;
     int status = 1;
+
+    // Printing message
+    if (In.centroid == 0)
+      ut_print_message (0, 1, "Creating tessellation ... ");
+    else
+    {
+      ut_print_message (0, 1,
+	  "Creating centroidal tessellation ... (max = %d, conv = %.2f)\n",
+	  In.centroiditermax, In.centroidconv);
+      ut_print_message (0, 3, "iter  progress      conv\n");
+      ut_print_message (0, 3, "");
+    }
 
     for (iter = 1; (status == 1) &&
 	           (iter <= ((In.centroid == 1) ? In.centroiditermax : 1)); iter++)
     {
-      // Printing message
-      if (In.centroid == 0)
-	ut_print_message (0, 1, "Creating tessellation ... ");
-      else
+      if (iter > 1)
       {
-	message_length = strlen (message);
-
-	for (i = 0; i < message_length + 16; i++)
+	for (i = 0; i < (int) strlen (message) + 4; i++)
 	  printf ("\b");
-
-	sprintf (message, "Creating tessellation ... iter = %d(%d) - disp = %.2g(%.2g) - ", iter, In.centroiditermax, rdistmax, In.centroidconv);
-	ut_print_message (0, 1, message);
-	fflush (stdout);
       }
 
-      /* *********************************************************
-       * POLYEDRA DETERMINATION  */
-      /* PolyComp decomposes the cube into the set of Voronoi polyhedra
-       * and records them into Poly (which is allocated in the routine). */
+      if (In.centroid)
+      {
+	sprintf (message, "%4d      ", iter);
+	printf ("%s", message);
+      }
+
+      // Calculation of all polyhedra, one by one
       PolyComp (Domain, GermSet, &Poly, 1);
 
-      /* *********************************************************
-       * TESSELATION CONSTRUCTION  */
-      /* Tessellation lies the polyhedra by suppressing vertices and faces
-       * defined several times. That results in the Tess structure, which
-       * contains all the information about the Voronoi tessellation. */
+      // Sticking polyhedra into a single tessellation
       if (iter > 1)
 	neut_tess_free (&Tess);
 
@@ -98,6 +99,12 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
 	status = net_centroid (In, Tess, &GermSet, &rdistmax);
       else 
 	status = 0;
+
+      if (In.centroid)
+      {
+	printf ("   %7.2g", rdistmax);
+	sprintf (message, "%s   %7.2g", message, rdistmax);
+      }
     }
     
     printf ("\n");
@@ -110,10 +117,11 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   {
     ut_print_message (0, 1, "Importing tessellation ...\n");
     file = ut_file_open (In.load, "r");
-    neut_geo_fscanf (file, &Geo);
+    neut_geo_fscanf_verbosity (file, &Geo, In.checktess);
     ut_file_close (file, In.load, "r");
-    // printf ("Geo.FaceVerNb[1][1] = %d\n", Geo.FaceVerNb[1][1]);
-    // abort ();
+
+    if (In.checktess)
+      return 0;
   }
   
   if (Geo.PolyQty == 0)

@@ -14,7 +14,7 @@ nemm_in_msize (struct IN In, double** domainsize, int* msize)
   if (In.msizetype == 1)
   {
     for (i = 0; i < 3; i++)
-      dsize[i] = domainsize[i][1] - domainsize[i][0];
+      dsize[i] = (domainsize[i][1] - domainsize[i][0]) * In.F[i];
     avdsize = pow (dsize[0] * dsize[1] * dsize[2], 0.3333333333);
 
     for (i = 0; i < 3; i++)

@@ -5,6 +5,7 @@
 #define UT_PRINT0_H
 
 extern void ut_print_wnc_int (FILE *, int, int *, int);
+extern void ut_print_wnc_int_header (FILE *, int, int *, int, char*);
 extern int  ut_print_wnc_char (FILE *, char *, int *, int);
 extern void ut_print_wncall_char (FILE *, char *, int *, int);
 extern void ut_print_wnc (FILE*, int*, int, char*, ...);

@@ -14,10 +14,10 @@ extern FILE* ut_file_open (char*, char*);
 extern void ut_file_openmessage (char*, char*);
 extern void ut_file_close (FILE *, char*, char*);
 extern void ut_file_closemessage (char*, char*);
-extern void ut_file_skip (FILE *, int);
-extern void ut_file_skip_char (FILE *, int);
-extern void ut_file_tofile (FILE *, int, FILE *, char*, char*);
-extern double ut_file_readwcomma (FILE *);
+extern int ut_file_skip (FILE *, int);
+extern int ut_file_skip_char (FILE *, int);
+extern int ut_file_tofile (FILE *, int, FILE *, char*, char*);
+extern int ut_file_readwcomma (FILE*, double*);
 extern int ut_file_format (char*, char**);
 extern int ut_file_testformat (char*, char*);
 extern int ut_file_nbwords_pointer (FILE *);
@@ -34,10 +34,11 @@ extern int ut_file_thisint  (FILE*, int*);
 extern int ut_file_thisreal (FILE*, double*);
 extern int ut_file_nextint  (FILE*, int*);
 extern int ut_file_nextchar  (FILE*, char*);
+extern int ut_file_nextstring  (FILE*, char*);
 
 extern int ut_file_testpos (FILE*, char*);
 extern int ut_file_go (FILE*, char*);
 
-extern int ut_file_line_nbwords_pointer (FILE*);
+extern int ut_file_line_nbwords_pointer (FILE*, int*);
 
 #endif /* UT_FILE0_H */

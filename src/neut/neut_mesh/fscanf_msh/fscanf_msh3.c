@@ -11,8 +11,7 @@ ReadNodesHead (FILE * msh)
 
   ut_file_skip (msh, 1);
 
-  fscanf (msh, "%d", &nodeqty);
-  if (nodeqty == 0)
+  if (fscanf (msh, "%d", &nodeqty) != 1 || nodeqty == 0)
   {
     ut_print_message (2, 0, "Mesh has no nodes!\n");
     abort ();
@@ -26,9 +25,7 @@ ReadNodesFoot (FILE * msh)
 {
   char foot[1000];
 
-  fscanf (msh, "%s", foot);
-
-  if (strcmp (foot, "$EndNodes") != 0)
+  if (fscanf (msh, "%s", foot) != 1 || strcmp (foot, "$EndNodes") != 0)
     ut_print_message (2, 0, "Reading msh file: error.\n");
 
   return;
@@ -37,7 +34,7 @@ ReadNodesFoot (FILE * msh)
 void
 ReadNodesProp (FILE * msh, struct NODES *pNodes, int *node_nbs)
 {
-  int i, j, tmp;
+  int status, i, j, tmp;
   int contiguous = 0;
 
   if (node_nbs == NULL)
@@ -48,12 +45,19 @@ ReadNodesProp (FILE * msh, struct NODES *pNodes, int *node_nbs)
   for (i = 1; i <= (*pNodes).NodeQty; i++)
   {
     if (contiguous == 0)
-      fscanf (msh, "%d", &(node_nbs[i]));
+      status = fscanf (msh, "%d", &(node_nbs[i]));
     else
-      fscanf (msh, "%d", &tmp);
+      status = fscanf (msh, "%d", &tmp);
+
+    if (status != 1)
+      abort ();
 
     for (j = 0; j < 3; j++)
-      fscanf (msh, "%lf", &(*pNodes).NodeCoo[i][j]);
+    {
+      status = fscanf (msh, "%lf", &(*pNodes).NodeCoo[i][j]);
+      if (status != 1)
+	abort ();
+    }
   }
 
   return;
@@ -105,11 +109,12 @@ ReadMeshOfDim (FILE * msh, struct MESH *pMesh, int *node_nbs,
 void
 ReadEltsFoot (FILE * msh)
 {
+  int status;
   char foot[1000];
 
-  fscanf (msh, "%s", foot);
+  status = fscanf (msh, "%s", foot);
 
-  if (strcmp (foot, "$EndElements") != 0)
+  if (status != 1 || strcmp (foot, "$EndElements") != 0)
     ut_print_message (2, 0, "Reading msh file: error.\n");
 
   return;

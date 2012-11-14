@@ -5,19 +5,15 @@
 #include"TestEdge.h"
 
 int
-TestEdge (struct GEO Geo, int i)
+TestEdge (struct GEO Geo, int i, int verbosity)
 {
-  int res;
+  if (verbosity)
+    ut_print_message (0, 2, "Checking edge %d ...\n", i);
 
-  res = TestEdgeLength (Geo, i);
-  if (res != 0)
-    return res;
-  res = TestEdgeReciprocityVer (Geo, i);
-  if (res != 0)
-    return res;
-  res = TestEdgeReciprocityFace (Geo, i);
-  if (res != 0)
-    return res;
-
-  return 0;
+  if (TestEdgeLength (Geo, i, verbosity) != 0
+   || TestEdgeReciprocityVer (Geo, i, verbosity) != 0
+   || TestEdgeReciprocityFace (Geo, i, verbosity) != 0)
+    return -1;
+  else
+    return 0;
 }

@@ -86,9 +86,6 @@ SetOptions_mm (struct IN *pIn, struct GERMSET *pGermSet,
   sprintf (ArgList[++ArgQty], "-n");
   sprintf (ArgList[++ArgQty], "-id");
   sprintf (ArgList[++ArgQty], "-morpho");
-  sprintf (ArgList[++ArgQty], "-centrecoo");
-  sprintf (ArgList[++ArgQty], "-centercoo");
-  sprintf (ArgList[++ArgQty], "-gcoo");
   sprintf (ArgList[++ArgQty], "-domain");
   sprintf (ArgList[++ArgQty], "-scale");
   // General options ---------------------------------------------------

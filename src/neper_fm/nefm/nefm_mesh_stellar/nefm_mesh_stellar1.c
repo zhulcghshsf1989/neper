@@ -37,7 +37,8 @@ nefm_mesh_3d_improve_stellar (struct NODES* pN, struct MESH* pM, int skinnodeqty
   nefm_mesh_fprintf_stellar_elts (file, *pM);
   ut_file_close (file, "tmp.ele", "W");
 
-  system ("Stellar -s Stellar.config -L 0 tmp > /dev/null");
+  if (system ("Stellar -s Stellar.config -L 0 tmp > /dev/null") == -1)
+    abort ();
 
   neut_nodes_free (pN);
   neut_mesh_free (pM);

@@ -70,8 +70,8 @@ struct IN
   int printff;	         	
   char *ff;
 
-  int printstattess;
-  int printstatmesh;
+  char* printstattess;
+  char* printstatmesh;
 
   char *stt3;
   char *stt2;

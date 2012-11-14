@@ -22,9 +22,35 @@ TreatArg_fm (int fargc, char **fargv, int argc, char **argv,
    || ut_string_inlist ((*pIn).format, ',', "abq")
    || ut_string_inlist ((*pIn).format, ',', "inp")
    || ut_string_inlist ((*pIn).format, ',', "fev")
+   || ut_string_inlist ((*pIn).format, ',', "parms")
+   || ut_string_inlist ((*pIn).format, ',', "mesh")
+   || ut_string_inlist ((*pIn).format, ',', "opt")
+   || ut_string_inlist ((*pIn).format, ',', "surf")
+   || ut_string_inlist ((*pIn).format, ',', "bcs")
    ))
     (*pIn).mesh = 1;
   
+  // If not set up, setting dim default value
+  if ((*pIn).meshdim == -1)
+  {
+    if (! (*pIn).outdim)
+      (*pIn).meshdim = 3;
+    else
+    {
+      char** parts = NULL;
+      int partqty, i, tmp;
+      ut_string_separate ((*pIn).outdim, ',', &parts, &partqty);
+
+      for (i = 0; i < partqty; i++)
+      {
+	sscanf (parts[i], "%d", &tmp);
+	(*pIn).meshdim = ut_num_max ((*pIn).meshdim, tmp);
+
+      }
+      ut_free_2d_char (parts, partqty);
+    }
+  }
+
   // If not set up, setting outdim default value
   if (! (*pIn).outdim)
   {
@@ -45,9 +71,11 @@ TreatArg_fm (int fargc, char **fargv, int argc, char **argv,
   {
     char* tmp = ut_alloc_1d_char (1000);
     sprintf (tmp, "%s --version 2>&1 | grep -v \"[a-z]\" > .nepertmp", (*pIn).gmsh);
-    system (tmp);
+    if (system (tmp) == -1)
+      abort ();
+
     FILE* file = ut_file_open (".nepertmp", "R");
-    if (fscanf (file, "%s%s", tmp, tmp) != 1)
+    if (fscanf (file, "%s", tmp) != 1)
     {
       ut_print_message (2, 0, "You have to specify a valid access path to the gmsh binary\n");
       ut_print_message (2, 0, "through option `-gmsh'.\n");

@@ -7,6 +7,12 @@
 void
 neut_geo_fscanf (FILE* file, struct GEO* pGeo)
 {
+  neut_geo_fscanf_verbosity (file, pGeo, 0);
+}
+
+void
+neut_geo_fscanf_verbosity (FILE* file, struct GEO* pGeo, int verbosity)
+{
   char* version = ut_alloc_1d_char (10);
 
   if ((*pGeo).PolyQty > 0)
@@ -39,11 +45,17 @@ neut_geo_fscanf (FILE* file, struct GEO* pGeo)
   sprintf ((*pGeo).version, "1.10"); // new at format 1.10
   neut_geo_init_edgelength (pGeo);
 
-  if (neut_geo_test (*pGeo) != 0)
+  if (neut_geo_test (*pGeo, verbosity) != 0)
   {
-    ut_print_message (2, 0, "Tessellation is not valid (testing failed).\n");
+    ut_print_message (2, 0, "Tessellation checking failed - tessellation is not valid.\n");
+    if (! verbosity)
+      ut_print_message (2, 0, "Debug with option -checktess of neper -T.\n");
+
     abort ();
   }
+  else
+    if (verbosity) 
+      ut_print_message (2, 0, "Tessellation checking succeeded.\n");
 
   ut_free_1d_char (version);
 

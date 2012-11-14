@@ -89,7 +89,7 @@ Meshing2D (struct IN In, struct GEOPARA GeoPara,
       ut_free_1d_char (algos[a][1]);
       algos[a][1] = NULL;
     }
-    ut_free_2d_char (list, qty + 1);
+    ut_free_2d_char (list, qty);
   }
 
   totqmin0 = 1;

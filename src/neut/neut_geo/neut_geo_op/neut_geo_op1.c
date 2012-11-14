@@ -432,7 +432,7 @@ neut_geo_init_facestuff_fromver (struct GEO* pGeo)
 
   // reverse FaceVerNb and FaceEdgeNb and modify FaceEdgeOri
   for (i = 1; i <= (*pGeo).FaceQty; i++)
-    if (neut_geo_test_face_normal (*pGeo, i) != 0)
+    if (neut_geo_test_face_normal (*pGeo, i, 0) != 0)
     {
       ut_array_1d_int_reverseelts ((*pGeo).FaceEdgeNb[i] + 2,
 	                           (*pGeo).FaceVerQty[i] - 1);

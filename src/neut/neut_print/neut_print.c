@@ -20,6 +20,10 @@ neut_print_set_default (struct PRINT* pPrint)
   sprintf ((*pPrint).cameralookatexpr[2], "centre");
   sprintf ((*pPrint).cameralookatexpr[3], "centre");
   (*pPrint).cameralookat = ut_alloc_1d (3);
+  (*pPrint).camerasky = ut_alloc_1d (3);
+  (*pPrint).camerasky[0] = 0;
+  (*pPrint).camerasky[1] = 0;
+  (*pPrint).camerasky[2] = 1;
   (*pPrint).cameraangle = 25;
 
   (*pPrint).cameraprojection = ut_alloc_1d_char (100);
@@ -45,6 +49,7 @@ neut_print_set_default (struct PRINT* pPrint)
   (*pPrint).showfaceinter = 0;
   (*pPrint).showpoly  = ut_alloc_1d_int (1);
   (*pPrint).showelt   = ut_alloc_1d_int (1);
+  (*pPrint).showeltedge = ut_alloc_1d_int (1);
   (*pPrint).shownode  = ut_alloc_1d_int (1);
   (*pPrint).showelt0d = ut_alloc_1d_int (1);
   (*pPrint).showelt1d = ut_alloc_1d_int (1);
@@ -54,6 +59,7 @@ neut_print_set_default (struct PRINT* pPrint)
   (*pPrint).showface  [0] = -1;
   (*pPrint).showpoly  [0] = -1;
   (*pPrint).showelt   [0] = -1;
+  (*pPrint).showeltedge[0] = -1;
   (*pPrint).shownode  [0] = -1;
   (*pPrint).showelt0d [0] = -1;
   (*pPrint).showelt1d [0] = -1;
@@ -82,6 +88,8 @@ neut_print_free (struct PRINT* pPrint)
   ut_free_2d_char ((*pPrint).cameralookatexpr, 4);
   ut_free_1d ((*pPrint).cameralookat);
 
+  ut_free_1d ((*pPrint).camerasky);
+
   ut_free_1d_char ((*pPrint).cameraprojection);
 
   // image -------------------------------------------------------------
@@ -91,6 +99,7 @@ neut_print_free (struct PRINT* pPrint)
   ut_free_1d_int ((*pPrint).showface);
   ut_free_1d_int ((*pPrint).showpoly);
   ut_free_1d_int ((*pPrint).showelt);
+  ut_free_1d_int ((*pPrint).showeltedge);
   ut_free_1d_int ((*pPrint).shownode);
   ut_free_1d_int ((*pPrint).showelt0d);
   ut_free_1d_int ((*pPrint).showelt1d);

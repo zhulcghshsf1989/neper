@@ -61,7 +61,7 @@ Here is what a typical run of @mVS{} looks like:
     Info   :     > Reducing data ...
     Info   :       . Number of 3D elts    reduced by   0% (to 1000).
     Info   :       . Number of elt faces  reduced by  90% (to 600).
-    Info   :       . Number of face edges reduced by   0% (to 2400).
+    Info   :       . Number of face edges reduced by  50% (to 1200).
     Info   :     [o] Wrote file `img.pov'.
     Info   :   - Generating png file (1200x900 pixels)...
     Info   :     [o] Writing file `img.png' ...
@@ -657,6 +657,11 @@ Use this option to show or hide the mesh.
 ,
 0 or 1, 1 if mesh loaded and no slice}
 
+@opt{-showmeshslice, logical,
+Use this option to show or hide the mesh slice(s).
+,
+0 or 1, 1 if existing slice(s)}
+
 The following options apply to the entities of the tessellation.
 
 @opt{-showpoly, char_string,
@@ -743,6 +748,18 @@ available arguments.
 ,
 any, none}
 
+@opt{-showeltedge, char_string,
+Specify the element whose edges must be shown. The argument can be:
+@samp{all} for all
+@comma{} @samp{@@@var{file_name}} to load element numbers from a
+file@comma{} or any expression based on the following arguments:
+@var{id}@comma{}
+@var{cenx}@comma{} @var{ceny}@comma{} @var{cenz}@comma{}
+@var{volume}@comma{}
+@var{elset_true}@comma{} @var{elset_body} and @var{elset_id}.
+,
+any, all if mesh loaded (and no tessellation) and nothing -show'd}
+
 @opt{-showelt1d, char_string,
 Specify the 1D elements to show. The argument can be: @samp{all} for all
 @comma{} @samp{@@@var{file_name}} to load element numbers from a
@@ -786,6 +803,11 @@ Specify the opening angle of the camera along the horizontal direction
 (degrees).
 ,
 any, 25}
+
+@opt{-camerasky, real real real,
+Specify the sky vector of the camera (vertical direction).
+,
+any,0 0 1}
 
 @opt{-cameraprojection, char_string,
 Specify the type of projection of the camera.

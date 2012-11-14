@@ -13,6 +13,6 @@
 #include"TestVer0.h"
 
 extern int TestVerEdgeQtyNNb (struct GEO, int, int);
-extern int TestVerEdgeReciprocity (struct GEO, int);
-extern int TestVerBoundNCoo (struct GEO, int);
-extern int TestVerFaceCoplaneity (struct GEO, int);
+extern int TestVerEdgeReciprocity (struct GEO, int, int);
+extern int TestVerBoundNCoo (struct GEO, int, int);
+extern int TestVerFaceCoplaneity (struct GEO, int, int);

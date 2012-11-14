@@ -98,7 +98,12 @@ WriteMesh (struct IN In, struct GEO Geo,
     ut_file_close (file, In.geof, "w");
   }
 
-  if (ut_string_inlist (In.format, ',', "fev"))
+  if (ut_string_inlist (In.format, ',', "fev")
+   || ut_string_inlist (In.format, ',', "parms")
+   || ut_string_inlist (In.format, ',', "mesh")
+   || ut_string_inlist (In.format, ',', "surf")
+   || ut_string_inlist (In.format, ',', "opt")
+   || ut_string_inlist (In.format, ',', "bcs"))
     WriteMeshFev (In, Geo, Nodes, (*pMesh2D), (*pMesh3D),
 	          NSet0D, NSet1D, NSet2D, expandnset);
 

@@ -154,22 +154,21 @@ neut_mesh_fscanf_geof (FILE * file, struct NODES *pNodes, struct MESH *pMesh)
   int *elset_nbs = NULL;
 
   /* read header ---------------------------------------------------- */
-  fscanf (file, "%s", string);
-  if (strcmp (string, "***geometry") != 0)
+  if (fscanf (file, "%s", string) != 1 || strcmp (string, "***geometry") != 0)
   {
     ut_print_message (2, 0, "Start word does not match (%s).\n", string);
     /* abort (); */
   }
 
   /* read nodes ----------------------------------------------------- */
-  fscanf (file, "%s", string);
-  if (strcmp (string, "**node") != 0)
+  if (fscanf (file, "%s", string) != 1 || strcmp (string, "**node") != 0)
   {
     ut_print_message (2, 0, "Start word does not match (%s).\n", string);
     abort ();
   }
 
-  fscanf (file, "%d%d", &((*pNodes).NodeQty), &((*pMesh).Dimension));
+  if (fscanf (file, "%d%d", &((*pNodes).NodeQty), &((*pMesh).Dimension)) != 2)
+    abort ();
 
   node_nbs = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
   node_nbs[0] = (*pNodes).NodeQty;
@@ -177,24 +176,30 @@ neut_mesh_fscanf_geof (FILE * file, struct NODES *pNodes, struct MESH *pMesh)
 
   for (i = 1; i <= (*pNodes).NodeQty; i++)
   {
-    fscanf (file, "%d", &(node_nbs[i]));
+    if (fscanf (file, "%d", &(node_nbs[i])) != 1)
+      abort ();
     ut_array_1d_fscanf (file, (*pNodes).NodeCoo[i], 3);
   }
 
   /* reading elements ----------------------------------------------- */
-  fscanf (file, "%s", string);
-  if (strcmp (string, "**element") != 0)
+  
+  if (fscanf (file, "%s", string) != 1 || strcmp (string, "**element") != 0)
   {
     ut_print_message (2, 0, "Start word does not match (%s).\n", string);
     abort ();
   }
-  fscanf (file, "%d", &((*pMesh).EltQty));
+
+  if (fscanf (file, "%d", &((*pMesh).EltQty)) != 1)
+    abort ();
+
   elt_nbs = ut_alloc_1d_int ((*pMesh).EltQty + 1);
   (*pMesh).EltNodes = ut_alloc_1d_pint ((*pMesh).EltQty + 1);
 
   for (i = 1; i <= (*pMesh).EltQty; i++)
   {
-    fscanf (file, "%d%s", &(elt_nbs[i]), string);
+    if (fscanf (file, "%d%s", &(elt_nbs[i]), string) != 2)
+      abort ();
+
     neut_elt_name_prop ("geof", string, type, &dim, &order);
     if (i == 1)
     {
@@ -213,16 +218,19 @@ neut_mesh_fscanf_geof (FILE * file, struct NODES *pNodes, struct MESH *pMesh)
       ut_array_1d_int_fscanf (file, (*pMesh).EltNodes[i], eltnodeqty);
     else
     {
-      fscanf (file, "%d", &((*pMesh).EltNodes[i][0]));
-      fscanf (file, "%d", &((*pMesh).EltNodes[i][1]));
-      fscanf (file, "%d", &((*pMesh).EltNodes[i][2]));
-      fscanf (file, "%d", &((*pMesh).EltNodes[i][4]));
-      fscanf (file, "%d", &((*pMesh).EltNodes[i][5]));
-      fscanf (file, "%d", &((*pMesh).EltNodes[i][6]));
-      fscanf (file, "%d", &((*pMesh).EltNodes[i][7]));
-      fscanf (file, "%d", &((*pMesh).EltNodes[i][9]));
-      fscanf (file, "%d", &((*pMesh).EltNodes[i][8]));
-      fscanf (file, "%d", &((*pMesh).EltNodes[i][3]));
+      int status = 0;
+      status += fscanf (file, "%d", &((*pMesh).EltNodes[i][0]));
+      status += fscanf (file, "%d", &((*pMesh).EltNodes[i][1]));
+      status += fscanf (file, "%d", &((*pMesh).EltNodes[i][2]));
+      status += fscanf (file, "%d", &((*pMesh).EltNodes[i][4]));
+      status += fscanf (file, "%d", &((*pMesh).EltNodes[i][5]));
+      status += fscanf (file, "%d", &((*pMesh).EltNodes[i][6]));
+      status += fscanf (file, "%d", &((*pMesh).EltNodes[i][7]));
+      status += fscanf (file, "%d", &((*pMesh).EltNodes[i][9]));
+      status += fscanf (file, "%d", &((*pMesh).EltNodes[i][8]));
+      status += fscanf (file, "%d", &((*pMesh).EltNodes[i][3]));
+      if (status != 10)
+	abort ();
     }
   }
 
@@ -241,7 +249,8 @@ neut_mesh_fscanf_geof (FILE * file, struct NODES *pNodes, struct MESH *pMesh)
     {
       ut_file_skip (file, 1);
       for (j = 0; j < 5; j++)
-	fscanf (file, "%c", &c);
+	if (fscanf (file, "%c", &c) != 1)
+	  abort ();
 
       if (fscanf (file, "%d", &(elset_nbs[i])) != 1)
 	abort ();
@@ -254,8 +263,7 @@ neut_mesh_fscanf_geof (FILE * file, struct NODES *pNodes, struct MESH *pMesh)
       (*pMesh).Elsets[i] = ut_alloc_1d_int (qty + 1);
       (*pMesh).Elsets[i][0] = qty;
 
-      for (j = 1; j <= qty; j++)
-	fscanf (file, "%d", &((*pMesh).Elsets[i][j]));
+      ut_array_1d_int_fscanf (file, (*pMesh).Elsets[i] + 1, qty);
     }
   }
 
@@ -285,13 +293,15 @@ neut_mesh_fscanf_fev (FILE * parms, FILE * mesh, FILE * elsets,
   int *elset_eltqty = NULL;
 
   /* read parms ----------------------------------------------------- */
-  fscanf (parms, "%d%d\n", &(*pMesh).EltQty, &(*pNodes).NodeQty);
+  if (fscanf (parms, "%d%d", &(*pMesh).EltQty, &(*pNodes).NodeQty) != 2)
+    abort ();
+
   (*pMesh).Dimension = 3;
 
   /* determining the elt order from the number of words on the first
    * line (elt_id + its nodes) */
-  fgets (string, 1000, mesh);
-  eltnodeqty = ut_string_nbwords (string) - 1;
+  ut_file_line_nbwords_pointer (mesh, &eltnodeqty);
+  eltnodeqty--;
   fseek (mesh, 0, 0);
 
   (*pMesh).EltOrder = neut_elt_order ((*pMesh).EltType, 3, eltnodeqty);
@@ -307,22 +317,27 @@ neut_mesh_fscanf_fev (FILE * parms, FILE * mesh, FILE * elsets,
   /* reading mesh --------------------------------------------------- */
   for (i = 1; i <= (*pMesh).EltQty; i++)
   {
-    fscanf (mesh, "%d", &(elt_nbs[i]));
+    if (fscanf (mesh, "%d", &(elt_nbs[i])) != 1)
+      abort ();
+
     elt_nbs[i]++;
     if ((*pMesh).EltOrder == 1)
       ut_array_1d_int_fscanf (mesh, (*pMesh).EltNodes[i], eltnodeqty);
     else
     {
-      fscanf (mesh, "%d", &((*pMesh).EltNodes[i][0]));
-      fscanf (mesh, "%d", &((*pMesh).EltNodes[i][4]));
-      fscanf (mesh, "%d", &((*pMesh).EltNodes[i][1]));
-      fscanf (mesh, "%d", &((*pMesh).EltNodes[i][5]));
-      fscanf (mesh, "%d", &((*pMesh).EltNodes[i][2]));
-      fscanf (mesh, "%d", &((*pMesh).EltNodes[i][6]));
-      fscanf (mesh, "%d", &((*pMesh).EltNodes[i][7]));
-      fscanf (mesh, "%d", &((*pMesh).EltNodes[i][9]));
-      fscanf (mesh, "%d", &((*pMesh).EltNodes[i][8]));
-      fscanf (mesh, "%d", &((*pMesh).EltNodes[i][3]));
+      int status = 0;
+      status += fscanf (mesh, "%d", &((*pMesh).EltNodes[i][0]));
+      status += fscanf (mesh, "%d", &((*pMesh).EltNodes[i][4]));
+      status += fscanf (mesh, "%d", &((*pMesh).EltNodes[i][1]));
+      status += fscanf (mesh, "%d", &((*pMesh).EltNodes[i][5]));
+      status += fscanf (mesh, "%d", &((*pMesh).EltNodes[i][2]));
+      status += fscanf (mesh, "%d", &((*pMesh).EltNodes[i][6]));
+      status += fscanf (mesh, "%d", &((*pMesh).EltNodes[i][7]));
+      status += fscanf (mesh, "%d", &((*pMesh).EltNodes[i][9]));
+      status += fscanf (mesh, "%d", &((*pMesh).EltNodes[i][8]));
+      status += fscanf (mesh, "%d", &((*pMesh).EltNodes[i][3]));
+      if (status != 10)
+	abort ();
     }
 
     ut_array_1d_int_addval ((*pMesh).EltNodes[i], eltnodeqty, 1,
@@ -338,26 +353,32 @@ neut_mesh_fscanf_fev (FILE * parms, FILE * mesh, FILE * elsets,
 
   for (i = 1; i <= (*pNodes).NodeQty; i++)
   {
-    fscanf (mesh, "%d", &(node_nbs[i]));
+    if (fscanf (mesh, "%d", &(node_nbs[i])) != 10)
+      abort ();
     node_nbs[i]++;
     ut_array_1d_fscanf (mesh, (*pNodes).NodeCoo[i], 3);
   }
 
   /* read elsets ---------------------------------------------------- */
   ut_file_skip (elsets, 1);	// skipping "grain-input"
-  fscanf (elsets, "%d", &tmp);
+  if (fscanf (elsets, "%d", &tmp) != 1)
+    abort ();
+
   if (tmp != (*pMesh).EltQty)
   {
     ut_print_message (2, 0, "Elt quantities in parms and opt do not match!\n");
     abort ();
   }
-  fscanf (elsets, "%d", &((*pMesh).ElsetQty));
+  if (fscanf (elsets, "%d", &((*pMesh).ElsetQty)) != 1)
+    abort ();
 
   /* searching number of element per elset for allocation */
   elset_eltqty = ut_alloc_1d_int ((*pMesh).ElsetQty + 1);
   for (i = 1; i <= (*pMesh).EltQty; i++)
   {
-    fscanf (elsets, "%d", &tmp);
+    if (fscanf (elsets, "%d", &tmp) != 1)
+      abort ();
+
     ut_file_skip (elsets, 1);	// skipping phase
     elset_eltqty[tmp]++;
   }
@@ -373,7 +394,9 @@ neut_mesh_fscanf_fev (FILE * parms, FILE * mesh, FILE * elsets,
   /* assigning each element to its elset */
   for (i = 1; i <= (*pMesh).EltQty; i++)
   {
-    fscanf (elsets, "%d", &tmp);
+    if (fscanf (elsets, "%d", &tmp) != 1)
+      abort ();
+
     ut_file_skip (elsets, 1); // skipping phase
     (*pMesh).Elsets[tmp][++(*pMesh).Elsets[tmp][0]] = i;
   }
@@ -389,30 +412,37 @@ void
 neut_mesh_fscanf_stellar (FILE * nodes, FILE * elts,
 			  struct NODES *pNodes, struct MESH *pMesh)
 {
-  int i, j, eltnodeqty, bound;
-  int *node_nbs;
-  int *elt_nbs;
+  int i, eltnodeqty, bound;
+  int *node_nbs = NULL;
+  int *elt_nbs = NULL;
 
   /* nodes */
-  fscanf (nodes, "%d", &((*pNodes).NodeQty));
+  if (fscanf (nodes, "%d", &((*pNodes).NodeQty)) != 1)
+    abort ();
 
   node_nbs = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
   node_nbs[0] = (*pNodes).NodeQty;
   (*pNodes).NodeCoo = ut_alloc_2d ((*pNodes).NodeQty + 1, 3);
 
-  fscanf (nodes, "%d%d%d", &bound, &bound, &bound);
+  if (fscanf (nodes, "%d%d%d", &bound, &bound, &bound) != 3)
+    abort ();
+
   for (i = 1; i <= (*pNodes).NodeQty; i++)
   {
-    fscanf (nodes, "%d", &(node_nbs[i]));
-    for (j = 0; j < 3; j++)
-      fscanf (nodes, "%lf", &((*pNodes).NodeCoo[i][j]));
-    fscanf (nodes, "%d", &bound);
+    if (fscanf (nodes, "%d", &(node_nbs[i])) != 1)
+      abort ();
+
+    ut_array_1d_fscanf (nodes, (*pNodes).NodeCoo[i], 3);
+    if (fscanf (nodes, "%d", &bound) != 1)
+      abort ();
   }
 
   /* reading elements ----------------------------------------------- */
   (*pMesh).Dimension = 3;
 
-  fscanf (elts, "%d%d", &((*pMesh).EltQty), &eltnodeqty);
+  if (fscanf (elts, "%d%d", &((*pMesh).EltQty), &eltnodeqty) != 2)
+    abort ();
+
   if (eltnodeqty == 4)
     (*pMesh).EltOrder = 1;
   else if (eltnodeqty == 10)
@@ -426,7 +456,8 @@ neut_mesh_fscanf_stellar (FILE * nodes, FILE * elts,
   ut_file_skip (elts, 1);
   for (i = 1; i <= (*pMesh).EltQty; i++)
   {
-    fscanf (elts, "%d", &(elt_nbs[i]));
+    if (fscanf (elts, "%d", &(elt_nbs[i])) != 1)
+      abort ();
     ut_array_1d_int_fscanf (elts, (*pMesh).EltNodes[i], eltnodeqty);
   }
 
@@ -442,19 +473,19 @@ neut_mesh_fscanf_stellar (FILE * nodes, FILE * elts,
 void
 neut_mesh_prop_fscanf_geof (FILE * file, int *pNodeQty, int *pEltQty)
 {
-  char *String = ut_alloc_1d_char (10000);
+  if (ut_file_string_goto (file, "**node") != 0)
+    abort ();
 
-  while (strcmp (String, "**node") != 0)
-    fscanf (file, "%s", String);
+  ut_file_skip (file, 1);
+  if (fscanf (file, "%d", pNodeQty) != 1)
+    abort ();
 
-  fscanf (file, "%d", pNodeQty);
+  if (ut_file_string_goto (file, "**element") != 1)
+    abort ();
 
-  while (strcmp (String, "**element") != 0)
-    fscanf (file, "%s", String);
-
-  fscanf (file, "%d", pEltQty);
-
-  ut_free_1d_char (String);
+  ut_file_skip (file, 1);
+  if (fscanf (file, "%d", pEltQty) != 1)
+    abort ();
 
   return;
 }
@@ -1122,6 +1153,7 @@ neut_mesh_set_zero (struct MESH *pMesh)
   return;
 }
 
+// In most cases, prefer initializing EltElset.
 int
 neut_mesh_elt_elset (struct MESH Mesh, int eltnb)
 {
@@ -1647,12 +1679,12 @@ neut_mesh3d_mesh2d (struct NODES Nodes, struct MESH Mesh3D,
 	  if (dir == -1)
 	    neut_mesh_elt_reversenodes (&EltMesh2D, j);
 
-	  elset3d[1] = neut_mesh_elt_elset (Mesh3D, elt3d[0]);
+	  elset3d[1] = Mesh3D.EltElset[elt3d[0]];
 	}
 	else
 	{
-	  elset3d[0] = neut_mesh_elt_elset (Mesh3D, elt3d[0]);
-	  elset3d[1] = neut_mesh_elt_elset (Mesh3D, elt3d[1]);
+	  elset3d[0] = Mesh3D.EltElset[elt3d[0]];
+	  elset3d[1] = Mesh3D.EltElset[elt3d[1]];
 	}
 	ut_array_1d_int_sort (elset3d, 2);
 
@@ -1759,7 +1791,7 @@ neut_mesh2d_mesh1d (struct NODES Nodes, struct MESH Mesh2D,
 	if (Mesh2D.ElsetQty == 1 && elt2dqty == 1)
 	{
 	  elset2d[0] = -1;
-	  elset2d[1] = neut_mesh_elt_elset (Mesh2D, elt2d[0]);
+	  elset2d[1] = Mesh2D.EltElset[elt2d[0]];
 	  elset2dqty = 2;
 	}
 	else
@@ -1868,7 +1900,7 @@ neut_mesh1d_mesh0d (struct NODES Nodes, struct MESH Mesh1D,
 	if (Mesh1D.ElsetQty == 1 && elt1dqty == 1)
 	{
 	  elset1d[0] = -1;
-	  elset1d[1] = neut_mesh_elt_elset (Mesh1D, elt1d[0]);
+	  elset1d[1] = Mesh1D.EltElset[elt1d[0]];
 	  elset1dqty = 2;
 	}
 	else
@@ -2843,7 +2875,7 @@ int
 neut_mesh_mesh_match (struct NODES N1, struct MESH M1, struct NODES N2, struct MESH M2)
 {
   int i, j, k, l;
-  double res;
+  int res;
   int eltnodeqty = neut_elt_nodeqty (M1.EltType, M1.Dimension, M1.EltOrder);
   double* dist = ut_alloc_1d (eltnodeqty);
   double min;
@@ -4052,38 +4084,37 @@ neut_meshdata_mesh2slice (struct NODES Nodes, struct MESH Mesh, struct MESHDATA 
 		(1 - node_fact[j]) * MeshData.coldata[id_newold[i][1]][node_newold[j][0]][k]
 		 +   node_fact[j]    * MeshData.coldata[id_newold[i][1]][node_newold[j][1]][k];
     }
-  }
-
-  if (MeshData.scalemin != NULL)
-  {
-    int idmax;
-    neut_meshdata_idmax (&idmax);
-    
-    for (i = 0; i <= idmax; i++)
+  
+    if (MeshData.scalemin[id_newold[i][1]] != NULL)
     {
-      if (MeshData.scalemin[i] != NULL)
-      {
-	(*pSMeshData).scalemin[i] = ut_alloc_1d_char (strlen (MeshData.scalemin[i]) + 1);
-	strcpy ((*pSMeshData).scalemin[i], MeshData.scalemin[i]);
-      }
+      (*pSMeshData).scalemin[id_newold[i][0]]
+	= ut_alloc_1d_char (strlen (MeshData.scalemin[id_newold[i][1]]) + 1);
+      strcpy ((*pSMeshData).scalemin[id_newold[i][0]],
+		   MeshData.scalemin[id_newold[i][1]]);
+    }
 
-      if (MeshData.scalemax[i] != NULL)
-      {
-	(*pSMeshData).scalemax[i] = ut_alloc_1d_char (strlen (MeshData.scalemax[i]) + 1);
-	strcpy ((*pSMeshData).scalemax[i], MeshData.scalemax[i]);
-      }
+    if (MeshData.scalemax[id_newold[i][1]] != NULL)
+    {
+      (*pSMeshData).scalemax[id_newold[i][0]]
+	= ut_alloc_1d_char (strlen (MeshData.scalemax[id_newold[i][1]]) + 1);
+      strcpy ((*pSMeshData).scalemax[id_newold[i][0]],
+	           MeshData.scalemax[id_newold[i][1]]);
+    }
 
-      if (MeshData.scaleticks[i] != NULL)
-      {
-	(*pSMeshData).scaleticks[i] = ut_alloc_1d_char (strlen (MeshData.scaleticks[i]) + 1);
-	strcpy ((*pSMeshData).scaleticks[i], MeshData.scaleticks[i]);
-      }
+    if (MeshData.scaleticks[id_newold[i][1]] != NULL)
+    {
+      (*pSMeshData).scaleticks[id_newold[i][0]]
+	= ut_alloc_1d_char (strlen (MeshData.scaleticks[id_newold[i][1]]) + 1);
+      strcpy ((*pSMeshData).scaleticks[id_newold[i][0]],
+	           MeshData.scaleticks[id_newold[i][1]]);
+    }
 
-      if (MeshData.colscheme[i] != NULL)
-      {
-	(*pSMeshData).colscheme[i] = ut_alloc_1d_char (strlen (MeshData.colscheme[i]) + 1);
-	strcpy ((*pSMeshData).colscheme[i], MeshData.colscheme[i]);
-      }
+    if (MeshData.colscheme[id_newold[i][1]] != NULL)
+    {
+      (*pSMeshData).colscheme[id_newold[i][0]]
+	= ut_alloc_1d_char (strlen (MeshData.colscheme[id_newold[i][1]]) + 1);
+      strcpy ((*pSMeshData).colscheme[id_newold[i][0]],
+	           MeshData.colscheme[id_newold[i][1]]);
     }
   }
 

@@ -3,4 +3,4 @@
 /* See the COPYING file in the top-level directory. */
 
 extern void WriteGeoStuff (struct IN, struct GEO, struct GEOPARA);
-extern void WriteStatGeo (char*, struct GEO);
+extern void WriteStatGeo (char*, char*, struct GEO);

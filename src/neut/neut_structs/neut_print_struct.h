@@ -14,6 +14,7 @@ struct PRINT
   char**  cameralookatexpr;
   double* cameralookat;
 
+  double* camerasky;
   double  cameraangle;
 
   char*   cameraprojection;
@@ -35,6 +36,7 @@ struct PRINT
 
   int* shownode;
   int* showelt;
+  int* showeltedge;
   int* showelt2d;
   int* showelt1d;
   int* showelt0d;

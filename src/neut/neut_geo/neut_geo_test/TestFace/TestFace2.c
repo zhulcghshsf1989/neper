@@ -5,17 +5,16 @@
 #include"TestFace.h"
 
 int
-TestFaceReciprocityEdge (struct GEO Geo, int i)
+TestFaceReciprocityEdge (struct GEO Geo, int i, int verbosity)
 {
   int j;
   int edge;
 
   if (Geo.FaceVerQty[i] < 3)
   {
-    /*
-       ut_print_lineheader(2);
-       printf("Face %d has less than 3 = %d vers/edges!\n",i,Geo.FaceVerQty[i]);
-     */
+    if (verbosity)
+      ut_print_message (2, 3, "Number of vertices/edges = %d < 3.\n", i, Geo.FaceVerQty[i]);
+
     return 2;
   }
 
@@ -25,10 +24,9 @@ TestFaceReciprocityEdge (struct GEO Geo, int i)
     if (ut_array_1d_int_eltpos
 	(Geo.EdgeFaceNb[edge], Geo.EdgeFaceQty[edge], i) == -1)
     {
-      /*
-         ut_print_lineheader(2);
-         printf("edge %d of face %d = edge %d has not face %d!\n",j,i,edge,i);
-       */
+      if (verbosity)
+	ut_print_message (2, 3, "based on edge %d, but face not in edge face list.\n", edge);
+
       return 2;
     }
   }
@@ -37,7 +35,7 @@ TestFaceReciprocityEdge (struct GEO Geo, int i)
 }
 
 int
-TestFaceReciprocityVer (struct GEO Geo, int i)
+TestFaceReciprocityVer (struct GEO Geo, int i, int verbosity)
 {
   int j;
   int ver;
@@ -50,10 +48,9 @@ TestFaceReciprocityVer (struct GEO Geo, int i)
     neut_geo_ver_faces (Geo, ver, &face, &faceqty);
     if (ut_array_1d_int_eltpos (face, faceqty, i) == -1)
     {
-      /*
-         ut_print_lineheader(2);
-         printf("ver %d of face %d = ver %d has not face %d!\n",j,i,ver,i);
-       */
+      if (verbosity)
+	ut_print_message (2, 3, "based on ver %d, but face not found in ver faces.\n", ver);
+
       return 2;
     }
   }
@@ -64,31 +61,41 @@ TestFaceReciprocityVer (struct GEO Geo, int i)
 }
 
 int
-TestFaceReciprocityPoly (struct GEO Geo, int i)
+TestFaceReciprocityPoly (struct GEO Geo, int i, int verbosity)
 {
   int j;
   int poly;
 
+  if (Geo.FacePoly[i][0] < 0)
+  {
+    if (verbosity) 
+      ut_print_message (2, 3, "first poly have a negative id (%d).\n",
+	  Geo.FacePoly[i][0]);
+
+    return 2;
+  }
+
   if (Geo.FacePoly[i][0] < 0 && Geo.FacePoly[i][1] < 0)
   {
-    /*
-     ut_print_lineheader(2);
-     printf("face %d has 2 non-real poly!\n",i);
-     */
+    if (verbosity) 
+      ut_print_message (2, 3, "both polys have negative ids (%d, %d).\n",
+	  Geo.FacePoly[i][0], Geo.FacePoly[i][1]);
+
     return 2;
   }
 
   for (j = 0; j < 2; j++)
   {
     poly = Geo.FacePoly[i][j];
+
     if (poly > 0)
       if (ut_array_1d_int_eltpos
 	  (Geo.PolyFaceNb[poly] + 1, Geo.PolyFaceQty[poly], i) == -1)
       {
-	/*
-	   ut_print_lineheader(2);
-	   printf("poly %d of face %d = poly %d has not face %d!\n",j,i,poly,i);
-	 */
+	if (verbosity) 
+	  ut_print_message (2, 3, "poly %d in in poly list, but poly not based on face.\n",
+	      poly);
+	 
 	return 2;
       }
   }
@@ -96,12 +103,8 @@ TestFaceReciprocityPoly (struct GEO Geo, int i)
   return 0;
 }
 
-/* TestFaceState checks FaceState. If the face is set as modified, at
- * least one of its vertices must be modified. If the face is set as
- * unmodified, all its vertices must be unmodified.
- */
 int
-TestFaceState (struct GEO Geo, int i)
+TestFaceState (struct GEO Geo, int i, int verbosity)
 {
   int j, ver;
 
@@ -114,10 +117,18 @@ TestFaceState (struct GEO Geo, int i)
     {
       ver = Geo.FaceVerNb[i][j];
       if (Geo.VerState[ver] != 0)
-	return 1;		/* modified --> pb */
+      {
+	if (verbosity) 
+	  ut_print_message (2, 3, "has state = 0, but face ver (id = %d) has state = %d != 0.\n",
+	      ver, Geo.VerState[ver]);
+
+	return 1;
+      }
     }
-    return 0;			/* unmodified --> ok */
+
+    return 0;
   }
+
   /* if the face has state>0, it is modified.
    * at least one of its vertices must be modified (state!=0).
    */
@@ -127,9 +138,14 @@ TestFaceState (struct GEO Geo, int i)
     {
       ver = Geo.FaceVerNb[i][j];
       if (Geo.VerState[ver] != 0)
-	return 0;		/* one ver modified --> ok */
+	return 0;
     }
-    return 1;			/* no ver modified --> pb */
+	
+    if (verbosity) 
+      ut_print_message (2, 3, "state = %d, but all of the face vers have state = 0.\n",
+	  Geo.FaceState[i]);
+
+    return 1;
   }
   else
     return 0;			/* del face --> ok (maybe this is useless). */
@@ -140,10 +156,9 @@ TestFaceState (struct GEO Geo, int i)
  * considered as critical.
  */
 int
-TestFaceBound (struct GEO Geo, int face)
+TestFaceBound (struct GEO Geo, int face, int verbosity)
 {
-  int i, ver, domver, status = 0;
-  int verbosity = 0;
+  int i, ver, domver;
 
   int* bound1 = ut_alloc_1d_int (1);
 
@@ -174,25 +189,20 @@ TestFaceBound (struct GEO Geo, int face)
     if (ut_array_1d_int_nbofthisval (bound1 + 1, bound1[0], bound2[i]) == 3)
     {
       // 3 face vertices are on the same domain edge
-      if (verbosity > 0)
-      {
-	printf ("bound1 = ");
-	ut_array_1d_int_fprintf (stdout, bound1, bound1[0] + 1, "%d");
-	printf ("bound2 = ");
-	ut_array_1d_int_fprintf (stdout, bound2, bound2[0] + 1, "%d");
-      }
-      status = 2;
-      break;
+      if (verbosity)
+	ut_print_message (2, 3, "has 3 vertices lying on the same domain edge.\n");
+      
+      return 2;
     }
 
   ut_free_1d_int (bound1);
   ut_free_1d_int (bound2);
 
-  return status;
+  return 0;
 }
 
 int
-TestFaceSelfIntersect (struct GEO Geo, int face)
+TestFaceSelfIntersect (struct GEO Geo, int face, int verbosity)
 {
   int i;
   int res = 0;
@@ -208,7 +218,10 @@ TestFaceSelfIntersect (struct GEO Geo, int face)
   }
 
   res = ut_space_contour_intersect (coo, cooqty);
-  // ut_array_2d_fprintf (stdout, coo, cooqty, 3, "%.15f");
+
+  if (res > 0)
+    if (verbosity)
+      ut_print_message (2, 3, "has self-intersections (%d).\n", res);
 
   ut_free_2d (coo, Geo.FaceVerQty[face]);
   ut_free_1d (n);
@@ -218,7 +231,7 @@ TestFaceSelfIntersect (struct GEO Geo, int face)
 }
   
 int
-neut_geo_test_face_normal (struct GEO Geo, int face)
+neut_geo_test_face_normal (struct GEO Geo, int face, int verbosity)
 {
   int i;
   int res = 0;
@@ -244,7 +257,13 @@ neut_geo_test_face_normal (struct GEO Geo, int face)
   ut_array_1d_scale (sum_n, 3, 1. / ut_array_1d_norm (sum_n, 3));
 
   if (ut_vector_scalprod (Geo.FaceEq[face] + 1, sum_n) < 0)
+  {
+    if (verbosity)
+      ut_print_message (2, 3, "normal is not properly oriented (scal = %f < 0).\n",
+	  ut_vector_scalprod (Geo.FaceEq[face] + 1, sum_n));
+
     res = 1;
+  }
 
   ut_free_2d (coo, Geo.FaceVerQty[face]);
   ut_free_1d (n);

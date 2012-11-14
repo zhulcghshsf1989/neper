@@ -62,7 +62,7 @@ neper_mm (int fargc, char **fargv, int argc, char **argv)
    || ut_num_equal (In.F[2], 1, 1e-6) == 0)
   {
     ut_print_message (0, 1, "Deforming mesh ...\n");
-    neut_nodes_deform (&Nodes, In.F);
+    neut_nodes_scale (&Nodes, In.F[0], In.F[1], In.F[2]);
   }
 
   ut_print_message (0, 1, "Writing results ...\n");

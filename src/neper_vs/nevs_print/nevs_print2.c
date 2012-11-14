@@ -30,9 +30,7 @@ nevs_print_pov2png (char* filename, int imagewidth, int imageheight,
     sprintf (command, "povray Input_File_Name=%s +O%s +W%d +H%d -D 2>/dev/null",
 	     filename, outfilename, imagewidth, imageheight);
 
-  system (command);
-
-  if (! ut_file_exist (outfilename))
+  if (system (command) == -1 || ! ut_file_exist (outfilename))
   {
     ut_print_message (2, 3, "File `%s' could not be generated!\n", outfilename);
     

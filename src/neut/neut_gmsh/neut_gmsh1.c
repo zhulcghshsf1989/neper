@@ -10,12 +10,16 @@ neut_gmsh_call (char *gmsh, char *arg)
   char command[1000];
 
   sprintf (command, "%s %s", gmsh, arg);
-  system (command);
+  if (system (command) == -1)
+  {
+    ut_error_reportbug ();
+    abort ();
+  }
 
   return;
 }
 
-/* This is to deal with the default config file of gmsh. */
+/* This is to deal with the default config and option files of gmsh. */
 void
 neut_gmsh_rc (char *action)
 {
@@ -23,6 +27,16 @@ neut_gmsh_rc (char *action)
   char *s2 = ut_alloc_1d_char (1000);
 
   sprintf (s1, "%s/.gmshrc", getenv ("HOME"));
+  sprintf (s2, "%s.bak", s1);
+
+  if (strcmp (action, "bak") == 0)
+    rename (s1, s2);
+  else if (strcmp (action, "unbak") == 0)
+    rename (s2, s1);
+  else
+    abort ();
+
+  sprintf (s1, "%s/.gmsh-options", getenv ("HOME"));
   sprintf (s2, "%s.bak", s1);
 
   if (strcmp (action, "bak") == 0)

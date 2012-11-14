@@ -131,13 +131,14 @@ Here is what a typical run of @mFM{} looks like:
     Info   :   - 0D meshing ...  100%
     Info   :   - 1D meshing ...  100%
     Info   :   - 2D meshing ...  100% (0.26|0.85/16%|83%)
-    Info   :   - 3D meshing ...  100% (0.88|0.91/100%| 0%)
+    Info   :   - 3D meshing ...  100% (0.89|0.91/100%| 0%)
     Info   :   - Searching nsets ...
+    Info   : Writing geometry results ...
     Info   : Writing mesh results ...
     Info   :   - Preparing mesh ...
     Info   :   - Mesh properties:
     Info   :     > Node number:      299
-    Info   :     > Elt  number:     1034
+    Info   :     > Elt  number:     1041
     Info   :     > Mesh volume:    1.000
     Info   :   - Writing mesh ...
     Info   :     [o] Writing file `n10-id1.msh' ...
@@ -226,7 +227,7 @@ any, -rcl 1}
 
 @opt{-dim,integer,
 Specify the mesh dimension.,
-0 to 3,3}
+0 to 3,max of -outdim (default = 3)}
 
 @opt{-order,integer,
 Specify the mesh order.,
@@ -273,7 +274,8 @@ The following options define the 2D and 3D-meshing algorithms.  The
 algorithms have the format @samp{@var{mesh}} or
 @samp{@var{mesh}/@var{opti}}, where @code{@var{mesh}} and
 @code{@var{opti}} stand for the meshing and optimization algorithms and
-are 4-character long. @emph{Multimeshing} can be used by providing
+are 4-character long. (The @samp{:} character can also be used as a
+separator.) @emph{Multimeshing} can be used by providing
 several algorithms combined with commas, e.g@.
 @code{@var{mesh1}/@var{opti1},@var{mesh1}/@var{opti2},@var{mesh2}/@var{opti2}}.
 The 2D and 3D meshings are carried out using the Gmsh@footnote{Ch.@
@@ -478,15 +480,19 @@ any,none}
 @opt{-outdim,char_string,
 Specify the dimensions of the mesh to output. It can go from 0 to
 3@comma{} for point to volume elements (combine with commas).,
-0@comma{} 1@comma{} 2@comma{} 3@comma{},
+0@comma{} 1@comma{} 2@comma{} 3,
 0@comma{}1@comma{}2@comma{}3}
 
 @opt{-format,char_string,
 Specify the format of the output file(s). For the mesh@comma{} the
-available formats are: @code{msh} for Gmsh@comma{} @code{abq} for
-Abaqus@comma{} @code{geof} for Zset/Z@'ebulon@comma{} and @code{fev} for
-Fem-Evps.  For the tessellation geometry@comma{} the available formats
-are: @code{tess} and @code{geo}.  Combine arguments with commas.,
+available formats are: the Gmsh @code{msh}@comma{} the Abaqus
+@code{inp}@comma{} the Zset/Z@'ebulon @code{geof} and the 
+Fem-Evps @code{fev} (all of the @code{parms}@comma{}
+@code{mesh}@comma{} @code{surf}@comma{} @code{opt} and @code{bcs}
+files are written by default.  To restric the list@comma{} provide the
+extensions).  For the tessellation geometry@comma{} the available
+formats are: the Neper @code{tess}@comma{} the Gmsh @code{geo} and the
+Ply @code{ply}.  Combine arguments with commas.,
 anyone of the above list,msh}
 
 @opt{-nset, char_string,
@@ -494,7 +500,8 @@ Specify the node sets to provide@comma{} among:
 @code{faces}@comma{} @code{edges}@comma{} @code{vertices} for all
 domain faces@comma{} edges and vertices@comma{}
 and @code{facebodies} and @code{edgebodies} for all face and edge
-bodies. To get the nset corresponding to individual entities@comma{}
+bodies. To get all of them@comma{} provide @code{all}.
+To get the nset corresponding to individual entities@comma{}
 provide their names@comma{} that is@comma{} for a cubic domain@comma{}
 @code{[x-z][0@comma{}1]} for the
 domain faces@comma{} @code{[x-z][0@comma{}1][x-z][0@comma{}1]} for the
@@ -514,18 +521,20 @@ faces@comma{} [x-z][0@comma{}1] (for a cubic domain),none}
 
 @subsection Post-Processing Options
 
-@post{-stattess,logical,
-Provide statistics on the tessellation.
+@post{-stattess, char_string,
+Provide statistics on the tessellation.  Give as argument the
+file extensions (combine with commas).
 ,
-0 or 1, 0,
+none@comma{} all@comma{} stt[0-3], none,
 .stt#}
 
-@post{-statmesh,logical,
+@post{-statmesh, char_string,
 Provide information and statistics on the elements and element
-sets.
+sets.  Give as argument the file extensions (combine with commas).
 ,
-0 or 1, 0,
-.stm#}
+none@comma{} all@comma{} stn@comma{} stm[1-5],
+none,
+.stn' and `.stm#}
 
 @subsection Advanced Options
 
@@ -660,17 +669,38 @@ formats are provided below.  All files are formatted with one entity
 @code{@var{xc}}, @code{@var{yc}} and @code{@var{zc}} denote the centroid
 (centre of mass) coordinates.
 
-@need 2000
+@sp 1
 The following are for statistics on the mesh.
 
 @itemize
-@item Mesh non-quality statistics file, @file{.stm1}:
+@item Node statistics file, @file{.stn}:
+@w{@code{@var{id x y z dim}}}.
+
+@item 3D element non-quality statistics file, @file{.stm1}:
 @w{@code{@var{id elset_id true vol mean_length x y z}}}.
 
-@item Mesh quality statistics file, @file{.stm2}:
+@item 3D element quality statistics file, @file{.stm2}:
 @w{@code{@var{id elset_id true radius_ratio angle_min}}}.
 
+@item 3D element quality statistics file (2), @file{.stm3}:
+@w{@code{@var{angle_1 angle_2 ... angle_12}}}.
+
+@item 3D element set non-quality statistics file, @file{.stm4}:
+@w{@code{@var{id number_of_elts vol xc yc zc}}}.
+
+@item 3D element set quality statistics file, @file{.stm5}:@*
+@w{@code{@var{id true body number_of_elts radius_ratio_min
+  Osize@math{^{1/3}}}}}.
+
 @end itemize
+
+@code{dim} denotes the dimension of a node (0 if it belongs to a 0D
+element@comma{} 1 of it belongs to a 1D element@comma{} etc.).
+@code{@var{angle_min}} denotes the minimum angle between two edges of an
+element.  @code{@var{angle_1}}, @code{@var{angle_2}}, etc.@ are the
+individual angles.  @code{@var{radius_ratio_min}} denotes the minimum
+radius ratio over an element set.  See the neper reference paper for the
+definition of @code{@var{Osize}}.
 
 @section Examples
 
@@ -700,13 +730,13 @@ Below are some examples of advanced use.
 
 @item @emph{Multimeshing.} Improve mesh quality as far as possible through 3D multimeshing.
 @com{neper -FM n10-id1.tess -maxff 20 -rcl 0.8 -order 2}
-@comx{-format tess,msh,abq -o n10}
+@comx{-format tess,msh,inp -o n10}
 @comx{-mesh3dalgo netg/gmsh,netg/netg,netg/gmne}
 
 @item @emph{Mesh partitionning.} Like 2., but partition in 8 partitions
 and renumber the nodes and elements accordingly.
 @com{neper -FM n10-id1.tess -maxff 20 -rcl 0.8 -order 2}
-@comx{-format tess,msh,abq -o n10}
+@comx{-format tess,msh,inp -o n10}
 @comx{-partq 8 -partrenum 1}
 
 @item @emph{Orthotropic mesh refinement.} Mesh tessellation

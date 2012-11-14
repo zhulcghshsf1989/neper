@@ -42,6 +42,38 @@ ut_print_wnc_int (FILE * file, int nb, int *pnbcol, int nbcolmax)
   return;
 }
 
+void
+ut_print_wnc_int_header (FILE * file, int nb, int *pnbcol, int nbcolmax, char* head)
+{
+  int length = ut_num_tenlen_int (nb);
+
+  if (length > nbcolmax)
+  {
+    ut_print_message (2, 0, 
+		      "The max. number of columns of the output file is too low!\n");
+    abort ();
+  }
+
+  if ((*pnbcol) == 0)
+  {
+    fprintf (file, "%s", head);
+    fprintf (file, " %d", nb);
+    (*pnbcol) = strlen (head) + 1 + length;
+  }
+  else if ((*pnbcol) + 1 + length <= nbcolmax)
+  {
+    fprintf (file, " %d", nb);
+    (*pnbcol) += length + 1;
+  }
+  else
+  {
+    fprintf (file, "\n%s %d", head, nb);
+    (*pnbcol) = strlen (head) + 1 + length;
+  }
+
+  return;
+}
+
 int
 ut_print_wnc_char (FILE * file, char *string, int *pnbcol, int nbcolmax)
 {
@@ -393,7 +425,7 @@ ut_print_moduleheader (char *mname, int fargv, char **fargc, int argv,
     sprintf (command1, "[com line] (none)");
   else
     sprintf (command1, "[com line]");
-  sprintf (command2, command1);
+  sprintf (command2, "%s", command1);
 
   for (i = 1; i < argv; i++)
   {
@@ -405,7 +437,7 @@ ut_print_moduleheader (char *mname, int fargv, char **fargc, int argv,
     sprintf (fcommand1, "[ini file] (none)");
   else
     sprintf (fcommand1, "[ini file]");
-  sprintf (fcommand2, fcommand1);
+  sprintf (fcommand2, "%s", fcommand1);
   for (i = 1; i < fargv; i++)
   {
     sprintf (fcommand2, "%s %s", fcommand1, fargc[i]);
@@ -436,7 +468,7 @@ void
 ut_print_progress_nonl (FILE* file, long nb, long tot, char* format, char* prev)
 {
   unsigned int i;
-  char* string = ut_alloc_1d_char (10);
+  char* string = ut_alloc_1d_char (strlen (format) + 100);
 
   if (nb == 0)
     sprintf (string, format, 0.);
