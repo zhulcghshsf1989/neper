@@ -8,12 +8,12 @@ void
 Meshing3D (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
 	   struct NODES *pNodes, struct MESH Mesh2D, struct MESH *pMesh3D)
 {
-  int i, j;
+  int i;
   double allowed_t, max_elapsed_t;
   int a;
-  char* message = ut_alloc_1d_char (1000);
-  char* tmpstring = ut_alloc_1d_char (1000);
-  int message_length;
+  char* format = ut_alloc_1d_char (128);
+  char* message = ut_alloc_1d_char (128);
+  char* tmpstring = ut_alloc_1d_char (128);
   struct MULTIM Multim;
 
   neut_multim_set_zero (&Multim);
@@ -26,6 +26,9 @@ Meshing3D (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
   allowed_t = In.mesh3dmaxtime;
   max_elapsed_t = 0;
 
+  if (In.mesh3dreport == 1)
+    if (system ("mkdir -p neper-report") == -1)
+      abort ();
 
   // breaking algo string into mesher / optimizer
   
@@ -41,16 +44,23 @@ Meshing3D (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
   neut_multim_fromlist (mesh3dalgo, &Multim);
   ut_free_1d_char (mesh3dalgo);
 
-  ut_print_message (0, 2, "3D meshing ... %3d%%", 0);
-
-  fflush (stdout);
+  ut_print_message (0, 2, "3D meshing ... ");
 
   double cl;
 
+  int* meshpoly = ut_alloc_1d_int (Geo.PolyQty + 1);
+  ut_array_1d_int_set (meshpoly + 1, Geo.PolyQty, 1);
+  meshpoly[0] = Geo.PolyQty;
 
-  message_length = 4;
+  if (In.meshpoly != NULL)
+    neut_geo_expr_polytab (Geo, In.meshpoly, meshpoly);
+  
+  ut_print_progress (stdout, 0, Geo.PolyQty, "%3.0f%%", message);
+
   for (i = 1; i <= Geo.PolyQty; i++)
   {
+    if (meshpoly[i] == 0)
+      continue;
 
     // Setting parameter (cl) ------------------------------------------
     
@@ -63,38 +73,55 @@ Meshing3D (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
 
     // Printing message ------------------------------------------------
 
-    sprintf (message, "%3.0f%% (%.2g|%.2g/",
-	       floor (100 * ((double) i / Geo.PolyQty)),
-	       ut_array_1d_min  (Multim.O     + 1, i),
-	       ut_array_1d_mean (Multim.O     + 1, i)
-	    );
+    sprintf (format, "%%3.0f%%%% (%.2g|%.2g/",
+		     ut_array_1d_min  (Multim.O + 1, i),
+		     ut_array_1d_mean (Multim.O + 1, i));
+
+    int* pct = ut_alloc_1d_int (Multim.algoqty);
+
+    ut_array_1d_int_percent (Multim.algohit, Multim.algoqty, pct);
 
     for (a = 0; a < Multim.algoqty; a++)
     {
-      sprintf (tmpstring, "%s%2d%%%c", message,
-	  ut_num_d2ri (100 * (double)Multim.algohit[a])/i, (a < Multim.algoqty - 1)? '|':')');
-      sprintf (message, "%s", tmpstring);
+      sprintf (tmpstring, "%s%2d%%%c", format, pct[a], (a < Multim.algoqty - 1)? '|':')');
+      sprintf (format, "%s", tmpstring);
     }
 
-    if (isatty (1))
+    ut_free_1d_int (pct);
+
+    ut_print_progress (stdout, i, Geo.PolyQty, format, message);
+
+    if (In.mesh3dreport == 1)
     {
-      for (j = 0; j < message_length; j++)
-	fprintf (stdout, "\b");
-      fprintf (stdout, "%s      \b\b\b\b\b\b", message);
+      for (a = 0; a < Multim.algoqty; a++)
+      {
+	sprintf (tmpstring, "neper-report/poly%d-a%d-prop", i, a);
+	FILE* file = ut_file_open (tmpstring, "W");
+
+	fprintf (file, "%f ", Multim.mOdis[i][a]);
+	fprintf (file, "%f ", Multim.mOsize[i][a]);
+	fprintf (file, "%f\n", Multim.mO[i][a]);
+	
+	ut_file_close (file, tmpstring, "W");
+      }
+
+      sprintf (tmpstring, "neper-report/poly%d-prop", i);
+      FILE* file = ut_file_open (tmpstring, "W");
+
+      fprintf (file, "%d ", Multim.Oalgo[i]);
+      fprintf (file, "%f ", Multim.Odis[i]);
+      fprintf (file, "%f ", Multim.Osize[i]);
+      fprintf (file, "%f\n", Multim.O[i]);
+      
+      ut_file_close (file, tmpstring, "W");
     }
-    else
-      fprintf (stdout, " %s", message);
-    
-    fflush (stdout);
-
-    message_length = strlen (message);
-
   }
-  fprintf (stdout, "\n");
 
+  ut_free_1d_int (meshpoly);
 
   neut_mesh_init_nodeelts (pMesh3D, (*pNodes).NodeQty);
   neut_multim_free (&Multim, Geo.PolyQty);
+  ut_free_1d_char (format);
   ut_free_1d_char (message);
   ut_free_1d_char (tmpstring);
 

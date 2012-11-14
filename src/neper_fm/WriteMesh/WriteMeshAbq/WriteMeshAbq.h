@@ -5,10 +5,9 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include<math.h>
 
 #include"../../structIn_fm.h"
-#include"structAll.h"
-#include"AllUtils.h"
 #include"ut.h"
 #include"neut.h"
 #include "WriteMeshAbq0.h"

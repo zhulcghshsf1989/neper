@@ -5,43 +5,32 @@
 #include "Res_t.h"
 
 extern void
-Res_t (struct IN In, struct GERMSET GermSet, struct TESS Tess,
-       struct GEO Geo, int* id)
+Res_t (struct IN In, struct GEO Geo, struct VOX Vox)
 {
-  FILE *file;
-  /*
-  int pos, qty;
-  char **parts;
-  int *PolyList = NULL;
-  int *FaceList = NULL;
-  int *EdgeList = NULL;
-  int *VerList = NULL;
-  */
-  char *name = ut_alloc_1d_char (1000);
-  char *ext = ut_alloc_1d_char (1000);
+  FILE* file = NULL;
   
   if (ut_string_inlist (In.format, ',', "tess"))
   {
     if (Geo.PolyQty != 0)
     {
-      file = ut_file_open (In.geo, "w");
+      file = ut_file_open (In.tess, "w");
       neut_geo_fprintf (file, Geo);
-      ut_file_close (file, In.geo, "w");
+      ut_file_close (file, In.tess, "w");
     }
     else
-      ut_print_message (1, 0, "Geo is void; cannot export; skipping\n");
+      ut_print_message (1, 2, "Cannot write %s (is void) - skipping.\n", In.tess);
   }
 
-  if (ut_string_inlist (In.format, ',', "geo")) // gmsh geo file
+  if (ut_string_inlist (In.format, ',', "geo")) // geo file
   {
     if (Geo.PolyQty != 0)
     {
-      file = ut_file_open (In.gmshgeo, "w");
+      file = ut_file_open (In.geo, "w");
       neut_geo_fprintf_gmsh (file, Geo);
-      ut_file_close (file, In.gmshgeo, "w");
+      ut_file_close (file, In.geo, "w");
     }
     else
-      ut_print_message (1, 0, "Geo is void; cannot export; skipping\n");
+      ut_print_message (1, 2, "Cannot write %s (is void) - skipping.\n", In.geo);
   }
 
   if (ut_string_inlist (In.format, ',', "ply")) // gmsh ply file
@@ -53,46 +42,32 @@ Res_t (struct IN In, struct GERMSET GermSet, struct TESS Tess,
       ut_file_close (file, In.ply, "w");
     }
     else
-      ut_print_message (1, 0, "Geo is void; cannot export; skipping\n");
+      ut_print_message (1, 2, "Cannot write %s (is void) - skipping.\n", In.ply);
   }
 
-  /* 
-  if (strcmp (In.printentity, "none") != 0)
+  if (ut_string_inlist (In.format, ',', "vox")) // vox file
   {
-    if (strlen (In.printformat) > 0)
+    if (Vox.PolyQty != 0)
     {
-      ut_string_separate (In.printformat, ',', &parts, &qty);
-      PrintGeoStuff (In.printentity, In.printlist, Geo, &PolyList,
-	  &FaceList, &EdgeList, &VerList);
-      pos = 1;
-      while (ut_string_part (In.printformat, ',', pos++, ext))
-      {
-	name = ut_string_addextension (In.body, ext);
-	PrintGeoAsImg (Geo, PolyList, FaceList, EdgeList, VerList, ext, name);
-      }
+      file = ut_file_open (In.vox, "w");
+      neut_vox_fprintf (file, In.voxformat, Vox);
+      ut_file_close (file, In.vox, "w");
     }
+    else
+      ut_print_message (1, 2, "Cannot write %s (is void) - skipping.\n", In.vox);
   }
-  */
 
   if (In.printpointpoly)
-    PrintPointPoly (In, Tess);
+    PrintPointPoly (In, Geo);
 
-  if (In.printneighbour)
-    PrintConnectivity (In, Tess);
+  net_stat (In, Geo);
 
-  if (In.stattess)
-    WriteStatGeo (In.body, Geo);
-
-  if (ut_string_inlist (In.format, ',', "oin"))
+  if (ut_string_inlist (In.format, ',', "debug"))
   {
-    file = ut_file_open (In.oin, "w");
-    net_oin_fprintf (file, GermSet, id);
-    ut_file_close (file, In.oin, "w");
+    file = ut_file_open (In.debug, "w");
+    neut_debug_geo (file, Geo);
+    ut_file_close (file, In.debug, "w");
   }
-
-
-  ut_free_1d_char (name);
-  ut_free_1d_char (ext);
 
   return;
 }

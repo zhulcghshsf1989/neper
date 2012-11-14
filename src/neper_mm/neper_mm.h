@@ -9,13 +9,10 @@
 #include<stdlib.h>
 #include<string.h>
 
-#include"structAll.h"
-#include"AllUtils.h"
 #include"ut.h"
 #include"neut.h"
 
 #include"structIn_mm.h"
-#include"structAll.h"
 #include"InputData_mm/InputData_mm0.h"
 #include"RMeshing/RMeshing0.h"
 #include"../neper_fm/ReadMesh/ReadMesh0.h"

@@ -13,7 +13,7 @@ ReadOri (struct IN In, struct ORI *pOri)
   (*pOri).N = ut_file_nbwords (In.load);
 
   file = ut_file_open (In.load, "r");
-  if (In.input == 2) // e
+  if (! strcmp (In.input, "e"))
   {
     (*pOri).N /= 3;
     (*pOri).q = ut_alloc_2d ((*pOri).N + 1, 4);
@@ -26,7 +26,7 @@ ReadOri (struct IN In, struct ORI *pOri)
     }
     ol_e_free (e);
   }
-  else if (In.input == 3) // ek
+  else if (! strcmp (In.input, "ek"))
   {
     (*pOri).N /= 3;
     (*pOri).q = ut_alloc_2d ((*pOri).N + 1, 4);
@@ -40,7 +40,7 @@ ReadOri (struct IN In, struct ORI *pOri)
     }
     ol_e_free (e);
   }
-  else if (In.input == 4) // er
+  else if (! strcmp (In.input, "er"))
   {
     (*pOri).N /= 3;
     (*pOri).q = ut_alloc_2d ((*pOri).N + 1, 4);
@@ -54,7 +54,7 @@ ReadOri (struct IN In, struct ORI *pOri)
     }
     ol_e_free (e);
   }
-  else if (In.input == 5) // g
+  else if (! strcmp (In.input, "g"))
   {
     (*pOri).N /= 9;
     (*pOri).q = ut_alloc_2d ((*pOri).N + 1, 4);
@@ -67,7 +67,7 @@ ReadOri (struct IN In, struct ORI *pOri)
     }
     ol_g_free (g);
   }
-  else if (In.input == 6) // rtheta
+  else if (! strcmp (In.input, "rtheta"))
   {
     (*pOri).N /= 4;
     (*pOri).q = ut_alloc_2d ((*pOri).N + 1, 4);
@@ -81,7 +81,7 @@ ReadOri (struct IN In, struct ORI *pOri)
     }
     ol_r_free (r);
   }
-  else if (In.input == 7) // R
+  else if (! strcmp (In.input, "R"))
   {
     (*pOri).N /= 3;
     (*pOri).q = ut_alloc_2d ((*pOri).N + 1, 4);
@@ -94,7 +94,7 @@ ReadOri (struct IN In, struct ORI *pOri)
     }
     ol_R_free (R);
   }
-  else if (In.input == 8) // q
+  else if (! strcmp (In.input, "q"))
   {
     (*pOri).N /= 4;
     (*pOri).q = ut_alloc_2d ((*pOri).N + 1, 4);

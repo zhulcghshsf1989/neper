@@ -5,10 +5,9 @@
 #include "InputData_mm.h"
 
 void
-InputData_mm (struct IN *pIn, struct GERMSET* pGermSet,
-	      int fargc, char **fargv, int argc, char **argv)
+InputData_mm (struct IN *pIn, int fargc, char **fargv, int argc, char **argv)
 {
-  TreatArg_mm (fargc, fargv, argc, argv, pIn, pGermSet);
+  TreatArg_mm (fargc, fargv, argc, argv, pIn);
 
   return;
 }

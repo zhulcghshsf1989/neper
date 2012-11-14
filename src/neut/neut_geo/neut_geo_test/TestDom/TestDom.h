@@ -6,12 +6,11 @@
 #include<stdlib.h>
 #include<math.h>
 
-#include"structAll.h"
 #include"ut.h"
 #include"../../../neut_geo.h"
 #include"../../../neut_structs.h"
 
-extern int neut_geo_test_dom_def (struct GEO);
-extern int neut_geo_test_dom_tessver (struct GEO);
-extern int neut_geo_test_dom_tessedge (struct GEO);
-extern int neut_geo_test_dom_tessface (struct GEO);
+extern int neut_geo_test_dom_def      (struct GEO, int);
+extern int neut_geo_test_dom_tessver  (struct GEO, int);
+extern int neut_geo_test_dom_tessedge (struct GEO, int);
+extern int neut_geo_test_dom_tessface (struct GEO, int);

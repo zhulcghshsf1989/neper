@@ -33,12 +33,12 @@ Here is what a typical run of @mVS{} looks like:
     
     ========================    N   e   p   e   r    =======================
     Info   : A 3D random polycrystal generator for the finite element method
-    Info   : Version 1.10.1
-    Info   : (compiled with: gsl libmatheval)
-    Info   : Loading initialization file `/home/rquey/.neperrc'...
+    Info   : Version ...
+    Info   : Compiled with: gsl libmatheval
+    Info   : Ignoring initialization file.
     Info   : ---------------------------------------------------------------
     Info   : MODULE -VS loaded with arguments:
-    Info   : [ini file] -imageantialias 3
+    Info   : [ini file] (none)
     Info   : [com line] -loadtess n10-id1.tess -loadmesh n10-id1.msh
              -dataelsetcol ori=n10-id1.ori -print img
     Info   : ---------------------------------------------------------------
@@ -61,13 +61,13 @@ Here is what a typical run of @mVS{} looks like:
     Info   :     > Reducing data ...
     Info   :       . Number of 3D elts    reduced by   0% (to 1000).
     Info   :       . Number of elt faces  reduced by  90% (to 600).
-    Info   :       . Number of face edges reduced by   0% (to 2400).
+    Info   :       . Number of face edges reduced by  50% (to 1200).
     Info   :     [o] Wrote file `img.pov'.
     Info   :   - Generating png file (1200x900 pixels)...
     Info   :     [o] Writing file `img.png' ...
     Info   :     [o] Wrote file `img.png'.
     Info   : Printing scale ...
-    Info   : Elapsed time: 0.740 secs.
+    Info   : Elapsed time: ... secs.
     ========================================================================
     
 @end verbatim
@@ -640,7 +640,6 @@ any, none
 Use this option to plot one (or several) slice(s) of the mesh.  Provide
 as argument the equation of the plane@comma{} under the form
 @code{@{x@comma{}y@comma{}z@}=value} (combine with commas).
-This option works for free meshes only (tetrahedral elements).
 ,
 any, none}
 
@@ -657,6 +656,11 @@ Use this option to show or hide the tessellation.
 Use this option to show or hide the mesh.
 ,
 0 or 1, 1 if mesh loaded and no slice}
+
+@opt{-showmeshslice, logical,
+Use this option to show or hide the mesh slice(s).
+,
+0 or 1, 1 if existing slice(s)}
 
 The following options apply to the entities of the tessellation.
 
@@ -744,6 +748,18 @@ available arguments.
 ,
 any, none}
 
+@opt{-showeltedge, char_string,
+Specify the element whose edges must be shown. The argument can be:
+@samp{all} for all
+@comma{} @samp{@@@var{file_name}} to load element numbers from a
+file@comma{} or any expression based on the following arguments:
+@var{id}@comma{}
+@var{cenx}@comma{} @var{ceny}@comma{} @var{cenz}@comma{}
+@var{volume}@comma{}
+@var{elset_true}@comma{} @var{elset_body} and @var{elset_id}.
+,
+any, all if mesh loaded (and no tessellation) and nothing -show'd}
+
 @opt{-showelt1d, char_string,
 Specify the 1D elements to show. The argument can be: @samp{all} for all
 @comma{} @samp{@@@var{file_name}} to load element numbers from a
@@ -787,6 +803,11 @@ Specify the opening angle of the camera along the horizontal direction
 (degrees).
 ,
 any, 25}
+
+@opt{-camerasky, real real real,
+Specify the sky vector of the camera (vertical direction).
+,
+any,0 0 1}
 
 @opt{-cameraprojection, char_string,
 Specify the type of projection of the camera.
@@ -887,42 +908,35 @@ at @url{http://neper.sourceforge.net/neper_vs.html}.
 
 @enumerate 
 @c Example_beg
-@item    Print out tessellation n100-id1.tess as image `img.png'.
-@com{neper -VS -loadtess n100-id1.tess -print img}
-@item    Print out tessellation n100-id1.tess with a camera angle of 12 degrees, an image size of 400x400 pixels and an image antialiasing level of 2 (better quality).
-@com{neper -VS -loadtess n100-id1.tess -cameraangle 12 -imagesize 400 }
-@comx{400 -imageantialias 2 -print img}
-@item    Print out tessellation n100-id1.tess with the colours written in file `n100-id1.col' to render the grains. 
-@com{neper -VS -loadtess n100-id1.tess -datapolycol n100-id1.col }
-@comx{-cameraangle 12 -imagesize 400 400 -imageantialias 2 -print img}
+@item    Print out tessellation n100-id1.tess with a camera angle of 12 degrees, an image size of 900x450 pixels and an image antialiasing level of 2 (better quality).
+@com{neper -VS -loadtess n100-id1.tess -cameraangle 24 -imagesize 900 450 }
+@comx{-imageantialias 2 -print img}
 @item    Print out tessellation n100-id1.tess with the colours written in file `n100-id1.col' to render the grains and nicely shown vertices and edges.
 @com{neper -VS -loadtess n100-id1.tess -datapolycol n100-id1.col }
 @comx{-dataverrad 0.03 -dataedgerad 0.015 -datavercol red -dataedgecol }
-@comx{0:90:180 -cameraangle 12 -imagesize 400 400 -imageantialias 2 }
-@comx{-print img}
+@comx{0:90:180 -cameraangle 24 -imagesize 800 400 -imageantialias 2 -print img}
 @item    Print out tessellation n100-id1.tess with the grains coloured according to their orientations (orientation file: `n100-id1.ori').
-@com{neper -VS -loadtess n100-id1.tess -datapolycol }
-@comx{ori=n100-id1.ori -cameraangle 12 -imagesize 400 400 }
-@comx{-imageantialias 2 -print img}
+@com{neper -VS -loadtess n100-id1.tess -datapolycol ori=n100-id1.ori }
+@comx{-cameraangle 24 -imagesize 900 450 -imageantialias 2 -print img}
 @item    Print out mesh n100-id1.msh as image `img.png'.  Set the radius of the element edges to 0.0015 and the radius of the 1D element edges to 0.0045.
 @com{neper -VS -loadmesh n100-id1.msh -dataeltedgerad 0.0015 }
-@comx{-dataelt1drad 0.0045 -cameraangle 12 -imagesize 400 400 }
-@comx{-imageantialias 2 -print img}
+@comx{-dataelt1drad 0.0045 -cameraangle 24 -imagesize 900 450 -imageantialias }
+@comx{2 -print img}
 @item    Print out mesh n100-id1.msh with the colours written in file `n100-id1.col' to render the grains. 
-@com{neper -VS -loadmesh n100-id1.msh -dataelsetcol }
-@comx{ori=n100-id1.ori -dataeltedgerad 0.0015 -dataelt1drad 0.0045 }
-@comx{-cameraangle 12 -imagesize 400 400 -imageantialias 2 -print img}
+@com{neper -VS -loadmesh n100-id1.msh -dataelsetcol ori=n100-id1.ori }
+@comx{-dataeltedgerad 0.0015 -dataelt1drad 0.0045 -cameraangle 24 -imagesize }
+@comx{900 450 -imageantialias 2 -print img}
 @item    Print out mesh n100-id1.msh, but only the inner grains.
 @com{neper -VS -loadmesh n100-id1.msh -dataelsetcol ori=n100-id1.ori }
-@comx{-showelset "body>0" -dataeltedgerad 0.0015 -dataelt1drad 0.0045 }
-@comx{-cameraangle 12 -imagesize 400 400 -imageantialias 2 -print img}
+@comx{-showelset 'body>0' -dataeltedgerad 0.0015 -dataelt1drad 0.0045 }
+@comx{-cameraangle 24 -imagesize 900 450 -imageantialias 2 -print img}
 @item    Print out mesh n100-id1.msh, but only the elements with z<0.5.
 @com{neper -VS -loadmesh n100-id1.msh -dataelsetcol ori=n100-id1.ori }
-@comx{-showelt "cenz<0.5" -dataeltedgerad 0.0015 -dataelt1drad 0.0045 }
-@comx{-cameraangle 12 -imagesize 400 400 -imageantialias 2 -print img}
+@comx{-showelt 'cenz<0.5' -dataeltedgerad 0.0015 -dataelt1drad 0.0045 }
+@comx{-cameraangle 24 -imagesize 900 450 -imageantialias 2 -print img}
 @item    Print out 3 slices of mesh n100-id1.msh.
 @com{neper -VS -loadmesh n100-id1.msh -dataelsetcol ori=n100-id1.ori }
-@comx{-slicemesh "x=0.5,y=0.5,z=0.5" -cameraangle 12 -imagesize 400 }
-@comx{400 -imageantialias 2 -print img}
+@comx{-slicemesh 'x=0.5,y=0.5,z=0.5' -cameraangle 24 -imagesize 900 450 }
+@comx{-imageantialias 2 -print img}
 @c Example_end
 @end enumerate

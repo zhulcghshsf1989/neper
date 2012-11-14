@@ -4,6 +4,4 @@
 
 extern void Res_mm (struct IN, struct GEO, struct NODES,
                     struct MESH*, struct MESH*, struct MESH*, struct MESH*,
-		    int**, struct GERMSET);
-
-extern void Res_mm_tr (struct IN In, struct GERMSET GermSet, int SiteQty, int **SiteType, double **SiteCoo);
+		    int**);

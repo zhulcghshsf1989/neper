@@ -23,7 +23,7 @@ RotFaceVerNb (struct POLYMOD *pPolymod, int *BadVer, int Face)
 			   (*pPolymod).
 			   FaceVerNb[Face][(*pPolymod).FaceVerQty[Face]],
 			   0) != -1)
-    oneDIntRotElts ((*pPolymod).FaceVerNb[Face], 1,
+    ut_array_1d_int_rotate ((*pPolymod).FaceVerNb[Face] + 1,
 		    (*pPolymod).FaceVerQty[Face], -1);
 
   /*for(i=0;i<=(*pPolymod).FaceVerQty[Face];i++)

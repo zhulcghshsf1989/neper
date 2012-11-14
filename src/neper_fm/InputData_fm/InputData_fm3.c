@@ -10,46 +10,28 @@ SetDefaultOptions_fm (struct IN *pIn, struct GEOPARA *pGeoPara)
 {
   /* General options --------------------------------------- */
 
-  (*pIn).verbosity = 0;
   (*pIn).nset = ut_alloc_1d_char (1000);
   sprintf ((*pIn).nset, "faces");
   (*pIn).faset = ut_alloc_1d_char (100);
   (*pIn).faset[0] = '\0';
 
-  (*pIn).printff = 0;
-
   (*pIn).ingeo = NULL;
-  (*pIn).geo = NULL;
-  (*pIn).ply = NULL;
   (*pIn).msh = NULL;
   (*pIn).geof = NULL;
   (*pIn).fev1 = NULL;
   (*pIn).fev2 = NULL;
   (*pIn).fev3 = NULL;
-  (*pIn).printfod = 1;
-  (*pIn).fod = NULL;
-  (*pIn).printstatmesh = 0;
-  (*pIn).printstattess = 0;
-  (*pIn).stt0 = NULL;
-  (*pIn).stt1 = NULL;
-  (*pIn).stt2 = NULL;
-  (*pIn).stt2a = NULL;
   (*pIn).stn  = NULL;
-  (*pIn).stm1 = NULL;
-  (*pIn).stm2 = NULL;
-  (*pIn).stm3 = NULL;
-  (*pIn).stm4 = NULL;
-  (*pIn).stm5 = NULL;
+  (*pIn).ste  = NULL;
+  (*pIn).stelset = NULL;
   (*pIn).body = NULL;
 
   (*pIn).format = ut_alloc_1d_char (5);
   sprintf ((*pIn).format, "msh");
 
   /* Options for the geometry modification ----------------- */
-  (*pGeoPara).maxff = 0;
-  (*pIn).mloop = 2;
   (*pIn).morder = 1;
-  (*pIn).meshdim = 3;
+  (*pIn).meshdim = -1;
   (*pIn).mesh = 0;
   (*pIn).remesh = 0;
   
@@ -66,10 +48,6 @@ SetDefaultOptions_fm (struct IN *pIn, struct GEOPARA *pGeoPara)
 
   (*pGeoPara).clmin = 0;
   (*pGeoPara).pcl = 2;
-  (*pGeoPara).sel = -1;
-  (*pGeoPara).rsel = -1;	/* relatively to the default value */
-  (*pGeoPara).dboundsel = -1;
-  (*pGeoPara).dboundrsel = -1;	/* relatively to the default value */
   (*pIn).mesh2dalgo = ut_alloc_1d_char (100);
   (*pIn).mesh3dalgo = ut_alloc_1d_char (100);
   (*pIn).mesh3dreport = 0;
@@ -111,10 +89,6 @@ SetDefaultOptions_fm (struct IN *pIn, struct GEOPARA *pGeoPara)
   (*pIn).remap2 = NULL;
   (*pIn).remapspec = NULL;
 
-  /* Other options ----------------------------------------- */
-  /* Options for debugging --------------------------------- */
-  (*pIn).maxedgedelqty = INT_MAX;
-
   (*pIn).nodecoo = NULL;
   (*pIn).loadmesh = NULL;
 
@@ -140,27 +114,24 @@ SetOptions_fm (struct IN *pIn, struct GEOPARA *pGeoPara,
   sprintf (ArgList[++ArgQty], "-v");
   sprintf (ArgList[++ArgQty], "-gmsh");
 
-  // Geometry regularization options -----------------------------------
-  sprintf (ArgList[++ArgQty], "-maxff");
-  sprintf (ArgList[++ArgQty], "-sel");
-  sprintf (ArgList[++ArgQty], "-rsel");
-  sprintf (ArgList[++ArgQty], "-mloop");
-
   // General meshing options -------------------------------------------
   sprintf (ArgList[++ArgQty], "-cl");
   sprintf (ArgList[++ArgQty], "-rcl");
   sprintf (ArgList[++ArgQty], "-cl3");
   sprintf (ArgList[++ArgQty], "-rcl3");
   sprintf (ArgList[++ArgQty], "-pl");
-  sprintf (ArgList[++ArgQty], "-pcl");          // deprecated
   sprintf (ArgList[++ArgQty], "-clmin");
-  sprintf (ArgList[++ArgQty], "-morder");
   sprintf (ArgList[++ArgQty], "-order");
   sprintf (ArgList[++ArgQty], "-dim");
   sprintf (ArgList[++ArgQty], "-mesh2dalgo");
   sprintf (ArgList[++ArgQty], "-mesh3dalgo");
   sprintf (ArgList[++ArgQty], "-mesh3doptiexpr");
   sprintf (ArgList[++ArgQty], "-mesh3doptidisexpr");
+  
+  // development options
+  sprintf (ArgList[++ArgQty], "-meshface");
+  sprintf (ArgList[++ArgQty], "-meshpoly");
+  sprintf (ArgList[++ArgQty], "-mesh3dreport");
 
   // Mesh partitionning options ----------------------------------------
   sprintf (ArgList[++ArgQty], "-partqty");
@@ -178,8 +149,9 @@ SetOptions_fm (struct IN *pIn, struct GEOPARA *pGeoPara,
   sprintf (ArgList[++ArgQty], "-faset");
 
   // Geometry and mesh statistics options ------------------------------
-  sprintf (ArgList[++ArgQty], "-stattess");
-  sprintf (ArgList[++ArgQty], "-statmesh");
+  sprintf (ArgList[++ArgQty], "-statnode");
+  sprintf (ArgList[++ArgQty], "-statelt");
+  sprintf (ArgList[++ArgQty], "-statelset");
 
   // Advanced options --------------------------------------------------
   sprintf (ArgList[++ArgQty], "-mesh2dmaxtime");
@@ -207,12 +179,7 @@ SetOptions_fm (struct IN *pIn, struct GEOPARA *pGeoPara,
   sprintf (ArgList[++ArgQty], "-dbound");
   sprintf (ArgList[++ArgQty], "-dboundrcl");
   sprintf (ArgList[++ArgQty], "-dboundcl");
-  sprintf (ArgList[++ArgQty], "-dboundpcl"); // deprecated
   sprintf (ArgList[++ArgQty], "-dboundpl");
-  sprintf (ArgList[++ArgQty], "-dboundsel");
-  sprintf (ArgList[++ArgQty], "-dboundrsel");
-
-  // Devel options --------------------------------------- */
   
   /* Reading arguments ----------------------------------- */
   for (i = 1; i < argc; i++)
@@ -225,13 +192,6 @@ SetOptions_fm (struct IN *pIn, struct GEOPARA *pGeoPara,
 	i--;
 
 	(*pIn).ingeo = ut_arg_nextaschar (argv, &i, Arg);
-	/*
-	if (ut_file_testformat ((*pIn).ingeo, "tess") == 0)
-	{
-	  ut_print_message (2, 0, "File of wrong format (tess)\n");
-	  abort ();
-	}
-	*/
 	(*pIn).mesh = 1;
       }
       else
@@ -264,20 +224,12 @@ SetOptions_fm (struct IN *pIn, struct GEOPARA *pGeoPara,
 	(*pIn).body = ut_arg_nextaschar (argv, &i, Arg);
 	ut_string_body ((*pIn).body, (*pIn).body);
       }
-      else if (strcmp (Arg, "-v") == 0 && i < argc - 1)
-	(*pIn).verbosity = ut_arg_nextasint (argv, &i, Arg, 0, 1);
 
       else if (strcmp (Arg, "-gmsh") == 0 && i < argc - 1)
       {
 	ut_free_1d_char ((*pIn).gmsh);
 	(*pIn).gmsh = ut_arg_nextaschar (argv, &i, Arg);
       }
-
-      /* Options for the geometry modification ---------------------------- */
-      else if (strcmp (Arg, "-maxff") == 0 && i < argc - 1)
-	(*pGeoPara).maxff = ut_arg_nextasreal (argv, &i, Arg, 0., 180.);
-      else if (strcmp (Arg, "-mloop") == 0 && i < argc - 1)
-	(*pIn).mloop = ut_arg_nextasint (argv, &i, Arg, 0, INT_MAX);
 
       /* Options for the meshing ----------------------------------------- */
 
@@ -314,22 +266,12 @@ SetOptions_fm (struct IN *pIn, struct GEOPARA *pGeoPara,
 	(*pGeoPara).dboundcl = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
       else if (strcmp (Arg, "-dboundrcl") == 0 && i < argc - 1)
 	(*pGeoPara).dboundrcl = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
-      else if ((strcmp (Arg, "-dboundpcl") == 0 && i < argc - 1)
-            || (strcmp (Arg, "-dboundpl") == 0 && i < argc - 1))
+      else if ((strcmp (Arg, "-dboundpl") == 0 && i < argc - 1))
 	(*pGeoPara).dboundpcl = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
-      else if (strcmp (Arg, "-dboundsel") == 0 && i < argc - 1)
-	(*pGeoPara).dboundsel = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
-      else if (strcmp (Arg, "-dboundrsel") == 0 && i < argc - 1)
-	(*pGeoPara).dboundrsel = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
       else if (strcmp (Arg, "-clmin") == 0 && i < argc - 1)
 	(*pGeoPara).clmin = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
-      else if ((strcmp (Arg, "-pl") == 0 && i < argc - 1)
-            || (strcmp (Arg, "-pcl") == 0 && i < argc - 1))
+      else if ((strcmp (Arg, "-pl") == 0 && i < argc - 1))
 	(*pGeoPara).pcl = ut_arg_nextasreal (argv, &i, Arg, 1., 1.e30);
-      else if (strcmp (Arg, "-sel") == 0 && i < argc - 1)
-	(*pGeoPara).sel = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
-      else if (strcmp (Arg, "-rsel") == 0 && i < argc - 1)
-	(*pGeoPara).rsel = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
       else if (strcmp (Arg, "-mesh2dalgo") == 0 && i < argc - 1)
       {
 	ut_free_1d_char ((*pIn).mesh2dalgo);
@@ -350,15 +292,33 @@ SetOptions_fm (struct IN *pIn, struct GEOPARA *pGeoPara,
 	ut_free_1d_char ((*pIn).mesh3doptidisexpr);
 	(*pIn).mesh3doptidisexpr = ut_arg_nextaschar (argv, &i, Arg);
       }
+      
+      // development options 
+      else if (strcmp (Arg, "-mesh3dreport") == 0 && i < argc - 1)
+	(*pIn).mesh3dreport = ut_arg_nextasint (argv, &i, Arg, 0, INT_MAX);
+      else if (strcmp (Arg, "-meshpoly") == 0 && i < argc - 1)
+      {
+	ut_free_1d_char ((*pIn).meshpoly);
+	(*pIn).meshpoly = ut_arg_nextaschar (argv, &i, Arg);
+      }
+      else if (strcmp (Arg, "-meshface") == 0 && i < argc - 1)
+      {
+	ut_free_1d_char ((*pIn).meshface);
+	(*pIn).meshface = ut_arg_nextaschar (argv, &i, Arg);
+      }
+      // end of development options
+      
       else if ((strcmp (Arg, "-morder") == 0 && i < argc - 1)
             || (strcmp (Arg, "-order") == 0 && i < argc - 1))
 	(*pIn).morder = ut_arg_nextasint (argv, &i, Arg, 1, 2);
       else if (strcmp (Arg, "-dim") == 0 && i < argc - 1)
 	(*pIn).meshdim = ut_arg_nextasint (argv, &i, Arg, 0, 3);
-      else if (strcmp (Arg, "-stattess") == 0 && i < argc - 1)
-	(*pIn).printstattess = ut_arg_nextasint (argv, &i, Arg, 0, 1);
-      else if (strcmp (Arg, "-statmesh") == 0 && i < argc - 1)
-	(*pIn).printstatmesh = ut_arg_nextasint (argv, &i, Arg, 0, 1);
+      else if (strcmp (Arg, "-statnode") == 0 && i < argc - 1)
+	(*pIn).stn = ut_arg_nextaschar (argv, &i, Arg);
+      else if (strcmp (Arg, "-statelt") == 0 && i < argc - 1)
+	(*pIn).ste = ut_arg_nextaschar (argv, &i, Arg);
+      else if (strcmp (Arg, "-statelset") == 0 && i < argc - 1)
+	(*pIn).stelset = ut_arg_nextaschar (argv, &i, Arg);
       else if (strcmp (Arg, "-mesh3dmaxtime") == 0 && i < argc - 1)
 	(*pIn).mesh3dmaxtime = ut_arg_nextasreal (argv, &i, Arg, 0, DBL_MAX);
       else if (strcmp (Arg, "-mesh2drmaxtime") == 0 && i < argc - 1)
@@ -501,57 +461,9 @@ SetOptions_fm (struct IN *pIn, struct GEOPARA *pGeoPara,
 	(*pIn).partrenumber = ut_arg_nextasint (argv, &i, Arg, 0, 1);
       else if (strcmp (Arg, "-partsets") == 0 && i < argc - 1)
 	(*pIn).partsets = ut_arg_nextasint (argv, &i, Arg, 0, 1);
-      /*
-         else if(strcmp(Arg,"-forcemerge")==0)
-         {
-         i++;
-         if(isdigit(Arg[0])!=0 || argv[i][0]=='.')
-         sscanf(Arg,"%d",&(*pGeoPara).forcemergeqty);
-         else
-         ut_arg_badarg(pname);
-
-         if((*pGeoPara).forcemergeqty<=argc-i-1)
-         {
-         (*pGeoPara).forcemerge=ut_alloc_1d_int((*pGeoPara).forcemergeqty+1);
-         (*pGeoPara).forcemerge[0]=(*pGeoPara).forcemergeqty;
-         for(j=1;j<=(*pGeoPara).forcemergeqty;j++)
-         {
-         i++;
-         if(isdigit(Arg[0])!=0 || argv[i][0]=='.')
-         sscanf(Arg,"%d",&(*pGeoPara).forcemerge[j]);
-         else
-         ut_arg_badarg(pname);
-         }
-         inimaxff=1;
-         }
-         else
-         ut_arg_badarg(pname);
-         }
-         else if(strcmp(Arg,"-forbidmerge")==0)
-         {
-         i++;
-         sscanf(Arg,"%d",&(*pGeoPara).forbidmergeqty);
-         if((*pGeoPara).forbidmergeqty<=argc-i-1)
-         {
-         (*pGeoPara).forbidmerge=ut_alloc_1d_int((*pGeoPara).forbidmergeqty+1);
-         (*pGeoPara).forbidmerge[0]=(*pGeoPara).forbidmergeqty;
-         for(j=1;j<=(*pGeoPara).forbidmergeqty;j++)
-         {
-         i++;
-         if(isdigit(Arg[0])!=0 || argv[i][0]=='.')
-         sscanf(Arg,"%d",&(*pGeoPara).forbidmerge[j]);
-         else
-         ut_arg_badarg(pname);
-         }
-         }
-         else
-         ut_arg_badarg(pname);
-         }
-       */
+     
       else
-      {
-	  ut_arg_error (Arg, "");
-      }
+	ut_arg_error (Arg, "");
     }
   }
 

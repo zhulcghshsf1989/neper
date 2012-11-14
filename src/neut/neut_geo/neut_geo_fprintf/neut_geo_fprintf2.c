@@ -8,11 +8,32 @@
 void
 GEHead (struct GEO Geo, FILE * file)
 {
+  int i, qty;
+
   fprintf (file, "***tess\n");
   fprintf (file, " **format\n");
   fprintf (file, "   1.10\n");
   fprintf (file, " **general\n");
   fprintf (file, "   %d %d %s %s\n", Geo.N, Geo.Id, Geo.Type, Geo.morpho);
+
+  if (Geo.PolyId != NULL)
+  {
+    fprintf (file, "  *polyid\n");
+    qty = 0;
+    for (i = 1; i <= Geo.PolyQty; i++)
+      ut_print_wnc_int_header (file, Geo.PolyId[i], &qty, 72, "  ");
+    fprintf (file, "\n");
+  }
+
+  if (Geo.maxff > 0)
+  {
+    fprintf (file, "  *regularization\n");
+    fprintf (file, "   %.12f %.12f", Geo.maxff, Geo.sel);
+    if (Geo.dbound != NULL)
+      fprintf (file, " %s %.12f\n", Geo.dbound, Geo.dboundsel);
+    else
+      fprintf (file, " nobound\n");
+  }
 
   return;
 }

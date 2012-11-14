@@ -564,7 +564,7 @@ neut_geo_edge_selratio (struct GEO Geo, struct GEOPARA GeoPara, int edge,
 {
   double sel;
   
-  if (GeoPara.dboundcl < 0)
+  if (! GeoPara.dbound)
     sel = GeoPara.sel;
   else 
   {
@@ -1660,4 +1660,44 @@ neut_geo_faces_edges (struct GEO Geo, int* face, int faceqty, int** pedge, int* 
   ut_array_1d_int_sort_uniq (*pedge, *pedgeqty, pedgeqty);
 
   return;
+}
+
+int
+neut_geo_edge_fake (struct GEO Geo, int edge)
+{
+  int domedge, face, domface1, domface2, poly1, poly2, j, status;
+
+  status = 0;
+
+  if (! strcmp (Geo.DomType, "cylinder"))
+  {
+    if (Geo.EdgeDom[edge][0] == 1)
+    {
+      domedge = Geo.EdgeDom[edge][1];
+      domface1 = Geo.DomEdgeFaceNb[domedge][0];
+      domface2 = Geo.DomEdgeFaceNb[domedge][1];
+
+      poly1 = -1;
+      poly2 = -1;
+      for (j = 0; j < Geo.EdgeFaceQty[edge]; j++)
+      {
+	face = Geo.EdgeFaceNb[edge][j];
+	if (Geo.FaceDom[face][0] == 2)
+	{
+	  if (Geo.FaceDom[face][1] == domface1)
+	    poly1 = Geo.FacePoly[face][0];
+	  if (Geo.FaceDom[face][1] == domface2)
+	    poly2 = Geo.FacePoly[face][0];
+	}
+      }
+
+      if (poly1 < 0 || poly2 < 0)
+	ut_error_reportbug ();
+
+      if (domface1 > 2 && domface2 > 2 && poly1 == poly2)
+	status = 1;
+    }
+  }
+
+  return status;
 }

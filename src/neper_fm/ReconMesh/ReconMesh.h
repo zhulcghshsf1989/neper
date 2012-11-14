@@ -5,9 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "structAll.h"
 #include "../structIn_fm.h"
-#include "AllUtils.h"
 #include "neut.h"
 #include "ReconMesh0.h"
 

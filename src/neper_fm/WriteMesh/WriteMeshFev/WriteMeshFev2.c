@@ -20,7 +20,8 @@ neut_mesh_fprintf_fev_nodes (FILE * file, struct NODES Nodes)
   {
     fprintf (file, "%d", i - 1);
     for (j = 0; j < 3; j++)
-      fprintf (file, "  %.12f", Nodes.NodeCoo[i][j]);
+      fprintf (file, "  %.12f", 
+	  (fabs (Nodes.NodeCoo[i][j]) < 1e-12) ? 0 : Nodes.NodeCoo[i][j]);
     fprintf (file, "\n");
   }
 
@@ -28,17 +29,10 @@ neut_mesh_fprintf_fev_nodes (FILE * file, struct NODES Nodes)
 }
 
 void
-neut_mesh_fprintf_fev_elts (FILE * file, struct GEO Geo, struct MESH Mesh)
+neut_mesh_fprintf_fev_elts (FILE * file, struct GEO Geo,
+                            struct NSET NSet2D, struct MESH Mesh)
 {
   int i, j, fod;
-  char **fodnames = ut_alloc_2d_char (7, 3);
-
-  sprintf (fodnames[1], "x0");
-  sprintf (fodnames[2], "x1");
-  sprintf (fodnames[3], "y0");
-  sprintf (fodnames[4], "y1");
-  sprintf (fodnames[5], "z0");
-  sprintf (fodnames[6], "z1");
 
   if (Mesh.Dimension == 2 && Mesh.EltOrder == 1)
   {
@@ -51,7 +45,7 @@ neut_mesh_fprintf_fev_elts (FILE * file, struct GEO Geo, struct MESH Mesh)
 
       fod = - ut_array_1d_int_min (Geo.FacePoly[Mesh.EltElset[i]], 2);
 
-      fprintf (file, " %s\n", fodnames[fod]);
+      fprintf (file, " %s\n", NSet2D.names[fod]);
     }
   }
   else if (Mesh.Dimension == 2 && Mesh.EltOrder == 2)
@@ -69,7 +63,7 @@ neut_mesh_fprintf_fev_elts (FILE * file, struct GEO Geo, struct MESH Mesh)
 
       fod = - ut_array_1d_int_min (Geo.FacePoly[Mesh.EltElset[i]], 2);
 
-      fprintf (file, " %s\n", fodnames[fod]);
+      fprintf (file, " %s\n", NSet2D.names[fod]);
     }
   }
   else if (Mesh.Dimension == 3 && Mesh.EltOrder == 1)
@@ -102,13 +96,13 @@ neut_mesh_fprintf_fev_elts (FILE * file, struct GEO Geo, struct MESH Mesh)
 
 void
 neut_mesh_fprintf_fev_skinelts (FILE * file, struct GEO Geo, struct MESH Mesh2D,
-				struct MESH Mesh3D, struct NODES Nodes, char* surflist)
+				struct MESH Mesh3D, struct NODES Nodes,
+				struct NSET NSet2D, char* surflist)
 {
   double res;
   int i, j, k, l, eltnb, eltqty, elt3dqty;
   int* elt3d = ut_alloc_1d_int (2);
-  char **fodnames = ut_alloc_2d_char (7, 3);
-  double *n = ut_alloc_1d (3);
+  double *n  = ut_alloc_1d (3);
   double *n0 = ut_alloc_1d (3);
   int seqo1[3] = { 0, 1, 2 };
   int seqo2[6] = { 0, 3, 1, 4, 2, 5 };
@@ -117,18 +111,11 @@ neut_mesh_fprintf_fev_skinelts (FILE * file, struct GEO Geo, struct MESH Mesh2D,
   
   ut_string_separate (surflist, ',', &name, &qty);
 
-  sprintf (fodnames[1], "x0");
-  sprintf (fodnames[2], "x1");
-  sprintf (fodnames[3], "y0");
-  sprintf (fodnames[4], "y1");
-  sprintf (fodnames[5], "z0");
-  sprintf (fodnames[6], "z1");
-
   fprintf (file, "%d\n", qty);
 
-  for (i = 1; i <= 6; i++)
+  for (i = 1; i <= Geo.DomFaceQty; i++)
   {
-    if (ut_string_inlist (surflist, ',', fodnames[i]) == 0)
+    if (ut_string_inlist (surflist, ',', NSet2D.names[i]) == 0)
       continue;
 
     // calculating number of elements
@@ -138,29 +125,8 @@ neut_mesh_fprintf_fev_skinelts (FILE * file, struct GEO Geo, struct MESH Mesh2D,
   
     fprintf (file, "%d\n", eltqty);
 
-    switch (i)
-    {
-      case 1:
-	ol_r_set_this (n0,-1, 0, 0);
-	break;
-      case 2:
-	ol_r_set_this (n0, 1, 0, 0);
-	break;
-      case 3:
-	ol_r_set_this (n0, 0,-1, 0);
-	break;
-      case 4:
-	ol_r_set_this (n0, 0, 1, 0);
-	break;
-      case 5:
-	ol_r_set_this (n0, 0, 0,-1);
-	break;
-      case 6:
-	ol_r_set_this (n0, 0, 0, 1);
-	break;
-      default:
-	abort ();
-    }
+    ut_array_1d_memcpy (n0, 3, Geo.DomFaceEq[i] + 1);
+    ut_array_1d_scale (n0, 3, -1);
 
     for (j = 1; j <= Geo.DomTessFaceQty[i]; j++)
     {
@@ -221,8 +187,8 @@ neut_mesh_fprintf_fev_skinelts (FILE * file, struct GEO Geo, struct MESH Mesh2D,
 
   ut_free_1d (n);
   ut_free_1d (n0);
-  ut_free_2d_char (fodnames, 7);
   ut_free_1d_int (elt3d);
+  ut_free_2d_char (name, qty);
 
   return;
 }

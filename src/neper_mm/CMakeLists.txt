@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.6)
-project(neper_mm)
+project(neper_mm C)
 
 option (HAVE_GSL         "Use the GNU Scientific Library (GSL)" ON )
 option (HAVE_LIBMATHEVAL "Use libmatheval"                      ON )
@@ -7,17 +7,18 @@ option (HAVE_LIBSCOTCH   "Use libscotch"                        OFF)
 
 include_directories("${PROJECT_BINARY_DIR}")
 
-add_definitions(-Wall -W -O3)
+add_definitions(-Wall -W -g -O3)
+set (CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
 
 add_library (neper_mm
 ./Res_mm/Res_mm1.c
 ./Res_mm/Res_mm2.c
+./Res_mm/Res_mm3.c
+./Res_mm/Res_mm4.c
 ./neper_mm.c
 ./RMeshing/RMeshing2.c
-./RMeshing/RMeshingFNId/RMeshingFNId1.c
-./RMeshing/RMeshingFNId/RMeshingFNId2.c
-./RMeshing/RMeshingFGeo/RMeshingFGeo2.c
 ./RMeshing/RMeshingFGeo/RMeshingFGeo1.c
+./RMeshing/RMeshingFVox/RMeshingFVox1.c
 ./RMeshing/RMeshing1.c
 ./InputData_mm/InputData_mm2.c
 ./InputData_mm/InputData_mm3.c

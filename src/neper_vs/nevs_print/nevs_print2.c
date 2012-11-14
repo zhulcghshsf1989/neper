@@ -30,7 +30,24 @@ nevs_print_pov2png (char* filename, int imagewidth, int imageheight,
     sprintf (command, "povray Input_File_Name=%s +O%s +W%d +H%d -D 2>/dev/null",
 	     filename, outfilename, imagewidth, imageheight);
 
-  system (command);
+  if (system (command) == -1 || ! ut_file_exist (outfilename))
+  {
+    ut_print_message (2, 3, "File `%s' could not be generated!\n", outfilename);
+    
+    // checking (again) if povray is present
+    neut_povray_check_error ();
+
+
+    if (imageantialias > 0)
+      sprintf (command, "povray Input_File_Name=%s +O%s +W%d +H%d -D +A0.%d", 
+	       filename, outfilename, imagewidth, imageheight, imageantialias);
+    else
+      sprintf (command, "povray Input_File_Name=%s +O%s +W%d +H%d -D",
+	       filename, outfilename, imagewidth, imageheight);
+
+    // otherwise, printing debugging info.
+    ut_print_message (2, 3, "To debug: use option `-imageformat pov' and run command `%s'.\n", command);
+  }
 
   ut_file_closemessage (outfilename, "w");
 

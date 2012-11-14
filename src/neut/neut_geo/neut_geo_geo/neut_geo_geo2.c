@@ -12,8 +12,11 @@ neut_geo_geoGen (struct GEO GeoA, struct GEO *pGeoB)
   neut_geo_geoFaceQty (GeoA, pGeoB);
   neut_geo_geoPolyQty (GeoA, pGeoB);
 
-  (*pGeoB).version = ut_alloc_1d_char (strlen (GeoA.version) + 1);
-  strcpy ((*pGeoB).version, GeoA.version);
+  if (GeoA.version != NULL)
+  {
+    (*pGeoB).version = ut_alloc_1d_char (strlen (GeoA.version) + 1);
+    strcpy ((*pGeoB).version, GeoA.version);
+  }
 
   (*pGeoB).N = GeoA.N;
   (*pGeoB).Id = GeoA.Id;
@@ -23,6 +26,22 @@ neut_geo_geoGen (struct GEO GeoA, struct GEO *pGeoB)
 
   (*pGeoB).Type = ut_alloc_1d_char (strlen (GeoA.Type) + 1);
   strcpy ((*pGeoB).Type, GeoA.Type);
+
+  if (GeoA.PolyId != NULL)
+  {
+    (*pGeoB).PolyId = ut_alloc_1d_int (GeoA.PolyQty + 1);
+    ut_array_1d_int_memcpy ((*pGeoB).PolyId + 1, GeoA.PolyQty,
+	GeoA.PolyId + 1);
+  }
+
+  (*pGeoB).sel = GeoA.sel;
+  (*pGeoB).maxff = GeoA.maxff;
+  if (GeoA.dbound != NULL)
+  {
+    (*pGeoB).dbound = ut_alloc_1d_char (strlen (GeoA.dbound) + 1);
+    strcpy ((*pGeoB).dbound, GeoA.dbound);
+    (*pGeoB).dboundsel = GeoA.dboundsel;
+  }
 
   return;
 }

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.6)
-project(neper_fm)
+project(neper_fm C)
 
 option (HAVE_GSL         "Use the GNU Scientific Library (GSL)" ON )
 option (HAVE_LIBMATHEVAL "Use libmatheval"                      ON )
@@ -7,23 +7,12 @@ option (HAVE_LIBSCOTCH   "Use libscotch"                        OFF)
 
 include_directories("${PROJECT_BINARY_DIR}")
 
-add_definitions(-Wall -W -O3)
+add_definitions(-Wall -W -g -O3)
+set (CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
 
 add_library (neper_fm
-./RegularizeGeo/MergeGeo/MergeGeo2.c
-./RegularizeGeo/MergeGeo/MergeGeo1.c
-./RegularizeGeo/MergeGeo/DeleteEdge/DeleteEdge1.c
-./RegularizeGeo/MergeGeo/DeleteEdge/DeleteEdge2.c
-./RegularizeGeo/MergeGeo/DeleteEdge/FaceFF/FaceFFPlanes2.c
-./RegularizeGeo/MergeGeo/DeleteEdge/FaceFF/FaceFFPlanes1.c
-./RegularizeGeo/MergeGeo/DeleteEdge/FaceFF/FaceFF1.c
-./RegularizeGeo/MergeGeo/DeleteEdge/DeleteEdge3.c
-./RegularizeGeo/MergeGeo/DeleteEdge/DeleteEdge5.c
-./RegularizeGeo/MergeGeo/DeleteEdge/DeleteEdge4.c
-./RegularizeGeo/RegularizeGeo1.c
-./MStat/MStat1.c
-./MStat/MStat2.c
-./MStat/MStat3.c
+./nem_stat/nem_stat1.c
+./nem_stat/nem_stat2.c
 ./ReadMesh/ReadMesh1.c
 ./Meshing0D/Meshing0D2.c
 ./Meshing0D/Meshing0D1.c
@@ -38,8 +27,6 @@ add_library (neper_fm
 ./nefm/nefm_mesh_gmsh/nefm_mesh_gmsh3.c
 ./nefm/nefm_mesh_gmsh/nefm_mesh_gmsh2.c
 ./nefm/nefm_mesh_gmsh/nefm_mesh_gmsh1.c
-./GeoStuff/GeoStuff2.c
-./GeoStuff/GeoStuff1.c
 ./nefm_init/nefm_init1.c
 ./nefm_init/nefm_init2.c
 ./Meshing3D/Meshing3D1.c

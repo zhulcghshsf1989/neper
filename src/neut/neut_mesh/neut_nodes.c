@@ -240,18 +240,6 @@ neut_nodes_nodes (struct NODES Old, struct NODES* pNew)
 }
 
 void
-neut_nodes_deform (struct NODES* pNodes, double* gsize)
-{
-  int i, j;
-
-  for (i = 1; i <= (*pNodes).NodeQty; i++)
-    for (j = 0; j < 3; j++)
-      (*pNodes).NodeCoo[i][j] *= gsize[j];
-
-  return;
-}
-
-void
 neut_nodes_proj_alongontomesh (struct NODES *pN, double* n, struct NODES N, struct MESH M, int elset)
 {
   int i, j, elt, status;
@@ -350,14 +338,17 @@ neut_point_proj_alongontomesh (double* Coo, double* n, struct NODES N, struct ME
 void
 neut_nodes_fprintf_gmsh (FILE* file, struct NODES Nodes)
 {
-  int i;
+  int i, j;
 
   fprintf (file, "$Nodes\n");
   fprintf (file, "%d\n", Nodes.NodeQty);
   for (i = 1; i <= Nodes.NodeQty; i++)
   {
-    fprintf (file, "%d ", i);
-    ut_array_1d_fprintf (file, Nodes.NodeCoo[i], 3, "%.12f");
+    fprintf (file, "%d", i);
+    for (j = 0; j < 3; j++)
+      fprintf (file, " %.12f",
+	  (fabs (Nodes.NodeCoo[i][j]) < 1e-12) ? 0 : Nodes.NodeCoo[i][j]);
+    fprintf (file, "\n");
   }
   fprintf (file, "$EndNodes\n");
 
@@ -412,4 +403,64 @@ neut_nodes_eltdim (struct MESH Mesh0D,
   }
 
   return dim;
+}
+
+int
+neut_nodes_rmorphans (struct NODES* pNodes, struct MESH* pMesh, int*** pFoDNodes)
+{
+  int i, j, nodeqty;
+  int eltnodeqty = neut_elt_nodeqty ((*pMesh).EltType, (*pMesh).Dimension, (*pMesh).EltOrder);
+
+  if ((*pMesh).EltQty == 0)
+  {
+    neut_nodes_free (pNodes);
+    neut_nodes_set_zero (pNodes);
+    return 1;
+  }
+
+  if ((*pMesh).NodeElts == NULL)
+    neut_mesh_init_nodeelts (pMesh, (*pNodes).NodeQty);
+
+  int* old_new = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
+  int* new_old = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
+
+  nodeqty = 0;
+  for (i = 1; i <= (*pNodes).NodeQty; i++)
+    if ((*pMesh).NodeElts[i][0] != 0)
+    {
+      old_new[i] = ++nodeqty;
+      new_old[old_new[i]] = i;
+    }
+
+  for (i = 1; i <= nodeqty; i++)
+    ut_array_1d_memcpy ((*pNodes).NodeCoo[i], 3, (*pNodes).NodeCoo[new_old[i]]);
+
+  if ((*pNodes).NodeCl != NULL)
+    for (i = 1; i <= nodeqty; i++)
+      (*pNodes).NodeCl[i] = (*pNodes).NodeCl[new_old[i]];
+  
+  (*pNodes).NodeCoo = ut_realloc_2d_delline
+                        ((*pNodes).NodeCoo, (*pNodes).NodeQty + 1, nodeqty + 1);
+  (*pNodes).NodeCl = ut_realloc_1d ((*pNodes).NodeCl, nodeqty + 1);
+
+  (*pNodes).NodeQty = nodeqty;
+
+  for (i = 1; i <= (*pMesh).EltQty; i++)
+    for (j = 0; j < eltnodeqty; j++)
+      (*pMesh).EltNodes[i][j] = old_new[(*pMesh).EltNodes[i][j]];
+
+  if (pFoDNodes != NULL)
+    for (i = 1; i <= 6; i++)
+    {
+      for (j = 1; j <= (*pFoDNodes)[i][0]; j++)
+	(*pFoDNodes)[i][j] = old_new[(*pFoDNodes)[i][j]];
+
+      (*pFoDNodes)[i][0] -= ut_array_1d_int_deletencompress
+   	        ((*pFoDNodes)[i] + 1, (*pFoDNodes)[i][0], 0, (*pFoDNodes)[i][0]);
+    }
+
+  ut_free_1d_int (old_new);
+  ut_free_1d_int (new_old);
+
+  return 0;
 }

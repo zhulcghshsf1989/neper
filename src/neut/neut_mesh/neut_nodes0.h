@@ -26,9 +26,9 @@ extern void neut_nodes_fprintf_gmsh (FILE*, struct NODES);
 
 extern int neut_nodes_point_closestnode (struct NODES, double*, int*);
 
-extern void neut_nodes_deform (struct NODES*, double*);
-
 extern int  neut_nodes_eltdim (struct MESH, struct MESH,
 			       struct MESH, struct MESH, int);
+
+extern int neut_nodes_rmorphans (struct NODES*, struct MESH*, int***);
 
 #endif

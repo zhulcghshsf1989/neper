@@ -14,9 +14,14 @@ struct GEO
 
   int Id;             // identifier of the tessellation
 
-  char* morpho;       // morphology (poisson|centroid|cube|dodeca|tocta|custom)
+  char* morpho;       // morphology (poisson|cube|dodeca|tocta|custom)
 
   char* Type;         // type of tessellation (standard)
+
+  double sel;         // small edge length used for regularization
+  double maxff;       // fmax used for regularization
+  char* dbound;       // domain boundary definition
+  double dboundsel;   // domain boundary small edge length
 
   // VERTEX INFORMATION ------------------------------------------------
   
@@ -100,6 +105,8 @@ struct GEO
   int PolyQty;
 
   // For polyhedron i (i=1...PolyQty):
+
+  int* PolyId;
   
   double **CenterCoo; // CenterCoo[i][j] (j=0...2) are the 3 coordinates
                       // of the center.

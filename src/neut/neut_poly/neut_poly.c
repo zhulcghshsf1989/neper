@@ -106,10 +106,7 @@ neut_poly_tess (struct POLY Poly, struct TESS* pTess)
   GermSet.GermsCoo[1][2] = 2;
   GermSet.GermsCoo[1][3] = 3;
 
-  GermSet.ttype = 0;
   GermSet.NDensity = 1;
-  GermSet.randomize = 0;
-  GermSet.randomize2 = 0;
 
   Tessellation (GermSet, PolyArray, pTess);
 

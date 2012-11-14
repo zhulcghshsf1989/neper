@@ -5,91 +5,47 @@
 #include"neut_geo_test_lcl.h"
 
 int
-neut_geo_test (struct GEO Geo)
+neut_geo_test (struct GEO Geo, int verbosity)
 {
   int i;
   int res = 0;
-  int verbosity = 0;
+
+  if (verbosity)
+    ut_print_message (0, 1, "Checking vertices:\n");
   
-  /* Testing of the vertices */
-  if (verbosity >= 4)
-    printf ("Testing vertices: ");
   for (i = 1; i <= Geo.VerQty; i++)
     if (Geo.VerState[i] != -1)
-    {
-      if (verbosity >= 4)
-	printf ("%d:", i);
-      res = TestVer (Geo, i, verbosity);
-      if (res != 0)
-      {
-	if (verbosity >= 4)
-	  printf ("ver %d: nok\n", i);
-	return res;
-      }
-    }
-  if (verbosity >= 4)
-    printf ("\n");
+      if (TestVer (Geo, i, verbosity) != 0)
+	return -1;
 
-  /* Testing of the edges */
-  if (verbosity >= 4)
-    printf ("\nTesting edges: ");
+  if (verbosity)
+    ut_print_message (0, 1, "Checking edges:\n");
+
   for (i = 1; i <= Geo.EdgeQty; i++)
     if (Geo.EdgeState[i] == 0)
-    {
-      if (verbosity >= 4)
-	printf ("%d:", i);
-      res = TestEdge (Geo, i);
-      if (res != 0)
-      {
-	if (verbosity >= 4)
-	  printf ("edge %d: nok\n", i);
-	return res;
-      }
-    }
-  if (verbosity >= 4)
-    printf ("\n");
+      if (TestEdge (Geo, i, verbosity) != 0)
+	return -1;
 
-  /* Testing of the faces */
-  if (verbosity >= 4)
-    printf ("\nTesting faces: ");
+  if (verbosity)
+    ut_print_message (0, 1, "Checking faces:\n");
+
   for (i = 1; i <= Geo.FaceQty; i++)
     if (Geo.FaceState[i] >= 0)
-    {
-      if (verbosity >= 4)
-	printf ("%d:", i);
-      res = TestFace (Geo, i);
-      if (res != 0)
-      {
-	if (verbosity >= 4)
-	  printf ("face %d: nok (TestFace returned %d)\n", i, res);
-	return res;
-      }
-    }
-  if (verbosity >= 4)
-    printf ("\n");
+      if (TestFace (Geo, i, verbosity) != 0)
+	return -1;
 
-  /* Testing of the polys */
-  if (verbosity >= 4)
-    printf ("\nTesting polys: ");
+  if (verbosity)
+    ut_print_message (0, 1, "Checking polyhedra:\n");
+
   for (i = 1; i <= Geo.PolyQty; i++)
-  {
-    if (verbosity >= 4)
-      printf ("%d:", i);
-    res = TestPoly (Geo, i);
-    if (res != 0)
-    {
-      if (verbosity >= 4)
-	printf ("poly %d: nok\n", i);
-      return res;
-    }
-  }
-  if (verbosity >= 4)
-    printf ("\n");
+    if (TestPoly (Geo, i, verbosity) != 0)
+      return -1;
 
-  /* Testing domain */
-  if (verbosity >= 4)
-    printf ("\nTesting domain: ");
-  res = neut_geo_test_dom (Geo);
+  if (verbosity)
+    ut_print_message (0, 1, "Checking domain:\n");
+
+  if (neut_geo_test_dom (Geo, verbosity) != 0)
+    return -1;
 
   return res;
 }
@@ -104,11 +60,11 @@ neut_geo_testAroundVer (struct GEO Geo, int ver, int verbosity)
   int* poly = NULL;
   
   if (verbosity >= 4)
-    printf ("testing GEO AROUND VER %d\n", ver);
+    printf ("checking GEO AROUND VER %d\n", ver);
 
-  /* Testing of the vertex */
+  /* Checking of the vertex */
   if (verbosity >= 4)
-    printf ("Testing vertex: ");
+    printf ("Checking vertex: ");
 
   if (Geo.VerState[ver] != -1)
   {
@@ -126,9 +82,9 @@ neut_geo_testAroundVer (struct GEO Geo, int ver, int verbosity)
   if (verbosity >= 4)
     printf ("\n");
 
-  /* Testing of the edges */
+  /* Checking of the edges */
   if (verbosity >= 4)
-    printf ("\nTesting edges: ");
+    printf ("\nChecking edges: ");
 
   for (i = 0; i <= Geo.VerEdgeQty[ver] - 1; i++)
   {
@@ -138,7 +94,7 @@ neut_geo_testAroundVer (struct GEO Geo, int ver, int verbosity)
     {
       if (verbosity >= 4)
 	printf ("%d:", edge);
-      res = TestEdge (Geo, edge);
+      res = TestEdge (Geo, edge, 0);
       if (res != 0)
       {
 	if (verbosity >= 4)
@@ -159,7 +115,7 @@ neut_geo_testAroundVer (struct GEO Geo, int ver, int verbosity)
   neut_geo_ver_faces (Geo, ver, &face, &faceqty);
 
   if (verbosity >= 4)
-    printf ("\nTesting faces: ");
+    printf ("\nChecking faces: ");
 
   for (i = 0; i < faceqty; i++)
   {
@@ -167,7 +123,8 @@ neut_geo_testAroundVer (struct GEO Geo, int ver, int verbosity)
     {
       if (verbosity >= 4)
 	printf ("%d:", face[i]);
-      res = TestFace (Geo, face[i]);
+
+      res = TestFace (Geo, face[i], 0);
       if (res != 0)
       {
 	if (verbosity >= 4)
@@ -185,11 +142,11 @@ neut_geo_testAroundVer (struct GEO Geo, int ver, int verbosity)
   if (verbosity >= 4)
     printf ("\n");
 
-  /* Testing of the polys */
+  /* Checking of the polys */
   neut_geo_ver_polys (Geo, ver, &poly, &polyqty);
 
   if (verbosity >= 4)
-    printf ("\nTesting polys: ");
+    printf ("\nChecking polys: ");
   for (i = 0; i < polyqty; i++)
   {
     if (poly[i] < 0)
@@ -197,7 +154,7 @@ neut_geo_testAroundVer (struct GEO Geo, int ver, int verbosity)
 
     if (verbosity >= 4)
       printf ("%d:", i);
-    res = TestPoly (Geo, poly[i]);
+    res = TestPoly (Geo, poly[i], 0);
     if (res != 0)
     {
       if (verbosity >= 4)
@@ -208,10 +165,10 @@ neut_geo_testAroundVer (struct GEO Geo, int ver, int verbosity)
   if (verbosity >= 4)
     printf ("\n");
 
-  /* Testing domain */
+  /* Checking domain */
   if (verbosity >= 4)
-    printf ("\nTesting domain: ");
-  res = neut_geo_test_dom (Geo);
+    printf ("\nChecking domain: ");
+  res = neut_geo_test_dom (Geo, 0);
 
   ut_free_1d_int (face);
   ut_free_1d_int (poly);
@@ -219,7 +176,7 @@ neut_geo_testAroundVer (struct GEO Geo, int ver, int verbosity)
   return res;
 }
 
-/* Testing the geometry around a vertex: all the polys around the ver
+/* Checking the geometry around a vertex: all the polys around the ver
  * and all entities of the polys: faces, edges & vertices.
  */
 int
@@ -235,7 +192,7 @@ neut_geo_testAroundVer2 (struct GEO Geo, int ver, int verbosity)
   int *poly = NULL;
 
   if (verbosity >= 4)
-    printf ("testing GEO (2) AROUND VER %d (/%d)\n", ver, Geo.VerQty);
+    printf ("checking GEO (2) AROUND VER %d (/%d)\n", ver, Geo.VerQty);
 
   /* Searching polyhedra */
   neut_geo_ver_polys (Geo, ver, &poly, &polyqty);
@@ -273,9 +230,9 @@ neut_geo_testAroundVer2 (struct GEO Geo, int ver, int verbosity)
 
   ut_array_1d_int_sort_uniq (vers  + 1, vers[0] , &(vers[0]));
 
-  /* Testing of the vertex */
+  /* Checking of the vertex */
   if (verbosity >= 4)
-    printf ("Testing vertex: ");
+    printf ("Checking vertex: ");
 
   for (i = 1; i <= vers[0]; i++)
   {
@@ -302,9 +259,9 @@ neut_geo_testAroundVer2 (struct GEO Geo, int ver, int verbosity)
   if (verbosity >= 4)
     printf ("\n");
 
-  /* Testing of the edges */
+  /* Checking of the edges */
   if (verbosity >= 4)
-    printf ("\nTesting edges: ");
+    printf ("\nChecking edges: ");
 
   for (i = 0; i <= edges[0]; i++)
   {
@@ -314,7 +271,7 @@ neut_geo_testAroundVer2 (struct GEO Geo, int ver, int verbosity)
     {
       if (verbosity >= 4)
 	printf ("%d:", edge);
-      res = TestEdge (Geo, edge);
+      res = TestEdge (Geo, edge, 0);
       if (res != 0)
       {
 	if (verbosity >= 4)
@@ -330,10 +287,10 @@ neut_geo_testAroundVer2 (struct GEO Geo, int ver, int verbosity)
   if (verbosity >= 4)
     printf ("\n");
 
-  /* Testing of the faces */
+  /* Checking of the faces */
 
   if (verbosity >= 4)
-    printf ("\nTesting faces: ");
+    printf ("\nChecking faces: ");
 
   for (i = 1; i <= faces[0]; i++)
   {
@@ -343,7 +300,7 @@ neut_geo_testAroundVer2 (struct GEO Geo, int ver, int verbosity)
     {
       if (verbosity >= 4)
 	printf ("%d:", face);
-      res = TestFace (Geo, face);
+      res = TestFace (Geo, face, 0);
       if (res != 0)
       {
 	if (verbosity >= 4)
@@ -360,10 +317,10 @@ neut_geo_testAroundVer2 (struct GEO Geo, int ver, int verbosity)
   if (verbosity >= 4)
     printf ("\n");
 
-  /* Testing of the polys */
+  /* Checking of the polys */
 
   if (verbosity >= 4)
-    printf ("\nTesting polys: ");
+    printf ("\nChecking polys: ");
 
   for (i = 0; i < polyqty; i++)
   {
@@ -372,7 +329,7 @@ neut_geo_testAroundVer2 (struct GEO Geo, int ver, int verbosity)
 
     if (verbosity >= 4)
       printf ("%d:", i);
-    res = TestPoly (Geo, poly[i]);
+    res = TestPoly (Geo, poly[i], 0);
     if (res != 0)
     {
       if (verbosity >= 4)
@@ -388,10 +345,10 @@ neut_geo_testAroundVer2 (struct GEO Geo, int ver, int verbosity)
     printf ("\n");
 
   /*
-  // Testing domain
+  // Checking domain
   if (verbosity >= 4)
-    printf ("\nTesting domain: ");
-  res = neut_geo_test_dom (Geo);
+    printf ("\nChecking domain: ");
+  res = neut_geo_test_dom (Geo, 0);
   */
 
   ut_free_1d_int (vers);

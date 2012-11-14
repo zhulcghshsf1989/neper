@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.6)
-project(neut)
+project(neut C)
 
 # should we use the optional libraries?
 option (HAVE_GSL       "Use the GNU Scientific Library (GSL)" ON)
@@ -7,7 +7,8 @@ option (HAVE_LIBSCOTCH   "Use libscotch"                        OFF)
 
 include_directories("${PROJECT_BINARY_DIR}")
 
-add_definitions(-Wall -W -O3)
+add_definitions(-Wall -W -g -O3)
+set (CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
 
 add_library (neut 
 ./neut_tess/neut_tess.c
@@ -16,6 +17,9 @@ add_library (neut
 ./neut_tess/neut_tess_geo/neut_tess_geo2.c
 ./neut_tess/neut_tess_geo/neut_tess_geo1.c
 ./neut_poly/neut_poly.c
+./neut_poly/neut_poly_polymod/neut_poly_polymod1.c
+./neut_poly/neut_poly_polymod/neut_poly_polymod2.c
+./neut_poly/neut_poly_polymod/neut_poly_polymod3.c
 ./neut_data/neut_data.c
 ./neut_part/neut_part.c
 ./neut_multim/neut_multim.c
@@ -32,11 +36,10 @@ add_library (neut
 ./neut_scale/neut_scale.c
 ./neut_rand/neut_rand.c
 ./neut_gmsh/neut_gmsh1.c
-./neut_fodnodes/neut_fodnodes.c
 ./neut_debug/neut_debug.c
 ./neut_germset/neut_germset.c
-./neut_fod/neut_fod.c
 ./neut_utils/neut_utils.c
+./neut_povray/neut_povray.c
 ./neut_nset/neut_nset.c
 ./neut_mmesh/neut_mmesh.c
 ./neut_print/neut_print.c
@@ -66,12 +69,16 @@ add_library (neut
 ./neut_geo/neut_geo_test/TestDom/TestDom1.c
 ./neut_geo/neut_geo_test/TestDom/TestDom2.c
 ./neut_geo/neut_geo_gen/neut_geo_gen.c
+./neut_vox/neut_vox_fscanf/neut_vox_fscanf1.c
+./neut_vox/neut_vox_fscanf/neut_vox_fscanf2.c
+./neut_vox/neut_vox_fprintf/neut_vox_fprintf1.c
+./neut_vox/neut_vox_fprintf/neut_vox_fprintf2.c
+./neut_vox/neut_vox_op/neut_vox_op1.c
 )
 
 ## Link libraries
 
 set (EXTRA_LIBS ${EXTRA_LIBS} ut)
-set (EXTRA_LIBS ${EXTRA_LIBS} Utils)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake
 			${CMAKE_MODULE_PATH})
@@ -84,6 +91,7 @@ endif ()
 if (HAVE_GSL)
   find_package(GSL REQUIRED)
   set (EXTRA_LIBS ${EXTRA_LIBS} ${GSL_LIBRARIES})
+  include_directories(${GSL_INCLUDE_DIRS})
 endif (HAVE_GSL)
 
 if (HAVE_LIBSCOTCH)

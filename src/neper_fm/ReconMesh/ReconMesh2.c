@@ -110,6 +110,8 @@ ReconMesh_1d (struct NODES Nodes, struct MESH *pMesh1D,
   if (pMesh1D == NULL || (*pMesh1D).EltQty == 0)
   {
     ut_print_message (0, 2, "Reconstructing 1D mesh ... ");
+    fflush (stdout);
+
     if (pMesh2D == NULL || (*pMesh2D).EltQty == 0)
     {
       ut_print_message (2, 0, "Mesh2D is void.\n");
@@ -179,6 +181,8 @@ ReconMesh_0d (struct NODES Nodes, struct MESH *pMesh0D,
   if (pMesh0D == NULL || (*pMesh0D).EltQty == 0)
   {
     ut_print_message (0, 2, "Reconstructing 0D mesh ... ");
+    fflush (stdout);
+
     if (pMesh1D == NULL || (*pMesh1D).EltQty == 0)
     {
       ut_print_message (2, 0, "Mesh1D is void.\n");

@@ -214,7 +214,7 @@ nevs_geodata_fscanf (struct GEO Geo, char* entity, char* type, char* argument,
     (*pGeoData).raddatatype[id] = ut_alloc_1d_char (100);
 
     if (argqty == 1)
-      sprintf ((*pGeoData).raddatatype[id], type);
+      strcpy ((*pGeoData).raddatatype[id], type);
     else
       strcpy ((*pGeoData).raddatatype[id], args[0]);
 
@@ -230,22 +230,22 @@ nevs_geodata_fscanf (struct GEO Geo, char* entity, char* type, char* argument,
   else if (! strcmp (type, "colscheme"))
   {
     (*pGeoData).colscheme[id] = ut_alloc_1d_char (100);
-    sprintf ((*pGeoData).colscheme[id], argument);
+    strcpy ((*pGeoData).colscheme[id], argument);
   }
   else if (! strcmp (type, "scalemin"))
   {
     (*pGeoData).scalemin[id] = ut_alloc_1d_char (100);
-    sprintf ((*pGeoData).scalemin[id], argument);
+    strcpy ((*pGeoData).scalemin[id], argument);
   }
   else if (! strcmp (type, "scalemax"))
   {
     (*pGeoData).scalemax[id] = ut_alloc_1d_char (100);
-    sprintf ((*pGeoData).scalemax[id], argument);
+    strcpy ((*pGeoData).scalemax[id], argument);
   }
   else if (! strcmp (type, "scaleticks"))
   {
     (*pGeoData).scaleticks[id] = ut_alloc_1d_char (100);
-    sprintf ((*pGeoData).scaleticks[id], argument);
+    strcpy ((*pGeoData).scaleticks[id], argument);
   }
   else
     ut_error_reportbug ();

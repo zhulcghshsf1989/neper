@@ -184,8 +184,8 @@ IniTessFaceEq (struct TESS *pTess, struct POLY *Poly, int **TFNb)
 	  a[k] = Poly[i].VerCoo[second][k - 1] - Poly[i].VerCoo[first][k - 1];
 	  b[k] = Poly[i].VerCoo[third][k - 1] - Poly[i].VerCoo[second][k - 1];
 	}
-	VectorVectProd (a, b, c, 1);
-	if (VectorScalProd ((*pTess).FaceEq[FNb], c, 1) < 0)
+	ut_vector_vectprod (a + 1, b + 1, c + 1);
+	if (ut_vector_scalprod ((*pTess).FaceEq[FNb] + 1, c + 1) < 0)
 	  for (k = 0; k < 4; k++)
 	    (*pTess).FaceEq[FNb][k] *= -1;
       }
@@ -375,7 +375,7 @@ SearchEdge (struct TESS *pTess, int FNb, int PrevF, int S1, int S2, int p)
 
   /* nb is the minimum value between pos1 and pos2...
    */
-  nb = IntMin (pos1, pos2);
+  nb = ut_num_min_int (pos1, pos2);
 
   /* ... excepted is the following cases.
    */

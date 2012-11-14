@@ -81,7 +81,7 @@ net_domain_clip (struct POLY* pDomain, double** eq, int qty)
 
   PolymodAlloc (&Polymod);
 
-  P2Pm ((*pDomain), &Polymod);
+  neut_poly_polymod ((*pDomain), &Polymod);
 
   int* BadVer = NULL;
 

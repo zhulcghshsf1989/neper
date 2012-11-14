@@ -34,7 +34,7 @@ PlanePara (int center, int nei, struct GERMSET GermSet, double *plane)
   /* The equation is normed so as to get:
    * plane[1]*plane[1]+plane[2]*plane[2]+plane[3]*plane[3]=1;
    */
-  norm = VectorNorm (plane, 1);
+  norm = ut_vector_norm (plane + 1);
   for (i = 0; i <= 3; i++)
     plane[i] /= norm;
 
@@ -62,7 +62,7 @@ BadVerDet (int Center, double *plane, GERMSET GermSet, POLYMOD Polymod,
    * returns 2. If it is on the plane, it returns the value
    * specified as last argument of the function
    */
-  CenterSide = Side (plane, GermSet.GermsCoo[Center]);
+  CenterSide = ut_space_planeside (plane, GermSet.GermsCoo[Center]);
 
   /* For every real vertex of the polyhedron, we check if it is
    * in the bad side or not.
@@ -70,7 +70,7 @@ BadVerDet (int Center, double *plane, GERMSET GermSet, POLYMOD Polymod,
   for (i = 1; i <= Polymod.VerQty; i++)
     if (Polymod.VerUse[i] == 1)
     {
-      VerSide = Side (plane, Polymod.VerCoo[i] - 1);
+      VerSide = ut_space_planeside (plane, Polymod.VerCoo[i] - 1);
       /* the term -1 is added to take into account the fact that Side
        * read coordinates in [1]...[3] while they are stored in 
        * [0]...[2] in VerCoo[i]

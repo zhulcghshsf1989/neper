@@ -39,7 +39,13 @@ nefm_mesh_2d_gmsh (struct GEO Geo, int face, double *face_proj,
 
   fprintf (file, "// face %d.\n", face);
   fprintf (file, "// face state = %d\n", Geo.FaceState[face]);
-  neut_gmsh_meshalgo2d_nb (algo, &nb);
+  if (neut_gmsh_meshalgo2d_nb (algo, &nb) != 0)
+  {
+    printf ("\n");
+    ut_print_message (2, 3, "Meshing algorithm `%s' unknown.\n", algo);
+    abort ();
+  }
+
   nefm_mesh_gmsh_options (file, nb, 4, 1, rnd);
 
 /*********************************************************************** 
@@ -241,8 +247,21 @@ nefm_mesh_3d_gmsh (struct GEO Geo, int poly, struct NODES Nodes,
 
     file = ut_file_open ("tmp.geo", "W");
     fprintf (file, "// Poly %d\n", poly);
-    neut_gmsh_meshalgo3d_nb (algo, &nb);
-    neut_gmsh_optialgo_nb (opti, &optinb);
+    if (neut_gmsh_meshalgo3d_nb (algo, &nb) != 0)
+    {
+      printf ("\n");
+      ut_print_message (2, 3, "Meshing algorithm `%s' unknown.\n", algo);
+      abort ();
+    }
+
+    status = neut_gmsh_optialgo_nb (opti, &optinb);
+    if (status != 0 && (opti != NULL && strlen (opti) > 0))
+    {
+      printf ("\n");
+      ut_print_message (2, 3, "Mesh optimization algorithm `%s' unknown.\n", opti);
+      abort ();
+    }
+
     nefm_mesh_gmsh_options (file, 1, nb, optinb, rnd);
     nefm_mesh_3d_gmsh_writepoly (clmod, file);
     ut_file_close (file, "tmp.geo", "W");

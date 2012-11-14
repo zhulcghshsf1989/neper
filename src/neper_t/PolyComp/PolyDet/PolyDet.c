@@ -8,7 +8,7 @@
  * and records it in Polymod.
  */
 void
-PolyhedronDetermination (struct INTEPARA *pIntePara, int Center,
+PolyhedronDetermination (int Center,
 			 struct POLY Domain, struct GERMSET GermSet,
 			 struct POLYMOD *pPolymod)
 {
@@ -16,14 +16,10 @@ PolyhedronDetermination (struct INTEPARA *pIntePara, int Center,
    * domain to tesselate, at the moment.
    */
 
-  P2Pm (Domain, pPolymod);
-  /* COMM 050412
-   PolymodZeros ((*pIntePara).MaxPolyVerQty, (*pIntePara).MaxPolyFaceQty,
-		pPolymod);
-  */
+  neut_poly_polymod (Domain, pPolymod);
   /* PolyhedronCalculation searches out the polyhedron based on Center.
    */
-  PolyhedronCalculation (Center, GermSet, pIntePara, pPolymod);
+  PolyhedronCalculation (Center, GermSet, pPolymod);
 
   return;
 }

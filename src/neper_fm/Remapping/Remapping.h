@@ -9,8 +9,6 @@
 #include<ctype.h>
 #include<float.h>
 
-#include"structAll.h"
-#include"AllUtils.h"
 #include"../structIn_fm.h"
 #include"ut.h"
 #include"orilib.h"

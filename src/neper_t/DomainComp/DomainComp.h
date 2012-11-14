@@ -8,17 +8,13 @@
 #include<math.h>
 #include<gsl/gsl_rng.h>
 
-#include"structAll.h"
 #include"../structIn_t.h"
 #include "ut.h"
+#include"neut.h"
 #include "orilib.h"
 
 #include"CubeDomain/CubeDomain0.h"
-#include "../IntePara/IntePara0.h"
 #include "../PolyComp/PolyAlloc/PolyAlloc0.h"
-#include "../../Utils/TessUtils/P2Pm/P2Pm0.h"
-#include "../../Utils/TessUtils/ZerosStruct0.h"
-#include "../../Utils/TessUtils/FreeStruct0.h"
 #include "../PolyComp/PolyDet/PolyCalc/PolyCalc0.h"
 #include "../PolyComp/PolyReg/PolyReg0.h"
 #include "../PolyComp/PolyFree/PolyFree0.h"

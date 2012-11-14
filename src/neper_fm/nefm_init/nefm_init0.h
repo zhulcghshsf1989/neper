@@ -3,6 +3,7 @@
 /* See the COPYING file in the top-level directory. */
 
 extern void nefm_init_geo  (char*, struct GEO*, struct GEOPARA*);
+extern void nefm_init_geopara  (struct GEO*, struct GEOPARA*);
 extern void nefm_init_remesh (struct IN, struct GEO*, struct NODES*,
     struct MESH*, struct MESH*, struct MESH*, struct MESH*, struct
     GEOPARA*);

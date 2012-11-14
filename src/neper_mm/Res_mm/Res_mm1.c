@@ -8,7 +8,7 @@ void
 Res_mm (struct IN In, struct GEO Geo, struct NODES Nodes,
         struct MESH* pMesh0D, struct MESH* pMesh1D,
 	struct MESH* pMesh2D, struct MESH* pMesh3D,
-        int** FoDNodes, struct GERMSET GermSet)
+        int** FoDNodes)
 {
   int *PolyEltQty = NULL;
   /* [0]: real nb of polys (ie that have elements) */
@@ -18,10 +18,11 @@ Res_mm (struct IN In, struct GEO Geo, struct NODES Nodes,
   char *expandnset = NULL;
   char *expandfaset = NULL;
 
+  // CLEAN by replacing neut_utils_nset_expand by neut_set_expand
   neut_utils_nset_expand (In.nset, &expandnset);
   neut_utils_nset_expand (In.faset, &expandfaset);
 
-  CalcPolyEltQty ((*pMesh3D), GermSet, &PolyEltQty);
+  CalcPolyEltQty ((*pMesh3D), &PolyEltQty);
   
   if (ut_string_inlist (In.format, ',', "tess")
    || ut_string_inlist (In.format, ',', "geo"))
@@ -50,8 +51,8 @@ Res_mm (struct IN In, struct GEO Geo, struct NODES Nodes,
   if (ut_string_inlist (In.format, ',', "msh"))
   {
     file = ut_file_open (In.msh, "w");
-    WriteMapMeshGmsh (In.outdim, expandnset, expandfaset,
-		   Nodes, pMesh0D, pMesh1D, pMesh2D, pMesh3D, FoDNodes, file);
+    WriteMapMeshGmsh (In.outdim, Nodes, pMesh0D, pMesh1D, pMesh2D,
+	              pMesh3D, file);
     ut_file_close (file, In.msh, "w");
   }
 
@@ -72,16 +73,7 @@ Res_mm (struct IN In, struct GEO Geo, struct NODES Nodes,
     ut_file_close (file, In.abq, "w");
   }
 
-  if (In.input == 0 && In.ingeo == NULL && ut_string_inlist (In.format, ',', "oin"))
-  {
-    ut_print_message (0, 2, "Writing orientation results ...\n");
-    file = ut_file_open (In.oin, "w");
-    net_oin_fprintf (file, GermSet, PolyEltQty);
-    ut_file_close (file, In.oin, "w");
-  }
-
   ut_free_1d_int (PolyEltQty);
 
   return;
 }
-

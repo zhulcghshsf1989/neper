@@ -5,12 +5,9 @@
 #include "Res_mm.h"
 
 void
-CalcPolyEltQty (struct MESH Mesh, struct GERMSET GermSet,
-		int** pPolyEltQty)
+CalcPolyEltQty (struct MESH Mesh, int** pPolyEltQty)
 {
   int i;
-
-  GermSet.N = GermSet.N;
 
   (*pPolyEltQty) = ut_alloc_1d_int (Mesh.ElsetQty + 1);
 
@@ -102,7 +99,20 @@ WriteMapMeshGeof (struct IN In, char *nsetlist,
   fprintf (file, "\n***group\n");
 
   /* Writing nsets */
-  WriteNSets (4, nsetlist, FoDNodes, "geof", file);
+  // FIXME. 
+  int set = -1;
+  if (ut_string_inlist (In.nset, ',', "faces"))
+    set = 1;
+  else if (ut_string_inlist (In.nset, ',', "edges"))
+    set = 2;
+  else if (ut_string_inlist (In.nset, ',', "vertices"))
+    set = 3;
+  else if (set == -1 && In.nset != NULL && strlen (In.nset) > 0)
+    set = 4;
+  else
+    abort ();
+
+  WriteNSets (set, nsetlist, FoDNodes, "geof", file);
 
   if (In.loadmesh != NULL && strlen (faset) > 0)
   {
@@ -329,7 +339,7 @@ WriteMapMeshGeof (struct IN In, char *nsetlist,
       fprintf (file, "\n**elset poly%d\n", ++realelset);
       col = 0;
       for (j = 1; j <= Mesh.Elsets[i][0]; j++)
-	FPrintfWNC (file, Mesh.Elsets[i][j], &col, 72);
+	ut_print_wnc_int (file, Mesh.Elsets[i][j], &col, 72);
 
       fprintf (file, "\n");
     }
@@ -410,7 +420,19 @@ WriteMapMeshAbq (struct IN In, char *nsetlist,
   }
 
   /* Writing nsets */
-  WriteNSets (4, nsetlist, FoDNodes, "abq", file);
+  int set = -1;
+  if (ut_string_inlist (In.nset, ',', "faces"))
+    set = 1;
+  else if (ut_string_inlist (In.nset, ',', "edges"))
+    set = 2;
+  else if (ut_string_inlist (In.nset, ',', "vertices"))
+    set = 3;
+  else if (set == -1 && In.nset != NULL && strlen (In.nset) > 0)
+    set = 4;
+  else
+    abort ();
+
+  WriteNSets (set, nsetlist, FoDNodes, "abq", file);
 
   /* write fasets */
   if (faset == NULL) // for accepting faset
@@ -434,10 +456,10 @@ WriteMapMeshAbq (struct IN In, char *nsetlist,
 }
 
 void
-WriteMapMeshGmsh (char* dim, char *nset, char* faset,
+WriteMapMeshGmsh (char* dim, 
                struct NODES Nodes,   struct MESH* pMesh0D,
 	       struct MESH* pMesh1D, struct MESH* pMesh2D,
-	       struct MESH* pMesh3D, int **FoDNodes, FILE* file)
+	       struct MESH* pMesh3D, FILE* file)
 {
   struct PART Part;
 
@@ -448,17 +470,7 @@ WriteMapMeshGmsh (char* dim, char *nset, char* faset,
   neut_mesh_fprintf_gmsh (file, dim, Nodes, *pMesh0D, *pMesh1D, *pMesh2D,
                           *pMesh3D, Part);
 
-  // Writing nsets
-  WriteNSets (4, nset, FoDNodes, "msh", file);
-
-  // write fasets
-  if (faset == NULL) // for accepting faset
-  {
-  }
-
   neut_part_free (Part);
 
   return;
 }
-
-

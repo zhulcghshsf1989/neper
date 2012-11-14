@@ -15,8 +15,6 @@ neper_mm (int fargc, char **fargv, int argc, char **argv)
   struct MESH Mesh2D;
   struct MESH Mesh3D;
   int **FoDNodes = NULL;
-  struct GERMSET GermSet;
-
 
   neut_nodes_set_zero (&Nodes);
   neut_mesh_set_zero  (&Mesh3D);
@@ -24,16 +22,15 @@ neper_mm (int fargc, char **fargv, int argc, char **argv)
   neut_mesh_set_zero  (&Mesh1D);
   neut_mesh_set_zero  (&Mesh2D);
   neut_geo_set_zero   (&Geo);
-  neut_germset_set_zero (&GermSet);
 
   ut_print_moduleheader ("-MM", fargc, fargv, argc, argv);
 
-  InputData_mm (&In, &GermSet, fargc, fargv, argc, argv);
+  InputData_mm (&In, fargc, fargv, argc, argv);
 
   ut_print_message (0, 1, "Mapped meshing ...\n");
   
   if (In.loadmesh == NULL)
-    RMeshing (&Nodes, &Mesh3D, &FoDNodes, In, &GermSet);
+    RMeshing (&Nodes, &Mesh3D, &FoDNodes, In);
   else
   {
     ut_print_message (0, 1, "Loading mesh ...\n");
@@ -58,19 +55,8 @@ neper_mm (int fargc, char **fargv, int argc, char **argv)
       ReconMesh ("3,2,1,0", Nodes, &Mesh0D, &Mesh1D, &Mesh2D, &Mesh3D, NULL);
   }
 
-
-  if (ut_num_equal (In.F[0], 1, 1e-6) == 0
-   || ut_num_equal (In.F[1], 1, 1e-6) == 0
-   || ut_num_equal (In.F[2], 1, 1e-6) == 0)
-  {
-    ut_print_message (0, 1, "Deforming mesh ...\n");
-    neut_nodes_deform (&Nodes, In.F);
-  }
-
-
   ut_print_message (0, 1, "Writing results ...\n");
-  Res_mm (In, Geo, Nodes, &Mesh0D, &Mesh1D, &Mesh2D, &Mesh3D, FoDNodes, GermSet);
-
+  Res_mm (In, Geo, Nodes, &Mesh0D, &Mesh1D, &Mesh2D, &Mesh3D, FoDNodes);
 
   neut_nodes_free (&Nodes);
   neut_mesh_free (&Mesh0D);

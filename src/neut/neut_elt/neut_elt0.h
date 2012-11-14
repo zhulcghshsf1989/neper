@@ -10,5 +10,8 @@ extern int neut_elt_nodeqty (char *, int, int);
 extern int neut_elt_dim_gtype_order (int, int);
 extern int neut_elt_order (char *, int, int);
 extern int neut_elt_gtype_prop (int, char*, int*, int*);
+extern double neut_elt_3d_rr (double*, double*, double*, double*);
+extern double neut_elt_2d_rr (double*, double*, double*);
+extern double neut_elt_3d_rho (double*, double*, double*, double*);
 
 #endif /* NEUT_ELT0_H */

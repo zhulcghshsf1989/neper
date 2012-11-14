@@ -50,6 +50,7 @@ neut_multim_fromlist (char* list, struct MULTIM* pMultim)
   int i, qty;
   char** ind_algo = NULL;
   char** ind_algo2 = NULL;
+  ut_string_fnr (list, ':', '/');
   ut_string_separate (list, ',', &ind_algo, &(*pMultim).algoqty);
 
   (*pMultim).algos = ut_alloc_3d_char ((*pMultim).algoqty, 2, 5);

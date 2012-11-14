@@ -19,7 +19,7 @@ IniGermsCoo (char* morpho, int N, int Random, const double* size,
 
   /* GermsCoo is filled line by line. */
   if (strcmp (morpho, "equiaxed") == 0
-   || strcmp (morpho, "poisson") == 0)
+   || strcmp (morpho, "poisson")  == 0)
   {
     for (i = 1; i <= N; i++)
     {

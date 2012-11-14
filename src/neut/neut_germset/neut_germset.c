@@ -13,11 +13,7 @@ neut_germset_set_zero (struct GERMSET* pGermSet)
   (*pGermSet).morpho = NULL;
   (*pGermSet).Random = 0;
   (*pGermSet).GermsCoo = NULL;
-  (*pGermSet).ttype = NULL;
   (*pGermSet).NDensity = 0;
-  (*pGermSet).randomize = 0;
-  (*pGermSet).randomize2 = 0;
-  (*pGermSet).randomizedir = NULL;
 
   // Domain neighbourhood info
   (*pGermSet).Size = NULL;
@@ -36,13 +32,11 @@ neut_germset_free (struct GERMSET GermSet)
 {
   ut_free_1d_char (GermSet.morpho);
   ut_free_2d (GermSet.GermsCoo, GermSet.N + 1);
-  ut_free_1d_char (GermSet.randomizedir);
-  ut_free_1d_char (GermSet.ttype);
 
   // Domain neighbourhood info
   ut_free_1d (GermSet.Size);
   ut_free_1d (GermSet.nSize);
-  // ut_free_2d (GermSet.nGermsCoo);
+  ut_free_2d (GermSet.nGermsCoo, GermSet.nN);
   ut_free_1d_int (GermSet.nGermRandId);
   ut_free_1d_int (GermSet.GermToGerm);
 

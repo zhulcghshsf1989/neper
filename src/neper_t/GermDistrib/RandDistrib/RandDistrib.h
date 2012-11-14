@@ -9,8 +9,8 @@
 #include<time.h>
 #include<float.h>
 
-#include"structAll.h"
 #include"../../structIn_t.h"
 #include"ut.h"
+#include"neut.h"
 
 #include"RandDistrib0.h"

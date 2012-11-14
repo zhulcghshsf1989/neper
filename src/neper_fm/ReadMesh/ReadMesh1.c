@@ -14,9 +14,9 @@ ReadMesh (char* filename, struct NODES *pNodes,
   char *stenode = NULL, *steele = NULL;
   // int** Elsets = NULL;
   // int ElsetQty;
-  char* filetype = ut_alloc_1d_char (100);
+  char* filetype = NULL;
   
-  ut_file_format (filename, filetype);
+  ut_file_format (filename, &filetype);
 
   if (strcmp (filetype, "gmsh_msh") == 0)
   {
@@ -102,6 +102,8 @@ ReadMesh (char* filename, struct NODES *pNodes,
   neut_mesh_init_nodeelts (pMesh2D, (*pNodes).NodeQty);
   neut_mesh_init_nodeelts (pMesh1D, (*pNodes).NodeQty);
   neut_mesh_init_nodeelts (pMesh0D, (*pNodes).NodeQty);
+
+  ut_free_1d_char (filetype);
 
   return;
 }

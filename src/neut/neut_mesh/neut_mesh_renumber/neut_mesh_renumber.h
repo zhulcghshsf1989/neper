@@ -5,12 +5,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../neut_mesh.h"
-#include "structAll.h"
-#include "AllUtils.h"
-#include "../../../neper_t/Miscellaneous/Miscellaneous0.h"
+// #include "../../../neper_t/Miscellaneous/Miscellaneous0.h"
 #include "neut_mesh_renumber0.h"
 
-extern void RandDistrib (struct GERMSET *, double *, int);
+// extern void RandDistrib (struct GERMSET *, double *, int);
 
 extern void neut_nodes_renumber (struct NODES *, int *);
 extern void neut_nodes_switch (struct NODES*, int, int);

@@ -25,7 +25,9 @@ extern int neut_mesh_eltelsetOLD (struct MESH, int, int *);
 extern void neut_mesh_eltcentre (struct MESH, struct NODES, int, double *);
 extern int neut_fod_facefod (int **, int, int *);
 extern int neut_mesh_elt0delts1d (struct MESH, int, struct MESH, int*, int*);
+extern int neut_mesh_elt0delsets1d (struct MESH, int, struct MESH, int*, int*);
 extern int neut_mesh_elt1delts2d (struct MESH, int, struct MESH, int*, int*);
+extern int neut_mesh_elt1delsets2d (struct MESH, int, struct MESH, int*, int*);
 extern int neut_mesh_elt2delts3d (struct MESH, int, struct MESH, int*, int*);
 extern int neut_mesh_elt1delts3d (struct MESH, int, struct MESH, struct MESH, int*, int*);
 extern int neut_mesh_elt0delts3d (struct MESH, int, struct MESH, struct MESH, struct MESH, int*, int*);
@@ -46,7 +48,6 @@ extern void neut_mesh_free (struct MESH *);
 
 extern void neut_mesh_init_nodeelts (struct MESH*, int);
 extern void neut_mesh_init_eltelset (struct MESH*, int*);
-extern double neut_elt_3d_radiusratio (double *, double *, double *, double *);
 
 extern int neut_mesh_elt_partqty (struct MESH, int, int*);
 extern int neut_mesh_elt_isbound (struct MESH, int, int*);
@@ -127,6 +128,7 @@ extern int neut_mesh_dispfromcl (struct NODES, struct MESH, double, double*);
 extern int neut_mesh_elset_dispfromcl (struct NODES, struct MESH, int, double, double*);
 
 extern void rcl2cl (double, double, int, double*);
+extern void rsel2sel (double, double, int, double*);
 
 extern void neut_mesh_fprintf_gmsh (FILE*, char*, struct NODES, struct
     MESH, struct MESH, struct MESH, struct MESH,
@@ -137,19 +139,36 @@ extern void neut_elts_fprintf_gmsh (FILE*, struct MESH, struct MESH, struct MESH
 extern void neut_mesh_fprintf_gmsh_nsets (FILE*, char*, int**, char**);
 extern void neut_mesh_fprintf_gmsh_nset  (FILE*, char*, int*);
 
-extern void neut_mesh_scale (struct MESH*, int*, double, double, double);
-extern void neut_mesh_shift (struct MESH*, int*, double, double, double);
+extern void neut_mesh_scale (struct MESH*, double, double, double);
+extern void neut_mesh_shift (struct MESH*, double, double, double);
 
 extern void neut_mesh_set_elttype (struct MESH*, char*);
 
 extern void neut_mesh3d_slice (struct NODES, struct MESH, double*,
 			  struct NODES*, struct MESH*, int**, int***, double**);
+extern int neut_mesh3d_elt_slice_tet (struct NODES Nodes, struct MESH Mesh, int elt,
+                           double* eq, struct NODES* pSNodes, struct MESH* pSMesh,
+			   int** pelt_newold, int*** pnode_newold, double** pnode_fact);
+extern int neut_mesh3d_elt_slice_quad (struct NODES Nodes, struct MESH Mesh, int elt, 
+			   double* eq, struct NODES* pSNodes, struct MESH* pSMesh,
+			   int** pelt_newold, int*** pnode_newold, double** pnode_fact);
+
 extern void neut_meshdata_mesh2slice (struct NODES, struct MESH, struct
     MESHDATA, struct NODES, struct MESH, int*, int**, double*, struct
     MESHDATA*);
 
 extern int  neut_mesh_elt_point_pos (struct MESH, struct NODES, int,
 				     double*, double*);
+
+extern void neut_mesh_elt_bbox_v (struct NODES Nodes, struct MESH Mesh, int elt, double* bbox);
+extern void neut_mesh_elt_bbox (struct NODES Nodes, struct MESH Mesh, int elt, double** bbox);
+extern void neut_mesh_elt_poly (struct NODES Nodes, struct MESH Mesh, int elt, struct POLY* pPoly);
+extern int neut_mesh_elt_mesh (struct NODES Nodes, struct MESH Mesh, int elt,
+                    struct NODES* pENodes, struct MESH* pEMesh);
+extern void neut_mesh_quad_tri (struct NODES, struct MESH, struct MESH*);
+extern int neut_mesh_rmelset (struct MESH*, struct NODES, int);
+extern int neut_mesh_rmelt (struct MESH*, int);
+extern int neut_mesh_rmelts (struct MESH* pMesh, struct NODES Nodes, int* rmelt, int rmeltqty);
 
 #endif /* UT_MESH0_H */
 

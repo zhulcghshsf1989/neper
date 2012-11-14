@@ -7,6 +7,7 @@
 #include "neut_structs/neut_mesh_struct.h"
 #include "neut_structs/neut_nodes_struct.h"
 #include "neut_structs/neut_geo_struct.h"
+#include "neut_structs/neut_vox_struct.h"
 #include "neut_structs/neut_part_struct.h"
 #include "neut_structs/neut_nset_struct.h"
 #include "neut_structs/neut_geopara_struct.h"
@@ -19,3 +20,4 @@
 #include "neut_structs/neut_meshdata_struct.h"
 #include "neut_structs/neut_poly_struct.h"
 #include "neut_structs/neut_polymod_struct.h"
+#include "neut_structs/neut_ori_struct.h"

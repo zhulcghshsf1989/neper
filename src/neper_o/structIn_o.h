@@ -4,14 +4,13 @@
 
 struct IN
 {
-  int verbosity;
   char *body;
-  char *oin;
+  char *tess;
   char *ori;
   char *crysym;
   char *descriptor;
   char *format;
-  int input;
+  char* input;
   char* colourspec;
   char* col;
   char* load;

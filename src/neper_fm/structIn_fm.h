@@ -7,17 +7,10 @@
 
 struct IN
 {
-  int verbosity;
   char *gmsh;
 
   /* FILE NAMES */
   char* loadmesh;
-
-  /* FFFS */
-  int mloop;
-
-  /* DEBUGGING STUFF */
-  int maxedgedelqty;			/* this is for debugging */
 
   /* MESH */
   int morder;
@@ -63,31 +56,12 @@ struct IN
   char*** remapspec;
 
   char *body;
-  char *geo;
-  char *ply;
-  char *gmshgeo;
   char *ingeo;
-  int printff;	         	
-  char *ff;
 
-  int printstattess;
-  int printstatmesh;
-
-  char *stt3;
-  char *stt2;
-  char *stt2a;
-  char *stt0;
-  char *stt1;
   char *stn;
-  char *stm1;
-  char *stm2;
-  char *stm3;
-  char *stm4;
-  char *stm5;
+  char *ste;
+  char *stelset;
   
-  char *nstat;
-  int printnstat;		/* if =1: printing node statistics  */
-
   char *remesh2;
   char *remeshtess;
   char *transporttess;
@@ -104,15 +78,7 @@ struct IN
   char *fev3;
   char *fev4;
   char *fev5;
-  char *eangle;
-  int printeangle;		/* if =1: printing element angles      */
-  char *fod;
-  int printfod;
-  char *oin;
   
-  char *mast;
-  char *asy;
-
   char* nodecoo;
 };
 typedef struct IN IN;

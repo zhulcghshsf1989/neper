@@ -6,11 +6,9 @@
 #include<stdlib.h>
 #include<math.h>
 
-#include"structAll.h"
-#include"AllUtils.h"
+#include"neut.h"
 
 #include"PolyDet0.h"
 #include"PolyCalc/PolyCalc0.h"
 
-extern void IniPolymod (int, struct INTEPARA, struct POLY, struct GERMSET,
-			struct POLYMOD *);
+extern void IniPolymod (int, struct POLY, struct GERMSET, struct POLYMOD *);

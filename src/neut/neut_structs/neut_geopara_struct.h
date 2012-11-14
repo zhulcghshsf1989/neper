@@ -15,6 +15,8 @@ struct GEOPARA
   double clmin;
   double pcl;	
   double maxff;
+
+  int seltype;
   double sel;
   double rsel;
 
@@ -22,6 +24,7 @@ struct GEOPARA
   double dboundcl;  /* counterpart of   cl for skin entities */
   double dboundrcl; /* counterpart of  rcl for skin entities */
   double dboundpcl; /* counterpart of  pcl for skin entities */
+  int dboundseltype;
   double dboundsel; /* counterpart of  sel for skin entities */
   double dboundrsel;/* counterpart of rsel for skin entities */
 

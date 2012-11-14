@@ -6,13 +6,12 @@
 #include<stdlib.h>
 #include<math.h>
 
-#include"structAll.h"
 #include"ut.h"
 #include"../../../neut_geo.h"
 #include"../../../neut_structs.h"
 
 #include"TestPoly0.h"
 
-extern int TestPolyReciprocityFace (struct GEO, int);
-extern int TestPolyCoplaneityFace (struct GEO, int);
-extern int TestPolyOrientationFace (struct GEO, int);
+extern int TestPolyReciprocityFace (struct GEO, int, int);
+extern int TestPolyCoplaneityFace (struct GEO, int, int);
+extern int TestPolyOrientationFace (struct GEO, int, int);

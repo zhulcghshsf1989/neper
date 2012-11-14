@@ -5,16 +5,21 @@
 #include"CalcOri.h"
 
 int
-neo_oin_fscanf (FILE* file, struct ORI* pOri)
+neo_init_ori (FILE* file, struct ORI* pOri)
 {
   int i;
   char* type = ut_alloc_1d_char (100);
   int n; // is -n in -T but ndensity in -MM
   int id;
+  struct GEO Geo;
 
-  fscanf (file, "%s", type);
+  neut_geo_set_zero (&Geo);
 
-  fscanf (file, "%d%d", &n, &id);
+  neut_geo_fscanf_head (&Geo, file);
+
+  n = Geo.N;
+  id = Geo.Id;
+  strcpy (type, Geo.morpho);
 
   if (strcmp  (type, "poisson"    ) == 0
    || strcmp  (type, "equiaxed"   ) == 0
@@ -33,20 +38,19 @@ neo_oin_fscanf (FILE* file, struct ORI* pOri)
   else
     abort ();
   
-  fscanf (file, "%d", &(*pOri).N);
-
-  fscanf (file, "%s", type);
-
+  (*pOri).N = n;
   (*pOri).id = id;
   (*pOri).rngid = ut_alloc_1d_int ((*pOri).N + 1);
-  if (strcmp (type, "continuous") == 0)
+
+  if (! Geo.PolyId)
     for (i = 1; i <= (*pOri).N; i++)
       (*pOri).rngid[i] = i;
-  else if (strcmp (type, "list") == 0)
-    for (i = 1; i <= (*pOri).N; i++)
-      fscanf (file, "%d", &(*pOri).rngid[i]);
+  else 
+    ut_array_1d_int_memcpy ((*pOri).rngid + 1, (*pOri).N, Geo.PolyId + 1);
     
   ut_free_1d_char (type);
+
+  neut_geo_free (&Geo);
 
   return 0;
 }

@@ -42,10 +42,25 @@ neut_debug_mesh (FILE* file, struct MESH Mesh)
   {
     fprintf (file, "EltNodes = \n");
     ut_array_2d_int_fprintf (file, Mesh.EltNodes + 1, Mesh.EltQty, eltnodeqty, "%d");
+    if (Mesh.EltElset != NULL)
+      fprintf (file, "EltElset = \n");
+    ut_array_1d_int_fprintf (file, Mesh.EltElset + 1, Mesh.EltQty, "%d\n");
     fprintf (file, "ElsetQty = %d\n", Mesh.ElsetQty);
     fprintf (file, "Elsets = (quantity then ids of elements)\n");
     for (i = 1; i <= Mesh.ElsetQty; i++)
       ut_array_1d_int_fprintf (file, Mesh.Elsets[i], Mesh.Elsets[i][0] + 1, "%d");
+  }
+
+  fprintf (file, "NodeElts (elt qty then ids) = \n");
+  if (Mesh.NodeElts != NULL)
+  {
+    int i, j, nodeqty = 0;
+    for (i = 1; i <= Mesh.EltQty; i++)
+      for (j = 0; j < eltnodeqty; j++)
+	nodeqty = ut_num_max (nodeqty, Mesh.EltNodes[i][j]);
+
+    for (i = 1; i <= nodeqty; i++)
+      ut_array_1d_int_fprintf (file, Mesh.NodeElts[i], Mesh.NodeElts[i][0] + 1, "%d");
   }
 
   fprintf (file, "====== End of Mesh =======================================\n");
@@ -438,10 +453,7 @@ neut_debug_germset (FILE* file, struct GERMSET GermSet)
   for (i = 1; i <= GermSet.N; i++)
     ut_array_1d_fprintf (file, GermSet.GermsCoo[i] + 1, 3, "%f");
 
-  fprintf (file, "ttype = %s\n", GermSet.ttype);
   fprintf (file, "NDensity = %d\n", GermSet.NDensity);
-  fprintf (file, "randomize = %f\n", GermSet.randomize);
-  fprintf (file, "randomize2 = %d\n", GermSet.randomize2);
 
   return;
 }

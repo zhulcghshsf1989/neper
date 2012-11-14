@@ -6,12 +6,14 @@
 #include<stdlib.h>
 #include<math.h>
 #include<string.h>
-#include"structAll.h"
 #include"../structIn_mm.h"
-#include"AllUtils.h"
 #include"ut.h"
 #include"neut.h"
-#include"RMeshingFNId/RMeshingFNId0.h"
 #include"RMeshingFGeo/RMeshingFGeo0.h"
+#include"RMeshingFVox/RMeshingFVox0.h"
 
 #include"RMeshing0.h"
+
+extern void RMeshing_meshpoly (char*, struct VOX, struct MESH*, struct NODES*, int***);
+extern void RMeshing_cleaning (struct MESH* pMesh, struct NODES* pNodes, int*** pFoDNodes);
+extern void RMeshing_singnodedup (struct MESH* pMesh, struct NODES* pNodes, int*** pFoDNodes);

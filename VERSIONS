@@ -1,3 +1,26 @@
+New in 1.10.2-71-g73f8773 (devel2):
+- module -T: added option -checktess, minor improvements, added
+  individual file extension support in -stattess, changed option -neigh 1
+  to -statp i,f,npl,fal,feql.
+- module -FM: minor bug fixes; improved fev format support; added
+  individual file extension support in options -stattess and -statmesh.
+- module -O:  minor bug fixes.
+- module -MM: fasten up meshing; fixed -domain, -scale and -nset options,
+  minor other bug fixes, fasten mesh reconstruction.
+- module -VS: fasten up meshing reconstruction and PNG file generation,
+  added option '-camerasky', added option '-showeltedge', fasten mesh
+  reconstruction, minor fixes
+- documentation: minor fixes.
+- General: minor fixes.
+
+New in 1.10.2 (O9 Aug 2012):
+- module -T: fixed -centroid option.
+- module -FM: fixed list of available meshing algorithms.  Added
+  tests.
+- module -MM: fixed nset syntax in inp (Abaqus) files.
+- module -VS: added capability to plot mapped meshes.
+- General: various minor improvements, code cleaning.
+
 New in 1.10.1 (08 June 2012):
 - Bug fix to get Neper working after invoquing `make install'.
 

@@ -20,9 +20,9 @@ neper_o (int fargc, char **fargv, int argc, char **argv)
 
 /* *********************************************************
     Calculating angles  */
-  if (In.input == 0 || In.input == 1)
+  if (! strcmp (In.input, "tess")  || ! strcmp (In.input, "n"))
     CalcOri (In, &Ori);
-  else if (In.input > 1 && In.input <= 8)
+  else if (! In.input)
     ReadOri (In, &Ori);
 
 /* *********************************************************

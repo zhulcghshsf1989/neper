@@ -37,6 +37,12 @@ extern void neut_geo_edge_polys (struct GEO Geo, int edge, int** ppoly, int* ppo
 ///
 extern void neut_geo_edges_vers (struct GEO Geo, int* edge, int edgeqty, int** pver, int* pverqty);
 
+/// \brief Tell if an edge is a fake edge (not a triple line + on the circular part of a cylinder)
+///
+///
+///
+extern int neut_geo_edge_fake (struct GEO Geo, int edge);
+
 /// \brief Get the edges of a set of faces
 ///
 ///

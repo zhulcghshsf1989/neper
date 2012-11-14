@@ -6,42 +6,38 @@
 
 void
 TreatArg_t (int fargc, char **fargv, int argc, char **argv,
-	    struct IN *pIn, struct GERMSET *pGermSet)
+            struct IN* pIn, struct GEOPARA* pGeoPara)
 {
-  SetDefaultOptions_t (pIn, pGermSet);
+  SetDefaultOptions_t (pIn, pGeoPara);
 
   /* Reading options */
 
-  SetOptions_t (pIn, pGermSet, fargc, fargv);
-  SetOptions_t (pIn, pGermSet, argc, argv);
+  SetOptions_t (pIn, pGeoPara, fargc, fargv);
+  SetOptions_t (pIn, pGeoPara, argc, argv);
 
   /* Testing options */
-  if ((*pIn).input == -1)
+  if ((*pIn).input == NULL)
   {
     ut_print_message (2, 0, "missing input data.");
     abort ();
   }
 
-  if ((*pIn).input == 0 && (*pGermSet).Id == -1)
+  if (! strcmp ((*pIn).input, "n") && (*pIn).id == -1)
     ut_print_messagewnc (1, 72,
 		"The identifier (-id) has not been specified; considering a random value ...");
 
   char** parts = NULL;
   int partqty;
 
-  ut_string_separate ((*pGermSet).morpho, '|', &parts, &partqty);
+  ut_string_separate ((*pIn).morpho, '|', &parts, &partqty);
 
-  // if ((*pIn).input == 2 && strcmp ((*pGermSet).morpho, "tocta") == 0)
-  if ((*pIn).input == 2)
-    net_n1d_morpho_n ((*pGermSet).N1d, parts[0], &((*pGermSet).N));
-
-  if ((*pGermSet).Id > 0
+  if ((*pIn).id > 0
   && ((strcmp (parts[0], "cube"  ) == 0)
    || (strcmp (parts[0], "dodeca") == 0)
    || (strcmp (parts[0], "tocta" ) == 0)))
   {
     ut_print_message (2, 0,
-	      "Options `-id' and `-regular' are mutually exclusive!");
+	      "Options `-id' and `-morpho' are mutually exclusive!");
     abort ();
   }
 
@@ -51,33 +47,36 @@ TreatArg_t (int fargc, char **fargv, int argc, char **argv,
   {
     (*pIn).body = ut_alloc_1d_char (1000);
 
-    if ((*pIn).input == 0)
+    if (! strcmp ((*pIn).input, "n"))
     {
-      if ((*pGermSet).Id != -1)
-	sprintf ((*pIn).body, "n%d-id%d", (*pGermSet).N, (*pGermSet).Id);
+      if ((*pIn).id != -1)
+	sprintf ((*pIn).body, "n%d-id%d", (*pIn).n, (*pIn).id);
       else
-	sprintf ((*pIn).body, "n%d-rand", (*pGermSet).N);
+      {
+	if (! strcmp ((*pIn).morpho, "poisson"))
+	  sprintf ((*pIn).body, "n%d-rand", (*pIn).n);
+	else if ((*pIn).morpho[0] != '@')
+	  sprintf ((*pIn).body, "n%d-%s", (*pIn).n, (*pIn).morpho);
+	else
+	  sprintf ((*pIn).body, "n%d-coo", (*pIn).n);
+      }
     }
-    else if ((*pIn).input == 1)
+    else if (! strcmp ((*pIn).input, "tess")
+          || ! strcmp ((*pIn).input, "vox"))
     {
       (*pIn).body = ut_alloc_1d_char (strlen ((*pIn).load));
       ut_string_body ((*pIn).load, (*pIn).body);
     }
-    else if ((*pIn).input == 2)
-	sprintf ((*pIn).body, "%s%d", parts[0], (*pGermSet).N1d);
+    else if (! strcmp ((*pIn).input, "n_reg"))
+      sprintf ((*pIn).body, "n%d-%s", (*pIn).n, (*pIn).morpho);
     else
       abort ();
   }
 
-  (*pIn).geo = ut_string_addextension ((*pIn).body, ".tess");
-  (*pIn).gmshgeo = ut_string_addextension ((*pIn).body, ".geo");
+  (*pIn).tess = ut_string_addextension ((*pIn).body, ".tess");
+  (*pIn).geo = ut_string_addextension ((*pIn).body, ".geo");
+  (*pIn).vox = ut_string_addextension ((*pIn).body, ".vox");
   (*pIn).ply = ut_string_addextension ((*pIn).body, ".ply");
-  (*pIn).oin = ut_string_addextension ((*pIn).body, ".oin");
-  (*pIn).stt0 = ut_string_addextension ((*pIn).body, ".stt0");
-  (*pIn).stt3 = ut_string_addextension ((*pIn).body, ".stt3");
-  (*pIn).mast = ut_string_addextension ((*pIn).body, ".mast");
-  (*pIn).asy = ut_string_addextension ((*pIn).body, ".asy");
-  (*pIn).neigh = ut_string_addextension ((*pIn).body, ".neigh");
   (*pIn).debug = ut_string_addextension ((*pIn).body, ".debug");
 
   if ((*pIn).printpointpoly == 1)

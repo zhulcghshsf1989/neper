@@ -51,7 +51,7 @@ neper_fm (int fargc, char **fargv, int argc, char **argv)
   {
     ut_print_message (0, 1, "Creating geometry ...\n");
     nefm_init_geo (In.ingeo, &Geo, &GeoPara);
-    RegularizeGeo (&Geo, GeoPara, In);
+    // RegularizeGeo (&Geo, GeoPara, In);
   }
 
 /*********************************************************************** 
@@ -104,17 +104,18 @@ neper_fm (int fargc, char **fargv, int argc, char **argv)
   {
     ut_print_message (0, 1, "Loading mesh ...\n");
     ReadMesh (In.loadmesh, &Nodes, &Mesh0D, &Mesh1D, &Mesh2D, &Mesh3D);
+  }
+
+  // remeshing
+  else if (In.remesh)
+  {
     if (strcmp (Mesh3D.EltType, "tri") != 0)
     {
       ut_print_message (2, 0, "Input mesh is not a free mesh.\n");
       printf ("elttype = %s\n", Mesh3D.EltType);
       abort ();
     }
-  }
 
-  // remeshing
-  else if (In.remesh)
-  {
     struct NODES RNodes;
     struct MESH RMesh0D, RMesh1D, RMesh2D, RMesh3D;
 
@@ -178,72 +179,6 @@ neper_fm (int fargc, char **fargv, int argc, char **argv)
     SearchNSets (In.nset, Geo, Mesh0D, Mesh1D, Mesh2D, &NSet0D, &NSet1D, &NSet2D);
   }
 
-  /*********************************************************************** 
-   * geo output */
-
-  int header_printed = 0;
-  if (Geo.VerQty != 0 &&
-     (ut_string_inlist (In.format, ',', "tess")
-   || ut_string_inlist (In.format, ',', "geo")
-   || ut_string_inlist (In.format, ',', "ply")))
-  {
-    header_printed = 1;
-    ut_print_message (0, 1, "Writing geometry results ...\n");
-    ut_print_message (0, 2, "Writing geometry ...\n");
-
-    if (GeoPara.cltype >= 2) // tmp transformation for printing geo
-    {
-      if (GeoPara.cltype == 2)
-	neut_geo_scale (&Geo, GeoPara.cl3[0] / GeoPara.cl,
-			      GeoPara.cl3[1] / GeoPara.cl,
-			      GeoPara.cl3[2] / GeoPara.cl);
-      else if (GeoPara.cltype == 3)
-	neut_geo_scale (&Geo, GeoPara.rcl3[0] / GeoPara.rcl,
-			      GeoPara.rcl3[1] / GeoPara.rcl,
-			      GeoPara.rcl3[2] / GeoPara.rcl);
-    }
-
-    if (ut_string_inlist (In.format, ',', "tess"))
-    {
-      file = ut_file_open (In.geo, "w");
-      neut_geo_fprintf (file, Geo);
-      ut_file_close (file, In.geo, "w");
-    }
-    
-    if (ut_string_inlist (In.format, ',', "geo"))
-    {
-      file = ut_file_open (In.gmshgeo, "w");
-      neut_geo_fprintf_gmsh (file, Geo);
-      ut_file_close (file, In.gmshgeo, "w");
-    }
-    
-    if (ut_string_inlist (In.format, ',', "ply"))
-    {
-      file = ut_file_open (In.ply, "w");
-      neut_geo_fprintf_ply (file, Geo);
-      ut_file_close (file, In.ply, "w");
-    }
-
-    if (GeoPara.cltype >= 2) // tmp transformation for printing geo
-    {
-      if (GeoPara.cltype == 2)
-	neut_geo_scale (&Geo, GeoPara.cl / GeoPara.cl3[0],
-			      GeoPara.cl / GeoPara.cl3[1],
-			      GeoPara.cl / GeoPara.cl3[2]);
-      else if (GeoPara.cltype == 3)
-	neut_geo_scale (&Geo, GeoPara.rcl / GeoPara.rcl3[0],
-			      GeoPara.rcl / GeoPara.rcl3[1],
-			      GeoPara.rcl / GeoPara.rcl3[2]);
-    }
-  }
-
-  if (In.printstattess == 1)
-  {
-    if (header_printed == 0)
-      ut_print_message (0, 1, "Writing geometry results ...\n");
-    WriteStatGeo (In.body, Geo);
-  }
-
 /*********************************************************************** 
  * mesh output */
 
@@ -299,13 +234,13 @@ neper_fm (int fargc, char **fargv, int argc, char **argv)
 /*********************************************************************** 
  * mesh output (statistics) */
   
-  if (Mesh3D.EltQty > 0 && In.printstatmesh == 1)
+  if (In.stn != NULL || In.ste != NULL || In.stelset != NULL)
   {
     ut_print_message (0, 1, "Writing mesh statistics ...\n");
     if (Geo.PolyTrue == NULL)
       neut_geo_init_polytrue (&Geo);
 
-    MStat (Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, In, GeoPara, &Geo);
+    nem_stat (Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, In, GeoPara, &Geo);
   }
 
   // TODO init and free NSET

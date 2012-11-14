@@ -8,3 +8,5 @@ extern void neut_poly_tess (struct POLY, struct TESS*);
 extern void neut_poly_geo (struct POLY, struct GEO*);
 extern void neut_poly_free (struct POLY*);
 extern void neut_poly_set_zero (struct POLY*);
+
+#include "neut_poly_polymod/neut_poly_polymod0.h"

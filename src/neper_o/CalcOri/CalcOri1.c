@@ -14,12 +14,15 @@ CalcOri (struct IN In, struct ORI *pOri)
   double n1, n2, n3;
   int idmax;
   double** q = NULL;
+  struct GEO Geo;
+
+  neut_geo_set_zero (&Geo);
 
   if ((*pOri).N == 0)
   {
-    file = ut_file_open (In.oin, "r");
-    neo_oin_fscanf (file, pOri);
-    ut_file_close (file, In.oin, "r");
+    file = ut_file_open (In.tess, "r");
+    neo_init_ori (file, pOri);
+    ut_file_close (file, In.tess, "r");
   }
   else
   {
@@ -63,6 +66,7 @@ CalcOri (struct IN In, struct ORI *pOri)
     ut_array_1d_memcpy ((*pOri).q[i], 4, q[(*pOri).rngid[i]]);
 
   ut_free_2d (q, idmax + 1);
+  neut_geo_free (&Geo);
 
   return;
 }

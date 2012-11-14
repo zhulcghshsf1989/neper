@@ -6,10 +6,10 @@
 
 /* SetDefaultOptions set the options to their default values */
 void
-SetDefaultOptions_mm (struct IN *pIn, struct GERMSET *pGermSet)
+SetDefaultOptions_mm (struct IN *pIn)
 {
   (*pIn).format = ut_alloc_1d_char (100);
-  sprintf ((*pIn).format, "msh,oin");
+  sprintf ((*pIn).format, "msh");
 
   (*pIn).domain = ut_alloc_1d_char (10);
   sprintf ((*pIn).domain, "cube");
@@ -19,12 +19,6 @@ SetDefaultOptions_mm (struct IN *pIn, struct GERMSET *pGermSet)
   (*pIn).domainparms[2] = 1;
   (*pIn).domainparms2 = NULL;
 
-  (*pIn).F = ut_alloc_1d (3);	/* size of the domain to tesselate */
-
-  (*pIn).F[0] = 1;
-  (*pIn).F[1] = 1;
-  (*pIn).F[2] = 1;
-
   (*pIn).ingeo = NULL;
   (*pIn).body = NULL;
   (*pIn).geo = NULL;
@@ -33,26 +27,11 @@ SetDefaultOptions_mm (struct IN *pIn, struct GERMSET *pGermSet)
   (*pIn).msh = NULL;
   (*pIn).centrecoo = NULL;
 
-  (*pIn).verbosity = 0;
-  (*pIn).input = -1;
+  (*pIn).input = NULL;
   (*pIn).nset = ut_alloc_1d_char (1000);
   sprintf ((*pIn).nset, "faces");
   (*pIn).faset = ut_alloc_1d_char (1000);
   (*pIn).faset[0] = '\0';
-
-  (*pIn).nsite = 0;
-  (*pIn).nsitesize = -1;
-
-  (*pGermSet).ttype = ut_alloc_1d_char (9);
-  strcpy ((*pGermSet).ttype, "standard");
-
-  (*pGermSet).NDensity = -1;
-  (*pGermSet).N = -1;
-  (*pGermSet).nN = 0;
-  (*pGermSet).Id = -1;
-
-  (*pGermSet).morpho = ut_alloc_1d_char (100);
-  sprintf ((*pGermSet).morpho, "poisson");
 
   (*pIn).msizetype = 1;
   (*pIn).msize = 20;
@@ -63,20 +42,21 @@ SetDefaultOptions_mm (struct IN *pIn, struct GERMSET *pGermSet)
   (*pIn).morder = 1;
 
   (*pIn).mesh = 0;
-  (*pIn).nodecoo = NULL;
   (*pIn).loadmesh = NULL;
 
   (*pIn).outdim = ut_alloc_1d_char(100);
   sprintf ((*pIn).outdim, "3");
+  (*pIn).meshpoly = NULL;
+  (*pIn).singnodedup = 0;
+  (*pIn).cleaning = 0;
 
   return;
 }
 
 void
-SetOptions_mm (struct IN *pIn, struct GERMSET *pGermSet,
-	       int argc, char **argv)
+SetOptions_mm (struct IN *pIn, int argc, char **argv)
 {
-  int i, status, ArgQty, Res;
+  int i, ArgQty, Res;
   char **ArgList = ut_alloc_2d_char (101, 101);
   char *Arg = ut_alloc_1d_char (101);
 
@@ -90,7 +70,6 @@ SetOptions_mm (struct IN *pIn, struct GERMSET *pGermSet,
   sprintf (ArgList[++ArgQty], "-centercoo");
   sprintf (ArgList[++ArgQty], "-gcoo");
   sprintf (ArgList[++ArgQty], "-domain");
-  sprintf (ArgList[++ArgQty], "-scale");
   // General options ---------------------------------------------------
   sprintf (ArgList[++ArgQty], "-o");
   sprintf (ArgList[++ArgQty], "-ttype");
@@ -99,20 +78,21 @@ SetOptions_mm (struct IN *pIn, struct GERMSET *pGermSet,
   sprintf (ArgList[++ArgQty], "-morder");
   sprintf (ArgList[++ArgQty], "-order");
   sprintf (ArgList[++ArgQty], "-v");
-  sprintf (ArgList[++ArgQty], "-nsite");
-  sprintf (ArgList[++ArgQty], "-nsitewidth");
   sprintf (ArgList[++ArgQty], "-faset");
   sprintf (ArgList[++ArgQty], "-msize3");
   sprintf (ArgList[++ArgQty], "-format");
   sprintf (ArgList[++ArgQty], "-loadmesh");
-  sprintf (ArgList[++ArgQty], "-loadmeshnodecoo");
   sprintf (ArgList[++ArgQty], "-outdim");
+  sprintf (ArgList[++ArgQty], "-meshpoly");
+  sprintf (ArgList[++ArgQty], "-singnodedup");
+  sprintf (ArgList[++ArgQty], "-cleaning");
 
   for (i = 1; i < argc; i++)
   {
     if (argv[i][0] != '-')
     {
-      (*pIn).input = 0;
+      (*pIn).input = ut_alloc_1d_char (5);
+      sprintf ((*pIn).input, "n");
       (*pIn).ingeo = ut_alloc_1d_char (strlen (argv[i]) + 1);
       sprintf ((*pIn).ingeo, "%s", argv[i]);
       (*pIn).mesh = 1;
@@ -137,21 +117,11 @@ SetOptions_mm (struct IN *pIn, struct GERMSET *pGermSet,
     
     /*---------------------------------------------------------------------- 
      * input data */
-    status = SetOptions_t_inputdata (pGermSet, argc, argv, &i, Arg, &((*pIn).input));
 
-    if (status == 0)
-      continue;
-
-    else if (strcmp (Arg, "-o") == 0 && i < argc - 1)
+    if (strcmp (Arg, "-o") == 0 && i < argc - 1)
     {
       (*pIn).body = ut_arg_nextaschar (argv, &i, Arg);
       ut_string_body ((*pIn).body, (*pIn).body);
-    }
-    else if (strcmp (Arg, "-scale") == 0 && i < argc - 3)
-    {
-      (*pIn).F[0] = ut_arg_nextasreal (argv, &i, Arg, 0, DBL_MAX);
-      (*pIn).F[1] = ut_arg_nextasreal (argv, &i, Arg, 0, DBL_MAX);
-      (*pIn).F[2] = ut_arg_nextasreal (argv, &i, Arg, 0, DBL_MAX);
     }
     else if (strcmp (Arg, "-format") == 0 && i < argc - 1)
       (*pIn).format = ut_arg_nextaschar (argv, &i, Arg);
@@ -163,10 +133,6 @@ SetOptions_mm (struct IN *pIn, struct GERMSET *pGermSet,
     }
     else if (strcmp (Arg, "-faset") == 0 && i < argc - 1)
       (*pIn).faset = ut_arg_nextaschar (argv, &i, Arg);
-    else if (strcmp (Arg, "-nsite") == 0 && i < argc - 1)
-      (*pIn).nsite = ut_arg_nextasint (argv, &i, Arg, 0, 4);
-    else if (strcmp (Arg, "-nsitewidth") == 0 && i < argc - 1)
-      (*pIn).nsitesize = ut_arg_nextasreal (argv, &i, Arg, 0, DBL_MAX);
     else if (strcmp (Arg, "-msize") == 0 && i < argc - 1)
     {
       (*pIn).msizetype = 1;
@@ -199,17 +165,20 @@ SetOptions_mm (struct IN *pIn, struct GERMSET *pGermSet,
       (*pIn).morder = ut_arg_nextasint (argv, &i, Arg, 1, 2);
     else if (strcmp (Arg, "-order") == 0 && i < argc - 1)
       (*pIn).morder = ut_arg_nextasint (argv, &i, Arg, 1, 2);
-    else if (strcmp (Arg, "-v") == 0 && i < argc - 1)
-      (*pIn).verbosity = ut_arg_nextasint (argv, &i, Arg, 0, 2);
     else if (strcmp (Arg, "-loadmesh") == 0 && i < argc - 1)
     {
       (*pIn).loadmesh = ut_arg_nextaschar (argv, &i, Arg);
-      (*pIn).input = 3;
+      (*pIn).input = ut_alloc_1d_char (5);
+      strcpy ((*pIn).input, "mesh");
     }
-    else if (strcmp (Arg, "-loadmeshnodecoo") == 0 && i < argc - 1)
-      (*pIn).nodecoo = ut_arg_nextaschar (argv, &i, Arg);
     else if (strcmp (Arg, "-outdim") == 0 && i < argc - 1)
       (*pIn).outdim = ut_arg_nextaschar (argv, &i, Arg);
+    else if (strcmp (Arg, "-meshpoly") == 0 && i < argc - 1)
+      (*pIn).meshpoly = ut_arg_nextaschar (argv, &i, Arg);
+    else if (strcmp (Arg, "-cleaning") == 0 && i < argc - 1)
+      (*pIn).cleaning = ut_arg_nextasint (argv, &i, Arg, 0, 2);
+    else if (strcmp (Arg, "-singnodedup") == 0 && i < argc - 1)
+      (*pIn).singnodedup = ut_arg_nextaslogical (argv, &i, Arg);
     else
     {
       ut_arg_badarg ();

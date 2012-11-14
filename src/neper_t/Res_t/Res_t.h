@@ -7,19 +7,10 @@
 #include<math.h>
 #include<string.h>
 
-#include"structAll.h"
 #include"../structIn_t.h"
-#include"AllUtils.h"
 #include"ut.h"
 #include"neut.h"
 #include"PointPoly/PointPoly0.h"
-#include"Connectivity/Connectivity0.h"
-#include"net_oin/net_oin0.h"
-
-#include"../../neper_fm/GeoStuff/GeoStuff0.h"
+#include"net_stat/net_stat0.h"
 
 #include"Res_t0.h"
-
-extern void DrawPoly (struct TESS, int *, int, FILE *);
-extern void GeoTess (struct TESS, FILE *);
-extern void Phaseinput (struct GERMSET, struct POLY **, FILE *);

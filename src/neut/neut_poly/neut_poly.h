@@ -8,5 +8,4 @@
 #include <math.h>
 #include <string.h>
 #include "neut.h"
-#include "AllUtils.h"
 #include "../../neper_t/Tess/Tess0.h"

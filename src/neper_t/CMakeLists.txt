@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.6)
-project(neper_t)
+project(neper_t C)
 
 option (HAVE_GSL         "Use the GNU Scientific Library (GSL)" ON )
 option (HAVE_LIBMATHEVAL "Use libmatheval"                      ON )
@@ -7,11 +7,24 @@ option (HAVE_LIBSCOTCH   "Use libscotch"                        OFF)
 
 include_directories("${PROJECT_BINARY_DIR}")
 
-add_definitions(-Wall -W -O3)
+add_definitions(-Wall -W -g -O3)
+set (CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
 
 add_library (neper_t
-./IntePara/IntePara2.c
-./IntePara/IntePara1.c
+./RegularizeGeo/MergeGeo/MergeGeo2.c
+./RegularizeGeo/MergeGeo/MergeGeo1.c
+./RegularizeGeo/MergeGeo/DeleteEdge/DeleteEdge1.c
+./RegularizeGeo/MergeGeo/DeleteEdge/DeleteEdge2.c
+./RegularizeGeo/MergeGeo/DeleteEdge/FaceFF/FaceFFPlanes2.c
+./RegularizeGeo/MergeGeo/DeleteEdge/FaceFF/FaceFFPlanes1.c
+./RegularizeGeo/MergeGeo/DeleteEdge/FaceFF/FaceFF1.c
+./RegularizeGeo/MergeGeo/DeleteEdge/DeleteEdge3.c
+./RegularizeGeo/MergeGeo/DeleteEdge/DeleteEdge5.c
+./RegularizeGeo/MergeGeo/DeleteEdge/DeleteEdge4.c
+./RegularizeGeo/RegularizeGeo1.c
+./net_vox/net_vox1.c
+./net_vox/net_vox2.c
+./net_utils/net_utils1.c
 ./Tess/Tess2.c
 ./Tess/Tess4.c
 ./Tess/Tess5.c
@@ -21,11 +34,10 @@ add_library (neper_t
 ./InputData_t/InputData_t1.c
 ./InputData_t/InputData_t2.c
 ./InputData_t/InputData_t3.c
-./InputData_t/InputData_t4.c
 ./Res_t/Res_t1.c
 ./Res_t/PointPoly/PointPoly1.c
-./Res_t/net_oin/net_oin1.c
-./Res_t/Connectivity/Connectivity1.c
+./Res_t/net_stat/net_stat1.c
+./Res_t/net_stat/net_stat2.c
 ./PolyComp/PolyDet/PolyDet.c
 ./PolyComp/PolyDet/PolyCalc/PolyCalc5.c
 ./PolyComp/PolyDet/PolyCalc/PolyCalc4.c
@@ -42,8 +54,12 @@ add_library (neper_t
 ./GermDistrib/RegDistrib/RegDistrib1.c
 ./GermDistrib/RandDistrib/RandDistrib2.c
 ./GermDistrib/RandDistrib/RandDistrib1.c
+./GermDistrib/DefGermSet/DefGermSet1.c
+./GermDistrib/DefGermSet/DefGermSet2.c
+./GermDistrib/DefGermSet/DefGermSet3.c
 ./GermDistrib/GermDistrib1.c
-./net_tess_sort/net_tess_sort1.c
+./GermDistrib/GermDistrib2.c
+./net_geo_sort/net_geo_sort1.c
 ./DomainComp/DomainComp1.c
 ./DomainComp/DomainComp2.c
 ./DomainComp/CubeDomain/CubeDomain2.c
@@ -51,9 +67,7 @@ add_library (neper_t
 ./DomainComp/CubeDomain/CubeDomain3.c
 ./neper_t.c
 ./net_centroid/net_centroid1.c
-./Miscellaneous/Miscellaneous2.c
 ./Miscellaneous/Miscellaneous1.c
-./Miscellaneous/Miscellaneous3.c
 )
 
 set (EXTRA_LIBS ${EXTRA_LIBS} ut)

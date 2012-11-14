@@ -1,5 +1,5 @@
 /* This file is part of the 'neper' program. */
-/* Copyright (C) 2003-2011, Romain Quey. */
+/* Copyright (C) 2003-2012, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_geo_fscanf_1p9.h"
@@ -30,15 +30,16 @@ neut_geo_fscanf_head_1p9 (struct GEO* pGeo, FILE * file)
 
   if (strcmp (tmp, "1.9.2") == 0)
   {
-    fscanf (file, "%s", tmp);
-    if (strcmp (tmp, "**general") != 0)
+    if (fscanf (file, "%s", tmp) != 1 || strcmp (tmp, "**general") != 0)
     {
       ut_print_message (2, 0, "Input file is not a valid geometry file.\n");
       abort ();
     }
     (*pGeo).morpho = ut_alloc_1d_char (100);
     (*pGeo).Type = ut_alloc_1d_char (100);
-    fscanf (file, "%s%s%d", (*pGeo).morpho, (*pGeo).Type, &((*pGeo).Id));
+    if (fscanf (file, "%s%s%d", (*pGeo).morpho, (*pGeo).Type, &((*pGeo).Id)) != 3)
+      abort ();
+
     if (! strcmp ((*pGeo).Type, "0"))
       strcpy ((*pGeo).Type, "standard");
     else
@@ -64,12 +65,11 @@ neut_geo_fscanf_foot_1p9 (FILE * file)
 void
 neut_geo_fscanf_ver_1p9 (struct GEO* pGeo, FILE * file)
 {
-  int i, j, ver;
+  int i, ver;
 
-  if (ut_file_string_scanncomp (file, "**vertex") != 0)
+  if (ut_file_string_scanncomp (file, "**vertex") != 0
+   || fscanf (file, "%d", &((*pGeo).VerQty)) != 1)
     abort ();
-
-  fscanf (file, " %d", &((*pGeo).VerQty));
 
   // (*pGeo).VerDom   = ut_alloc_2d_int ((*pGeo).VerQty + 1, 4);
   (*pGeo).VerEdgeQty = ut_alloc_1d_int ((*pGeo).VerQty + 1);
@@ -79,20 +79,21 @@ neut_geo_fscanf_ver_1p9 (struct GEO* pGeo, FILE * file)
 
   for (i = 1; i <= (*pGeo).VerQty; i++)
   {
-    fscanf (file, " %d", &ver);
-    // for (j = 0; j < 4; j++)
-    //  fscanf (file, "%d", &((*pGeo).VerDom[ver][j]));
+    if (fscanf (file, "%d", &ver) != 1)
+      abort ();
     ut_file_skip (file, 4);
     
-    fscanf (file, " %d", &((*pGeo).VerEdgeQty[ver]));
-    (*pGeo).VerEdgeNb[ver] = ut_alloc_1d_int ((*pGeo).VerEdgeQty[ver]);
-    for (j = 0; j < (*pGeo).VerEdgeQty[i]; j++)
-      fscanf (file, " %d", &((*pGeo).VerEdgeNb[ver][j]));
+    if (fscanf (file, "%d", &((*pGeo).VerEdgeQty[ver])) != 1)
+      abort ();
 
-    for (j = 0; j < 3; j++)
-      fscanf (file, " %lf", &((*pGeo).VerCoo[ver][j]));
+    (*pGeo).VerEdgeNb[ver] = ut_alloc_1d_int ((*pGeo).VerEdgeQty[ver]);
+    ut_array_1d_int_fscanf (file, (*pGeo).VerEdgeNb[ver],
+	(*pGeo).VerEdgeQty[ver]);
+
+    ut_array_1d_fscanf (file, (*pGeo).VerCoo[ver], 3);
     
-    fscanf (file, "%d", &((*pGeo).VerState[ver]));
+    if (fscanf (file, "%d", &((*pGeo).VerState[ver])) != 1)
+      abort ();
   }
 
   return;
@@ -102,12 +103,11 @@ neut_geo_fscanf_ver_1p9 (struct GEO* pGeo, FILE * file)
 void
 neut_geo_fscanf_edge_1p9 (struct GEO* pGeo, FILE * file)
 {
-  int i, j, edge;
+  int i, edge, status;
 
-  if (ut_file_string_scanncomp (file, "**edge") != 0)
+  if (ut_file_string_scanncomp (file, "**edge") != 0
+   || fscanf (file, "%d", &((*pGeo).EdgeQty)) != 1)
     abort ();
-  
-  fscanf (file, "%d", &((*pGeo).EdgeQty));
 
   (*pGeo).EdgeFaceQty = ut_alloc_1d_int ((*pGeo).EdgeQty + 1);
   (*pGeo).EdgeVerNb   = ut_alloc_2d_int ((*pGeo).EdgeQty + 1, 2);
@@ -117,16 +117,17 @@ neut_geo_fscanf_edge_1p9 (struct GEO* pGeo, FILE * file)
 
   for (i = 1; i <= (*pGeo).EdgeQty; i++)
   {
-    fscanf (file, "%d", &edge);
-    for (j = 0; j < 2; j++)
-      fscanf (file, "%d", &((*pGeo).EdgeVerNb[edge][j]));
-
-    fscanf (file, "%d", &((*pGeo).EdgeFaceQty[edge]));
+    status = fscanf (file, "%d", &edge);
+    ut_array_1d_int_fscanf (file, (*pGeo).EdgeVerNb[edge], 2);
+    status += fscanf (file, "%d", &((*pGeo).EdgeFaceQty[edge]));
 
     (*pGeo).EdgeFaceNb[i] = ut_alloc_1d_int ((*pGeo).EdgeFaceQty[edge]);
     ut_array_1d_int_fscanf (file, (*pGeo).EdgeFaceNb[edge], (*pGeo).EdgeFaceQty[edge]);
 
-    fscanf (file, "%d", &((*pGeo).EdgeState[edge]));
+    status += fscanf (file, "%d", &((*pGeo).EdgeState[edge]));
+
+    if (status != 3)
+      abort ();
   }
 
   return;
@@ -136,12 +137,11 @@ neut_geo_fscanf_edge_1p9 (struct GEO* pGeo, FILE * file)
 void
 neut_geo_fscanf_face_1p9 (struct GEO* pGeo, FILE * file)
 {
-  int i, j, face, tmp;
+  int i, face;
 
-  if (ut_file_string_scanncomp (file, "**face") != 0)
+  if (ut_file_string_scanncomp (file, "**face") != 0
+   || fscanf (file, "%d", &((*pGeo).FaceQty)) != 1)
     abort ();
-  
-  fscanf (file, "%d", &((*pGeo).FaceQty));
     
   // (*pGeo).FaceDom   = ut_alloc_1d_int ((*pGeo).FaceQty + 1);
   (*pGeo).FacePoly    = ut_alloc_2d_int ((*pGeo).FaceQty + 1, 2);
@@ -157,35 +157,39 @@ neut_geo_fscanf_face_1p9 (struct GEO* pGeo, FILE * file)
 
   for (i = 1; i <= (*pGeo).FaceQty; i++)
   {
-    fscanf (file, "%d", &face);
-    // fscanf (file, "%d", &((*pGeo).FaceDom[face]));
+    if (fscanf (file, "%d", &face) != 1)
+      abort ();
     ut_file_skip (file, 1);
 
-    for (j = 0; j < 2; j++)
-      fscanf (file, " %d", &((*pGeo).FacePoly[face][j]));
-    for (j = 0; j < 4; j++)
-      fscanf (file, " %lf", &((*pGeo).FaceEq[face][j]));
+    ut_array_1d_int_fscanf (file, (*pGeo).FacePoly[face], 2);
+    ut_array_1d_fscanf     (file, (*pGeo).FaceEq[face], 4);
 
-    fscanf (file, "%d", &((*pGeo).FaceVerQty[face]));
+    if (fscanf (file, "%d", &((*pGeo).FaceVerQty[face])) != 1)
+      abort ();
 
     (*pGeo).FaceVerNb[face]   = ut_alloc_1d_int ((*pGeo).FaceVerQty[face] + 1);
     (*pGeo).FaceEdgeNb[face]  = ut_alloc_1d_int ((*pGeo).FaceVerQty[face] + 1);
     (*pGeo).FaceEdgeOri[face] = ut_alloc_1d_int ((*pGeo).FaceVerQty[face] + 1);
 
-    for (j = 1; j <= (*pGeo).FaceVerQty[face]; j++)
-      fscanf (file, "%d", &((*pGeo).FaceVerNb[face][j]));
+    ut_array_1d_int_fscanf (file, (*pGeo).FaceVerNb[face] + 1, 
+			          (*pGeo).FaceVerQty[face]);
 
-    for (j = 1; j <= (*pGeo).FaceVerQty[face]; j++)
-    {
-      fscanf (file, "%d", &tmp);
-      (*pGeo).FaceEdgeOri[face][j] = ut_num_sgn_int (tmp);
-      (*pGeo).FaceEdgeNb[face][j] = tmp * (*pGeo).FaceEdgeOri[face][j];
-    }
+    ut_array_1d_int_fscanf (file, (*pGeo).FaceEdgeNb[face] + 1,
+	                          (*pGeo).FaceVerQty[face]);
+    ut_array_1d_int_sgn ((*pGeo).FaceEdgeNb[face] + 1,
+			 (*pGeo).FaceVerQty[face],
+			 (*pGeo).FaceEdgeOri[face] + 1);
+    ut_array_1d_int_abs ((*pGeo).FaceEdgeNb[face] + 1,
+			 (*pGeo).FaceVerQty[face]);
 
-    fscanf (file, "%d", &((*pGeo).FaceState[face]));
-    fscanf (file, "%d", &((*pGeo).FacePt[face]));
+    if (fscanf (file, "%d%d", &((*pGeo).FaceState[face]),
+			      &((*pGeo).FacePt[face])) != 2)
+      abort ();
+
     ut_array_1d_fscanf (file, (*pGeo).FacePtCoo[face], 3);
-    fscanf (file, "%lf", &((*pGeo).FaceFF[face]));
+
+    if (fscanf (file, "%lf", &((*pGeo).FaceFF[face])) != 1)
+      abort ();
   }
 
   return;
@@ -195,12 +199,11 @@ neut_geo_fscanf_face_1p9 (struct GEO* pGeo, FILE * file)
 void
 neut_geo_fscanf_poly_1p9 (struct GEO* pGeo, FILE * file)
 {
-  int i, j, poly, tmp;
+  int i, poly;
 
-  if (ut_file_string_scanncomp (file, "**polyhedron") != 0)
+  if (ut_file_string_scanncomp (file, "**polyhedron") != 0
+   || fscanf (file, "%d", &((*pGeo).PolyQty)) != 1)
     abort ();
-
-  fscanf (file, "%d", &((*pGeo).PolyQty));
   
   (*pGeo).CenterCoo   = ut_alloc_2d      ((*pGeo).PolyQty + 1, 3);
   (*pGeo).PolyTrue    = ut_alloc_1d_int  ((*pGeo).PolyQty + 1);
@@ -211,24 +214,26 @@ neut_geo_fscanf_poly_1p9 (struct GEO* pGeo, FILE * file)
 
   for (i = 1; i <= (*pGeo).PolyQty; i++)
   {
-    fscanf (file, "%d", &poly);
+    if (fscanf (file, "%d", &poly) != 1)
+      abort ();
 
-    for (j = 0; j < 3; j++)
-      fscanf (file, " %lf", &((*pGeo).CenterCoo[poly][j]));
-    fscanf (file, " %d", &((*pGeo).PolyTrue[poly]));
-    fscanf (file, " %d", &((*pGeo).PolyBody[poly]));
-    fscanf (file, "\n    ");
+    ut_array_1d_fscanf (file, (*pGeo).CenterCoo[poly], 3);
 
-    fscanf (file, " %d", &((*pGeo).PolyFaceQty[poly]));
+    if (fscanf (file, "%d%d%d", &((*pGeo).PolyTrue[poly]),
+				&((*pGeo).PolyBody[poly]),
+				&((*pGeo).PolyFaceQty[poly])) != 3)
+      abort ();
+
     (*pGeo).PolyFaceNb[poly]  = ut_alloc_1d_int ((*pGeo).PolyFaceQty[poly] + 1);
     (*pGeo).PolyFaceOri[poly] = ut_alloc_1d_int ((*pGeo).PolyFaceQty[poly] + 1);
 
-    for (j = 1; j <= (*pGeo).PolyFaceQty[poly]; j++)
-    {
-      fscanf (file, "%d", &tmp);
-      (*pGeo).PolyFaceOri[poly][j] = ut_num_sgn_int (tmp);
-      (*pGeo).PolyFaceNb[poly][j] = tmp * (*pGeo).PolyFaceOri[poly][j];
-    }
+    ut_array_1d_int_fscanf (file, (*pGeo).PolyFaceNb[poly] + 1, 
+	                          (*pGeo).PolyFaceQty[poly]);
+    ut_array_1d_int_sgn ((*pGeo).PolyFaceNb[poly] + 1,
+	                 (*pGeo).PolyFaceQty[poly],
+			 (*pGeo).PolyFaceOri[poly] + 1);
+    ut_array_1d_int_abs ((*pGeo).PolyFaceNb[poly] + 1, 
+	                 (*pGeo).PolyFaceQty[poly]);
   }
 
   return;

@@ -10,6 +10,7 @@ Meshing0D (struct GEO Geo, struct GEOPARA GeoPara, struct NODES* pNodes, struct 
   int i;
   struct NODES N;
   struct MESH M;
+  char* message = ut_alloc_1d_char (8);
 
   neut_nodes_set_zero (&N);
   neut_mesh_set_zero (&M);
@@ -18,9 +19,18 @@ Meshing0D (struct GEO Geo, struct GEOPARA GeoPara, struct NODES* pNodes, struct 
   (*pMesh0D).EltType = ut_alloc_1d_char (5);
   sprintf ((*pMesh0D).EltType, "tri");
 
-  ut_print_message (0, 2, "0D meshing ... %3d%%", 0);
-  fflush (stdout);
+  if (Geo.maxff > 0)
+  {
+    if (1.01 * Geo.sel < GeoPara.cl / GeoPara.pcl)
+      ut_print_messagewnc (1, 72, "Regularization was used with sel < cl / pl.  The mesh could be locally overrefined.");
+    if (Geo.dbound != NULL)
+      if (1.01 * Geo.dboundsel < GeoPara.dboundcl / GeoPara.dboundpcl)
+	ut_print_messagewnc (1, 72, "Regularization was used with dboundsel < dboundcl / dboundpl.  The mesh could be locally overrefined.");
+  }
 
+  ut_print_message (0, 2, "0D meshing ... ");
+
+  ut_print_progress (stdout, 0, Geo.VerQty, "%3.0f%%", message);
   for (i = 1; i <= Geo.VerQty; i++)
   {
     VerMeshing (Geo, i, GeoPara, &N, &M);
@@ -33,17 +43,12 @@ Meshing0D (struct GEO Geo, struct GEOPARA GeoPara, struct NODES* pNodes, struct 
     neut_mesh_addelt (pMesh0D, M.EltNodes[1]);
     neut_mesh_addelset (pMesh0D, M.Elsets[1] + 1, M.Elsets[1][0]);
 
-    if (isatty (1))
-      printf ("\b\b\b\b%3.0f%%", floor (100*((double) i/Geo.VerQty)));
-    else
-      printf (" %3.0f%%", floor (100*((double) i/Geo.VerQty)));
-
-    fflush (stdout);
+    ut_print_progress (stdout, i, Geo.VerQty, "%3.0f%%", message);
   }
-  printf ("\n");
 
   neut_nodes_free (&N);
   neut_mesh_free (&M);
+  ut_free_1d_char (message);
 
   return;
 }

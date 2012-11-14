@@ -11,33 +11,30 @@ It is built around several modules:
 
 @itemize @bullet
 @item @MT{} is for generating polycrystal morphologies.  They are
-described as space-filling tessellations of space whose vertices, edges,
-faces and volumes, represent the quadruple points, triple lines,
-grain boundaries and grains of the polycrystals, respectively.  The
-polycrystal morphologies can be random Voronoi tessellations, or regular
-tessellations made of
-truncated octahedra.  The tessellations are brick-shape by default, but
-can be of any convex shape.  After they have been generated, they can be
-deformed to account for morphological texture.
+respresented as Voronoi tessellations, or regular tessellations made of
+truncated octahedra.  The tessellations are space-filling, and the
+vertices, edges, faces and volumes, represent the quadruple points,
+triple lines, grain boundaries and grains of the polycrystals,
+respectively.  The tessellations are brick-shape by default, but can be
+of any convex shape.  After they have been generated, they can be
+deformed to account for morphological texture.  @MT{} also includes an
+advanced ``regularization'' capability to remove the small features of
+the tessellations, which enables to obtain better quality meshes.
 
-@item @MFM{} aims at generating free (or ``unstructured'') meshes
-of tessellations, that is, meshes comprised of tetrahedral elements
-that conform to the tessellation morphology.  Neper includes several
-advanced features that are necessary to get good-quality meshes:
-optimized meshing rules, a geometry regularization approach,
-multimeshing (the competitive use of several meshers) and
+@item @MFM{} aims at generating free (or ``unstructured'') meshes of
+tessellations, that is, meshes comprised of tetrahedral elements that
+conform to the tessellation morphology.  Neper includes several features
+that are necessary to get good-quality meshes: optimized meshing rules,
+multimeshing (the concurrent use of several meshing algorithms) and
 remeshing.
 
 @item @MMM{} is for generating mapped meshes of tessellations.  These
 meshes are comprised of regular hexahedral elements and so do not
 conform exactly to the tessellation morphology.
-Mapped meshes of standard tessellations, periodic tessellations and
-herein called @dfn{subdomain-type} tessellations can be created.
 
 @item @MO{} provides crystallographic orientations for the grains.  The
 orientations are randomly distributed according to a uniform
 distribution.
-
 
 @item @MVS{} is for printing publication-quality images of the
 tessellations and meshes.
@@ -55,12 +52,11 @@ are available:
 
 @itemize
 @item The Neper reference manual.  It describes all the Neper
-capabilities.  Each module is the subject of a specific chapter, in
-which all the available commands as well as the result files are
-described in detail.  Some examples are also provided.  The Neper
-documentation comes in two formats: a PDF file and an info file.
-Provided that the info file is properly installed at your site, it
-can be accessed by running the shell command: @command{info neper}.
+capabilities. It is made of one chapter for each module, describing
+the available commands and result files, and providing some examples.
+The manual comes both as a PDF file and an info file.  Provided
+that the info file is properly installed at your site, it can be
+accessed by the command: @command{info neper}.
 
 @item The Neper homepage: @url{http://neper.sourceforge.net}.  It is
 where the Neper distribution can be downloaded from. It also provides an
@@ -75,9 +71,14 @@ provides details on the algorithms.  It can be downloaded
 from the Neper homepage or by following this link:
 @url{http://neper.sourceforge.net/neper_paper.pdf}.
 
+@item The Neper Git repository: @url{http://neper.git.sourceforge.net}.
+It is where the development version can be obtained. You can get it
+with Git using the command:@*
+@command{git clone git://neper.git.sourceforge.net/gitroot/neper/neper
+  --branch devel}
+
 @end itemize
 
-@need 2000
 @section Installing Neper
 
 Neper is written in (mostly ANSI) C and can run on any Unix-like system.
@@ -104,15 +105,13 @@ Neper's @file{src} directory,
 @end itemize
 
 This will use the default configuration options, including on which
-dependencies are used, and should work out of the box provided that the
-required libraries are installed in standard system locations.  A finer
-configuration can be achieved before building Neper, as described
+dependencies are used, and should work out of the box on condition that
+the required libraries are installed in standard system locations.  A
+finer configuration can be achieved before building Neper, as described
 in the following.
 
-@subsection Dependencies
-
-Neper has mandatory as well as optional dependencies.  Some dependencies
-are needed at compilation time.  They are,
+Neper has mandatory as well as optional dependencies, as detailed in the
+following.  Some dependencies are managed at compilation time,
 
 @itemize
 
@@ -136,23 +135,20 @@ libmatheval homepage, @uref{http://www.gnu.org/software/libmatheval}.
 Scotch mesh partitioner (version @code{5.1.12} or later).  It can be
 downloaded from the Scotch homepage,
 @url{www.labri.fr/perso/pelegrin/scotch}.
-
 @end itemize
 
 Optional dependencies can be toggled on / off using Cmake's GUI
 (@command{cmake-gui}) or @command{ccmake}, by setting variables
 @code{HAVE_@var{LIBRARYNAME}} to ON or OFF, respectively. 
 
-@sp 1
-The following dependencies are not managed during the compilation.  They
-are only needed at run time,
-
+The following dependencies are only needed at run time,
+@c
 @itemize
 
 @item the Gmsh program (mandatory for module -FM)
 
 This version on Neper is intended to work with Gmsh (version
-@code{2.4.2} or later), which can be downloaded from
+@code{2.4.2} or later, excluding version @code{2.5.1}), which can be downloaded from
 @url{http://www.geuz.org/gmsh}.  A working Gmsh installation must be
 available on your system.
 
@@ -170,6 +166,7 @@ through the command: @command{povray}.
 @c @file{neper.info} into an info directory (usually @file{/usr/info},
 @c @file{/usr/local/info} or @file{/usr/doc/info}).
 
+@page
 @section Getting Started
 
 Using Neper consists in running the command @file{neper} in a terminal,
@@ -193,9 +190,8 @@ with a number of arguments:
 @com{neper @var{module_name} @var{module_arguments}}
 
 The module names are @option{-T}, 
-@option{-FM}, @option{-MM},
-@option{-O}
-and @option{-VS}.  The module arguments can include both required input
+@option{-FM}, @option{-MM}, @option{-O} and @option{-VS}. 
+The module arguments can include both required input
 data and options.  Options start @w{by @samp{-}}.  The options can be
 given in arbitrary order (except for module @code{-VS}) and are to be
 specified as follows: ``@var{option_name option_value}''.  The options
@@ -207,10 +203,10 @@ long as the abbreviation is not ambiguous. For example, in module
 @option{-des} or even safely @w{to @option{-d}}.  Logical options can be
 selected by giving the @w{value @samp{1}} or disabled by @w{giving
 @samp{0}}.  Neper is highly parametrable, and as a consequence includes
-quite a large number of options.  For clarity sake, they are tagged
-according to their importance level in the reference manual:
-@w{`[Option]'} or @w{`[Secondary option]'}.  The post-processing options
-are tagged @w{`[Post-processing]'}.
+quite a large number of options.  For clarity, they are tagged by
+importance level in the reference manual: @w{`[Option]'} or
+@w{`[Secondary option]'}.  Post-processing options are tagged
+@w{`[Post-processing]'}.
 
 @subsection Initialization File
 
@@ -226,12 +222,11 @@ as value of the @var{my_file} argument.
 
 When a module of Neper is called, 
 Neper looks for the occurrence of @samp{neper @var{module_name}} in the
-initialization file, then reads all the arguments until the subsequent
-occurrence of @samp{neper} (which should denote the beginning of
-another module option field) or the end of the file.  Moreover, any
-comments can be written after giving @samp{neper comments}.  The
-arguments may be any legal arguments, but are typically limited to
-frequently-used options.
+initialization file, then reads all arguments until the next occurrence
+of @samp{neper} (which should denote the beginning of another module
+option field) or the end of the file.  Moreover, any comments can be
+written after giving @samp{neper comments}.  The arguments may be any
+legal arguments, but are typically limited to frequently-used options.
 
 @c @medskip
 An example of initialization file is given below:
@@ -240,7 +235,7 @@ An example of initialization file is given below:
 @example
 @c @group
 neper comments ------------------------------------------------------
-This is my default initialization file (~/.neperrc).
+This is my initialization file (~/.neperrc).
 neper -FM -order 2 -maxff 20 -gmsh my_gmsh_path
           -rcl 0.8
 neper -MM -order 2
@@ -250,11 +245,11 @@ neper comments ------------------------------------------------------
 @c @end cartouche
 
 @c @medskip
-If @samp{neper @var{module_name}} is not found, or if the initialization
-file is not found, Neper will just consider the command line arguments.
-Also, note that if an argument is initialized several times (for
-example, both in the initialization file and at the command line), the
-last specified value is retained.
+If the initialization file is not found, or if @samp{neper
+@var{module_name}} is not found is the file, Neper will just consider
+the command line arguments.  Also note that if an argument is
+initialized several times (for example, both in the initialization file
+and at the command line), the last specified value is considered.
 
 @subsection Conventions
 
@@ -272,6 +267,35 @@ the writing conventions used in the document:
 @item File names are printed like @file{this}.
 @end enumerate
 
+@c Some abbreviations are used consistently for options:
+@c 
+@c @multitable @columnfractions 0.5 0.5
+@c @item
+@c @multitable @columnfractions 0.2 0.6
+@c @item tess  @tab tessellation
+@c @item geo   @tab geometry
+@c @item stat  @tab statistics
+@c @item poly  @tab polyhedron@comma{} polyhedra
+@c @item ver   @tab vertex@comma{} vertices
+@c @item dim   @tab dimension
+@c @item cl    @tab characteristic length
+@c @item min   @tab minimum
+@c @item max   @tab maximum
+@c @end multitable
+@c 
+@c @tab
+@c @multitable @columnfractions 0.3 0.6
+@c @item algo  @tab algorithm
+@c @item part  @tab partition
+@c @item arch  @tab architecture
+@c @item surf  @tab surface
+@c @item stat  @tab statistics
+@c @item iter  @tab iteration
+@c @item nset  @tab node set
+@c @item elset @tab @w{element set}
+@c @end multitable
+@c 
+@c @end multitable
 
 @subsubsection Option Arguments
 

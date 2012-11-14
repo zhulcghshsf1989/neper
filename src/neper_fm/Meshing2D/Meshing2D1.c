@@ -36,9 +36,9 @@ Meshing2D (struct IN In, struct GEOPARA GeoPara,
   char*** algos = NULL;
   int actual_algo;
   int iter, totstatus;
-  char* message = ut_alloc_1d_char (1000);
-  char* message2 = ut_alloc_1d_char (1000);
-  int message_length;
+  char* format = ut_alloc_1d_char (128);
+  char* message = ut_alloc_1d_char (128);
+  char* tmpstring = ut_alloc_1d_char (128);
   struct MESH Garbage;
   double acl;
 
@@ -63,9 +63,9 @@ Meshing2D (struct IN In, struct GEOPARA GeoPara,
   char* mesh2dalgo = ut_alloc_1d_char (100);
   // retrieving list of algorithms to use
   if (strcmp (In.mesh2dalgo, "default") == 0)
-    sprintf (mesh2dalgo, "fron,made");
+    sprintf (mesh2dalgo, "fron,mead");
   else if (strcmp (In.mesh2dalgo, "qualmax") == 0)
-    sprintf (mesh2dalgo, "made,mead,dela,fron");
+    sprintf (mesh2dalgo, "mead,dela,fron");
   else
     sprintf (mesh2dalgo, "%s", In.mesh2dalgo);
 
@@ -89,7 +89,7 @@ Meshing2D (struct IN In, struct GEOPARA GeoPara,
       ut_free_1d_char (algos[a][1]);
       algos[a][1] = NULL;
     }
-    ut_free_2d_char (list, qty + 1);
+    ut_free_2d_char (list, qty);
   }
 
   totqmin0 = 1;
@@ -98,17 +98,27 @@ Meshing2D (struct IN In, struct GEOPARA GeoPara,
   totqmax = 0;
   actual_algo = -1;
 
-  message_length = 0;
-
-  ut_print_message (0, 2, "2D meshing ... ", 0);
-  fflush (stdout);
+  ut_print_message (0, 2, "2D meshing ... ");
 
   // Meshing faces in turn ---------------------------------------------
+  int* meshface = ut_alloc_1d_int (Geo.FaceQty + 1);
+  ut_array_1d_int_set (meshface + 1, Geo.FaceQty, 1);
+  meshface[0] = Geo.FaceQty;
+
+  if (In.meshface != NULL)
+    neut_geo_expr_facetab (Geo, In.meshface, meshface);
   
+  ut_print_progress (stdout, 0, Geo.FaceQty, "%3.0f%%", message);
+
   int fixed_face = 0;
   for (i = 1; i <= Geo.FaceQty; i++)
   {
     // printf ("facesim = %d\n", face_sim[i]);
+    if (meshface[i] == 0)
+    {
+      neut_mesh_addelset (pMesh2D, NULL, 0);
+      continue;
+    }
 
     qmin = 0;
     qmin0 = 0;
@@ -332,30 +342,24 @@ Meshing2D (struct IN In, struct GEOPARA GeoPara,
     neut_mesh_free (&M);
 
     // we are done ...
-    sprintf (message, "%3.0f%% (%.2g|%.2g/", floor (100 *
-	    ((double) i / Geo.FaceQty)), totqmin, totqmean);
+    sprintf (format, "%%3.0f%%%% (%.2g|%.2g/", totqmin, totqmean);
+
+    int* pct = ut_alloc_1d_int (algoqty + 1);
+
+    ut_array_1d_int_percent (algohit, algoqty, pct);
 
     for (a = 0; a < algoqty; a++)
     {
-      sprintf (message2, "%s%2d%%%c", message, ut_num_d2ri (100 * (double)algohit[a])/i, (a < algoqty - 1)? '|':')');
-      sprintf (message, "%s", message2);
+      sprintf (tmpstring, "%s%2d%%%c", format, pct[a], (a < algoqty - 1)? '|':')');
+      sprintf (format, "%s", tmpstring);
     }
 
-    if (isatty (1))
-    {
-      for (k = 0; k < message_length; k++)
-	fprintf (stdout, "\b");
-      fprintf (stdout, "%s      \b\b\b\b\b\b", message);
-    }
-    else
-      fprintf (stdout, " %s", message);
+    ut_free_1d_int (pct);
 
-    fflush (stdout);
-    
-    message_length = strlen (message);
+    ut_print_progress (stdout, i, Geo.FaceQty, format, message);
   }
-  fprintf (stdout, "\n");
 
+  ut_free_1d_int (meshface);
 
   if (fixed_face != 0)
     ut_print_message (0, 3, "%d %s been fixed ... ", fixed_face, (fixed_face == 1) ? "face has" : "faces have");
@@ -370,8 +374,9 @@ Meshing2D (struct IN In, struct GEOPARA GeoPara,
   ut_free_1d (qual);
   ut_free_1d_int (algohit);
   ut_free_3d_char (algos, algoqty, 2);
+  ut_free_1d_char (format);
   ut_free_1d_char (message);
-  ut_free_1d_char (message2);
+  ut_free_1d_char (tmpstring);
 
   return;
 }

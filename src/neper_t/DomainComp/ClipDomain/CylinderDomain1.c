@@ -27,10 +27,8 @@ CylinderDomain (double *size, struct POLY *pDomain)
 
   PolymodAlloc (&Polymod);
 
-  P2Pm ((*pDomain), &Polymod);
+  neut_poly_polymod ((*pDomain), &Polymod);
   
-  // PolymodZeros (IntePara.MaxPolyVerQty, IntePara.MaxPolyFaceQty, &Polymod);
-
   int* BadVer = NULL;
 
   double* n0 = ut_alloc_1d (3);
@@ -62,8 +60,6 @@ CylinderDomain (double *size, struct POLY *pDomain)
   }
 
   // neut_debug_polymod (stdout, Polymod);
-
-  // PolyFree (pDomain - 1, 1);
 
   // neut_debug_polymod (stdout, Polymod);
   PolyhedronRecording (0, Polymod, pDomain);

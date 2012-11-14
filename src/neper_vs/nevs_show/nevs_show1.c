@@ -25,7 +25,7 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
     (*pi)++;
     sscanf (argv[(*pi)], "%d", &((*pPrint).showmesh));
   }
-  else if (strcmp (argv[(*pi)], "-showslice") == 0)
+  else if (strcmp (argv[(*pi)], "-showmeshslice") == 0)
   {
     (*pi)++;
     (*pPrint).showslice = ut_alloc_1d_char (100);
@@ -265,37 +265,7 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
 	    break;
 	  }
 
-	vals[9] = 0;
-	if (! strcmp (Geo.DomType, "cylinder"))
-	{
-	  int domedge, face, domface1, domface2, poly1, poly2;
-	  if (Geo.EdgeDom[i][0] == 1)
-	  {
-	    domedge = Geo.EdgeDom[i][1];
-	    domface1 = Geo.DomEdgeFaceNb[domedge][0];
-	    domface2 = Geo.DomEdgeFaceNb[domedge][1];
-
-	    poly1 = -1;
-	    poly2 = -1;
-	    for (j = 0; j < Geo.EdgeFaceQty[i]; j++)
-	    {
-	      face = Geo.EdgeFaceNb[i][j];
-	      if (Geo.FaceDom[face][0] == 2)
-	      {
-		if (Geo.FaceDom[face][1] == domface1)
-		  poly1 = Geo.FacePoly[face][0];
-		if (Geo.FaceDom[face][1] == domface2)
-		  poly2 = Geo.FacePoly[face][0];
-	      }
-	    }
-
-	    if (poly1 < 0 || poly2 < 0)
-	      ut_error_reportbug ();
-
-	    if (domface1 > 2 && domface2 > 2 && poly1 == poly2)
-	      vals[9] = 1;
-	  }
-	}
+	vals[9] = neut_geo_edge_fake (Geo, i);
 
 #ifdef HAVE_LIBMATHEVAL
 	status = ut_math_eval (argv[(*pi)], var_qty, vars, vals, &res);
@@ -448,8 +418,8 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
       {
 	neut_mesh_eltcentre (Mesh3D, Nodes, i, vals);
 	neut_mesh_elt_volume (Nodes, Mesh3D, i, &(vals[3]));
-	vals[4] = Geo.PolyTrue[Mesh3D.EltElset[i]];
-	vals[5] = Geo.PolyBody[Mesh3D.EltElset[i]];
+	vals[4] = (Geo.PolyQty > 0) ? Geo.PolyTrue[Mesh3D.EltElset[i]] : -1;
+	vals[5] = (Geo.PolyQty > 0) ? Geo.PolyBody[Mesh3D.EltElset[i]] : -1;
 	vals[6] = i;
 	vals[7] = Mesh3D.EltElset[i];
 
@@ -490,6 +460,87 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
 
     (*pPrint).showelt[0] = ut_array_1d_int_sum ((*pPrint).showelt + 1,
 						Mesh3D.EltQty);
+  }
+  
+  else if (strcmp (argv[(*pi)], "-showeltedge") == 0)
+  {
+    (*pi)++;
+    (*pPrint).showeltedge = ut_realloc_1d_int ((*pPrint).showeltedge, Mesh3D.EltQty + 1);
+    ut_array_1d_int_set ((*pPrint).showeltedge + 1, Mesh3D.EltQty, 0);
+
+    if (strcmp (argv[(*pi)], "all") == 0)
+      ut_array_1d_int_set ((*pPrint).showeltedge + 1, Mesh3D.EltQty, 1);
+
+    else if (argv[(*pi)][0] == '@')
+    {
+      file = ut_file_open (argv[(*pi)] + 1, "r");
+      while (fscanf (file, "%d", &id) != EOF)
+	(*pPrint).showeltedge[id] = 1;
+      ut_file_close (file, argv[(*pi) + 1], "r");
+    }
+    else
+    {
+      int var_qty = 8;
+      char **vars = ut_alloc_2d_char (var_qty, 15);
+      double *vals = ut_alloc_1d (var_qty);
+      int status;
+      double res;
+
+      sprintf (vars[0], "cenx");
+      sprintf (vars[1], "ceny");
+      sprintf (vars[2], "cenz");
+      sprintf (vars[3], "volume");
+      sprintf (vars[4], "elset_true");
+      sprintf (vars[5], "elset_body");
+      sprintf (vars[6], "id");
+      sprintf (vars[7], "elset_id");
+
+      for (i = 1; i <= Mesh3D.EltQty; i++)
+      {
+	neut_mesh_eltcentre (Mesh3D, Nodes, i, vals);
+	neut_mesh_elt_volume (Nodes, Mesh3D, i, &(vals[3]));
+	vals[4] = (Geo.PolyQty > 0) ? Geo.PolyTrue[Mesh3D.EltElset[i]] : -1;
+	vals[5] = (Geo.PolyQty > 0) ? Geo.PolyBody[Mesh3D.EltElset[i]] : -1;
+	vals[6] = i;
+	vals[7] = Mesh3D.EltElset[i];
+
+	int done = 0;
+	for (j = 0; j < var_qty; j++)
+	  if (strcmp (argv[(*pi)], vars[j]) == 0)
+	  {
+	    res = vals[j];
+	    done = 1;
+	    status = 1;
+	    break;
+	  }
+
+	if (done == 0 && strcmp (argv[(*pi)], "(-ceny+cenz)<0.4") == 0)
+	{
+	  res = (-vals[1]+vals[2] < 0.4) ? 1: 0;
+	  done = 1;
+	  status = 1;
+	}
+
+	if (done == 0)
+	{
+#ifdef HAVE_LIBMATHEVAL
+	status = ut_math_eval (argv[(*pi)], var_qty, vars, vals, &res);
+#else
+  ut_print_messagewnc (2, 72, "This capability is not available because this version of Neper has not been compiled with libmatheval.");
+  abort ();
+#endif
+	if (status == -1)
+	  abort ();
+	}
+	(*pPrint).showeltedge[i] = ut_num_equal (res, 1, 1e-6);
+      }
+
+      ut_free_2d_char (vars, var_qty);
+      ut_free_1d (vals);
+    }
+
+    (*pPrint).showeltedge[0]
+      = ut_array_1d_int_sum ((*pPrint).showeltedge + 1, Mesh3D.EltQty);
   }
   
   else if (strcmp (argv[(*pi)], "-showelt1d") == 0)
@@ -543,7 +594,7 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
 	  }
 
 	vals[6] = 0;
-	if (! strcmp (Geo.DomType, "cylinder"))
+	if (Geo.DomType != NULL && ! strcmp (Geo.DomType, "cylinder"))
 	{
 	  int edge, domedge, domface1, domface2, face, poly1, poly2;
 	  edge = Mesh1D.EltElset[i];
@@ -967,10 +1018,9 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
       file = ut_file_open (argv[(*pi)] + 1, "r");
       for (i = 0; i < elsetqty; i++)
       {
-	fscanf (file, "%d", &id);
-	if (id > Mesh3D.ElsetQty)
+	if (fscanf (file, "%d", &id) != 1 || id > Mesh3D.ElsetQty)
 	{
-	  ut_print_message (2, 0, "Elset id exceeds the maximum.\n");
+	  ut_print_message (2, 0, "Elset id not valid (may exceed the maximum).\n");
 	  abort ();
 	}
 	for (j = 1; j <= Mesh3D.Elsets[id][0]; j++)

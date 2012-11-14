@@ -1,290 +1,14 @@
 @c This file is part of Neper
 @c Copyright (C) 2003-2012, Romain Quey.
 
-@node File Formats
-@appendix File Formats
-
-@section Tessellation file @file{.tess}
-
-Here are details on the @file{.tess} file format version
-@code{1.10}.  The developers may note that read and write functions are
-available as @code{neut_geo_fscanf ()} and @code{neut_geo_fprintf ()},
-defined in directories @file{neut/neut_geo/neut_geo_fscanf}
-and
-@file{neut/neut_geo/neut_geo_fprintf}.
-
-@c The '@ ' are necessary for .info compliance (@phantom{} and others
-@c not supported.
-@sp 1
-@code{
-***tess                                                              @*
-@  **format                                                          @*
-@ @ @  @var{format}                                                     @*
-@  **general                                                         @*
-@ @ @  @var{n} @var{id} @var{type} @var{morphology}                      @*
-@  **vertex                                                          @*
-@ @ @  @var{total_number_of_vertices}                                    @*
-@ @ @  @var{ver_id} @ @var{dom_entity_type} @var{dom_entity_id}      @*
-@ @ @ @ @ @ @ @ @ @ @ @var{number_of_edges} @var{edge_1} @var{edge_2} ...               @*
-@ @ @ @ @ @ @ @ @ @ @ @var{ver_x} @var{ver_y} @var{ver_z} @var{ver_state}               @*
-@ @ @  ...                                                               @*
-@  **edge                                                            @*
-@ @ @  @var{total_number_of_edges}                                       @*
-@ @ @  @var{edge_id} @var{dom_entity_type} @var{dom_entity_id}      @*
-@ @ @ @ @ @ @ @ @ @ @ @var{ver_1} @var{ver_2}                             @*
-@ @ @ @ @ @ @ @ @ @ @ @var{number_of_faces} @var{face_1} @var{face_2} ...               @*
-@ @ @ @ @ @ @ @ @ @ @ @var{edge_state}                                                  @*
-@ @ @  ...                                                               @*
-@  **face                                                            @*
-@ @ @  @var{total_number_of_faces}                                       @*
-@ @ @  @var{face_id} @var{dom_entity_type} @var{dom_entity_id}      @*
-@ @ @ @ @ @ @ @ @ @ @ @var{poly_1} @var{poly_2}          @*
-@ @ @ @ @ @ @ @ @ @ @ @var{face_eq_a} @var{face_eq_b} @var{face_eq_c} @var{face_eq_d}   @*
-@ @ @ @ @ @ @ @ @ @ @ @var{number_of_vertices} @var{ver_1} @ @ @var{ver_2} @ @ ...      @*
-@ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @var{edge_1*} @var{edge_2*} ... (As many edges as vertices.)      @*
-@ @ @ @ @ @ @ @ @ @ @ @var{face_state} @var{face_point}
-		    @var{face_point_x} @var{face_point_y} @var{face_point_z}  @*
-@ @ @ @ @ @ @ @ @ @ @ @var{face_ff}                                                     @*
-@ @ @  ...                                                               @*
-@  **polyhedron                                                      @*
-@ @ @  @var{total_number_of_polyhedra}                                   @*
-@ @ @  @var{poly_id} @var{poly_centre_x} @var{poly_centre_y}
-		                                          @var{poly_centre_z} @*
-@ @ @ @ @ @ @ @ @ @ @ @var{poly_true} @var{poly_body}                                   @*
-@ @ @ @ @ @ @ @ @ @ @ @var{number_of_faces} @var{face_1*} @var{face_2*} ...             @*
-@ @ @  ...                                                               @*
-@  **domain                                                          @*
-@ @  *general                                                          @*
-@ @ @  @var{dom_type}                                                    @*
-@ @  *vertex                                                           @*
-@ @ @  @var{total_number_of_dom_vertices}                                @*
-@ @ @  @var{dom_ver_id} @ @var{ver_1}                                    @*
-@ @ @ @ @ @ @ @ @ @ @ @ @ @ @  @var{number_of_edges} @var{dom_edge_1} @var{dom_edge_2} ...       @*
-@ @ @  ...                                                               @*
-@ @  *edge                                                             @*
-@ @ @  @var{total_number_of_dom_edges}                                   @*
-@ @ @  @var{dom_edge_id} @var{number_of_dom_tess_edges} @var{edge_1}
-							      @var{edge_2} ...@*
-@ @ @ @ @ @ @ @ @ @ @ @ @ @ @  @var{dom_ver_1} @var{dom_ver_2}                                   @*
-@ @ @ @ @ @ @ @ @ @ @ @ @ @ @  @var{dom_face_1} @var{dom_face_2}                                   @*
-@ @ @  ...                                                               @*
-@ @  *face                                                             @*
-@ @ @  @var{total_number_of_dom_faces}                                   @*
-@ @ @  @var{dom_face_id} @var{number_of_dom_tess_faces} 				 
-			@var{dom_tess_face_1} @var{dom_tess_face_2} @var{...} @*
-@ @ @ @ @ @ @ @ @ @ @ @ @ @ @  @var{dom_face_eq_a} @var{dom_face_eq_b} @var{dom_face_eq_c} 
-							  @var{dom_face_eq_d} @*
-@ @ @ @ @ @ @ @ @ @ @ @ @ @ @  @var{number_of_dom_vertices} @var{dom_ver_1} @ @var{dom_ver_2} @ @var{...} @*
-@ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @var{dom_edge_1} @var{dom_edge_2}
-							            @var{...} @*
-@ @ @ ...                                                               @*
-***end                                                                        @*
-}
-
-where (with identifiers being integer numbers)
-
-@itemize
-
-@item @code{@var{format}} is the file format, currently @samp{1.10}
-(character string).
-
-@item @code{@var{n}} is the number of polyhedra of the tessellation
-(option @option{-n}).
-
-@item @code{@var{id}} is the identifier of the tessellation (option
-@option{-id}).
-
-@item @code{@var{type}} is the type of tessellation (always
-@samp{standard}).
-
-@item @code{@var{morphology}} is a character string indicating the
-morphology of the tessellation or polyhedra (option @option{-morpho}).
-It equals to @samp{poisson} for a Poisson Voronoi tessellation,
-@samp{tocta} for truncated octahedra, @samp{columnar[x,y,z]} for
-columnar grains, @samp{bamboo[x,y,z]} for bamboo grains or @samp{custom}
-for user-specified coordinates of the polyhedron germs (use of option
-@option{-centrecoo}).
-
-@item @code{@var{total_number_of_vertices}} is the total number of
-vertices.
-
-@item @code{@var{dom_entity_type}} is an integer equal to the type of 
-domain entity that a tessellation vertex, edge or face belongs to.  The
-value is equal to @code{0} for a domain vertex, @code{1} for a domain
-edge and @code{2} for a domain face, and @code{-1} for none.
-
-@item @code{@var{dom_entity_id}} is the identifier of a domain entity
-that a tessellation vertex, edge or face belongs to.  The domain entity
-can be a domain vertex, edge or face, as indicated by
-@code{@var{dom_entity_type}}. If @code{@var{dom_entity_type} = -1},
-@code{@var{dom_entity_id}} carries on no information and has a value of
-@code{0}.
-
-@item @code{@var{ver_id}} is the identifier of a vertex and ranges from
-@code{1} to @code{total_number_of_vertices}.
-
-@item @code{@var{number_of_edges}} is the number of edges a
-vertex belongs to.
-
-@item @code{@var{edge_1}}, @code{@var{edge_2}}, @code{...} are
-identifiers of edges.
-
-@item @code{@var{edge_1*}}, @code{@var{edge_2*}}, @code{...} are
-identifiers of the edges of a face, signed according to their
-orientation in the face.
-
-@item @code{@var{ver_x}}, @code{@var{ver_y}} and @code{ver_z} are
-the three coordinates of a vertex (real numbers).
-
-@item @code{@var{ver_state}} is an integer indicating the state of a
-vertex. For a standard tessellation (no regularization), it equals
-@code{0}.  For a regularized tessellation, it equals @code{0} if the
-vertex has not been modified by regularization and is higher than
-@code{0} otherwise.
-
-@item @code{@var{total_number_of_edges}} is the total number of edges.
-
-@item @code{@var{edge_id}} is the identifier of an edge and ranges from
-@code{1} to @code{total_number_of_edges}.
-
-@item @code{@var{ver_1}}, @code{@var{ver_2}}, @code{...} are
-identifiers of vertices.
-
-@item @code{@var{number_of_faces}} is the number of faces an edge
-belongs to, or to the number of faces a polyhedron has, depending on the
-context.
-
-@item @code{@var{face_1}}, @code{@var{face_2}}, @code{...} are
-identifiers of faces.
-
-@item @code{@var{face_1*}}, @code{@var{face_2*}}, @code{...} are
-identifiers of the faces of a polyhedron, signed according to their
-orientations in the polyhedron (positive if the normal of the face is
-pointing outwards and negative if it is pointing inwards).
-
-@item @code{@var{edge_state}} is an integer indicating the state of an
-edge (always @code{0}).
-
-@item @code{@var{total_number_of_faces}} is the total number of faces.
-
-@item @code{@var{face_id}} is the identifier of a face and ranges from
-@code{1} to @code{total_number_of_faces}.
-
-@item @code{@var{poly_1}} and @code{@var{poly_2}} are identifiers of
-polyhedra. @code{@var{poly2}} is negative if the face belongs to a
-domain face, thereby having only one parent polyhedron In that case, its
-value is negative @code{@var{dom_entity_id}}.
-
-@item @code{@var{face_eq_a}}, @code{@var{face_eq_b}},
-@code{@var{face_eq_c}} and @code{@var{face_eq_d}} are the parameters of
-the equation of a face: @math{@var{face_eq_a}@,x + @var{face_eq_b}@,y +
-@var{face_eq_c}@,z = @var{face_eq_d}}.  The parameters are scaled so
-that
-@iftex
-@math{@var{face_eq_a}^2+@var{face_eq_b}^2+@var{face_eq_c}^2=1}.
-@end iftex
-
-@item @code{@var{number_of_vertices}} is the number of vertices that a
-face has.
-
-@item @code{@var{face_state}} is an integer indicating the state of a
-face. For a standard tessellation (no regularization), it equals
-@code{0}.  For a regularized tessellation, it equals @code{0} if it has
-not been modified by regularization and @code{1} otherwise.
-
-@item @code{@var{face_point}} is an integer indicating the point used
-for the interpolation of a face. For a standard tessellation (no
-regularization), it equals @code{0}.  For a regularized tessellation: if
-the point is the face barycentre, it equals @code{0}; if the point is
-one of the face vertices, it equals to the position of the vertex in the
-list of vertices of the face (the list being: @code{ver_1 ver_2
-...}). It equals @code{-1} if the point is undefined.
-
-@item @code{@var{face_point_x}}, @code{@var{face_point_y}} and
-@code{@var{face_point_z}} are the coordinates of the point used for the
-interpolation of a face (equal @code{0} if undefined).
-
-@item @code{@var{face_ff}} is a real value equal to the ``flatness
-fault'' of a face. For a standard tessellation, it equals @code{0}.  For
-a regularized tessellation, it is the maximum angle between the
-normals at two points of a face, expressed in degrees.
-
-@item @code{@var{total_number_of_polyhedra}} is the total number of polyhedra.
-
-@item @code{@var{poly_id}} is the identifier of a polyhedron and ranges
-from @code{1} to @code{total_number_of_polyhedra}.
-
-@item @code{@var{poly_centre_x}}, @code{@var{poly_centre_y}} and
-@code{@var{poly_centre_z}} are the coordinates of the centre of a
-polyhedron.
-
-@item @code{@var{poly_true}} is an integer equal to the ``true'' value
-of a polyhedron (@pxref{Module -FM}).
-
-@item @code{@var{poly_body}} is an integer equal to the ``body'' value
-of a polyhedron (@pxref{Module -FM}). 
-
-@item @code{@var{dom_type}} is the type of the domain (one of
-@code{cube}, @code{cylinder}, @code{poly} and @code{planes}).
-
-@item @code{@var{total_number_of_dom_vertices}} is the total number of
-domain vertices.
-
-@item @code{@var{dom_ver_id}} is the identifier of a domain vertex and
-ranges between @code{1} to @code{total_number_of_dom_vertices}.
-
-@item @code{@var{total_number_of_dom_edges}} is the total number of
-domain edges.
-
-@item @code{@var{dom_edge_id}} is the identifier of a domain edge and
-ranges between @code{1} to @code{total_number_of_dom_edges}.
-
-@item @code{@var{number_of_dom_tess_edges}} is the number of
-tessellation edges that a domain edge has. 
-
-@item @code{@var{dom_ver_1}}, @code{@var{dom_ver_2}}, @code{...} are
-identifiers of the domain vertices that a domain edge or face has.
-
-@item @code{@var{dom_face_1}} and @code{@var{dom_face_2}} are
-identifiers of the domain faces that a domain edge has.
-
-@item @code{@var{total_number_of_dom_faces}} is the total number of
-domain faces.
-
-@item @code{@var{dom_face_id}} is the identifier of a domain face and ranges from
-@code{1} to @code{total_number_of_dom_faces}.
-
-@item @code{@var{number_of_dom_tess_faces}} is the number of
-tessellation faces that a domain face has.
-
-@item @code{@var{dom_tess_face_1}}, @code{@var{dom_tess_face_2}},
-@code{...} are the identifiers of the tessellation faces that a domain
-face has.
-
-@item @code{@var{dom_face_eq_a}}, @code{@var{dom_face_eq_b}},
-@code{@var{dom_face_eq_c}} and @code{@var{dom_face_eq_d}} are the
-parameters of the equation of a domain face and are defined in the same
-way than @code{@var{face_eq_a}}, etc.@ (see above).
-
-@item @code{@var{number_of_dom_vertices}} is the number of
-domain vertices (and edges) that a domain face has. 
-
-@item @code{@var{dom_edge_1}}, @code{@var{dom_edge_2}}, @code{...} are
-identifiers of the domain edges that a domain face has.
-
-@end itemize
-
 @node Mathematical Expressions
 @appendix Mathematical and Logical Expressions
-
-@section Mathematical Expressions
 
 @neper{} can handle mathematical expressions.  It makes use of the GNU
 @code{libmatheval} library. The expression must contain no space,
 tabulation or new-line characters, and match the following
 syntax@footnote{Taken from the @code{libmatheval} documentation.}:
 
-@sp 1
 Supported constants are (names that should be used are given in
 parenthesis): e (@code{e}), log2(e) (@code{log2e}), log10(e)
 (@code{log10e}), ln(2) (@code{ln2}), ln(10) (@code{ln10}), pi
@@ -328,15 +52,12 @@ Usual mathematical rules regarding operation precedence
 apply. Parenthesis (@code{'('} and @code{')'}) could be used to change
 priority order.
 
-@sp 1
 @neper{} includes additional functions: the minimum function
 (@code{min(@var{a},@var{b})}) and the maximum function
 (@code{max(@var{a},@var{b})}). @code{@var{a}} and @code{@var{b}} can be
 any expression following the above-described syntax. Moreover, square
 brackets (@code{'['} and @code{']'}) and curly brackets (@code{'@{'} and
 @code{'@}'}) can be used instead of the parentheses.
-
-@section Logical Expressions
 
 The logical operators supported are:
 @math{=} (@code{==}),
@@ -347,6 +68,87 @@ The logical operators supported are:
 @math{<} (@code{<}),
 AND (@code{&&}) and
 OR (@code{||}).
+
+@page
+@node Statistics Keys
+@appendix Statistics Keys
+
+@section Tessellation Statistics Keys
+
+@multitable @columnfractions 0.21 0.5 0.29
+  @headitem Key   @tab Descriptor                       @tab Apply to ...
+  @item @code{id} @tab Identifier                       @tab ver, edge, face, poly
+  @item @code{x}  @tab x coordinate                     @tab ver, poly
+  @item @code{y}  @tab y coordinate                     @tab ver, poly
+  @item @code{z}  @tab z coordinate                     @tab ver, poly
+  @item @code{p}  @tab x, y and z coordinates           @tab ver, poly
+  @item @code{xc} @tab x centroid coordinate           @tab poly
+  @item @code{yc} @tab y centroid coordinate           @tab poly
+  @item @code{zc} @tab z centroid coordinate           @tab poly
+  @item @code{pc} @tab x, y and z centroid coordinates @tab poly
+  @item @code{true}  @tab true level                       @tab ver, edge, face, poly
+  @item @code{body}  @tab body level                       @tab ver, edge, face, poly
+  @item @code{state}  @tab state                            @tab edge, face, poly
+  @item @code{length}  @tab length                           @tab edge
+  @item @code{area}  @tab area                             @tab face
+  @item @code{vol} @tab volume                          @tab poly
+  @item @code{vernb}  @tab number of vertices               @tab poly
+  @item @code{edgenb}  @tab number of edges                  @tab poly
+  @item @code{facenb}  @tab number of faces                  @tab poly
+  @item @code{verlist}  @tab vertex list                     @tab poly
+  @item @code{edgelist}  @tab edge list                       @tab poly
+  @item @code{facelist}  @tab face list                       @tab poly
+  @item @code{npolylist} @tab neighbouring polyhedron list
+  @footnote{If a polyhedron has no neighbour on a face, a negative value
+    is returned instead of the neighbour id.} @tab poly
+  @item @code{facearealist} @tab face area list                  @tab poly
+  @item @code{faceeqlist} @tab face equation list@footnote{A face equation is specified by
+the parameters @math{d}, @math{a}, @math{b} and @math{c}, with the equation being: @math{a x + b y + c z = d}.  The vector
+@math{(a, b, c)} is pointing outwards of the polyhedron.}
+  @tab poly
+  @item @code{ff} @tab flatness fault (degrees)         @tab face
+@end multitable
+
+@section Mesh Statistics Keys
+
+@multitable @columnfractions 0.21 0.5 0.29
+  @headitem Key       @tab Descriptor                       @tab Apply to ...
+  @item @code{id}     @tab Identifier                       @tab node, elt, elset
+  @item @code{x}      @tab x coordinate                     @tab node, elt, elset
+  @item @code{y}      @tab y coordinate                     @tab node, elt, elset
+  @item @code{z}      @tab z coordinate                     @tab node, elt, elset
+  @item @code{p}      @tab x, y and z coordinates           @tab node, elt, elset
+  @item @code{dim}    @tab dimension (= lowest parent elt dimension) @tab node
+  @item @code{elset}  @tab elset                            @tab elt
+  @item @code{vol}    @tab volume                           @tab elt, elset
+  @item @code{length} @tab length                           @tab elt
+  @item @code{rr}     @tab radius ratio                     @tab elt
+  @item @code{rrav}, @code{rrmin}, @code{rrmax}
+                      @tab average, min and max radius ratios @tab elset
+  @item @code{Osize}  @tab Osize (see the Neper reference paper) @tab elset
+  @item @code{eltnb}  @tab number of elements                @tab elset
+  @item @code{true}   @tab true level                       @tab elt, elset
+  @item @code{body}   @tab body level                       @tab elt, elset
+@end multitable
+
+@node Rotations
+@appendix Rotations
+
+The rotations can be described using the following descriptors:
+
+@multitable @columnfractions 0.1 0.5 0.4
+  @headitem Key @tab Descriptor @tab Number of variables
+  @item @code{g}  @tab Rotation matrix                 @tab 9
+  @item @code{rtheta}  @tab Rotation axis / angle pair @tab 4
+  @item @code{R}  @tab Rodrigues vector                @tab 3
+  @item @code{q}  @tab Quaternion                      @tab 4
+  @item @code{e}  @tab Euler angles (Bunge convention) @tab 3
+  @item @code{ek} @tab Euler angles (Kocks convention) @tab 3
+  @item @code{er} @tab Euler angles (Roe convention)   @tab 3
+@end multitable
+
+@sp 1
+For more information, see Orilib (@url{http://orilib.sourceforge.net}).
 
 @node Colours
 @appendix Colours
@@ -508,6 +310,383 @@ Any other colour of known RGB channel values can be defined by forming a
 character string of format: @samp{@w{R_value,G_value,B_value}}.  The
 @samp{,} separator can be changed to one of @samp{/},  @samp{.},
 @samp{:} and @samp{;}.
+
+@node File Formats
+@appendix File Formats
+
+@section Tessellation file @file{.tess}
+
+Here are details on the @file{.tess} file format version
+@code{1.10}.  Developers may note that read and write functions are
+available as @code{neut_geo_fscanf ()} and @code{neut_geo_fprintf ()},
+defined in directories @file{neut/neut_geo/neut_geo_fscanf}
+and
+@file{neut/neut_geo/neut_geo_fprintf}.
+
+@c The '@ ' are necessary for .info compliance (@phantom{} and others
+@c not supported.
+@sp 1
+@code{
+***tess                                                              @*
+@  **format                                                          @*
+@ @ @  @var{format}                                                     @*
+@  **general                                                         @*
+@ @ @  @var{n} @var{id} @var{type} @var{morphology}                      @*
+@ [*polyid                                                               @*
+@ @ @ @var{poly_id_1} @var{poly_id_2} ... ]                                                @*
+@ [*regularization  						 @*
+@ @ @ @var{maxff} @var{sel} @var{dbound} [@var{dboundsel}]]          @*
+@  **vertex                                                          @*
+@ @ @  @var{total_number_of_vertices}                                    @*
+@ @ @  @var{ver_id} @ @var{dom_entity_type} @var{dom_entity_id}      @*
+@ @ @ @ @ @ @ @ @ @ @ @var{number_of_edges} @var{edge_1} @var{edge_2} ...               @*
+@ @ @ @ @ @ @ @ @ @ @ @var{ver_x} @var{ver_y} @var{ver_z} @var{ver_state}               @*
+@ @ @  ...                                                               @*
+@  **edge                                                            @*
+@ @ @  @var{total_number_of_edges}                                       @*
+@ @ @  @var{edge_id} @var{dom_entity_type} @var{dom_entity_id}      @*
+@ @ @ @ @ @ @ @ @ @ @ @var{ver_1} @var{ver_2}                             @*
+@ @ @ @ @ @ @ @ @ @ @ @var{number_of_faces} @var{face_1} @var{face_2} ...               @*
+@ @ @ @ @ @ @ @ @ @ @ @var{edge_state}                                                  @*
+@ @ @  ...                                                               @*
+@  **face                                                            @*
+@ @ @  @var{total_number_of_faces}                                       @*
+@ @ @  @var{face_id} @var{dom_entity_type} @var{dom_entity_id}      @*
+@ @ @ @ @ @ @ @ @ @ @ @var{poly_1} @var{poly_2}          @*
+@ @ @ @ @ @ @ @ @ @ @ @var{face_eq_a} @var{face_eq_b} @var{face_eq_c} @var{face_eq_d}   @*
+@ @ @ @ @ @ @ @ @ @ @ @var{number_of_vertices} @var{ver_1} @ @ @var{ver_2} @ @ ...      @*
+@ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @var{edge_1*} @var{edge_2*} ... (As many edges as vertices.)      @*
+@ @ @ @ @ @ @ @ @ @ @ @var{face_state} @var{face_point}
+		    @var{face_point_x} @var{face_point_y} @var{face_point_z}  @*
+@ @ @ @ @ @ @ @ @ @ @ @var{face_ff}                                                     @*
+@ @ @  ...                                                               @*
+@  **polyhedron                                                      @*
+@ @ @  @var{total_number_of_polyhedra}                                   @*
+@ @ @  @var{poly_id} @var{poly_centre_x} @var{poly_centre_y}
+		                                          @var{poly_centre_z} @*
+@ @ @ @ @ @ @ @ @ @ @ @var{poly_true} @var{poly_body}                                   @*
+@ @ @ @ @ @ @ @ @ @ @ @var{number_of_faces} @var{face_1*} @var{face_2*} ...             @*
+@ @ @  ...                                                               @*
+@  **domain                                                          @*
+@ @  *general                                                          @*
+@ @ @  @var{dom_type}                                                    @*
+@ @  *vertex                                                           @*
+@ @ @  @var{total_number_of_dom_vertices}                                @*
+@ @ @  @var{dom_ver_id} @ @var{ver_1}                                    @*
+@ @ @ @ @ @ @ @ @ @ @ @ @ @ @  @var{number_of_edges} @var{dom_edge_1} @var{dom_edge_2} ...       @*
+@ @ @  ...                                                               @*
+@ @  *edge                                                             @*
+@ @ @  @var{total_number_of_dom_edges}                                   @*
+@ @ @  @var{dom_edge_id} @var{number_of_dom_tess_edges} @var{edge_1}
+							      @var{edge_2} ...@*
+@ @ @ @ @ @ @ @ @ @ @ @ @ @ @  @var{dom_ver_1} @var{dom_ver_2}                                   @*
+@ @ @ @ @ @ @ @ @ @ @ @ @ @ @  @var{dom_face_1} @var{dom_face_2}                                   @*
+@ @ @  ...                                                               @*
+@ @  *face                                                             @*
+@ @ @  @var{total_number_of_dom_faces}                                   @*
+@ @ @  @var{dom_face_id} @var{number_of_dom_tess_faces} 				 
+			@var{dom_tess_face_1} @var{dom_tess_face_2} @var{...} @*
+@ @ @ @ @ @ @ @ @ @ @ @ @ @ @  @var{dom_face_eq_a} @var{dom_face_eq_b} @var{dom_face_eq_c} 
+							  @var{dom_face_eq_d} @*
+@ @ @ @ @ @ @ @ @ @ @ @ @ @ @  @var{number_of_dom_vertices} @var{dom_ver_1} @ @var{dom_ver_2} @ @var{...} @*
+@ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @var{dom_edge_1} @var{dom_edge_2}
+							            @var{...} @*
+@ @ @ ...                                                               @*
+***end                                                                        @*
+}
+
+where (with identifiers being integer numbers),
+
+@itemize
+
+@item @code{***tess} denotes the beginning of a tessellation file.
+
+@item @code{**format} denotes the beginning the format field.
+
+@item @code{@var{format}} is the file format, currently @samp{1.10}
+(character string).
+
+@item @code{**general} denotes the beginning the general information field.
+
+@item @code{@var{n}} is the number of polyhedra of the tessellation
+(option @option{-n}).
+
+@item @code{@var{id}} is the identifier of the tessellation (option
+@option{-id}).
+
+@item @code{@var{type}} is the type of tessellation (always
+@samp{standard}).
+
+@item @code{@var{morphology}} is a character string indicating the
+morphology of the tessellation or polyhedra (option @option{-morpho}).
+It equals to @samp{poisson} for a Poisson Voronoi tessellation,
+@samp{tocta} for truncated octahedra, @samp{columnar[x,y,z]} for
+columnar grains, @samp{bamboo[x,y,z]} for bamboo grains or @samp{custom}
+for user-specified coordinates of the polyhedron germs.
+
+@item @code{*polyid} denotes the beginning of a polyhedron identifier field.
+It is present only if option @option{-sorttess} was used for creating
+the tessellation. See below for details on this field.
+
+@item @code{@var{poly_id_1}}, @code{@var{poly_id_2}}, @code{...} are
+identifiers of polyhedra.  They correspond to the identifiers that would
+have had the polyhedra with no use of option @option{-sorttess}.  The
+identifiers range from @code{1} to @code{total_number_of_polyhedra} (see
+below).
+
+@item @code{*regularization} denotes the beginning of a regularization
+field.  It is present only if regularization was
+used for creating the tessellation. See below for details on this field.
+
+@item @code{@var{maxff}} is the maximum flatness fault allowed for
+regularization (in degree).
+
+@item @code{@var{sel}} is the small edge length used for regularization.
+
+@item @code{@var{dbound}} is a character string defining the domain
+boundary.  An example is @samp{body==0}. The value @samp{nobound} is
+provided if the domain boundary was not defined.
+
+@item @code{@var{dboundsel}} is the small edge length at the domain
+boundary, used for regularization.  It is provided only if
+@code{@var{dbound}} is different from @samp{nobound}.
+
+@item @code{**vertex} denotes the beginning the vertex field.
+
+@item @code{@var{total_number_of_vertices}} is the total number of
+vertices.
+
+@item @code{@var{dom_entity_type}} is an integer equal to the type of 
+domain entity that a tessellation vertex, edge or face belongs to.  The
+value is equal to @code{0} for a domain vertex, @code{1} for a domain
+edge and @code{2} for a domain face, and @code{-1} for none.
+
+@item @code{@var{dom_entity_id}} is the identifier of a domain entity
+that a tessellation vertex, edge or face belongs to.  The domain entity
+can be a domain vertex, edge or face, as indicated by
+@code{@var{dom_entity_type}}. If @code{@var{dom_entity_type} = -1},
+@code{@var{dom_entity_id}} carries on no information and has a value of
+@code{0}.
+
+@item @code{@var{ver_id}} is the identifier of a vertex and ranges from
+@code{1} to @code{total_number_of_vertices}.
+
+@item @code{@var{number_of_edges}} is the number of edges a
+vertex belongs to.
+
+@item @code{@var{edge_1}}, @code{@var{edge_2}}, @code{...} are
+identifiers of edges.
+
+@item @code{@var{edge_1*}}, @code{@var{edge_2*}}, @code{...} are
+identifiers of the edges of a face, signed according to their
+orientation in the face.
+
+@item @code{@var{ver_x}}, @code{@var{ver_y}} and @code{ver_z} are
+the three coordinates of a vertex (real numbers).
+
+@item @code{@var{ver_state}} is an integer indicating the state of a
+vertex. For a standard tessellation (no regularization), it equals
+@code{0}.  For a regularized tessellation, it equals @code{0} if the
+vertex has not been modified by regularization and is higher than
+@code{0} otherwise.
+
+@item @code{**edge} denotes the beginning the edge field.
+
+@item @code{@var{total_number_of_edges}} is the total number of edges.
+
+@item @code{@var{edge_id}} is the identifier of an edge and ranges from
+@code{1} to @code{total_number_of_edges}.
+
+@item @code{@var{ver_1}}, @code{@var{ver_2}}, @code{...} are
+identifiers of vertices.
+
+@item @code{@var{number_of_faces}} is the number of faces an edge
+belongs to, or to the number of faces a polyhedron has, depending on the
+context.
+
+@item @code{@var{face_1}}, @code{@var{face_2}}, @code{...} are
+identifiers of faces.
+
+@item @code{@var{face_1*}}, @code{@var{face_2*}}, @code{...} are
+identifiers of the faces of a polyhedron, signed according to their
+orientations in the polyhedron (positive if the normal of the face is
+pointing outwards and negative if it is pointing inwards).
+
+@item @code{@var{edge_state}} is an integer indicating the state of an
+edge (always @code{0}).
+
+@item @code{**face} denotes the beginning the face field.
+
+@item @code{@var{total_number_of_faces}} is the total number of faces.
+
+@item @code{@var{face_id}} is the identifier of a face and ranges from
+@code{1} to @code{total_number_of_faces}.
+
+@item @code{@var{poly_1}} and @code{@var{poly_2}} are identifiers of
+polyhedra. @code{@var{poly2}} is negative if the face belongs to a
+domain face, thereby having only one parent polyhedron In that case, its
+value is negative @code{@var{dom_entity_id}}.
+
+@item @code{@var{face_eq_a}}, @code{@var{face_eq_b}},
+@code{@var{face_eq_c}} and @code{@var{face_eq_d}} are the parameters of
+the equation of a face: @math{@var{face_eq_a}@,x + @var{face_eq_b}@,y +
+@var{face_eq_c}@,z = @var{face_eq_d}}.  The parameters are scaled so
+that
+@iftex
+@math{@var{face_eq_a}^2+@var{face_eq_b}^2+@var{face_eq_c}^2=1}.
+@end iftex
+
+@item @code{@var{number_of_vertices}} is the number of vertices that a
+face has.
+
+@item @code{@var{face_state}} is an integer indicating the state of a
+face. For a standard tessellation (no regularization), it equals
+@code{0}.  For a regularized tessellation, it equals @code{0} if it has
+not been modified by regularization and @code{1} otherwise.
+
+@item @code{@var{face_point}} is an integer indicating the point used
+for the interpolation of a face. For a standard tessellation (no
+regularization), it equals @code{0}.  For a regularized tessellation: if
+the point is the face barycentre, it equals @code{0}; if the point is
+one of the face vertices, it equals to the position of the vertex in the
+list of vertices of the face (the list being: @code{ver_1 ver_2
+...}). It equals @code{-1} if the point is undefined.
+
+@item @code{@var{face_point_x}}, @code{@var{face_point_y}} and
+@code{@var{face_point_z}} are the coordinates of the point used for the
+interpolation of a face (equal @code{0} if undefined).
+
+@item @code{@var{face_ff}} is a real value equal to the ``flatness
+fault'' of a face. For a standard tessellation, it equals @code{0}.  For
+a regularized tessellation, it is the maximum angle between the
+normals at two points of a face, expressed in degrees.
+
+@item @code{**poly} denotes the beginning the polyhedron field.
+
+@item @code{@var{total_number_of_polyhedra}} is the total number of polyhedra.
+
+@item @code{@var{poly_id}} is the identifier of a polyhedron and ranges
+from @code{1} to @code{total_number_of_polyhedra}.
+
+@item @code{@var{poly_centre_x}}, @code{@var{poly_centre_y}} and
+@code{@var{poly_centre_z}} are the coordinates of the centre of a
+polyhedron.
+
+@item @code{@var{poly_true}} is an integer equal to the ``true'' value
+of a polyhedron (@pxref{Module -FM}).
+
+@item @code{@var{poly_body}} is an integer equal to the ``body'' value
+of a polyhedron (@pxref{Module -FM}). 
+
+@item @code{**domain} denotes the beginning of the domain field.
+
+@item @code{*general} denotes the beginning of the domain general
+information field.
+
+@item @code{@var{dom_type}} is the type of the domain (one of
+@code{cube}, @code{cylinder}, @code{poly} and @code{planes}).
+
+@item @code{*vertex} denotes the beginning of the domain vertex field.
+
+@item @code{@var{total_number_of_dom_vertices}} is the total number of
+domain vertices.
+
+@item @code{@var{dom_ver_id}} is the identifier of a domain vertex and
+ranges between @code{1} to @code{total_number_of_dom_vertices}.
+
+@item @code{*edge} denotes the beginning of the domain edge field.
+
+@item @code{@var{total_number_of_dom_edges}} is the total number of
+domain edges.
+
+@item @code{@var{dom_edge_id}} is the identifier of a domain edge and
+ranges between @code{1} to @code{total_number_of_dom_edges}.
+
+@item @code{@var{number_of_dom_tess_edges}} is the number of
+tessellation edges that a domain edge has. 
+
+@item @code{@var{dom_ver_1}}, @code{@var{dom_ver_2}}, @code{...} are
+identifiers of the domain vertices that a domain edge or face has.
+
+@item @code{@var{dom_face_1}} and @code{@var{dom_face_2}} are
+identifiers of the domain faces that a domain edge has.
+
+@item @code{*face} denotes the beginning of the domain face field.
+
+@item @code{@var{total_number_of_dom_faces}} is the total number of
+domain faces.
+
+@item @code{@var{dom_face_id}} is the identifier of a domain face and ranges from
+@code{1} to @code{total_number_of_dom_faces}.
+
+@item @code{@var{number_of_dom_tess_faces}} is the number of
+tessellation faces that a domain face has.
+
+@item @code{@var{dom_tess_face_1}}, @code{@var{dom_tess_face_2}},
+@code{...} are the identifiers of the tessellation faces that a domain
+face has.
+
+@item @code{@var{dom_face_eq_a}}, @code{@var{dom_face_eq_b}},
+@code{@var{dom_face_eq_c}} and @code{@var{dom_face_eq_d}} are the
+parameters of the equation of a domain face and are defined in the same
+way than @code{@var{face_eq_a}}, etc.@ (see above).
+
+@item @code{@var{number_of_dom_vertices}} is the number of
+domain vertices (and edges) that a domain face has. 
+
+@item @code{@var{dom_edge_1}}, @code{@var{dom_edge_2}}, @code{...} are
+identifiers of the domain edges that a domain face has.
+
+@item @code{***end} denotes the end of a tessellation file.
+
+@end itemize
+
+@section Voxel file @file{.vox}
+
+Here are details on the @file{.vox} file format version
+@code{1.10}.  The developers may note that read and write functions are
+available as @code{neut_vox_fscanf ()} and @code{neut_vox_fprintf ()},
+defined in directories @file{neut/neut_vox/neut_vox_fscanf}
+and
+@file{neut/neut_vox/neut_vox_fprintf}.
+
+@sp 1
+@code{
+***vox                                                               @*
+@  **format                                                          @*
+@ @ @  @var{format} @var{data_format}                                @*
+@  **general                                                         @*
+@ @ @  @var{size1} @var{size2} @var{size3}                           @*
+@ @ @  @var{vox_size1} @var{vox_size2} @var{vox_size3}               @*
+@  **voxel                                                           @*
+@ @ @  @var{vox1_poly} @var{vox2_poly} ...                           @*
+***end                                                               @*
+}
+
+where,
+
+@itemize
+
+@item @code{@var{format}} is the file format, currently @samp{1.10}
+(character string).
+
+@item @code{@var{data_format}} is the format of the data in field
+@code{**voxel}.
+It can be either @code{ascii}, @code{binary8} (8-bit binary),
+@code{binary16}  (16-bit binary) or @code{binary32} (32-bit binary).
+
+@item @code{@var{size1}}, @code{@var{size2}} and @code{@var{size3}}
+are the sizes of the volume in the 3 directions of space.
+
+@item @code{@var{vox_size1}}, @code{@var{vox_size2}} and
+@code{@var{vox_size3}} are the sizes of the pixels in the 3 directions
+of space.
+
+@item @code{@var{vox#_poly}} is the polyhedron voxel @code{@var{#}}
+belongs to.  The polyhedron identifiers should start from 1. Use 0 to
+simulate voids --- these voxels will not be meshed.
+
+@end itemize
 
 @node Versions
 @appendix Versions

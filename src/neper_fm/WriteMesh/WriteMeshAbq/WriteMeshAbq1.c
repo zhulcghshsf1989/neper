@@ -30,10 +30,11 @@ WriteMeshAbq (FILE* file, char* dim, struct NODES Nodes,
   fprintf (file, "*Node\n");
   for (i = 1; i <= Nodes.NodeQty; i++)
   {
-    fprintf (file, "%d, ", i);
-    for (j = 0; j < 2; j++)
-      fprintf (file, "%.12f, ", Nodes.NodeCoo[i][j]);
-    fprintf (file, "%.12f\n", Nodes.NodeCoo[i][2]);
+    fprintf (file, "%d", i);
+    for (j = 0; j < 3; j++)
+      fprintf (file, ", %.12f",
+	  (fabs (Nodes.NodeCoo[i][j]) < 1e-12) ? 0 : Nodes.NodeCoo[i][j]);
+    fprintf (file, "\n");
   }
 
 /*----------------------------------------------------------------------

@@ -152,6 +152,21 @@ Meshing3D_poly (struct IN In, double cl, struct MULTIM* pMultim,
     if (status == 0)
       totstatus = 0;
 
+    if (In.mesh3dreport == 1)
+    {
+      sprintf (tmpstring, "neper-report/poly%d-a%d", id, a);
+      FILE* file = ut_file_open (tmpstring, "W");
+      double rr, length;
+
+      for (i = 1; i <= M.EltQty; i++)
+      {
+	neut_mesh_3d_elt_rr (N, M, i, &rr);
+	neut_mesh_elt_lengths (M, N, i, &length, NULL, NULL);
+	fprintf (file, "%.5g %.5g\n", rr, length);
+      }
+
+      ut_file_close (file, tmpstring, "W");
+    }
   }
 
   (*pMultim).Odis[id]  = (*pMultim).mOdis[id][(*pMultim).Oalgo[id]];

@@ -4,38 +4,53 @@
 
 struct IN
 {
-  int input;   // -1: none, 0: (n, id), 1: tess, 2: regular
+  int n;
+  int id;
+  char* morpho;
+  char* ttype;
+
+  double randomize;
+  int    randomize2;
+  char*  randomizedir;
+  
+  char* input;   // NULL (=none), n, tess, vox
 
   char* domain;
   double* domainparms;
   char* domainparms2;
-  double *F;
-  int verbosity;
+  double *scale;
+
+  int voxsizetype;
+  int voxsize;
+  int* voxsize3;
+
+  char* regularization;
+  int mloop;
+  int maxedgedelqty;
+
+  int checktess;
 
   char *format;
+  char *voxformat;
   char *body;
   char *load;
+  char *tess;
+  char *vox;
   char *geo;
-  char *gmshgeo;
   char *ply;
-  char *oin;
-  char *mast;
-  char *asy;
-  char *stt3;
-  char *stt0;
-  char *neigh;
+  char *stv;
+  char *ste;
+  char *stf;
+  char *stp;
   char *debug;
 
-  int stattess;
+  char* printstattess;
   int sorttess_qty;
   char** sorttess;
 
-  int printneighbour;
   int printpointpoly;		/* 0: no, 1: input=points, 2: input=tess file */
   char *point;			/* point or tess file name */
   char *polyid;			/* polyid file name */
-
-  char* libpath;
 
   int centroid;
   int centroiditermax;

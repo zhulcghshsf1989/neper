@@ -15,7 +15,7 @@ TreatArg_o (int fargc, char **fargv, int argc, char **argv,
   SetOptions_o (pOri, pIn, argc, argv);
 
   /* Testing options */
-  if ((*pIn).input == -1)
+  if ((*pIn).input == NULL)
     ut_arg_badarg ();
 
   if (strcmp ((*pIn).descriptor, "e") != 0
@@ -62,16 +62,13 @@ TreatArg_o (int fargc, char **fargv, int argc, char **argv,
   {
     (*pIn).body = ut_alloc_1d_char (1000);
 
-    if ((*pIn).input == 0 && ((*pOri).id != -1))
-      sprintf ((*pIn).body, "n%d-id%d", (*pOri).N, (*pOri).id);
-    else if ((*pIn).input == 0 && ((*pOri).id == -1))
-      sprintf ((*pIn).body, "n%d-id0", (*pOri).N);
-    else if ((*pIn).input == 1)
-      ut_string_body ((*pIn).oin, (*pIn).body);
-    else if ((*pIn).input >= 2 && (*pIn).input <= 8)
-      ut_string_body ((*pIn).load, (*pIn).body);
+    if (! strcmp ((*pIn).input, "n"))
+      sprintf ((*pIn).body, "n%d-id%d", (*pOri).N,
+	  ((*pOri).id != -1) ? (*pOri).id : 0);
+    else if (! strcmp ((*pIn).input, "tess"))
+      ut_string_body ((*pIn).tess, (*pIn).body);
     else
-      ut_error_reportbug ();
+      ut_string_body ((*pIn).load, (*pIn).body);
   }
 
   (*pIn).ori = ut_string_addextension ((*pIn).body, ".ori");

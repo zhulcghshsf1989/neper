@@ -6,19 +6,21 @@
 #include<stdlib.h>
 #include<math.h>
 
-#include"structAll.h"
+#include"ut.h"
+#include"neut.h"
 #include"structIn_t.h"
-#include"IntePara/IntePara0.h"
 #include"DomainComp/DomainComp0.h"
 #include"GermDistrib/GermDistrib0.h"
 #include"PolyComp/PolyComp0.h"
 #include"Miscellaneous/Miscellaneous0.h"
 #include"Tess/Tess0.h"
 #include"net_centroid/net_centroid0.h"
-#include"net_tess_sort/net_tess_sort.h"
-#include"ut.h"
+#include"net_geo_sort/net_geo_sort.h"
+#include"net_vox/net_vox0.h"
 
 #include"InputData_t/InputData_t0.h"
+#include"neper_fm/InputData_fm/InputData_fm0.h"
+#include"RegularizeGeo/RegularizeGeo0.h"
 #include"Res_t/Res_t0.h"
 
 #include"neper_t0.h"

@@ -8,8 +8,7 @@
 * to the considered germ.
 */
 void
-PolyhedronCalculation (int Center, struct GERMSET GermSet,
-		       struct INTEPARA *pIntePara, struct POLYMOD *pPolymod)
+PolyhedronCalculation (int Center, struct GERMSET GermSet, struct POLYMOD *pPolymod)
 {
   int i;			/* Mute variable */
   int qtytosort;
@@ -25,7 +24,7 @@ PolyhedronCalculation (int Center, struct GERMSET GermSet,
   int *nbs = ut_alloc_1d_int (GermSet.N);
   double *dists = ut_alloc_1d (GermSet.N);
 
-  qtytosort = ut_num_min ((*pIntePara).MaxToSort, GermSet.N);
+  qtytosort = ut_num_min (220, GermSet.N);
 
   NeiSearching (GermSet, qtytosort, Center, nbs, dists);
 

@@ -5,25 +5,36 @@
 #include"RMeshingFGeo.h"
 
 void
-RMeshingFGeo (struct GEO Geo, struct MESH* pMesh, struct GERMSET *pGermSet)
+RMeshingFGeo (struct GEO Geo, struct MESH* pMesh)
 {
-  int status;
+  int elt, pid, prevpid;
+  char* progress = ut_alloc_1d_char (100);
 
-  // this is for net_oin_fprintf_dneigh
-  (*pGermSet).NDensity = Geo.PolyQty;
-  (*pGermSet).N = Geo.PolyQty;
-  (*pGermSet).Id = Geo.Id;
-
-  /* Searching element poly */
-  status = GeoSearchEltPoly (Geo, pMesh);
-  if (status == -1)
+  ut_print_progress (stdout, 0, (*pMesh).EltQty, "%3.0f%%", progress);
+  prevpid = 1;
+  for (elt = 1; elt <= (*pMesh).EltQty; elt++)
   {
-    ut_print_message (2, 0, "elt does not belong to any polyhedron.\n");
-    ut_error_reportbug ();
+    if (neut_geo_point_inpoly (Geo, (*pMesh).EltCoo[elt], prevpid) == 1)
+      (*pMesh).EltElset[elt] = prevpid;
+    else
+      for (pid = 1; pid <= Geo.PolyQty; pid++)
+      {
+	if (pid == prevpid)
+	  continue;
+
+	if (neut_geo_point_inpoly (Geo, (*pMesh).EltCoo[elt], pid) == 1)
+	{
+	  (*pMesh).EltElset[elt] = pid;
+	  prevpid = pid;
+	  break;
+	}
+      }
+
+    /* print percent evolution in case of verbosity */
+    ut_print_progress (stdout, elt, (*pMesh).EltQty, "%3.0f%%", progress);
   }
-  
-  /* Intializing Ramdom for oin */
-  (*pGermSet).Random = neut_rand_nnid2rand (Geo.PolyQty, Geo.Id);
+
+  ut_free_1d_char (progress);
 
   return;
 }

@@ -12,13 +12,17 @@ ReconMesh (char* dim, struct NODES Nodes, struct MESH *pMesh0D,
   struct GEO Geob;
   struct GEO* pGeob = &Geob;
 
+  // Disabling geo reconstruction is pGeo == NULL or quad elt mesh
+  int reconst_geo
+    = (! strcmp ((*pMesh3D).EltType, "quad") || pGeo == NULL) ? 0 : 1;
+
   // if pGeo is NULL, working with pGeob. 
-  if (pGeo == NULL)
+  if (! reconst_geo)
     neut_geo_set_zero (pGeob);
   else
     pGeob = pGeo;
 
-  if (pGeo == NULL || (*pGeob).DomType == NULL || strlen ((*pGeob).DomType) == 0)
+  if (! reconst_geo || (*pGeob).DomType == NULL || strlen ((*pGeob).DomType) == 0)
   {
     (*pGeob).DomType = ut_alloc_1d_char (10);
     sprintf ((*pGeob).DomType, "unknown");
@@ -42,7 +46,7 @@ ReconMesh (char* dim, struct NODES Nodes, struct MESH *pMesh0D,
 
   // This trick is to avoid failure with mapped meshes, in the geo
   // reconstruction in ReconMesh_0D
-  if (pGeo != NULL)
+  if (reconst_geo)
     ReconMesh_0d (Nodes, pMesh0D, pMesh1D, pGeob);
   else
     ReconMesh_0d (Nodes, pMesh0D, pMesh1D, NULL);
@@ -50,7 +54,7 @@ ReconMesh (char* dim, struct NODES Nodes, struct MESH *pMesh0D,
   ut_array_1d_int_set ((*pGeob).FaceState + 1, (*pGeob).FaceQty, 1);
   ut_array_1d_int_set ((*pGeob).VerState + 1, (*pGeob).VerQty, 1);
 
-  if (pGeo != NULL)
+  if (reconst_geo)
   {
     ReconMesh_finalizegeo (pGeob, Nodes, *pMesh0D, *pMesh1D, *pMesh2D,
       *pMesh3D);

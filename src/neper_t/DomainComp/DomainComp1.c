@@ -5,7 +5,7 @@
 #include"DomainComp.h"
 
 void
-DomainComp (struct IN In, struct GERMSET GermSet, struct POLY *pDomain)
+DomainComp (struct IN In, struct POLY *pDomain)
 {
   double* size = ut_alloc_1d (7);
 
@@ -28,7 +28,7 @@ DomainComp (struct IN In, struct GERMSET GermSet, struct POLY *pDomain)
     else
     {
       double cl;
-      rcl2cl (1, M_PI * rad * rad * h, GermSet.N, &cl);
+      rcl2cl (1, M_PI * rad * rad * h, In.n, &cl);
       qty = (int) floor (2 * M_PI * rad / cl);
       qty = ut_num_max_int (qty, 5);
       qty += 2;
@@ -45,13 +45,16 @@ DomainComp (struct IN In, struct GERMSET GermSet, struct POLY *pDomain)
     int i, qty; 
     FILE* file = ut_file_open (In.domainparms2, "r");
 
-    fscanf (file, "%d", &qty);
+    if (fscanf (file, "%d", &qty) != 1)
+      abort ();
+
     double** eq = ut_alloc_2d (qty, 4);
 
     for (i = 0; i < qty; i++)
     {
       ut_array_1d_fscanf (file, eq[i] + 1, 3);
-      fscanf (file, "%lf", &(eq[i][0]));
+      if (fscanf (file, "%lf", &(eq[i][0])) != 1)
+	abort ();
       ut_array_1d_scale (eq[i], 4, 1. / ut_vector_norm (eq[i] + 1));
     }
 

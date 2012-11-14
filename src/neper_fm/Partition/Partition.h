@@ -11,8 +11,6 @@
 #define frand() ((double) rand() / (RAND_MAX+1.0))
 
 #include"../structIn_fm.h"
-#include"structAll.h"
-#include"AllUtils.h"
 #include"ut.h"
 #include"neut.h"
 // #include<scotch.h>

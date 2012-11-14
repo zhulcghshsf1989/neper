@@ -6,9 +6,9 @@
 #include<stdlib.h>
 #include<math.h>
 
-#include"structAll.h"
 #include"../../structIn_t.h"
 #include"ut.h"
+#include"neut.h"
 
 #include"CubeDomain0.h"
 

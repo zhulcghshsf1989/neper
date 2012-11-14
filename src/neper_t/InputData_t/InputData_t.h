@@ -10,14 +10,13 @@
 #include<math.h>
 #include<ctype.h>
 
-#include"structAll.h"
 #include"../structIn_t.h"
 #include"ut.h"
+#include"neut.h"
 #include"../Miscellaneous/Miscellaneous0.h"
 
 #include"InputData_t0.h"
 
-extern void TreatArg_t (int, char **, int, char **, struct IN *,
-			struct GERMSET *);
-extern void SetDefaultOptions_t (struct IN *, struct GERMSET *);
-extern void SetOptions_t (struct IN*, struct GERMSET*, int, char**);
+extern void TreatArg_t (int, char**, int, char**, struct IN*, struct GEOPARA*);
+extern void SetDefaultOptions_t (struct IN*, struct GEOPARA*);
+extern void SetOptions_t (struct IN*, struct GEOPARA*, int, char**);

@@ -76,7 +76,7 @@ neut_elt_nodeqty (char *type, int dim, int order)
     res = QuadNodesPerElt[dim][order];
   else
   {
-    ut_print_message (2, 0, "ut_elt_nodeqty does not implemented for non tri elements.\n");
+    ut_print_message (2, 0, "neut_elt_nodeqty: unknown elt type `%s'.\n", type);
     abort ();
   }
 
@@ -230,4 +230,149 @@ neut_elt_dim_gtype_order (int dim, int gtype)
     return 2;
   else
     return -1;
+}
+
+double
+neut_elt_3d_rr (double *p1, double *p2, double *p3, double *p4)
+{
+  int i, j, k, l;		/* loop indices */
+  double facenormal[4][3];	/* the normals of each face of the tet */
+  double facearea2[4];		/* areas of the faces of the tet */
+  double Z;			/* quantity needed for circumradius */
+  double facesum = 0.0;		/* sum of the areas of the faces */
+  double vol;
+  double **point = ut_alloc_1d_pdouble (4);
+  point[0] = p1;
+  point[1] = p2;
+  point[2] = p3;
+  point[3] = p4;
+
+  /* calculate the volume of the tetrahedron */
+  vol = ut_space_tet_volume (p1, p2, p3, p4);
+
+  /* for each vertex/face of the tetrahedron */
+  for (i = 0; i < 4; i++)
+  {
+    j = (i + 1) & 3;
+    if ((i & 1) == 0)
+    {
+      k = (i + 3) & 3;
+      l = (i + 2) & 3;
+    }
+    else
+    {
+      k = (i + 2) & 3;
+      l = (i + 3) & 3;
+    }
+
+    /* compute the normal for each face */
+    facenormal[i][0] =
+      (point[k][1] - point[j][1]) * (point[l][2] - point[j][2]) -
+      (point[k][2] - point[j][2]) * (point[l][1] - point[j][1]);
+    facenormal[i][1] =
+      (point[k][2] - point[j][2]) * (point[l][0] - point[j][0]) -
+      (point[k][0] - point[j][0]) * (point[l][2] - point[j][2]);
+    facenormal[i][2] =
+      (point[k][0] - point[j][0]) * (point[l][1] - point[j][1]) -
+      (point[k][1] - point[j][1]) * (point[l][0] - point[j][0]);
+
+    /* compute (2 *area)^2 for this face */
+    facearea2[i] = facenormal[i][0] * facenormal[i][0] +
+      facenormal[i][1] * facenormal[i][1] +
+      facenormal[i][2] * facenormal[i][2];
+    facesum += sqrt (facearea2[i]) * 0.5;
+  }
+
+  /* compute Z */
+  Z = getZ (p1, p2, p3, p4);
+
+  /* now we are ready to compute the radius ratio, which is
+     (108 * V^2) / Z (A1 + A2 + A3 + A4) */
+
+  ut_free_1d_pdouble (point);
+
+  return (108 * vol * vol) / (Z * facesum);
+}
+
+/* compute Z, a quantity associated with circumradius computation
+   TODO this code is lifted from Jonathan's tetcircumcenter computation
+   in primitives.c */
+double
+getZ (double *tetorg, double *tetdest, double *tetfapex, double *tettapex)
+{
+  double xot, yot, zot, xdt, ydt, zdt, xft, yft, zft;
+  double otlength, dtlength, ftlength;
+  double xcrossdf, ycrossdf, zcrossdf;
+  double xcrossfo, ycrossfo, zcrossfo;
+  double xcrossod, ycrossod, zcrossod;
+  double xct, yct, zct;
+
+  /* Use coordinates relative to the apex of the tetrahedron. */
+  xot = tetorg[0] - tettapex[0];
+  yot = tetorg[1] - tettapex[1];
+  zot = tetorg[2] - tettapex[2];
+  xdt = tetdest[0] - tettapex[0];
+  ydt = tetdest[1] - tettapex[1];
+  zdt = tetdest[2] - tettapex[2];
+  xft = tetfapex[0] - tettapex[0];
+  yft = tetfapex[1] - tettapex[1];
+  zft = tetfapex[2] - tettapex[2];
+  /* Squares of lengths of the origin, destination, and face apex edges. */
+  otlength = xot * xot + yot * yot + zot * zot;
+  dtlength = xdt * xdt + ydt * ydt + zdt * zdt;
+  ftlength = xft * xft + yft * yft + zft * zft;
+  /* Cross products of the origin, destination, and face apex vectors. */
+  xcrossdf = ydt * zft - yft * zdt;
+  ycrossdf = zdt * xft - zft * xdt;
+  zcrossdf = xdt * yft - xft * ydt;
+  xcrossfo = yft * zot - yot * zft;
+  ycrossfo = zft * xot - zot * xft;
+  zcrossfo = xft * yot - xot * yft;
+  xcrossod = yot * zdt - ydt * zot;
+  ycrossod = zot * xdt - zdt * xot;
+  zcrossod = xot * ydt - xdt * yot;
+
+  /* Calculate offset (from apex) of circumcenter. */
+  xct = (otlength * xcrossdf + dtlength * xcrossfo + ftlength * xcrossod);
+  yct = (otlength * ycrossdf + dtlength * ycrossfo + ftlength * ycrossod);
+  zct = (otlength * zcrossdf + dtlength * zcrossfo + ftlength * zcrossod);
+
+  /* Calculate the length of this vector, which is Z */
+  return sqrt (xct * xct + yct * yct + zct * zct);
+}
+
+/* returns the radius ratio for a triangle
+ * rr = 16 * A^2 / (l1.l2.l3.(l1+l2+l3)) */
+double
+neut_elt_2d_rr (double *p1, double *p2, double *p3)
+{
+  double l1, l2, l3, area;
+
+  area = ut_space_trianglearea (p1, p2, p3);
+  l1 = ut_space_dist (p1, p2);
+  l2 = ut_space_dist (p2, p3);
+  l3 = ut_space_dist (p3, p1);
+
+  return 16 * area * area / (l1 * l2 * l3 * (l1 + l2 + l3));
+}
+
+// rho factor as defined in Gmsh
+double
+neut_elt_3d_rho (double* p1, double* p2, double* p3, double* p4)
+{
+  double rho;
+  double* l = ut_alloc_1d (6);
+
+  l[1] = ut_space_dist (p1, p3);
+  l[0] = ut_space_dist (p1, p2);
+  l[2] = ut_space_dist (p1, p4);
+  l[3] = ut_space_dist (p2, p3);
+  l[4] = ut_space_dist (p2, p4);
+  l[5] = ut_space_dist (p3, p4);
+
+  rho = ut_array_1d_min (l, 6) / ut_array_1d_max (l, 6);
+
+  ut_free_1d (l);
+
+  return rho;
 }

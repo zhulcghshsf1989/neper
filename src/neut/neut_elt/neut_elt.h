@@ -5,7 +5,10 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-#include<assert.h>
+#include<math.h>
 
 #include "neut.h"
 #include "neut_elt0.h"
+
+double getZ (double *, double *, double *, double *);
+/* the inradius to circumradius ratio */

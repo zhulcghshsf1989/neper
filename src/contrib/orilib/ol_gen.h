@@ -1,0 +1,29 @@
+/* This file is part of the 'orilib' software. */
+/* Copyright (C) 2007-2009, 2012 Romain Quey */
+/* see the COPYING file in the top-level directory.*/
+#ifndef OL_GEN
+#define OL_GEN
+
+#include "ol_des.h"
+#include "ol_glo.h"
+
+extern void ol_nb_e (double, double, double, double *);
+extern void ol_nb_e_rad (double, double, double, double *);
+extern void ol_srand_e_rad (int, int, double **);
+extern void ol_srand_e (int, int, double **);
+
+extern void ol_nb_r (double, double, double *);
+extern void ol_nb_max_theta_rad (double, double, double *);
+extern void ol_nb_max_theta (double, double, double *);
+extern void ol_nb_max_theta_mis_rad (double, double, double *);
+extern void ol_nb_max_theta_mis (double, double, double *);
+extern void ol_nb_max_rtheta (double, double, double, double, double *,
+			      double *);
+extern void ol_nb_max_rtheta_mis_rad (double, double, double, double,
+				      double *, double *);
+extern void ol_nb_max_rtheta_mis (double, double, double, double, double *,
+				  double *);
+extern void ol_nb_max_rtheta_rad (double, double, double, double, double *,
+				  double *);
+
+#endif /* OL_GEN */

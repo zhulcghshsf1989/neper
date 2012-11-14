@@ -68,10 +68,32 @@ nefm_init_geo (char* filename, struct GEO* pGeo, struct GEOPARA* pGeoPara)
     abort ();
   }
   
-  cl2sel (pGeoPara);
+  return;
+}
+
+void
+nefm_init_geo_b (struct GEO* pGeo, struct GEOPARA* pGeoPara)
+{
+  double vol;
+
+  /* Calculation of sel */
+  // seltype == 0: nothing to do
+  if ((*pGeoPara).seltype == 1)
+  {
+    neut_geo_volume (*pGeo, &vol);
+    rsel2sel ((*pGeoPara).rsel, vol, (*pGeo).PolyQty, &((*pGeoPara).sel));
+  }
+  
+  // Calculation of sel_skin
+  if ((*pGeoPara).dbound != NULL && (*pGeoPara).dboundseltype == 1)
+  {
+    neut_geo_volume (*pGeo, &vol);
+    rsel2sel ((*pGeoPara).dboundrsel, vol, (*pGeo).PolyQty, &((*pGeoPara).dboundsel));
+  }
 
   return;
 }
+
 
 void
 nefm_init_remesh (struct IN In, struct GEO* pGeo, struct NODES* pRNodes,
@@ -108,7 +130,7 @@ nefm_init_remesh (struct IN In, struct GEO* pGeo, struct NODES* pRNodes,
     neut_geo_fscanf (file, pGeo);
     ut_file_close (file, In.remeshtess, "r");
     ut_print_message (0, 2, "Testing tessellation ...\n");
-    neut_geo_test (*pGeo);
+    neut_geo_test (*pGeo, 0);
     
     ReconMesh ("3,2,1,0", *pRNodes, pRMesh0D, pRMesh1D, pRMesh2D, pRMesh3D, NULL);
     
@@ -218,7 +240,7 @@ nefm_init_remap (struct IN In, struct GEO* pGeo, struct NODES* pRNodes,
     neut_geo_fscanf (file, pGeo);
     ut_file_close (file, In.transporttess, "r");
     ut_print_message (0, 2, "Testing tessellation ...\n");
-    neut_geo_test (*pGeo);
+    neut_geo_test (*pGeo, 0);
     
     ReconMesh ("3,2,1,0", *pRNodes, pRMesh0D, pRMesh1D, pRMesh2D, pRMesh3D, NULL);
     

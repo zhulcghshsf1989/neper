@@ -23,7 +23,8 @@ neut_mesh_fprintf_geof_nodes (FILE* out, struct NODES Nodes)
   {
     fprintf (out, "%d", i);
     for (j = 0; j < 3; j++)
-      fprintf (out, "  %.12f", Nodes.NodeCoo[i][j]);
+      fprintf (out, "  %.12f",
+	  (fabs (Nodes.NodeCoo[i][j]) < 1e-12) ? 0 : Nodes.NodeCoo[i][j]);
     fprintf (out, "\n");
   }
 
@@ -247,7 +248,7 @@ neut_mesh_fprintf_geof_elsets (FILE* file, struct MESH Mesh3D)
     fprintf (file, "\n**elset poly%d\n", i);
     col = 0;
     for (j = 1; j <= Mesh3D.Elsets[i][0]; j++)
-      FPrintfWNC (file, Mesh3D.Elsets[i][j], &col, 72);
+      ut_print_wnc_int (file, Mesh3D.Elsets[i][j], &col, 72);
 
     fprintf (file, "\n");
   }

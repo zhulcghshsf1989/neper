@@ -10,8 +10,6 @@
 #include<string.h>
 #include<math.h>
 
-#include"structAll.h"
-#include"AllUtils.h"
 #include"ut.h"
 #include"neut.h"
 #include"structIn_fm.h"
@@ -19,16 +17,14 @@
 
 #include"InputData_fm/InputData_fm0.h"
 #include"nefm_init/nefm_init0.h"
-#include"RegularizeGeo/RegularizeGeo0.h"
 #include"Premeshing/Premeshing0.h"
 #include"Meshing0D/Meshing0D0.h"
 #include"Meshing1D/Meshing1D0.h"
 #include"Meshing2D/Meshing2D0.h"
 #include"Meshing3D/Meshing3D0.h"
-#include"GeoStuff/GeoStuff0.h"
 #include"SearchNSets/SearchNSets0.h"
 #include"WriteMesh/WriteMesh0.h"
-#include"MStat/MStat0.h"
+#include"nem_stat/nem_stat0.h"
 #include"ReadMesh/ReadMesh0.h"
 #include"ReconMesh/ReconMesh0.h"
 #include"Partition/Partition0.h"

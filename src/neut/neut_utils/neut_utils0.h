@@ -5,7 +5,6 @@
 #ifndef UT_UTILS0_H
 #define UT_UTILS0_H
 
-extern void neut_utils_print_allrightreserved (FILE* file);
 extern int neut_utils_nset_expand (char *, char **);
 
 #endif

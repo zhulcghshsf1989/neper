@@ -8,14 +8,8 @@
 #include "neper_config.h"
 #include "ut.h"
 
-#include "neut_geo/neut_geo_gen.h"
-#include "neut_geo/neut_geo_geo.h"
-#include "neut_geo/neut_geo_compress.h"
-#include "neut_geo/neut_geo_fprintf.h"
-#include "neut_geo/neut_geo_fscanf.h"
-#include "neut_geo/neut_geo_op.h"
-#include "neut_geo/neut_geo_test.h"
-
+#include "neut_geo.h"
+#include "neut_vox.h"
 #include "neut_elt.h"
 #include "neut_mesh.h"
 #include "neut_mmesh.h"
@@ -25,8 +19,6 @@
 #include "neut_germset.h"
 #include "neut_tess.h"
 #include "neut_poly.h"
-#include "neut_fod.h"
-#include "neut_fodnodes.h"
 #include "neut_rand.h"
 #include "neut_part.h"
 #include "neut_print.h"
@@ -35,5 +27,6 @@
 #include "neut_multim.h"
 #include "neut_nset.h"
 #include "neut_utils.h"
+#include "neut_povray.h"
 
 #endif /* NEUT_H */

@@ -7,3 +7,4 @@
 #include<math.h>
 #include"neut_mmesh0.h"
 #include"ut.h"
+#include"neut.h"

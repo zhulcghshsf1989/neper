@@ -5,29 +5,28 @@
 #include"TestPoly.h"
 
 int
-TestPolyReciprocityFace (struct GEO Geo, int i)
+TestPolyReciprocityFace (struct GEO Geo, int i, int verbosity)
 {
   int j;
   int face;
 
   if (Geo.PolyFaceQty[i] < 4)
   {
-    ut_print_messagewnc (2, 72,
-		"A polyhedron has a wrong amount of faces.  Classically, this is due to a (too) high value of critical length for the small edges.  You should decrease rcl and/or increase pcl (or decrease sel if you are using it).\n");
+    if (verbosity)
+      ut_print_message (2, 3, "number of faces = %d < 4.\n", Geo.PolyFaceQty[i]);
 
-    abort ();
-    return 3;
+    return 2;
   }
 
   for (j = 1; j <= Geo.PolyFaceQty[i]; j++)
   {
     face = Geo.PolyFaceNb[i][j];
+
     if (ut_array_1d_int_eltpos (Geo.FacePoly[face], 2, i) == -1)
     {
-      /*
-         ut_print_lineheader(2);
-         printf("face %d of poly %d = face %d has not poly %d!\n",j,i,face,i);
-       */
+      if (verbosity)
+	ut_print_message (2, 3, "based on face %d, but poly is not in face poly list.\n", face);
+       
       return 3;
     }
   }
@@ -38,7 +37,7 @@ TestPolyReciprocityFace (struct GEO Geo, int i)
 /* this routines tests if several faces belongs to the same domain
  * boundary, which means that there are coplanar. */
 int
-TestPolyCoplaneityFace (struct GEO Geo, int i)
+TestPolyCoplaneityFace (struct GEO Geo, int i, int verbosity)
 {
   int j, face, res = 0;
   int *tmp = ut_alloc_1d_int (Geo.PolyFaceQty[i] + 1);
@@ -53,6 +52,9 @@ TestPolyCoplaneityFace (struct GEO Geo, int i)
   for (j = 1; j <= Geo.DomFaceQty; j++)
     if (ut_array_1d_int_nbofthisval (tmp + 1, tmp[0], j) > 1)
     {
+      if (verbosity)
+	ut_print_message (2, 3, "has several faces which belong to the same domain face.\n");
+
       res = 3;
       break;
     }
@@ -63,7 +65,35 @@ TestPolyCoplaneityFace (struct GEO Geo, int i)
 }
 
 int
-TestPolyOrientationFace (struct GEO Geo, int i)
+TestPolyOrientationFace (struct GEO Geo, int i, int verbosity)
+{
+  int j, face;
+  double* eq = ut_alloc_1d (4);
+
+  for (j = 1; j <= Geo.PolyFaceQty[i]; j++)
+  {
+    face = Geo.PolyFaceNb[i][j];
+
+    ut_array_1d_memcpy (eq, 4, Geo.FaceEq[face]);
+    ut_array_1d_scale (eq, 4, Geo.PolyFaceOri[i][j]);
+
+    if (ut_space_planeside (eq, Geo.CenterCoo[i] - 1) != -1)
+    {
+      if (verbosity)
+	ut_print_message (2, 3, "face %d is not properly oriented.\n", face);
+
+      return 1;
+    }
+  }
+
+  ut_free_1d (eq);
+
+  return 0;
+}
+
+/*
+int
+TestPolyOrientationFace (struct GEO Geo, int i, int verbosity)
 {
   int j, k, face, res = 0;
   int* edge_faces = NULL;
@@ -78,17 +108,22 @@ TestPolyOrientationFace (struct GEO Geo, int i)
   {
     neut_geo_poly_edge_faces (Geo, i, edge[j], &edge_faces);
 
+    printf ("j = %d edge = %d\n", j, edge[j]);
+
+    printf ("face = ");
     for (k = 0; k < 2; k++)
     {
       face = edge_faces[k];
+      printf ("%d ", face);
       neut_geo_poly_face_ori (Geo, i, face, &(face_ori[k]));
       neut_geo_face_edge_ori (Geo, face, edge[j], &(edge_ori[k]));
-
-      // printf ("k = %d face = %d\n", k, face);
     }
+    printf ("\n");
+
+    printf ("edge_ori = %d %d face_ori = %d %d\n", edge_ori[0], edge_ori[1], face_ori[0], face_ori[1]);
+
     if (edge_ori[0] * edge_ori[1] * face_ori[0] * face_ori[1] != -1)
     {
-      // printf ("edge_ori = %d %d face_ori = %d %d\n", edge_ori[0], edge_ori[1], face_ori[0], face_ori[1]);
       res = 1;
       break;
     }
@@ -101,3 +136,4 @@ TestPolyOrientationFace (struct GEO Geo, int i)
 
   return res;
 }
+*/

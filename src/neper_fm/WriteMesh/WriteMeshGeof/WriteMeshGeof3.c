@@ -31,7 +31,7 @@ neut_mesh_fprintf_geof_part_nset (FILE* file, struct PART Part)
     col = 0;
     for (i = 0; i < Part.node_parts[0]; i++)
       if (Part.node_parts[i] == p)
-	FPrintfWNC (file, i, &col, 72);
+	ut_print_wnc_int (file, i, &col, 72);
 
     fprintf (file, "\n");
   }
@@ -50,7 +50,7 @@ neut_mesh_fprintf_geof_part_elset (FILE* file, struct PART Part)
     col = 0;
     for (i = 0; i < Part.elt_parts[0]; i++)
       if (Part.elt_parts[i] == p)
-	FPrintfWNC (file, i, &col, 72);
+	ut_print_wnc_int (file, i, &col, 72);
 
     fprintf (file, "\n");
   }

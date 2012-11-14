@@ -22,9 +22,35 @@ TreatArg_fm (int fargc, char **fargv, int argc, char **argv,
    || ut_string_inlist ((*pIn).format, ',', "abq")
    || ut_string_inlist ((*pIn).format, ',', "inp")
    || ut_string_inlist ((*pIn).format, ',', "fev")
+   || ut_string_inlist ((*pIn).format, ',', "parms")
+   || ut_string_inlist ((*pIn).format, ',', "mesh")
+   || ut_string_inlist ((*pIn).format, ',', "opt")
+   || ut_string_inlist ((*pIn).format, ',', "surf")
+   || ut_string_inlist ((*pIn).format, ',', "bcs")
    ))
     (*pIn).mesh = 1;
   
+  // If not set up, setting dim default value
+  if ((*pIn).meshdim == -1)
+  {
+    if (! (*pIn).outdim)
+      (*pIn).meshdim = 3;
+    else
+    {
+      char** parts = NULL;
+      int partqty, i, tmp;
+      ut_string_separate ((*pIn).outdim, ',', &parts, &partqty);
+
+      for (i = 0; i < partqty; i++)
+      {
+	sscanf (parts[i], "%d", &tmp);
+	(*pIn).meshdim = ut_num_max ((*pIn).meshdim, tmp);
+
+      }
+      ut_free_2d_char (parts, partqty);
+    }
+  }
+
   // If not set up, setting outdim default value
   if (! (*pIn).outdim)
   {
@@ -45,9 +71,11 @@ TreatArg_fm (int fargc, char **fargv, int argc, char **argv,
   {
     char* tmp = ut_alloc_1d_char (1000);
     sprintf (tmp, "%s --version 2>&1 | grep -v \"[a-z]\" > .nepertmp", (*pIn).gmsh);
-    system (tmp);
+    if (system (tmp) == -1)
+      abort ();
+
     FILE* file = ut_file_open (".nepertmp", "R");
-    if (fscanf (file, "%s%s", tmp, tmp) != 1)
+    if (fscanf (file, "%s", tmp) != 1)
     {
       ut_print_message (2, 0, "You have to specify a valid access path to the gmsh binary\n");
       ut_print_message (2, 0, "through option `-gmsh'.\n");
@@ -88,32 +116,11 @@ TreatArg_fm (int fargc, char **fargv, int argc, char **argv,
 
 
   /* Writing all file names */
-  (*pIn).geo     = ut_string_addextension ((*pIn).body, ".tess");
-  (*pIn).ply     = ut_string_addextension ((*pIn).body, ".ply");
-  (*pIn).gmshgeo = ut_string_addextension ((*pIn).body, ".geo");
-
   (*pIn).geof    = ut_string_addextension ((*pIn).body, ".geof");
   (*pIn).scm     = ut_string_addextension ((*pIn).body, ".scm");
   (*pIn).scg     = ut_string_addextension ((*pIn).body, ".scg");
-  
-  (*pIn).stn     = ut_string_addextension ((*pIn).body, ".stn");
-  (*pIn).stm1    = ut_string_addextension ((*pIn).body, ".stm1");
-  (*pIn).stm2    = ut_string_addextension ((*pIn).body, ".stm2");
-  (*pIn).stm3    = ut_string_addextension ((*pIn).body, ".stm3");
-  (*pIn).stm4    = ut_string_addextension ((*pIn).body, ".stm4");
-  (*pIn).stm5    = ut_string_addextension ((*pIn).body, ".stm5");
-
-  (*pIn).ff      = ut_string_addextension ((*pIn).body, ".ff");
-  (*pIn).stt3    = ut_string_addextension ((*pIn).body, ".stt3");
-  (*pIn).stt2    = ut_string_addextension ((*pIn).body, ".stt2");
-  (*pIn).stt1    = ut_string_addextension ((*pIn).body, ".stt1");
-  (*pIn).stt0    = ut_string_addextension ((*pIn).body, ".stt0");
-  (*pIn).stt2a   = ut_string_addextension ((*pIn).body, ".stt2a");
   (*pIn).msh     = ut_string_addextension ((*pIn).body, ".msh");
   (*pIn).abq     = ut_string_addextension ((*pIn).body, ".inp");
-  (*pIn).oin     = ut_string_addextension ((*pIn).body, ".oin");
-  (*pIn).mast    = ut_string_addextension ((*pIn).body, ".mast");
-  (*pIn).asy     = ut_string_addextension ((*pIn).body, ".asy");
   (*pIn).epart   = ut_string_addextension ((*pIn).body, ".epart");
   (*pIn).npart   = ut_string_addextension ((*pIn).body, ".npart");
   (*pIn).rem1    = ut_string_addextension ((*pIn).body, ".rem1");

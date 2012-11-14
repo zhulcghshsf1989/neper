@@ -324,7 +324,7 @@ nevs_meshdata_fscanf (struct NODES Nodes, struct MESH Mesh1D, struct MESH Mesh,
     (*pMeshData).raddatatype[id] = ut_alloc_1d_char (100);
 
     if (argqty == 1)
-      sprintf ((*pMeshData).raddatatype[id], type);
+      strcpy ((*pMeshData).raddatatype[id], type);
     else
       strcpy ((*pMeshData).raddatatype[id], args[0]);
 
@@ -339,32 +339,36 @@ nevs_meshdata_fscanf (struct NODES Nodes, struct MESH Mesh1D, struct MESH Mesh,
   }
   else if (! strcmp (type, "colscheme"))
   {
-    (*pMeshData).colscheme[id] = ut_alloc_1d_char (100);
-    sprintf ((*pMeshData).colscheme[id], argument);
+    (*pMeshData).colscheme[id] = ut_alloc_1d_char (strlen (argument) + 1);
+    strcpy ((*pMeshData).colscheme[id], argument);
   }
   else if (! strcmp (type, "scalemin"))
   {
-    (*pMeshData).scalemin[id] = ut_alloc_1d_char (100);
-    sprintf ((*pMeshData).scalemin[id], argument);
+    (*pMeshData).scalemin[id] = ut_alloc_1d_char (strlen (argument) + 1);
+    strcpy ((*pMeshData).scalemin[id], argument);
   }
   else if (! strcmp (type, "scalemax"))
   {
-    (*pMeshData).scalemax[id] = ut_alloc_1d_char (100);
-    sprintf ((*pMeshData).scalemax[id], argument);
+    (*pMeshData).scalemax[id] = ut_alloc_1d_char (strlen (argument) + 1);
+    strcpy ((*pMeshData).scalemax[id], argument);
   }
   else if (! strcmp (type, "scaleticks"))
   {
-    (*pMeshData).scaleticks[id] = ut_alloc_1d_char (100);
-    sprintf ((*pMeshData).scaleticks[id], argument);
+    (*pMeshData).scaleticks[id] = ut_alloc_1d_char (strlen (argument) + 1);
+    strcpy ((*pMeshData).scaleticks[id], argument);
   }
   else if (! strcmp (type, "coo"))
   {
-    (*pMeshData).coodatatype[id] = ut_alloc_1d_char (100);
-
     if (argqty == 1)
-      sprintf ((*pMeshData).coodatatype[id], type);
+    {
+      (*pMeshData).coodatatype[id] = ut_alloc_1d_char (strlen (type) + 1);
+      strcpy ((*pMeshData).coodatatype[id], type);
+    }
     else
+    {
+      (*pMeshData).coodatatype[id] = ut_alloc_1d_char (strlen (args[0]) + 1);
       strcpy ((*pMeshData).coodatatype[id], args[0]);
+    }
 
     if ((*pMeshData).coodata[id] == NULL)
       (*pMeshData).coodata[id] = ut_alloc_2d (qty + 1, 3);

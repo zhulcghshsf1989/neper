@@ -35,6 +35,7 @@ neut_geo_set_zero (struct GEO* pGeo)
   (*pGeo).FacePtCoo = NULL;
   (*pGeo).FaceFF = NULL;
   (*pGeo).FaceDom = NULL;
+  (*pGeo).PolyId = NULL;
   (*pGeo).PolyFaceQty = NULL;
   (*pGeo).PolyFaceNb = NULL;
   (*pGeo).PolyFaceOri = NULL;
@@ -44,6 +45,11 @@ neut_geo_set_zero (struct GEO* pGeo)
   (*pGeo).morpho = NULL;
   (*pGeo).Type = NULL;
   (*pGeo).Id = -1;
+  
+  (*pGeo).sel = 0;
+  (*pGeo).maxff = 0;
+  (*pGeo).dbound = NULL;
+  (*pGeo).dboundsel = 0;
 
   (*pGeo).DomType = NULL;
 
@@ -101,6 +107,7 @@ neut_geo_free (struct GEO* pGeo)
 
   ut_free_2d     ((*pGeo).CenterCoo, (*pGeo).PolyQty + 1);
 
+  ut_free_1d_int ((*pGeo).PolyId);
   ut_free_1d_int ((*pGeo).PolyFaceQty);
   ut_free_2d_int ((*pGeo).PolyFaceNb, (*pGeo).PolyQty + 1);
   ut_free_2d_int ((*pGeo).PolyFaceOri, (*pGeo).PolyQty + 1);
@@ -109,6 +116,8 @@ neut_geo_free (struct GEO* pGeo)
   ut_free_1d_int ((*pGeo).PolyBody);
   
   ut_free_1d_char ((*pGeo).morpho);
+  
+  ut_free_1d_char ((*pGeo).dbound);
 
   ut_free_1d_char ((*pGeo).DomType);
 
@@ -127,6 +136,8 @@ neut_geo_free (struct GEO* pGeo)
   ut_free_2d_int ((*pGeo).DomFaceEdgeNb, (*pGeo).DomFaceQty + 1);
   ut_free_1d_int ((*pGeo).DomTessFaceQty);
   ut_free_2d_int ((*pGeo).DomTessFaceNb, (*pGeo).DomFaceQty + 1);
+
+  ut_free_1d_char ((*pGeo).Type);
 
   neut_geo_set_zero (pGeo);
 
@@ -195,6 +206,9 @@ neut_geo_scale (struct GEO *pGeo, double vx, double vy, double vz)
     for (j = 0; j < 4; j++)
       (*pGeo).DomFaceEq[i][j] /= norm;
   }
+
+  (*pGeo).sel *= ut_vector_norm (gsize);
+  (*pGeo).dboundsel *= ut_vector_norm (gsize);
 
   ut_free_1d (gsize);
 
@@ -430,7 +444,7 @@ neut_geo_init_facestuff_fromver (struct GEO* pGeo)
 
   // reverse FaceVerNb and FaceEdgeNb and modify FaceEdgeOri
   for (i = 1; i <= (*pGeo).FaceQty; i++)
-    if (neut_geo_test_face_normal (*pGeo, i) != 0)
+    if (neut_geo_test_face_normal (*pGeo, i, 0) != 0)
     {
       ut_array_1d_int_reverseelts ((*pGeo).FaceEdgeNb[i] + 2,
 	                           (*pGeo).FaceVerQty[i] - 1);

@@ -19,6 +19,9 @@ Tessellation (struct GERMSET GermSet, struct POLY *Poly,
   int **TVNb = NULL;
   int **TFNb = NULL;
 
+  // If *pTess is not empty, free'ing
+  neut_tess_free (pTess);
+
   neut_tess_set_zero (pTess);
 
   /* Recording of the tessellation generalities in Tess, i.e. number

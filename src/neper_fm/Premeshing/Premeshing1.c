@@ -16,6 +16,7 @@ Premeshing (struct GEO Geo,
   int face_cpy;
   face_sim_A = face_sim_A;
   face_sim_B = face_sim_B;
+  char* message = ut_alloc_1d_char (8);
 
   if (face_sim != NULL)
   {
@@ -23,8 +24,7 @@ Premeshing (struct GEO Geo,
     // nefm_geo_face_sim (Geo, face_sim, face_sim_A, face_sim_B);
   }
   
-  ut_print_message (0, 2, "Preparing  ... %3d%%", 0);
-  fflush (stdout);
+  ut_print_message (0, 2, "Preparing  ... ");
 
   /* face projection vector ***************** */
 
@@ -37,6 +37,7 @@ Premeshing (struct GEO Geo,
     ut_array_1d_int_set (edge_op + 1, Geo.EdgeQty, 0);
   }
 
+  ut_print_progress (stdout, 0, Geo.FaceQty, "%3.0f%%", message);
   for (i = 1; i <= Geo.FaceQty; i++)
   {
     status = nefm_mesh2d_face_nproj (Geo,
@@ -57,14 +58,9 @@ Premeshing (struct GEO Geo,
 	ut_error_reportbug ();
     }
 
-    if (isatty (1))
-      printf ("\b\b\b\b%3.0f%%", floor (100*((double) i/Geo.FaceQty)));
-    else
-      printf (" %3.0f%%", floor (100*((double) i/Geo.FaceQty)));
-    
+    ut_print_progress (stdout, i, Geo.FaceQty, "%3.0f%%", message);
     fflush (stdout);
   }
-  printf ("\n");
 
   if (face_op != NULL)
   {
@@ -82,6 +78,8 @@ Premeshing (struct GEO Geo,
       face_cpy, (face_cpy > 1) ? "s": "", edge_cpy, (edge_cpy > 1) ? "s": "");
     }
   }
+
+  ut_free_1d_char (message);
 
   return;
 }

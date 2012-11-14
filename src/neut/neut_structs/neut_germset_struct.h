@@ -7,20 +7,16 @@
 
 struct GERMSET
 {
-  char* morpho;
-  int centroid;
   int N;
   int NDensity;
   int N1d;
-  char* ttype;
   int Id;
+
+  char* morpho;
+
   long Random;     
 
   double** GermsCoo;
-
-  double randomize;
-  int    randomize2;
-  char*  randomizedir;
 
   // Domain neighbourhood info
   double* Size;
