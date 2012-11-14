@@ -40,7 +40,6 @@ provided (option @option{-faset}).  The mesh order can be 1 or 2,
 corresponding to 8-node cubic elements and 20-node cubic elements,
 respectively (option @option{-order}).  
 
-
 @sp 1
 Here is what a typical run of @mMM{} looks like:
 
@@ -50,9 +49,9 @@ Here is what a typical run of @mMM{} looks like:
     
     ========================    N   e   p   e   r    =======================
     Info   : A 3D random polycrystal generator for the finite element method
-    Info   : Version 1.10.1
-    Info   : (compiled with: gsl libmatheval)
-    Info   : Loading initialization file `/home/rquey/.neperrc'...
+    Info   : Version ...
+    Info   : Compiled with: gsl libmatheval
+    Info   : Ignoring initialization file.
     Info   : ---------------------------------------------------------------
     Info   : MODULE -MM loaded with arguments:
     Info   : [ini file] (none)
@@ -68,7 +67,7 @@ Here is what a typical run of @mMM{} looks like:
     Info   :   - Writing mesh results ...
     Info   :     [o] Writing file `n10-id1.msh' ...
     Info   :     [o] Wrote file `n10-id1.msh'.
-    Info   : Elapsed time: 0.040 secs.
+    Info   : Elapsed time: ... secs.
     ========================================================================
     
 @end verbatim
@@ -171,7 +170,6 @@ any,20 20 20}
 Specify the mesh order.,
 1 to 2,1}
 
-
 @subsection Output Options
 
 @opt{-outdim,char_string,
@@ -226,7 +224,6 @@ It contains data for generating the grain orientations, and
 is an input file for @mO{} (@pxref{Module -O}).
 @end itemize
 
-
 @section Examples
 
 Below are some examples of use of neper -MM.  Illustrations can be found
@@ -242,4 +239,3 @@ at @url{http://neper.sourceforge.net/neper_mm.html}.
 @com{neper -MM -n 100 -id 1 -msize 40 -ttype periodic}
 @c Example_end
 @end enumerate
-

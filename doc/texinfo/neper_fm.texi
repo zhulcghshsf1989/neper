@@ -104,18 +104,17 @@ Here is what a typical run of @mFM{} looks like:
 
 @c typical_start
 @verbatim 
-    $ neper -FM n10-id1.tess -maxff 20
+    $ neper -FM -gmsh /usr/bin/gmsh n10-id1.tess -maxff 20
     
     ========================    N   e   p   e   r    =======================
     Info   : A 3D random polycrystal generator for the finite element method
-    Info   : Version 1.10.1
-    Info   : (compiled with: gsl libmatheval)
-    Info   : Loading initialization file `/home/rquey/.neperrc'...
+    Info   : Version ...
+    Info   : Compiled with: gsl libmatheval
+    Info   : Ignoring initialization file.
     Info   : ---------------------------------------------------------------
     Info   : MODULE -FM loaded with arguments:
-    Info   : [ini file] -nset faces -mo 2 -gmsh /home/rquey/bin/gmsh -surf z1
-             -partrenumber 1
-    Info   : [com line] n10-id1.tess -maxff 20
+    Info   : [ini file] (none)
+    Info   : [com line] -gmsh /home/rquey/bin/gmsh n10-id1.tess -maxff 20
     Info   : ---------------------------------------------------------------
     Info   : Reading input data ...
     Info   :   - Reading arguments ...
@@ -132,19 +131,18 @@ Here is what a typical run of @mFM{} looks like:
     Info   :   - 0D meshing ...  100%
     Info   :   - 1D meshing ...  100%
     Info   :   - 2D meshing ...  100% (0.26|0.85/16%|83%)
-    Info   :   - 3D meshing ...  100% (0.89|0.91/100%| 0%)
-    Info   :   - Switching mesh to order 2 ...
+    Info   :   - 3D meshing ...  100% (0.88|0.91/100%| 0%)
     Info   :   - Searching nsets ...
     Info   : Writing mesh results ...
     Info   :   - Preparing mesh ...
     Info   :   - Mesh properties:
-    Info   :     > Node number:     1852
-    Info   :     > Elt  number:     1041
+    Info   :     > Node number:      299
+    Info   :     > Elt  number:     1034
     Info   :     > Mesh volume:    1.000
     Info   :   - Writing mesh ...
     Info   :     [o] Writing file `n10-id1.msh' ...
     Info   :     [o] Wrote file `n10-id1.msh'.
-    Info   : Elapsed time: 14.054 secs.
+    Info   : Elapsed time: ... secs.
     ========================================================================
     
 @end verbatim
@@ -250,6 +248,25 @@ any, none}
 Minimum characteristic length of the elements.  Using this option is not recommended.,
 any, none}
 
+@c @optdevel{-meshface,expression,
+@c Specify the faces to mesh. The argument can be: @samp{all} for
+@c all@comma{} @samp{@@@var{file_name}} to load face numbers from a
+@c file@comma{} or any expression based on the following arguments:
+@c @var{cenx}@comma{} @var{ceny}@comma{} @var{cenz}@comma{}
+@c @var{volume}@comma{}
+@c @var{true}@comma{} @var{body}@comma{} and
+@c @var{id}.,
+@c any, all}
+@c 
+@c @optdevel{-meshpoly,expression,
+@c Specify the polyhedra to mesh. The argument can be: @samp{all} for
+@c all@comma{} @samp{@@@var{file_name}} to load polyhedron numbers from a
+@c file@comma{} or any expression based on the following arguments:
+@c @var{cenx}@comma{} @var{ceny}@comma{} @var{cenz}@comma{}
+@c @var{volume}@comma{}
+@c @var{true}@comma{} @var{body}@comma{} and
+@c @var{id}.,
+@c any, all}
 
 @sp 1
 The following options define the 2D and 3D-meshing algorithms.  The
@@ -269,9 +286,9 @@ Sci., 52, 1--41, 1997.} libraries (see the Gmsh reference manual for
 information on the algorithms).@*
 
 For 2D meshing, the available values of @code{@var{mesh}} are
-@code{made} (MeshAdapt+Delaunay), @code{mead} (MeshAdapt), @code{dela}
+@code{mead} (MeshAdapt), @code{dela}
 (Delaunay) and @code{fron} (Frontal). There is no optimization.  The
-default is @code{fron,made} and it is recommended to retain multimeshing
+default is @code{fron,mead} and it is recommended to retain multimeshing
 in use for meshing robustness sake. For 3D meshing, the available
 values of @code{@var{mesh}} are currently limited to @code{netg}
 (Netgen).  The available values of @code{@var{opti}} are @code{gmsh}
@@ -283,23 +300,23 @@ For convenience, two generic entries are also defined.  The entry
 @code{default}, which is the default value, provides a good balance
 between mesh quality and computation time.  The entry @code{qualmax}
 provides the best results on mesh quality (full use of multimeshing).
-The values of @code{default} are @code{fron,made} for the 2D case and
+The values of @code{default} are @code{fron,mead} for the 2D case and
 @code{netg/gmsh,netg/gmne} for the 3D case.  The values of
-@code{qualmax} are @code{made,mead,dela,fron} for the 2D case and
+@code{qualmax} are @code{mead,dela,fron} for the 2D case and
 @code{netg/gmsh,netg/netg,netg/gmne} for the 3D case.
 
 @opt{-mesh2dalgo, char_string,
 Specify the 2D meshing algorithm.
 Multimeshing is allowed by providing several algorithms@comma{}
 (combine with commas).,
-made@comma{} mead@comma{} dela@comma{} fron@comma{},
-default @w{(= fron@comma{}made)}}
+mead@comma{} dela@comma{} fron,
+default @w{(= fron@comma{}mead)}}
 
 @opt{-mesh3dalgo, char_string,
 Specify the 3D meshing algorithm.
 Multimeshing is allowed by providing several algorithms@comma{}
 (combine with commas).,
-netg@comma{} netg/netg@comma{} netg/gmsh@comma{} netg/gmne@comma{},
+netg@comma{} netg/netg@comma{} netg/gmsh@comma{} netg/gmne,
 default @w{(= netg/gmsh@comma{}netg/gmne)}}
 
 @optsec{-mesh3doptiexpr, string,
@@ -314,6 +331,9 @@ optimization@comma{} as a function of the element distortion parameter
 @var{dis} (see the Neper paper).,
 any, dis^(exp((dis^0.1)/(dis^0.1-1)))}
 
+@c @optdevel{-mesh3dreport, logical,
+@c Report statistical data on the 3D meshing.,
+@c 0 or 1, 0}
 
 @subsection Domain Boundary Meshing Options
 

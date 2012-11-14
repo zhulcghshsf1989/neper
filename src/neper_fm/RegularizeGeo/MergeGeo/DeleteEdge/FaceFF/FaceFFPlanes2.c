@@ -32,10 +32,10 @@ FFBaryFace (struct GEO *pGeo, int face)
     for (j = 1; j <= (*pGeo).FaceVerQty[face] - 2; j++)
     {
       ver2 =
-	(*pGeo).FaceVerNb[face][oneDRotPos
+	(*pGeo).FaceVerNb[face][ut_num_rotpos
 				(1, (*pGeo).FaceVerQty[face], i, j)];
       ver3 =
-	(*pGeo).FaceVerNb[face][oneDRotPos
+	(*pGeo).FaceVerNb[face][ut_num_rotpos
 				(1, (*pGeo).FaceVerQty[face], i, j + 1)];
 
       ut_space_points_plane ((*pGeo).VerCoo[ver1], (*pGeo).VerCoo[ver2],
@@ -70,9 +70,9 @@ FFBaryFace (struct GEO *pGeo, int face)
   for (j = 1; j <= (*pGeo).FaceVerQty[face]; j++)
   {
     ver2 =
-      (*pGeo).FaceVerNb[face][oneDRotPos (1, (*pGeo).FaceVerQty[face], i, j)];
+      (*pGeo).FaceVerNb[face][ut_num_rotpos (1, (*pGeo).FaceVerQty[face], i, j)];
     ver3 =
-      (*pGeo).FaceVerNb[face][oneDRotPos
+      (*pGeo).FaceVerNb[face][ut_num_rotpos
 			      (1, (*pGeo).FaceVerQty[face], i, j + 1)];
 
     ut_space_points_plane ((*pGeo).FacePtCoo[face], (*pGeo).VerCoo[ver2],

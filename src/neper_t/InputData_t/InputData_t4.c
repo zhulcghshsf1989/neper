@@ -72,8 +72,6 @@ SetOptions_t_inputdata (struct GERMSET *pGermSet,
 	(*pinput)    =  2;
       }
   }
-  else if (strcmp (Arg, "-centroid") == 0 && (*pi) < argc - 1)
-    (*pGermSet).centroid = ut_arg_nextasint (argv, pi, Arg, 0, 1);
   else if (strcmp (Arg, "-ttype") == 0 && (*pi) < argc - 1)
   {
     ut_free_1d_char ((*pGermSet).ttype);

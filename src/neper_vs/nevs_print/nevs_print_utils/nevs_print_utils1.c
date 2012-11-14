@@ -191,12 +191,27 @@ nevs_print_mesh2d (FILE* file, struct NODES Nodes, struct MESH Mesh,
   }
   else if (strcmp (coltype, "node") == 0)
   {
-    for (i = 1; i <= Mesh.EltQty; i++)
-      fprintf (file, "    <%d,%d,%d>,%d,%d,%d%c\n",
-		Mesh.EltNodes[i][0] - 1, Mesh.EltNodes[i][1] - 1,
-		Mesh.EltNodes[i][2] - 1, Mesh.EltNodes[i][0] - 1,
-		Mesh.EltNodes[i][1] - 1, Mesh.EltNodes[i][2] - 1,
-		     (i < Mesh.EltQty) ? ',' : ' ');
+    if (strcmp (Mesh.EltType, "tri") == 0)
+      for (i = 1; i <= Mesh.EltQty; i++)
+	fprintf (file, "    <%d,%d,%d>,%d,%d,%d%c\n",
+		  Mesh.EltNodes[i][0] - 1, Mesh.EltNodes[i][1] - 1,
+		  Mesh.EltNodes[i][2] - 1, Mesh.EltNodes[i][0] - 1,
+		  Mesh.EltNodes[i][1] - 1, Mesh.EltNodes[i][2] - 1,
+		       (i < Mesh.EltQty) ? ',' : ' ');
+    else if (strcmp (Mesh.EltType, "quad") == 0)
+      for (i = 1; i <= Mesh.EltQty; i++)
+      {
+	fprintf (file, "    <%d,%d,%d>,%d,%d,%d%c\n",
+		  Mesh.EltNodes[i][0] - 1, Mesh.EltNodes[i][1] - 1,
+		  Mesh.EltNodes[i][2] - 1, Mesh.EltNodes[i][0] - 1,
+		  Mesh.EltNodes[i][1] - 1, Mesh.EltNodes[i][2] - 1,
+		       (i < Mesh.EltQty) ? ',' : ' ');
+	fprintf (file, "    <%d,%d,%d>,%d,%d,%d%c\n",
+		  Mesh.EltNodes[i][0] - 1, Mesh.EltNodes[i][2] - 1,
+		  Mesh.EltNodes[i][3] - 1, Mesh.EltNodes[i][0] - 1,
+		  Mesh.EltNodes[i][2] - 1, Mesh.EltNodes[i][3] - 1,
+		       (i < Mesh.EltQty) ? ',' : ' ');
+      }
   }
   else
     ut_error_reportbug ();

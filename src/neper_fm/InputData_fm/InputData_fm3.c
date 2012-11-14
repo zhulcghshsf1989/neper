@@ -161,6 +161,11 @@ SetOptions_fm (struct IN *pIn, struct GEOPARA *pGeoPara,
   sprintf (ArgList[++ArgQty], "-mesh3dalgo");
   sprintf (ArgList[++ArgQty], "-mesh3doptiexpr");
   sprintf (ArgList[++ArgQty], "-mesh3doptidisexpr");
+  
+  // development options
+  sprintf (ArgList[++ArgQty], "-meshface");
+  sprintf (ArgList[++ArgQty], "-meshpoly");
+  sprintf (ArgList[++ArgQty], "-mesh3dreport");
 
   // Mesh partitionning options ----------------------------------------
   sprintf (ArgList[++ArgQty], "-partqty");
@@ -213,6 +218,8 @@ SetOptions_fm (struct IN *pIn, struct GEOPARA *pGeoPara,
   sprintf (ArgList[++ArgQty], "-dboundrsel");
 
   // Devel options --------------------------------------- */
+  // development option
+  sprintf (ArgList[++ArgQty], "-maxedgedelqty");
   
   /* Reading arguments ----------------------------------- */
   for (i = 1; i < argc; i++)
@@ -350,6 +357,22 @@ SetOptions_fm (struct IN *pIn, struct GEOPARA *pGeoPara,
 	ut_free_1d_char ((*pIn).mesh3doptidisexpr);
 	(*pIn).mesh3doptidisexpr = ut_arg_nextaschar (argv, &i, Arg);
       }
+      
+      // development options 
+      else if (strcmp (Arg, "-mesh3dreport") == 0 && i < argc - 1)
+	(*pIn).mesh3dreport = ut_arg_nextasint (argv, &i, Arg, 0, INT_MAX);
+      else if (strcmp (Arg, "-meshpoly") == 0 && i < argc - 1)
+      {
+	ut_free_1d_char ((*pIn).meshpoly);
+	(*pIn).meshpoly = ut_arg_nextaschar (argv, &i, Arg);
+      }
+      else if (strcmp (Arg, "-meshface") == 0 && i < argc - 1)
+      {
+	ut_free_1d_char ((*pIn).meshface);
+	(*pIn).meshface = ut_arg_nextaschar (argv, &i, Arg);
+      }
+      // end of development options
+      
       else if ((strcmp (Arg, "-morder") == 0 && i < argc - 1)
             || (strcmp (Arg, "-order") == 0 && i < argc - 1))
 	(*pIn).morder = ut_arg_nextasint (argv, &i, Arg, 1, 2);
@@ -501,57 +524,12 @@ SetOptions_fm (struct IN *pIn, struct GEOPARA *pGeoPara,
 	(*pIn).partrenumber = ut_arg_nextasint (argv, &i, Arg, 0, 1);
       else if (strcmp (Arg, "-partsets") == 0 && i < argc - 1)
 	(*pIn).partsets = ut_arg_nextasint (argv, &i, Arg, 0, 1);
-      /*
-         else if(strcmp(Arg,"-forcemerge")==0)
-         {
-         i++;
-         if(isdigit(Arg[0])!=0 || argv[i][0]=='.')
-         sscanf(Arg,"%d",&(*pGeoPara).forcemergeqty);
-         else
-         ut_arg_badarg(pname);
-
-         if((*pGeoPara).forcemergeqty<=argc-i-1)
-         {
-         (*pGeoPara).forcemerge=ut_alloc_1d_int((*pGeoPara).forcemergeqty+1);
-         (*pGeoPara).forcemerge[0]=(*pGeoPara).forcemergeqty;
-         for(j=1;j<=(*pGeoPara).forcemergeqty;j++)
-         {
-         i++;
-         if(isdigit(Arg[0])!=0 || argv[i][0]=='.')
-         sscanf(Arg,"%d",&(*pGeoPara).forcemerge[j]);
-         else
-         ut_arg_badarg(pname);
-         }
-         inimaxff=1;
-         }
-         else
-         ut_arg_badarg(pname);
-         }
-         else if(strcmp(Arg,"-forbidmerge")==0)
-         {
-         i++;
-         sscanf(Arg,"%d",&(*pGeoPara).forbidmergeqty);
-         if((*pGeoPara).forbidmergeqty<=argc-i-1)
-         {
-         (*pGeoPara).forbidmerge=ut_alloc_1d_int((*pGeoPara).forbidmergeqty+1);
-         (*pGeoPara).forbidmerge[0]=(*pGeoPara).forbidmergeqty;
-         for(j=1;j<=(*pGeoPara).forbidmergeqty;j++)
-         {
-         i++;
-         if(isdigit(Arg[0])!=0 || argv[i][0]=='.')
-         sscanf(Arg,"%d",&(*pGeoPara).forbidmerge[j]);
-         else
-         ut_arg_badarg(pname);
-         }
-         }
-         else
-         ut_arg_badarg(pname);
-         }
-       */
+      // development option
+      else if (strcmp (Arg, "-maxedgedelqty") == 0 && i < argc - 1)
+	(*pIn).maxedgedelqty = ut_arg_nextasint (argv, &i, Arg, 0, INT_MAX);
+     
       else
-      {
-	  ut_arg_error (Arg, "");
-      }
+	ut_arg_error (Arg, "");
     }
   }
 

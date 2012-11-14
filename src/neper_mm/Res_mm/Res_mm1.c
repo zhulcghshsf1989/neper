@@ -84,4 +84,3 @@ Res_mm (struct IN In, struct GEO Geo, struct NODES Nodes,
 
   return;
 }
-

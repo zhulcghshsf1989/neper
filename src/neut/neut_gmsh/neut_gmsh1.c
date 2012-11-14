@@ -42,9 +42,7 @@ int
 neut_gmsh_meshalgo2d_nb (char* algo, int* pnb)
 {
   if (algo == NULL)
-    (*pnb) = 0;
-  else if (strcmp (algo, "none") == 0)
-    (*pnb) = 0;
+    (*pnb) = -1;
   else if (strcmp (algo, "mead") == 0)
     (*pnb) = 1;
   else if (strcmp (algo, "dela") == 0)
@@ -61,9 +59,7 @@ int
 neut_gmsh_meshalgo3d_nb (char* algo, int* pnb)
 {
   if (algo == NULL)
-    (*pnb) = 0;
-  else if (strcmp (algo, "none") == 0)
-    (*pnb) = 0;
+    (*pnb) = -1;
   else if (strcmp (algo, "dela") == 0)
     (*pnb) = 1;
   else if (strcmp (algo, "fron") == 0)
@@ -80,9 +76,7 @@ int
 neut_gmsh_optialgo_nb (char* algo, int* pnb)
 {
   if (algo == NULL)
-    (*pnb) = 0;
-  else if (strcmp (algo, "none") == 0)
-    (*pnb) = 0;
+    (*pnb) = -1;
   else if (strcmp (algo, "gmsh") == 0)
     (*pnb) = 1;
   else if (strcmp (algo, "netg") == 0)

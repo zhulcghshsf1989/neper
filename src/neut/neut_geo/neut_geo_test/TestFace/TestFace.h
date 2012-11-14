@@ -7,7 +7,6 @@
 #include<math.h>
 #include"gsl/gsl_sort_int.h"
 
-#include"structAll.h"
 #include"ut.h"
 #include"../../../neut_geo.h"
 #include"../../../neut_structs.h"

@@ -5,9 +5,8 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-#include"structAll.h"
-#include"AllUtils.h"
 #include"ut.h"
+#include"neut.h"
 #include"../../structIn_mm.h"
 
 #include"RMeshingFGeo0.h"

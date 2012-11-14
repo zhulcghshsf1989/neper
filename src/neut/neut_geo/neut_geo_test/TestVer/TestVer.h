@@ -6,7 +6,6 @@
 #include<stdlib.h>
 #include<math.h>
 
-#include"structAll.h"
 #include"ut.h"
 #include"../../../neut_geo.h"
 #include"../../../neut_structs.h"

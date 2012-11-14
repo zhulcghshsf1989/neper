@@ -1,3 +1,11 @@
+New in 1.10.2 (O9 Aug 2012):
+- module -T: fixed -centroid option.
+- module -FM: fixed list of available meshing algorithms.  Added
+  tests.
+- module -MM: fixed nset syntax in inp (Abaqus) files.
+- module -VS: added capability to plot mapped meshes.
+- General: various minor improvements, code cleaning.
+
 New in 1.10.1 (08 June 2012):
 - Bug fix to get Neper working after invoquing `make install'.
 

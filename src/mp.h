@@ -10,12 +10,6 @@
 
 #include"neper_config.h"
 
-#include"Utils/DisplayUtils/DisplayUtils0.h"
-#include"Utils/ArrayUtils/ArrayUtils0.h"
-#include"Utils/CharUtils/CharUtils0.h"
-#include"Utils/FileUtils/FileUtils0.h"
-#include"Utils/NumUtils/NumUtils0.h"
-#include"Utils/OptionUtils/OptionUtils0.h"
 #include"ut.h"
 #include"neut.h"
 #include"neper_t/neper_t0.h"

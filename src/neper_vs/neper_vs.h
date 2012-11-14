@@ -7,9 +7,8 @@
 #include<string.h>
 #include<math.h>
 
-#include"structAll.h"
-#include"AllUtils.h"
 #include"ut.h"
+#include"neut.h"
 
 #include"nevs_print/nevs_print0.h"
 #include"nevs_load/nevs_load0.h"

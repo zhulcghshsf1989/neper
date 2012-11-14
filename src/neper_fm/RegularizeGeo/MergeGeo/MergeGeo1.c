@@ -8,7 +8,7 @@ int
 MergeGeo (struct GEO *pGeo, struct GEOPARA GeoPara, struct IN In, int
     *pDelId, int loop)
 {
-  int i, trash, testg1o;
+  int i, trash, testgeo;
   int edge, edgeb, newver;
   double lratio1;
   double tmp;
@@ -47,11 +47,11 @@ MergeGeo (struct GEO *pGeo, struct GEOPARA GeoPara, struct IN In, int
 
     neut_geo_geo (*pGeo, &GeoC);
 
-    testg1o = DeleteEdge (&GeoC, edge, &newver, &maxff);
+    testgeo = DeleteEdge (&GeoC, edge, &newver, &maxff);
 
-    /* if (testg1o == 0 and) maxff < max, the edge is deleted */
+    /* if (testgeo == 0 and) maxff < max, the edge is deleted */
     /* else (maxff > max), we try with another edge */
-    /* even if testg1o != 0, the deletion continues:  we let the
+    /* even if testgeo == -1, the deletion continues:  we let the
      * program a chance to find a suitable solution, and generally it
      * does.
      */
@@ -59,78 +59,82 @@ MergeGeo (struct GEO *pGeo, struct GEOPARA GeoPara, struct IN In, int
     /* if the max ff is acceptable, we record the modif into Geo
      * else, we re-initialize it.
      */
-    if (maxff < GeoPara.maxff)	/* also means that testg1o == 0 */
+    if ((! strcmp ((*pGeo).DomType, "cube") && (testgeo == 0 || testgeo == -1))
+     || (  strcmp ((*pGeo).DomType, "cube") && (testgeo == 0)))
     {
-      ThisDelQty = 1;
-      neut_geo_geo (GeoC, pGeo);
-    }
-    else
-    {
-      if (verbosity >= 2)
+      if (maxff < GeoPara.maxff)
       {
-	printf ("Deleting neighbouring edges, in turn: %d: ",
-		GeoC.VerEdgeQty[newver]);
-	for (i = 0; i <= GeoC.VerEdgeQty[newver] - 1; i++)
-	  printf ("%d ", GeoC.VerEdgeNb[newver][i]);
-	printf ("\n");
+	ThisDelQty = 1;
+	neut_geo_geo (GeoC, pGeo);
       }
-
-      minmaxff = 180;
-      minid = 0;
-      for (i = 0; i < GeoC.VerEdgeQty[newver]; i++)
+      else
       {
-	edgeb = GeoC.VerEdgeNb[newver][i];
-	
-	neut_geo_edge_selratio (*pGeo, GeoPara, edgeb, &lratio2);
-
-	int status = 0;
-	int ver1, ver2;
-	ver1 = GeoC.EdgeVerNb[edgeb][0];
-	ver2 = GeoC.EdgeVerNb[edgeb][1];
-
-	if (GeoC.EdgeDom[edgeb][0] == 2)
+	if (verbosity >= 2)
 	{
-	  // means that the 2 vertices are on (different) domain edges
-	  // the edge would shrink to a third vertex (which is a domain
-	  // vertex), which is not handle properly.
-	  if (GeoC.VerDom[ver1][0] == 1 && GeoC.VerDom[ver2][0] == 1)
-	    status = -1;
-	}
-	else if (GeoC.EdgeDom[edgeb][0] == 1)
-	{
-	  if (GeoC.VerDom[ver1][0] == 0 && GeoC.VerDom[ver2][0] == 0)
-	    status = -1;
+	  printf ("newver = %d\n", newver);
+	  printf ("Deleting neighbouring edges, in turn: %d: ", GeoC.VerEdgeQty[newver]);
+	  abort ();
+	  for (i = 0; i <= GeoC.VerEdgeQty[newver] - 1; i++)
+	    printf ("%d ", GeoC.VerEdgeNb[newver][i]);
+	  printf ("\n");
 	}
 
-	if (status == 0 && lratio1 + lratio2 < 2)
+	minmaxff = 180;
+	minid = 0;
+	for (i = 0; i < GeoC.VerEdgeQty[newver]; i++)
 	{
-	  neut_geo_geo (GeoC, &GeoCC);
-	  testg1o =
-	    DeleteEdge (&GeoCC, edgeb, &trash, &tmp);
+	  edgeb = GeoC.VerEdgeNb[newver][i];
+	  
+	  neut_geo_edge_selratio (*pGeo, GeoPara, edgeb, &lratio2);
 
-	  if (testg1o == 0 && tmp < minmaxff)
+	  int status = 0;
+	  int ver1, ver2;
+	  ver1 = GeoC.EdgeVerNb[edgeb][0];
+	  ver2 = GeoC.EdgeVerNb[edgeb][1];
+
+	  if (GeoC.EdgeDom[edgeb][0] == 2)
 	  {
-	    minmaxff = tmp;
-	    minid = edgeb;
+	    // means that the 2 vertices are on (different) domain edges
+	    // the edge would shrink to a third vertex (which is a domain
+	    // vertex), which is not handle properly.
+	    if (GeoC.VerDom[ver1][0] == 1 && GeoC.VerDom[ver2][0] == 1)
+	      status = -1;
+	  }
+	  else if (GeoC.EdgeDom[edgeb][0] == 1)
+	  {
+	    if (GeoC.VerDom[ver1][0] == 0 && GeoC.VerDom[ver2][0] == 0)
+	      status = -1;
+	  }
+
+	  if (status == 0 && lratio1 + lratio2 < 2)
+	  {
+	    neut_geo_geo (GeoC, &GeoCC);
+	    testgeo = DeleteEdge (&GeoCC, edgeb, &trash, &tmp);
+
+	    if (testgeo == 0 && tmp < minmaxff)
+	    {
+	      minmaxff = tmp;
+	      minid = edgeb;
+	    }
+	  }
+	  else if (verbosity >= 3)
+	  {
+	    ut_print_lineheader (0);
+	    printf ("edgedel %d=-1 --> skipping\n", edgeb);
 	  }
 	}
-	else if (verbosity >= 3)
+
+	if (minmaxff < GeoPara.maxff)
 	{
-	  ut_print_lineheader (0);
-	  printf ("edgedel %d=-1 --> skipping\n", edgeb);
+	  ThisDelQty = 2;
+
+	  DeleteEdge (pGeo, edge, &newver, &tmp);
+	  DeleteEdge (pGeo, minid, &newver, &tmp);
+
+
+	  /* this node has been deleted: edgedel <- 1 */
+	  (*pGeo).EdgeDel[minid] = 1;
 	}
-      }
-
-      if (minmaxff < GeoPara.maxff)
-      {
-	ThisDelQty = 2;
-
-	DeleteEdge (pGeo, edge, &newver, &tmp);
-	DeleteEdge (pGeo, minid, &newver, &tmp);
-
-
-	/* this node has been deleted: edgedel <- 1 */
-	(*pGeo).EdgeDel[minid] = 1;
       }
     }
 

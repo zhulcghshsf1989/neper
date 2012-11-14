@@ -7,9 +7,7 @@
 #include<math.h>
 #include"gsl/gsl_sort_int.h"
 
-#include"structAll.h"
 #include"../../../structIn_fm.h"
-#include"AllUtils.h"
 #include"ut.h"
 #include"neut.h"
 #include"../../../Meshing0D/Meshing0D0.h"

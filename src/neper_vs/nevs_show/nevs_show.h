@@ -7,8 +7,6 @@
 #include<string.h>
 
 #include"neper_config.h"
-#include"structAll.h"
-#include"AllUtils.h"
 #include"ut.h"
 #include"neut.h"
 // #include"../nefm/nefm.h"

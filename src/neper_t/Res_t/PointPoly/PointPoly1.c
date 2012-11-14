@@ -5,7 +5,7 @@
 #include "PointPoly.h"
 
 void
-PrintPointPoly (struct IN In, struct TESS Tess)
+PrintPointPoly (struct IN In, struct GEO Geo)
 {
   int i, j, id;
   int qty = 0;
@@ -32,10 +32,10 @@ PrintPointPoly (struct IN In, struct TESS Tess)
   id = 0;
   for (i = 0; i < qty; i++)
   {
-    for (j = 1; j <= Tess.PolyQty; j++)
+    for (j = 1; j <= Geo.PolyQty; j++)
     {
       id = 0;
-      if (InPoly (points[i] - 1, Tess, j) == 1)
+      if (neut_geo_point_inpoly (Geo, points[i], j) == 1)
       {
 	id = j;
 	break;

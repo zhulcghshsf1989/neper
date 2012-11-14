@@ -329,7 +329,7 @@ WriteMapMeshGeof (struct IN In, char *nsetlist,
       fprintf (file, "\n**elset poly%d\n", ++realelset);
       col = 0;
       for (j = 1; j <= Mesh.Elsets[i][0]; j++)
-	FPrintfWNC (file, Mesh.Elsets[i][j], &col, 72);
+	ut_print_wnc_int (file, Mesh.Elsets[i][j], &col, 72);
 
       fprintf (file, "\n");
     }
@@ -460,5 +460,3 @@ WriteMapMeshGmsh (char* dim, char *nset, char* faset,
 
   return;
 }
-
-

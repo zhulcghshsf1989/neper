@@ -86,6 +86,7 @@ SetOptions_t (struct IN *pIn, struct GERMSET *pGermSet,
   // General options ---------------------------------------------------
   sprintf (ArgList[++ArgQty], "-o");
   sprintf (ArgList[++ArgQty], "-v");
+  sprintf (ArgList[++ArgQty], "-libpath");
   // Tessellation options ----------------------------------------------
   sprintf (ArgList[++ArgQty], "-domain");
   sprintf (ArgList[++ArgQty], "-cylinderfacet");
@@ -147,6 +148,8 @@ SetOptions_t (struct IN *pIn, struct GERMSET *pGermSet,
     }
     else if (strcmp (Arg, "-v") == 0 && i < argc - 1)
       (*pIn).verbosity = ut_arg_nextasint (argv, &i, Arg, 0, 1);
+    else if (strcmp (Arg, "-libpath") == 0 && i < argc - 1)
+      (*pIn).libpath = ut_arg_nextaschar (argv, &i, Arg);
 
 /*---------------------------------------------------------------------- 
 * tessellation options */
@@ -201,6 +204,8 @@ SetOptions_t (struct IN *pIn, struct GERMSET *pGermSet,
     }
     else if (strcmp (Arg, "-randomizedir") == 0 && i < argc - 1)
       (*pGermSet).randomizedir = ut_arg_nextaschar (argv, &i, Arg);
+    else if (strcmp (Arg, "-centroid") == 0 && i < argc - 1)
+      (*pIn).centroid = ut_arg_nextasint (argv, &i, Arg, 0, 1);
     else if (strcmp (Arg, "-centroidfact") == 0 && i < argc - 1)
       (*pIn).centroidfact = ut_arg_nextasreal (argv, &i, Arg, 0, 1);
     else if (strcmp (Arg, "-centroidconv") == 0 && i < argc - 1)

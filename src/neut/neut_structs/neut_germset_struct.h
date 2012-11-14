@@ -8,7 +8,6 @@
 struct GERMSET
 {
   char* morpho;
-  int centroid;
   int N;
   int NDensity;
   int N1d;

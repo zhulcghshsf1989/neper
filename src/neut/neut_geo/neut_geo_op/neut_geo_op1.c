@@ -128,6 +128,8 @@ neut_geo_free (struct GEO* pGeo)
   ut_free_1d_int ((*pGeo).DomTessFaceQty);
   ut_free_2d_int ((*pGeo).DomTessFaceNb, (*pGeo).DomFaceQty + 1);
 
+  ut_free_1d_char ((*pGeo).Type);
+
   neut_geo_set_zero (pGeo);
 
   return;

@@ -5,13 +5,13 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
+#include<string.h>
 #include<float.h>
 #include<unistd.h>
 
-#include"structAll.h"
 #include"../../structIn_fm.h"
-#include"AllUtils.h"
 #include"ut.h"
+#include"neut.h"
 
 #include"DeleteEdge/DeleteEdge0.h"
 #include"MergeGeo0.h"

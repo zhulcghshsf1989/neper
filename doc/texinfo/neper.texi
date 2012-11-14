@@ -10,7 +10,7 @@
 @include version.texi
 @set COPYRIGHT @copyright{} 2003--2012 Romain Quey
 @c
-@settitle Neper @value{FULL_VERSION}
+@settitle Neper @value{NEPER_VERSION}
 @footnotestyle separate
 @setchapternewpage odd
 @paragraphindent 0
@@ -31,8 +31,7 @@
 * finite element method
 @end direntry
 @noindent
-This is the @cite{Neper Reference Manual} for Neper
-@value{FULL_VERSION}
+This is the @cite{Neper Reference Manual} for Neper @value{NEPER_VERSION}
 (@today{}).
 @noindent
 Copyright @value{COPYRIGHT}
@@ -48,11 +47,11 @@ Copyright @value{COPYRIGHT}
 
 @title Neper Reference Manual
 
-@subtitle The documentation for Neper @value{FULL_VERSION}
+@subtitle The documentation for Neper @value{NEPER_VERSION}
 @subtitle A 3D random polycrystal generator for the finite element method
 @subtitle 
 @subtitle @today{}
-@c @subtitle Edition @value{FULL_VERSION} @today{}
+@c @subtitle Edition @value{NEPER_VERSION} @today{}
 
 @author Romain Quey
 
@@ -86,8 +85,7 @@ Romain Quey
 
 Neper is a 3D random polycrystal generator for the finite element method.
 This is the @cite{Neper Reference Manual} for Neper
-@value{FULL_VERSION}
-(@today{}).
+@value{NEPER_VERSION} (@today{}).
 @end ifnottex
 
 @c =========================================================================
@@ -132,7 +130,6 @@ Neper
 @w{module -O}
 @end macro
 
-
 @macro mVS
 @w{module -VS}
 @end macro
@@ -152,7 +149,6 @@ Neper
 @macro MO
 @w{Module -O}
 @end macro
-
 
 @macro MVS
 @w{Module -VS}
@@ -221,6 +217,13 @@ Possible values: @code{\c\}. Default value: @code{\d\}.
 @end deftypefn
 @end macro
 
+@c OPTDEVEL
+@macro optdevel{a, e, b, c, d }
+@deftypefn {Development option} @t{\a\} @emph{\e\}
+\b\@*
+Possible values: @code{\c\}. Default value: @code{\d\}.
+@end deftypefn
+@end macro
 
 @c OPTF
 @macro optf{a, f, b, c, d, e}

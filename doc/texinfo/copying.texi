@@ -7,7 +7,6 @@
 
 @section Copying Conditions
 
-
 Neper is ``free software''; this means that everyone is free to use it and
 to redistribute it on a free basis. Neper is not in the public domain; it is
 copyrighted and there are restrictions on its distribution, but these
@@ -65,10 +64,8 @@ The list is archived at
 
 The best way to get help is by sending a message to
 @email{neper-users@@lists.sourceforge.net}.  Note that you do not have
-to subscribe to the list to be able to send a message, nor to
-receive the reply.
-@c Before sending a message, please check the list archive. 
-If you wish to contact the developer directly, use
+to subscribe to the list to be able to send a message, nor to receive
+the reply.  If you wish to contact the developer directly, use
 @email{rquey@@users.sourceforge.net}.
 
 @section User Guidelines
@@ -91,6 +88,6 @@ Engineering, vol.@ 200, pp.@ 1729--1745, 2011}.
 
 @item @cite{@w{Neper}: 
 a 3D random polycrystal generator for the finite element method
-(@w{version @value{SHORT_VERSION}}),
+(@w{version @value{NEPER_VERSION_SHORT}}),
 @url{http://neper.sourceforge.net}}.
 @end itemize

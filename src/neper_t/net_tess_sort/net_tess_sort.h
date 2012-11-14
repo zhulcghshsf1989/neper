@@ -7,8 +7,6 @@
 #include<math.h>
 #include<string.h>
 
-#include"structAll.h"
-#include"AllUtils.h"
 #include"ut.h"
 #include"neut.h"
 #include "neper_config.h"

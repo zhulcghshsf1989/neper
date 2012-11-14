@@ -5,8 +5,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../neut_mesh.h"
-#include "structAll.h"
-#include "AllUtils.h"
 #include "../../../neper_t/Miscellaneous/Miscellaneous0.h"
 #include "neut_mesh_renumber0.h"
 

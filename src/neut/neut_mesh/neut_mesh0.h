@@ -144,12 +144,26 @@ extern void neut_mesh_set_elttype (struct MESH*, char*);
 
 extern void neut_mesh3d_slice (struct NODES, struct MESH, double*,
 			  struct NODES*, struct MESH*, int**, int***, double**);
+extern int neut_mesh3d_elt_slice_tet (struct NODES Nodes, struct MESH Mesh, int elt,
+                           double* eq, struct NODES* pSNodes, struct MESH* pSMesh,
+			   int** pelt_newold, int*** pnode_newold, double** pnode_fact);
+extern int neut_mesh3d_elt_slice_quad (struct NODES Nodes, struct MESH Mesh, int elt, 
+			   double* eq, struct NODES* pSNodes, struct MESH* pSMesh,
+			   int** pelt_newold, int*** pnode_newold, double** pnode_fact);
+
 extern void neut_meshdata_mesh2slice (struct NODES, struct MESH, struct
     MESHDATA, struct NODES, struct MESH, int*, int**, double*, struct
     MESHDATA*);
 
 extern int  neut_mesh_elt_point_pos (struct MESH, struct NODES, int,
 				     double*, double*);
+
+extern void neut_mesh_elt_bbox_v (struct NODES Nodes, struct MESH Mesh, int elt, double* bbox);
+extern void neut_mesh_elt_bbox (struct NODES Nodes, struct MESH Mesh, int elt, double** bbox);
+extern void neut_mesh_elt_poly (struct NODES Nodes, struct MESH Mesh, int elt, struct POLY* pPoly);
+extern int neut_mesh_elt_mesh (struct NODES Nodes, struct MESH Mesh, int elt,
+                    struct NODES* pENodes, struct MESH* pEMesh);
+extern void neut_mesh_quad_tri (struct NODES, struct MESH, struct MESH*);
 
 #endif /* UT_MESH0_H */
 

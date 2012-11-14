@@ -12,10 +12,9 @@ TestPolyReciprocityFace (struct GEO Geo, int i)
 
   if (Geo.PolyFaceQty[i] < 4)
   {
-    ut_print_messagewnc (2, 72,
+    /* ut_print_messagewnc (2, 72,
 		"A polyhedron has a wrong amount of faces.  Classically, this is due to a (too) high value of critical length for the small edges.  You should decrease rcl and/or increase pcl (or decrease sel if you are using it).\n");
-
-    abort ();
+    */
     return 3;
   }
 

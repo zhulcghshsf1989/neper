@@ -8,12 +8,11 @@
  * of germ and the initial domain.
  */
 void
-PolyComp (struct INTEPARA *pIntePara, struct POLY Domain,
-	  struct GERMSET GermSet,
-	  struct POLY **pPoly, int verbosity)
+PolyComp (struct POLY Domain, struct GERMSET GermSet, struct POLY **pPoly, int verbosity)
 {
-  int center, m = 0;
+  int center;
   struct POLYMOD Polymod;
+  char* message = ut_alloc_1d_char (10);
 
   /* Poly is the structure array containing the complete description
    * of all the polyhedra: Poly[i] contains the description of 
@@ -32,22 +31,24 @@ PolyComp (struct INTEPARA *pIntePara, struct POLY Domain,
    */
   for (center = 1; center <= GermSet.N; center++)
   {
-    if (verbosity >= 1)
-      PercentDisplay (center, GermSet.N, 10, &m);
-
     /* PolyhedronDetermination searches polyhedron n° center
      * and records it in Polymod.
      */
     PolymodAlloc (&Polymod);
 
-    PolyhedronDetermination (pIntePara, center, Domain, GermSet, &Polymod);
+    PolyhedronDetermination (center, Domain, GermSet, &Polymod);
 
     /* PolymodDescription(center,*pPolymod); */
     PolyhedronRecording (center, Polymod, *pPoly);
     /* PolyDescription(center,(*pPoly)[center]); */
     /* abort(); */
     PolymodFree (&Polymod);
+
+    if (verbosity) 
+      ut_print_progress_nonl (stdout, center, GermSet.N, "%3.0f%%", message);
   }
+
+  ut_free_1d_char (message);
 
   return;
 }

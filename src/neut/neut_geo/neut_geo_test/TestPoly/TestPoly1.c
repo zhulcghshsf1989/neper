@@ -8,24 +8,29 @@ int
 TestPoly (struct GEO Geo, int i)
 {
   int res;
+  int verbosity = 0;
 
   res = TestPolyReciprocityFace (Geo, i);
   if (res != 0)
   {
-    printf ("TestPolyReciprocityFace failed\n");
+    if (verbosity == 1)
+      printf ("TestPolyReciprocityFace failed\n");
     return res;
   }
+
   res = TestPolyCoplaneityFace (Geo, i);
   if (res != 0)
   {
-    ut_print_message (1, 0, "Poly %d has coplanar faces.  This may be a bug.\n", i);
-    return 0;
-    // return res;
+    if (verbosity == 1)
+      ut_print_message (1, 0, "Poly %d has coplanar faces.  This may be a bug.\n", i);
+    return res;
   }
+
   res = TestPolyOrientationFace (Geo, i);
   if (res != 0)
   {
-    printf ("TestPolyOrientationFace failed\n");
+    if (verbosity == 1)
+      printf ("TestPolyOrientationFace failed\n");
     return res;
   }
 

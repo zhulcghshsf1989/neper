@@ -6,9 +6,7 @@
 #include<stdlib.h>
 #include<math.h>
 
-#include"structAll.h"
 #include"../structIn_fm.h"
-#include"AllUtils.h"
 #include"ut.h"
 #include"neut.h"
 #include<gsl/gsl_sort_int.h>

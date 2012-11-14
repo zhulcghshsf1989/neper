@@ -7,8 +7,8 @@
 #include<string.h>
 #include<math.h>
 
-#include"structAll.h"
 #include"../structIn_t.h"
 #include "ut.h"
+#include"neut.h"
 
 #include"net_centroid0.h"

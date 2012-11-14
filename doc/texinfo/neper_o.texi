@@ -23,17 +23,17 @@ Here is what a typical run of @mO{} looks like:
     
     ========================    N   e   p   e   r    =======================
     Info   : A 3D random polycrystal generator for the finite element method
-    Info   : Version 1.10.1
-    Info   : (compiled with: gsl libmatheval)
-    Info   : Loading initialization file `/home/rquey/.neperrc'...
+    Info   : Version ...
+    Info   : Compiled with: gsl libmatheval
+    Info   : Ignoring initialization file.
     Info   : ---------------------------------------------------------------
     Info   : MODULE  -O loaded with arguments:
-    Info   : [ini file] -crysym cubic
+    Info   : [ini file] (none)
     Info   : [com line] -n 10 -id 1
     Info   : ---------------------------------------------------------------
     Info   :     [o] Writing file `n10-id1.ori' ...
     Info   :     [o] Wrote file `n10-id1.ori'.
-    Info   : Elapsed time: 0.002 secs.
+    Info   : Elapsed time: ... secs.
     ========================================================================
     
 @end verbatim
@@ -132,7 +132,7 @@ at @url{http://neper.sourceforge.net/neper_o.html}.
 
 @enumerate
 @c Example_beg
-@item    Generate a set of 100 "random" crystallographic orientations, with identifier = 1. Note the uniform distribution.
+@item    Generate a set of 100 random crystallographic orientations, with identifier = 1. Note the uniform distribution.
 @com{neper -O -n 100 -id 1}
 @c Example_end
 @end enumerate

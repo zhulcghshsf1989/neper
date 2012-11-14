@@ -4,17 +4,6 @@
 
 #include"neut_utils.h"
 
-void
-neut_utils_print_allrightreserved (FILE* file)
-{
-  fprintf
-    (file, "All right reserved, except with authorization from the author.\n");
-  fprintf
-    (file, "See <http://neper.sourceforge.net> for the distributed version.\n");
-
-  return;
-}
-
 int
 neut_utils_nset_expand (char *nset, char **pexpandnset)
 {

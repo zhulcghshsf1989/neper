@@ -6,9 +6,8 @@
 #include<stdlib.h>
 #include<math.h>
 
-#include"structAll.h"
-#include"AllUtils.h"
 #include"ut.h"
+#include"neut.h"
 #include"../../structIn_t.h"
 
 #include"Connectivity0.h"

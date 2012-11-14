@@ -6,9 +6,9 @@
 #include<stdlib.h>
 #include<math.h>
 
-#include"structAll.h"
+#include"neut.h"
+
 #include"../structIn_t.h"
-#include"AllUtils.h"
 #include"PolyAlloc/PolyAlloc0.h"
 #include"PolyFree/PolyFree0.h"
 #include"PolyDet/PolyDet0.h"

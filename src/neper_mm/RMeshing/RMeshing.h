@@ -6,9 +6,7 @@
 #include<stdlib.h>
 #include<math.h>
 #include<string.h>
-#include"structAll.h"
 #include"../structIn_mm.h"
-#include"AllUtils.h"
 #include"ut.h"
 #include"neut.h"
 #include"RMeshingFNId/RMeshingFNId0.h"

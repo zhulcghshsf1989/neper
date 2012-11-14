@@ -39,16 +39,11 @@ main (int argc, char **argv)
   sprintf (ArgList[++ArgQty], "-FM");
   sprintf (ArgList[++ArgQty], "-T");
   sprintf (ArgList[++ArgQty], "-O");
+  sprintf (ArgList[++ArgQty], "-TR");
   sprintf (ArgList[++ArgQty], "-VS");
 
   char* prog_version = ut_alloc_1d_char (100);
-  if (NEPER_VERSION_DEVEL != -1)
-    sprintf (prog_version, "%d.%d.%drc-%d",
-	NEPER_VERSION_MAJOR, NEPER_VERSION_MINOR,
-	NEPER_VERSION_PATCH, NEPER_VERSION_DEVEL);
-  else
-    sprintf (prog_version, "%d.%d.%d",
-	NEPER_VERSION_MAJOR, NEPER_VERSION_MINOR, NEPER_VERSION_PATCH);
+  sprintf (prog_version, "%s", NEPER_VERSION);
 
   if (argc == 1)
   {
@@ -85,6 +80,7 @@ main (int argc, char **argv)
       else if (strcmp (Arg, "--license") == 0)
       {
 	 ut_print_gplv3 (stdout);
+	
 	return EXIT_SUCCESS;
       }
     }
@@ -184,10 +180,7 @@ NeperHeader (char* prog_version)
 
   ut_print_message (0, 0, "Version %s\n", prog_version);
 
-  if (NEPER_VERSION_DEVEL != -1)
-   ut_print_messagewnc (0, 72, "This is a RELEASE CANDIDATE version of Neper. General distribution is discouraged.");
-
-  ut_print_message (0, 0, "(compiled with:");
+  ut_print_message (0, 0, "Compiled with:");
 #ifdef HAVE_GSL
     printf (" gsl");
 #endif
@@ -200,7 +193,7 @@ NeperHeader (char* prog_version)
     printf (" libscotch");
 #endif
 
-  printf (")\n");
+  printf ("\n");
 
   return;
 }
@@ -218,17 +211,12 @@ void
 ProgInfo ()
 {
 
-     ut_print_message (0, 0, "<http://neper.sourceforge.net>\n");
+   ut_print_message (0, 0, "<http://neper.sourceforge.net>\n");
 
   ut_print_message (0, 0, "Copyright (C) 2003-2012, and GNU GPL'd, by Romain Quey.\n");
-     // ut_print_message (0, 0, "This program comes with ABSOLUTELY NO WARRANTY; this is free\n");
-     // ut_print_message (0, 0, "software, and you are welcome to redistribute it under certain\n");
-     // ut_print_message (0, 0, "conditions; for details, run `neper --license'.\n");
-
 
   ut_print_message (0, 72,
-		       "Send comments, suggestions or bug reports to\n");
-  ut_print_message (0, 72, "<%s>.\n", NEPER_EMAIL);
+		       "Comments and bug reports: <%s>.\n", NEPER_EMAIL);
 
   return;
 }

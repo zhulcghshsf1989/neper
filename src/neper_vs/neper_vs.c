@@ -46,10 +46,12 @@ neper_vs (int fargc, char **fargv, int argc, char **argv)
   neut_meshdata_set_default (&MeshData);
   neut_scale_set_default (&Scale);
   // need to default Data and SData here; neut_data_set_default ();
-  //
 
   // Printing module header --------------------------------------------
   ut_print_moduleheader ("-VS", fargc, fargv, argc, argv);
+
+  // Checking if povray is present -------------------------------------
+  neut_povray_check_error ();
 
   for (i = 1; i < expargc; i++)
   {

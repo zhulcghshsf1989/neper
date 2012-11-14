@@ -7,8 +7,6 @@
 #include<string.h>
 
 #include"../../structIn_fm.h"
-#include"structAll.h"
-#include"AllUtils.h"
 #include"ut.h"
 #include"neut.h"
 #include "WriteMeshGeof0.h"

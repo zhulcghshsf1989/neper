@@ -9,8 +9,6 @@
 
 #include"PolyCalc0.h"
 
-#include"structAll.h"
-#include"AllUtils.h"
 #include"neut.h"
 #include"ut.h"
 

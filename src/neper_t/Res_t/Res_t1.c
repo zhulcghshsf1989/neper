@@ -75,7 +75,7 @@ Res_t (struct IN In, struct GERMSET GermSet, struct TESS Tess,
   */
 
   if (In.printpointpoly)
-    PrintPointPoly (In, Tess);
+    PrintPointPoly (In, Geo);
 
   if (In.printneighbour)
     PrintConnectivity (In, Tess);
@@ -90,6 +90,12 @@ Res_t (struct IN In, struct GERMSET GermSet, struct TESS Tess,
     ut_file_close (file, In.oin, "w");
   }
 
+  if (ut_string_inlist (In.format, ',', "debug"))
+  {
+    file = ut_file_open (In.debug, "w");
+    neut_debug_geo (file, Geo);
+    ut_file_close (file, In.debug, "w");
+  }
 
   ut_free_1d_char (name);
   ut_free_1d_char (ext);

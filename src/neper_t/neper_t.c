@@ -11,7 +11,6 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
    * STRUCTURE AND VARIABLE DEFINITIONS  */
   /* See the structure files for details. */
   FILE *file = NULL;
-  struct INTEPARA IntePara;
   struct POLY Domain;
   struct GERMSET GermSet;
   struct POLY *Poly = NULL;
@@ -40,10 +39,6 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   if (In.input == 0
   || (In.input == 2 && strcmp (GermSet.morpho, "tocta") == 0))
   {
-    /* IniInternalPara initializes the internal parameters -those
-     * of the IntePara structure. */
-    InternalPara (&IntePara);
-
     int i, iter;
 
     /* *********************************************************
@@ -61,19 +56,20 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
     double rdistmax = -1;
     int status = 1;
 
-    for (iter = 1; (status == 1) && (iter <= (In.centroid == 1) ? In.centroiditermax : 1); iter++)
+    for (iter = 1; (status == 1) &&
+	           (iter <= ((In.centroid == 1) ? In.centroiditermax : 1)); iter++)
     {
       // Printing message
       if (In.centroid == 0)
-	ut_print_message (0, 1, "Creating tessellation ...\n");
+	ut_print_message (0, 1, "Creating tessellation ... ");
       else
       {
 	message_length = strlen (message);
 
-	for (i = 0; i < message_length + 9; i++)
+	for (i = 0; i < message_length + 16; i++)
 	  printf ("\b");
 
-	sprintf (message, "Creating tessellation ... iter = %d(%d) - disp = %.2g(%.2g).", iter, In.centroiditermax, rdistmax, In.centroidconv);
+	sprintf (message, "Creating tessellation ... iter = %d(%d) - disp = %.2g(%.2g) - ", iter, In.centroiditermax, rdistmax, In.centroidconv);
 	ut_print_message (0, 1, message);
 	fflush (stdout);
       }
@@ -82,7 +78,7 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
        * POLYEDRA DETERMINATION  */
       /* PolyComp decomposes the cube into the set of Voronoi polyhedra
        * and records them into Poly (which is allocated in the routine). */
-      PolyComp (&IntePara, Domain, GermSet, &Poly, In.verbosity);
+      PolyComp (Domain, GermSet, &Poly, 1);
 
       /* *********************************************************
        * TESSELATION CONSTRUCTION  */
@@ -94,7 +90,9 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
 
       Tessellation (GermSet, Poly, &Tess);
 
-      PolyFree (Poly, GermSet.N);
+      for (i = 1; i <= GermSet.N; i++)
+	neut_poly_free (&(Poly[i]));
+      free (Poly);
 
       if (In.centroid == 1)
 	status = net_centroid (In, Tess, &GermSet, &rdistmax);
@@ -102,8 +100,7 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
 	status = 0;
     }
     
-    if (In.centroid == 1)
-      printf ("\n");
+    printf ("\n");
     
     ut_free_1d_char (message);
   }

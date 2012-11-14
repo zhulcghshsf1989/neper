@@ -7,9 +7,8 @@
 #include<string.h>
 #include<math.h>
 
-#include"structAll.h"
-#include"AllUtils.h"
 #include"ut.h"
+#include"neut.h"
 
 #include"Tess0.h"
 
@@ -61,7 +60,7 @@ extern void RecEdgeVerNb (struct TESS *, int, int, int);
 extern void RecFaceEdgeNb (struct TESS *, int, int, int);
 extern void SearchEdge (struct TESS *, int, int, int, int, int);
 extern void TessDes (struct TESS *);
-extern int IntMin (int, int);
+extern int ut_num_min_int (int, int);
 extern int RecPolyEdges (struct TESS *, int);
 extern int FaceEdges2PolyEdges (struct TESS *, int, int, int);
 extern int PrevFace (struct POLY *, int, int);

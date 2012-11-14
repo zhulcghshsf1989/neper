@@ -9,11 +9,9 @@
 #include<gsl/gsl_rng.h>
 #include<gsl/gsl_randist.h>
 
-#include"structAll.h"
 #include"ut.h"
 #include"neut.h"
 
-#include"../IntePara/IntePara0.h"
 #include"../DomainComp/CubeDomain/CubeDomain0.h"
 #include"../PolyComp/PolyComp0.h"
 #include"../Tess/Tess0.h"

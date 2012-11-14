@@ -115,7 +115,7 @@ CalcAngle (struct NODES Nodes, struct MESH Mesh3D, double ***pEltAngle)
 	  v1[j] = Nodes.NodeCoo[n2b][j] - Nodes.NodeCoo[n1b][j];
 	  v2[j] = Nodes.NodeCoo[n3b][j] - Nodes.NodeCoo[n1b][j];
 	}
-	(*pEltAngle)[i][angleid] = VectorAngle (v1, v2, 0, 1);
+	(*pEltAngle)[i][angleid] = ut_vector_angle (v1, v2);
       }
 
     (*pEltAngle)[i][0] = ut_array_1d_min ((*pEltAngle)[i] + 1, 12);	/* min angle */

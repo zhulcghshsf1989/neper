@@ -10,8 +10,6 @@
 #include<string.h>
 #include<math.h>
 
-#include"structAll.h"
-#include"AllUtils.h"
 #include"ut.h"
 #include"neut.h"
 #include"../structIn_fm.h"

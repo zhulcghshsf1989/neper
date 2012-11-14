@@ -38,7 +38,6 @@ herein called @dfn{subdomain-type} tessellations can be created.
 orientations are randomly distributed according to a uniform
 distribution.
 
-
 @item @MVS{} is for printing publication-quality images of the
 tessellations and meshes.
 
@@ -193,9 +192,8 @@ with a number of arguments:
 @com{neper @var{module_name} @var{module_arguments}}
 
 The module names are @option{-T}, 
-@option{-FM}, @option{-MM},
-@option{-O}
-and @option{-VS}.  The module arguments can include both required input
+@option{-FM}, @option{-MM}, @option{-O} and @option{-VS}. 
+The module arguments can include both required input
 data and options.  Options start @w{by @samp{-}}.  The options can be
 given in arbitrary order (except for module @code{-VS}) and are to be
 specified as follows: ``@var{option_name option_value}''.  The options
@@ -272,6 +270,35 @@ the writing conventions used in the document:
 @item File names are printed like @file{this}.
 @end enumerate
 
+@c Some abbreviations are used consistently for options:
+@c 
+@c @multitable @columnfractions 0.5 0.5
+@c @item
+@c @multitable @columnfractions 0.2 0.6
+@c @item tess  @tab tessellation
+@c @item geo   @tab geometry
+@c @item stat  @tab statistics
+@c @item poly  @tab polyhedron@comma{} polyhedra
+@c @item ver   @tab vertex@comma{} vertices
+@c @item dim   @tab dimension
+@c @item cl    @tab characteristic length
+@c @item min   @tab minimum
+@c @item max   @tab maximum
+@c @end multitable
+@c 
+@c @tab
+@c @multitable @columnfractions 0.3 0.6
+@c @item algo  @tab algorithm
+@c @item part  @tab partition
+@c @item arch  @tab architecture
+@c @item surf  @tab surface
+@c @item stat  @tab statistics
+@c @item iter  @tab iteration
+@c @item nset  @tab node set
+@c @item elset @tab @w{element set}
+@c @end multitable
+@c 
+@c @end multitable
 
 @subsubsection Option Arguments
 

@@ -17,7 +17,6 @@ neper_mm (int fargc, char **fargv, int argc, char **argv)
   int **FoDNodes = NULL;
   struct GERMSET GermSet;
 
-
   neut_nodes_set_zero (&Nodes);
   neut_mesh_set_zero  (&Mesh3D);
   neut_mesh_set_zero  (&Mesh0D);
@@ -58,7 +57,6 @@ neper_mm (int fargc, char **fargv, int argc, char **argv)
       ReconMesh ("3,2,1,0", Nodes, &Mesh0D, &Mesh1D, &Mesh2D, &Mesh3D, NULL);
   }
 
-
   if (ut_num_equal (In.F[0], 1, 1e-6) == 0
    || ut_num_equal (In.F[1], 1, 1e-6) == 0
    || ut_num_equal (In.F[2], 1, 1e-6) == 0)
@@ -67,10 +65,8 @@ neper_mm (int fargc, char **fargv, int argc, char **argv)
     neut_nodes_deform (&Nodes, In.F);
   }
 
-
   ut_print_message (0, 1, "Writing results ...\n");
   Res_mm (In, Geo, Nodes, &Mesh0D, &Mesh1D, &Mesh2D, &Mesh3D, FoDNodes, GermSet);
-
 
   neut_nodes_free (&Nodes);
   neut_mesh_free (&Mesh0D);

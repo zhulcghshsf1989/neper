@@ -7,9 +7,9 @@
 #include<math.h>
 #include<time.h>
 
-#include"structAll.h"
 #include"../../structIn_t.h"
 #include"ut.h"
+#include"neut.h"
 #include"orilib.h"
 
 #include"RegDistrib0.h"

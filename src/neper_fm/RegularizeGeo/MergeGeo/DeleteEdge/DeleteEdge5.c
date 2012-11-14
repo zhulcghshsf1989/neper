@@ -27,7 +27,7 @@ DeleteFaceFromItsPoly (struct GEO *pGeo, int face)
 			   (*pGeo).PolyFaceQty[tmppoly], face, 0);
 
       qty =
-	oneDIntDeleteNCompress ((*pGeo).PolyFaceNb[tmppoly], 1,
+	ut_array_1d_int_deletencompress ((*pGeo).PolyFaceNb[tmppoly] + 1,
 				(*pGeo).PolyFaceQty[tmppoly], face, 1);
       for (k = pos; k <= (*pGeo).PolyFaceQty[tmppoly] - 1; k++)
 	(*pGeo).PolyFaceOri[tmppoly][k] = (*pGeo).PolyFaceOri[tmppoly][k + 1];
@@ -50,10 +50,10 @@ void
 SearchNewNOldEdges (struct GEO *pGeo, int face, int edge, int *pnew,
 		    int *pold)
 {
-  oneDIntDeleteNCompress ((*pGeo).FaceEdgeNb[face], 1, 3, edge, 1);
+  ut_array_1d_int_deletencompress ((*pGeo).FaceEdgeNb[face] + 1, 3, edge, 1);
 
-  (*pnew) = oneDIntMin ((*pGeo).FaceEdgeNb[face], 1, 2);
-  (*pold) = oneDIntMax ((*pGeo).FaceEdgeNb[face], 1, 2);
+  (*pnew) = ut_array_1d_int_min ((*pGeo).FaceEdgeNb[face] + 1, 2);
+  (*pold) = ut_array_1d_int_max ((*pGeo).FaceEdgeNb[face] + 1, 2);
 
   return;
 }

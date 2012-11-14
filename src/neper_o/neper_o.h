@@ -5,10 +5,9 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-#include"structAll.h"
 #include"structIn_o.h"
-#include"AllUtils.h"
 #include"ut.h"
+#include"neut.h"
 
 #include"InputData_o/InputData_o0.h"
 #include"CalcOri/CalcOri0.h"

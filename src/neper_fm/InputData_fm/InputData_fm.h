@@ -11,7 +11,6 @@
 #include<math.h>
 #include<ctype.h>
 
-#include"structAll.h"
 #include"structIn_fm.h"
 #include"ut.h"
 #include"neut.h"

@@ -26,6 +26,8 @@ Meshing3D (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
   allowed_t = In.mesh3dmaxtime;
   max_elapsed_t = 0;
 
+  if (In.mesh3dreport == 1)
+    system ("mkdir -p neper-report");
 
   // breaking algo string into mesher / optimizer
   
@@ -47,10 +49,18 @@ Meshing3D (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
 
   double cl;
 
+  int* meshpoly = ut_alloc_1d_int (Geo.PolyQty + 1);
+  ut_array_1d_int_set (meshpoly + 1, Geo.PolyQty, 1);
+  meshpoly[0] = Geo.PolyQty;
+
+  if (In.meshpoly != NULL)
+    neut_geo_expr_polytab (Geo, In.meshpoly, meshpoly);
 
   message_length = 4;
   for (i = 1; i <= Geo.PolyQty; i++)
   {
+    if (meshpoly[i] == 0)
+      continue;
 
     // Setting parameter (cl) ------------------------------------------
     
@@ -89,9 +99,34 @@ Meshing3D (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
 
     message_length = strlen (message);
 
+    if (In.mesh3dreport == 1)
+    {
+      for (a = 0; a < Multim.algoqty; a++)
+      {
+	sprintf (tmpstring, "neper-report/poly%d-a%d-prop", i, a);
+	FILE* file = ut_file_open (tmpstring, "W");
+
+	fprintf (file, "%f ", Multim.mOdis[i][a]);
+	fprintf (file, "%f ", Multim.mOsize[i][a]);
+	fprintf (file, "%f\n", Multim.mO[i][a]);
+	
+	ut_file_close (file, tmpstring, "W");
+      }
+
+      sprintf (tmpstring, "neper-report/poly%d-prop", i);
+      FILE* file = ut_file_open (tmpstring, "W");
+
+      fprintf (file, "%d ", Multim.Oalgo[i]);
+      fprintf (file, "%f ", Multim.Odis[i]);
+      fprintf (file, "%f ", Multim.Osize[i]);
+      fprintf (file, "%f\n", Multim.O[i]);
+      
+      ut_file_close (file, tmpstring, "W");
+    }
   }
   fprintf (stdout, "\n");
 
+  ut_free_1d_int (meshpoly);
 
   neut_mesh_init_nodeelts (pMesh3D, (*pNodes).NodeQty);
   neut_multim_free (&Multim, Geo.PolyQty);

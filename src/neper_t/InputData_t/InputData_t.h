@@ -10,9 +10,9 @@
 #include<math.h>
 #include<ctype.h>
 
-#include"structAll.h"
 #include"../structIn_t.h"
 #include"ut.h"
+#include"neut.h"
 #include"../Miscellaneous/Miscellaneous0.h"
 
 #include"InputData_t0.h"

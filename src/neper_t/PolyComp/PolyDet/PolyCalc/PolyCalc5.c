@@ -289,7 +289,7 @@ FaceModif2ndNewVer (struct POLYMOD *pPolymod, int Face, int bel2, int *faces1,
   (*pPolymod).FaceVerNb[Face][(*pPolymod).FaceVerQty[Face]] = (*pPolymod).VerQty;
 
   if (bel2 == -1)
-    oneDIntRevElts ((*pPolymod).FaceVerNb[Face],
+    ut_array_1d_int_switch ((*pPolymod).FaceVerNb[Face],
 		    (*pPolymod).FaceVerQty[Face] - 1,
 		    (*pPolymod).FaceVerQty[Face]);
 
@@ -308,7 +308,7 @@ FaceModifAddBegVer (struct POLYMOD *pPolymod, int Face, int last, int bel2)
 
   (*pPolymod).FaceVerNb[Face][(*pPolymod).FaceVerQty[Face]] = last;
   if (bel2 == -1)
-    oneDIntRevElts ((*pPolymod).FaceVerNb[Face],
+    ut_array_1d_int_switch ((*pPolymod).FaceVerNb[Face],
 		    (*pPolymod).FaceVerQty[Face] - 1,
 		    (*pPolymod).FaceVerQty[Face]);
 

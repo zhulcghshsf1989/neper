@@ -7,10 +7,9 @@
 #include<math.h>
 #include<string.h>
 
-#include"structAll.h"
 #include"../structIn_o.h"
-#include"AllUtils.h"
 #include"ut.h"
+#include"neut.h"
 #include"orilib.h"
 
 #include"Res_o0.h"

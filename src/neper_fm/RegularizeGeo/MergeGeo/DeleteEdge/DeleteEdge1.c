@@ -4,11 +4,17 @@
 
 #include"DeleteEdge.h"
 
+// Delete an edge.  Returns 0 for success, -1 if the Geo test fails
+// and -2 if the edge deletion aborted.
 int
 DeleteEdge (struct GEO *pGeo, int edge, int *pver, double *pmaxff)
 {
-  int delver, test;
+  int i, delver, test;
   int verbosity = 0;
+
+  // setting default values
+  (*pver) = -1;
+  (*pmaxff) = 888.8;
 
   if (verbosity >= 2)
     printf ("\ndeleting edge %5d  (length = %f)------------------------------\n",
@@ -25,9 +31,37 @@ DeleteEdge (struct GEO *pGeo, int edge, int *pver, double *pmaxff)
 	(*pGeo).VerDom[ver2][0], (*pGeo).VerDom[ver2][1]);
   }
 
+  // test for edge not on a domain edge, but shrinking into a domain
+  // vertex - this case is not treated properly.
   if ((*pGeo).VerDom[ver1][0] == 1 && (*pGeo).VerDom[ver2][0] == 1
       && ((*pGeo).VerDom[ver1][1] != (*pGeo).VerDom[ver2][1]))
-    ut_error_reportbug ();
+    return -2;
+
+  // test for edge belonging to a polyhedron with 4 faces only, which
+  // would mean deleting the polyhedron - this is not allowed.
+  int* poly = NULL;
+  int polyqty;
+  neut_geo_edge_polys (*pGeo, edge, &poly, &polyqty);
+  for (i = 0; i < polyqty; i++)
+    if ((*pGeo).PolyFaceQty[poly[i]] == 4)
+    {
+      ut_free_1d_int (poly);
+      return -2;
+    }
+  ut_free_1d_int (poly);
+
+  // test for edge leading to the a "bow tie"-shaped face after being
+  // deleted
+  if (neut_geo_edge_fake (*pGeo, edge) == 1)
+  {
+    int face1, face2;
+    face1 = (*pGeo).EdgeFaceNb[edge][0];
+    face2 = (*pGeo).EdgeFaceNb[edge][1];
+    if ((*pGeo).FaceVerQty[face1] > 3 && (*pGeo).FaceVerQty[face2] > 3)
+    {
+      return -2;
+    }
+  }
 
   UpdateEdgeState (pGeo, edge);
   (*pGeo).EdgeDel[edge] = 1;
@@ -36,19 +70,16 @@ DeleteEdge (struct GEO *pGeo, int edge, int *pver, double *pmaxff)
 
   /* UpdateFace updates the properties of the parent faces
    * of the edge and more generally of delver. */
-  UpdateFaceVerNEdge (pGeo, edge, delver, *pver, verbosity);
+  if (UpdateFaceVerNEdge (pGeo, edge, delver, *pver, verbosity) != 0)
+    return -2;
 
-  UpdateVer (pGeo, edge, delver, *pver, verbosity);
+  if (UpdateVer (pGeo, edge, delver, *pver, verbosity) != 0)
+    return -2;
 
   UpdateEdgeVerNb (pGeo, delver, *pver, verbosity);
 
-  int status = UpdateVerCoo (pGeo, *pver, verbosity);
-  if (status != 0)
-  {
-    (*pmaxff) = 888.8;
-    test = -1;
-    return test;
-  }
+  if (UpdateVerCoo (pGeo, *pver, verbosity) != 0)
+    return -2;
 
   UpdateEdgeLength (pGeo, *pver);
   
@@ -63,7 +94,10 @@ DeleteEdge (struct GEO *pGeo, int edge, int *pver, double *pmaxff)
     test = neut_geo_testAroundVer2 (*pGeo, *pver, 0);
 
     if (test != 0)
+    {
+      test = -1;
       (*pmaxff) = 888.8;
+    }
     else
     {
       if (verbosity >= 2)

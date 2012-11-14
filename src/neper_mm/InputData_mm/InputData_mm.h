@@ -9,9 +9,9 @@
 #include<float.h>
 #include<ctype.h>
 #include<string.h>
-#include"structAll.h"
 #include"../structIn_mm.h"
 #include"ut.h"
+#include"neut.h"
 
 #include"../../neper_t/GermDistrib/RandDistrib/RandDistrib0.h"
 #include"../../neper_t/Miscellaneous/Miscellaneous0.h"

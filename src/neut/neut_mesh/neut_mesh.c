@@ -3955,154 +3955,32 @@ neut_mesh3d_slice (struct NODES Nodes, struct MESH Mesh, double* eq,
 		   struct NODES* pSNodes, struct MESH* pSMesh,
 	           int** pelt_newold, int*** pnode_newold, double** pnode_fact)
 {
-  int i, j, k, node;
-  int* side = ut_alloc_1d_int (4);
-  int siden, intertype, nodemaster, id;
-  int* pos = ut_alloc_1d_int (2);
-  int* pos2 = ut_alloc_1d_int (2);
-  double* coo = ut_alloc_1d (3);
-  int* eltnodes = ut_alloc_1d_int (3);
-  double dist, distmaster;
+  int i;
 
-  if (strcmp (Mesh.EltType, "tri") != 0 || Mesh.Dimension != 3)
+  if (Mesh.Dimension != 3)
     ut_error_reportbug ();
 
   (*pSMesh).Dimension = 2;
+  (*pSMesh).EltOrder = 1;
   (*pSMesh).EltType = ut_alloc_1d_char (10);
   sprintf ((*pSMesh).EltType, "tri");
-
-  (*pSMesh).EltOrder = 1;
 
   (*pelt_newold)  = ut_alloc_1d_int (1);
   (*pnode_newold) = ut_alloc_2d_int (1, 2);
   (*pnode_fact)   = ut_alloc_1d     (1);
-
-  // intertype = 0 -> no intersection
-  //
-  // intertype = 1 -> 1|3 vertices (two sides of the plane): the
-  // intersection between the elt and the plane is a triangle.
-  //
-  // intertype = 2 -> 2|2 vertices (two sides of the plane): the 
-  // intersection between the elt and the plane is a quadrangle;
-  // slpiting it into two triangles.
-  for (i = 1; i <= Mesh.EltQty; i++)
-  {
-    for (j = 0; j < 4; j++)
-    {
-      node = Mesh.EltNodes[i][j];
-      side[j] = ut_space_planeside (eq, Nodes.NodeCoo[node] - 1);
-    }
-    siden = ut_array_1d_int_nbofthisval (side, 4, -1);
-    intertype = ut_num_min (siden, 4 - siden);
-
-    if (intertype == 1)
-    {
-      // finding master node
-      if (siden == 1)
-	pos[0] = ut_array_1d_int_eltpos (side, 4, -1);
-      else if (siden == 3)
-	pos[0] = ut_array_1d_int_eltpos (side, 4,  1);
-      else
-	ut_error_reportbug ();
-
-      nodemaster = Mesh.EltNodes[i][pos[0]];
-      ut_space_point_plane_dist (Nodes.NodeCoo[nodemaster], eq, 
-				 &distmaster);
-
-      // finding intersection between the tet and the plane (triangle)
-      id = 0;
-      for (j = 0; j < 4; j++)
-	if (j != pos[0])
-	{
-	  node = Mesh.EltNodes[i][j];
-	  ut_space_segment_plane_intersect (Nodes.NodeCoo[nodemaster],
-	      Nodes.NodeCoo[node], eq, coo);
-	  neut_nodes_addnode (pSNodes, coo, 0);
-	  
-	  ut_space_point_plane_dist (Nodes.NodeCoo[node], eq, &dist);
-	    
-	  eltnodes[id++] = (*pSNodes).NodeQty;
-
-	  (*pnode_newold)  = ut_realloc_2d_int_addline ((*pnode_newold), (*pSNodes).NodeQty + 1, 2);
-	  (*pnode_fact)    = ut_realloc_1d             ((*pnode_fact)  , (*pSNodes).NodeQty + 1);
-      
-	  (*pnode_newold)[(*pSNodes).NodeQty][0] = nodemaster;
-	  (*pnode_newold)[(*pSNodes).NodeQty][1] = node;
-	  (*pnode_fact)  [(*pSNodes).NodeQty]    = distmaster / (distmaster + dist);
-	}
-
-      neut_mesh_addelt (pSMesh, eltnodes);
-
-      (*pelt_newold) = ut_realloc_1d_int ((*pelt_newold), (*pSMesh).EltQty + 1);
-      (*pelt_newold)[(*pSMesh).EltQty] = i;
-    }
-
-    else if (intertype == 2)
-    {
-      int id = 0;
-      int id2 = 0;
-      for (j = 0; j < 4; j++)
-	if (side[j] == -1)
-	  pos[id++] = j;
-	else
-	  pos2[id2++] = j;
-
-      // Finding intersection between the tet and the plane
-      // (quadrangle).  Splitting up the quadrangle into two triangles
-      // for plotting. 
-      
-      for (k = 0; k < 2; k++)
-      {
-	nodemaster = Mesh.EltNodes[i][pos[k]];
-	ut_space_point_plane_dist (Nodes.NodeCoo[nodemaster], eq, 
-				   &distmaster);
-
-	for (j = 0; j < 2; j++)
-	{
-	  node = Mesh.EltNodes[i][pos2[j]];
-	  ut_space_point_plane_dist (Nodes.NodeCoo[node], eq,
-				     &dist);
-
-	  ut_space_segment_plane_intersect (Nodes.NodeCoo[nodemaster],
-	      Nodes.NodeCoo[node], eq, coo);
-	  neut_nodes_addnode (pSNodes, coo, 0);
-
-	  (*pnode_newold)  = ut_realloc_2d_int_addline ((*pnode_newold), (*pSNodes).NodeQty + 1, 2);
-	  (*pnode_fact)    = ut_realloc_1d             ((*pnode_fact)  , (*pSNodes).NodeQty + 1);
-      
-	  (*pnode_newold)[(*pSNodes).NodeQty][0] = nodemaster;
-	  (*pnode_newold)[(*pSNodes).NodeQty][1] = node;
-	  (*pnode_fact)  [(*pSNodes).NodeQty]    = distmaster / (distmaster + dist);
-	}
-      }
-      
-      eltnodes[0] = (*pSNodes).NodeQty - 3;
-      eltnodes[1] = (*pSNodes).NodeQty - 2;
-      eltnodes[2] = (*pSNodes).NodeQty - 1;
-
-      neut_mesh_addelt (pSMesh, eltnodes);
-
-      (*pelt_newold) = ut_realloc_1d_int ((*pelt_newold), (*pSMesh).EltQty + 1);
-      (*pelt_newold)[(*pSMesh).EltQty] = i;
-
-      eltnodes[0] = (*pSNodes).NodeQty - 1;
-      eltnodes[1] = (*pSNodes).NodeQty - 2;
-      eltnodes[2] = (*pSNodes).NodeQty;
-
-      neut_mesh_addelt (pSMesh, eltnodes);
-
-      (*pelt_newold) = ut_realloc_1d_int ((*pelt_newold), (*pSMesh).EltQty + 1);
-      (*pelt_newold)[(*pSMesh).EltQty] = i;
-    }
-  }
+  
+  if (! strcmp (Mesh.EltType, "tri"))
+    for (i = 1; i <= Mesh.EltQty; i++)
+      neut_mesh3d_elt_slice_tet (Nodes, Mesh, i, eq, pSNodes, pSMesh, pelt_newold,
+				 pnode_newold, pnode_fact);
+  else if (! strcmp (Mesh.EltType, "quad"))
+    for (i = 1; i <= Mesh.EltQty; i++)
+      neut_mesh3d_elt_slice_quad (Nodes, Mesh, i, eq, pSNodes, pSMesh, pelt_newold,
+				  pnode_newold, pnode_fact);
+  else
+    ut_error_reportbug ();
 
   neut_mesh_addelset (pSMesh, NULL, (*pSMesh).EltQty);
-  
-  ut_free_1d_int (side);
-  ut_free_1d     (coo);
-  ut_free_1d_int (pos);
-  ut_free_1d_int (pos2);
-  ut_free_1d_int (eltnodes);
 
   return;
 }
@@ -4296,4 +4174,467 @@ neut_mesh_elt_point_pos (struct MESH Mesh, struct NODES Nodes,
   ut_free_2d_int (seq, 4);
 
   return status;
+}
+
+int
+neut_mesh3d_elt_slice_tet (struct NODES Nodes, struct MESH Mesh, int elt, double* eq,
+			   struct NODES* pSNodes, struct MESH* pSMesh,
+			   int** pelt_newold, int*** pnode_newold, double** pnode_fact)
+{
+  int i, j, node;
+  int* side = ut_alloc_1d_int (4);
+  int siden, intertype, nodemaster, id;
+  int* pos = ut_alloc_1d_int (2);
+  int* pos2 = ut_alloc_1d_int (2);
+  double* coo = ut_alloc_1d (3);
+  int* eltnodes = ut_alloc_1d_int (3);
+  double dist, distmaster;
+
+  // intertype = 0 -> no intersection
+  //
+  // intertype = 1 -> 1|3 vertices (two sides of the plane): the
+  // intersection between the elt and the plane is a triangle.
+  //
+  // intertype = 2 -> 2|2 vertices (two sides of the plane): the 
+  // intersection between the elt and the plane is a quadrangle;
+  // spliting it into two triangles.
+
+  for (i = 0; i < 4; i++)
+  {
+    node = Mesh.EltNodes[elt][i];
+    side[i] = ut_space_planeside (eq, Nodes.NodeCoo[node] - 1);
+  }
+  siden = ut_array_1d_int_nbofthisval (side, 4, -1);
+  intertype = ut_num_min (siden, 4 - siden);
+
+  if (intertype == 1)
+  {
+    // finding master node
+    if (siden == 1)
+      pos[0] = ut_array_1d_int_eltpos (side, 4, -1);
+    else if (siden == 3)
+      pos[0] = ut_array_1d_int_eltpos (side, 4,  1);
+    else
+      ut_error_reportbug ();
+
+    nodemaster = Mesh.EltNodes[elt][pos[0]];
+    ut_space_point_plane_dist (Nodes.NodeCoo[nodemaster], eq, 
+			       &distmaster);
+
+    // finding intersection between the tet and the plane (triangle)
+    id = 0;
+    for (i = 0; i < 4; i++)
+      if (i != pos[0])
+      {
+	node = Mesh.EltNodes[elt][i];
+	ut_space_segment_plane_intersect (Nodes.NodeCoo[nodemaster],
+	    Nodes.NodeCoo[node], eq, coo);
+	neut_nodes_addnode (pSNodes, coo, 0);
+	
+	ut_space_point_plane_dist (Nodes.NodeCoo[node], eq, &dist);
+	  
+	eltnodes[id++] = (*pSNodes).NodeQty;
+
+	(*pnode_newold)  = ut_realloc_2d_int_addline ((*pnode_newold), (*pSNodes).NodeQty + 1, 2);
+	(*pnode_fact)    = ut_realloc_1d             ((*pnode_fact)  , (*pSNodes).NodeQty + 1);
+    
+	(*pnode_newold)[(*pSNodes).NodeQty][0] = nodemaster;
+	(*pnode_newold)[(*pSNodes).NodeQty][1] = node;
+	(*pnode_fact)  [(*pSNodes).NodeQty]    = distmaster / (distmaster + dist);
+      }
+
+    neut_mesh_addelt (pSMesh, eltnodes);
+
+    (*pelt_newold) = ut_realloc_1d_int ((*pelt_newold), (*pSMesh).EltQty + 1);
+    (*pelt_newold)[(*pSMesh).EltQty] = elt;
+  }
+
+  else if (intertype == 2)
+  {
+    int id = 0;
+    int id2 = 0;
+    for (i = 0; i < 4; i++)
+      if (side[i] == -1)
+	pos[id++] = i;
+      else
+	pos2[id2++] = i;
+
+    // Finding intersection between the tet and the plane
+    // (quadrangle).  Splitting up the quadrangle into two triangles
+    // for plotting. 
+    
+    for (j = 0; j < 2; j++)
+    {
+      nodemaster = Mesh.EltNodes[elt][pos[j]];
+      ut_space_point_plane_dist (Nodes.NodeCoo[nodemaster], eq, 
+				 &distmaster);
+
+      for (i = 0; i < 2; i++)
+      {
+	node = Mesh.EltNodes[elt][pos2[i]];
+	ut_space_point_plane_dist (Nodes.NodeCoo[node], eq,
+				   &dist);
+
+	ut_space_segment_plane_intersect (Nodes.NodeCoo[nodemaster],
+	    Nodes.NodeCoo[node], eq, coo);
+	neut_nodes_addnode (pSNodes, coo, 0);
+
+	(*pnode_newold)  = ut_realloc_2d_int_addline ((*pnode_newold), (*pSNodes).NodeQty + 1, 2);
+	(*pnode_fact)    = ut_realloc_1d             ((*pnode_fact)  , (*pSNodes).NodeQty + 1);
+    
+	(*pnode_newold)[(*pSNodes).NodeQty][0] = nodemaster;
+	(*pnode_newold)[(*pSNodes).NodeQty][1] = node;
+	(*pnode_fact)  [(*pSNodes).NodeQty]    = distmaster / (distmaster + dist);
+      }
+    }
+    
+    eltnodes[0] = (*pSNodes).NodeQty - 3;
+    eltnodes[1] = (*pSNodes).NodeQty - 2;
+    eltnodes[2] = (*pSNodes).NodeQty - 1;
+
+    neut_mesh_addelt (pSMesh, eltnodes);
+
+    (*pelt_newold) = ut_realloc_1d_int ((*pelt_newold), (*pSMesh).EltQty + 1);
+    (*pelt_newold)[(*pSMesh).EltQty] = elt;
+
+    eltnodes[0] = (*pSNodes).NodeQty - 1;
+    eltnodes[1] = (*pSNodes).NodeQty - 2;
+    eltnodes[2] = (*pSNodes).NodeQty;
+
+    neut_mesh_addelt (pSMesh, eltnodes);
+
+    (*pelt_newold) = ut_realloc_1d_int ((*pelt_newold), (*pSMesh).EltQty + 1);
+    (*pelt_newold)[(*pSMesh).EltQty] = elt;
+  }
+  
+  ut_free_1d_int (side);
+  ut_free_1d     (coo);
+  ut_free_1d_int (pos);
+  ut_free_1d_int (pos2);
+  ut_free_1d_int (eltnodes);
+
+  return intertype;
+}
+
+int
+neut_mesh3d_elt_slice_quad (struct NODES Nodes, struct MESH Mesh, int elt, double* eq,
+			    struct NODES* pSNodes, struct MESH* pSMesh,
+			    int** pelt_newold, int*** pnode_newold, double** pnode_fact)
+{
+  int i, j, sl_elt, sl_node, eltqty, nodeqty;
+  struct NODES ENodes;
+  struct  MESH EMesh;
+  struct  MESH TEMesh;
+
+  neut_nodes_set_zero (&ENodes);
+  neut_mesh_set_zero (&EMesh);
+  neut_mesh_set_zero (&TEMesh);
+
+  neut_mesh_elt_mesh (Nodes, Mesh, elt, &ENodes, &EMesh);
+  
+  neut_mesh_quad_tri (ENodes, EMesh, &TEMesh);
+  
+  for (i = 1; i <= 6; i++)
+  {
+    nodeqty = (*pSNodes).NodeQty;
+    eltqty  = (*pSMesh).EltQty;
+    neut_mesh3d_elt_slice_tet (ENodes, TEMesh, i, eq, pSNodes, pSMesh,
+			       pelt_newold, pnode_newold, pnode_fact);
+
+    // Renumbering added elts
+    for (sl_elt = eltqty + 1; sl_elt <= (*pSMesh).EltQty; sl_elt++)
+      (*pelt_newold)[sl_elt] = elt;
+
+    // Renumbering added nodes
+    for (sl_node = nodeqty + 1; sl_node <= (*pSNodes).NodeQty; sl_node++)
+      for (j = 0; j < 2; j++)
+	(*pnode_newold)[sl_node][j] = Mesh.EltNodes[elt][(*pnode_newold)[sl_node][j] - 1];
+  }
+  
+  neut_nodes_free (&ENodes);
+  neut_mesh_free (&EMesh);
+  neut_mesh_free (&TEMesh);
+
+  return 0;
+}
+
+
+void
+neut_mesh_elt_bbox_v (struct NODES Nodes, struct MESH Mesh, int elt, double* bbox)
+{
+  double** tmp = ut_alloc_2d (3, 2);
+
+  neut_mesh_elt_bbox (Nodes, Mesh, elt, tmp);
+
+  bbox[0] = tmp[0][0];
+  bbox[1] = tmp[0][1];
+  bbox[2] = tmp[1][0];
+  bbox[3] = tmp[1][1];
+  bbox[4] = tmp[2][0];
+  bbox[5] = tmp[2][1];
+
+  ut_free_2d (tmp, 3);
+
+}
+
+void
+neut_mesh_elt_bbox (struct NODES Nodes, struct MESH Mesh, int elt, double** bbox)
+{
+  int i, j, node;
+  int eltnodeqty = neut_elt_nodeqty (Mesh.EltType, Mesh.Dimension, Mesh.EltOrder);
+
+  for (i = 0; i < 3; i++)
+  {
+    bbox[i][0] =  DBL_MAX;
+    bbox[i][1] = -DBL_MAX;
+
+    for (j = 0; j < eltnodeqty; j++)
+    {
+      node = Mesh.EltNodes[elt][j];
+      bbox[i][0] = ut_num_min (bbox[i][0], Nodes.NodeCoo[node][i]);
+      bbox[i][1] = ut_num_max (bbox[i][1], Nodes.NodeCoo[node][i]);
+    }
+  }
+
+  return;
+}
+
+void
+neut_mesh_elt_poly (struct NODES Nodes, struct MESH Mesh, int elt, struct POLY* pPoly)
+{
+  int i, node;
+
+  printf ("neut_mesh_elt_poly: CHECK me! (I've never been used.)\n");
+
+  if (Mesh.EltOrder != 3)
+    ut_error_reportbug ();
+
+  if (! strcmp (Mesh.EltType, "tri"))
+  {
+    (*pPoly).VerQty = 4;
+    (*pPoly).FaceQty = 4;
+
+    (*pPoly).VerCoo = ut_alloc_2d ((*pPoly).FaceQty + 1, 3);
+    for (i = 1; i <= (*pPoly).VerQty; i++)
+    {
+      node = Mesh.EltNodes[elt][i - 1];
+      ut_array_1d_memcpy ((*pPoly).VerCoo[i], 4, Nodes.NodeCoo[node]);
+    }
+
+    (*pPoly).FacePoly = ut_alloc_1d_int ((*pPoly).FaceQty + 1);
+    for (i = 1; i <= (*pPoly).FaceQty; i++)
+      (*pPoly).FacePoly[i] = -i;
+
+    (*pPoly).FaceEq = ut_alloc_2d ((*pPoly).FaceQty + 1, 4);
+    (*pPoly).FaceVerQty = ut_alloc_1d_int ((*pPoly).FaceQty + 1);
+    (*pPoly).FaceVerNb  = ut_alloc_2d_int ((*pPoly).FaceQty + 1, 4);
+
+    ut_array_1d_int_set ((*pPoly).FaceVerQty + 1, (*pPoly).VerQty, 3);
+    (*pPoly).FaceVerNb[1][0] = 1;
+    (*pPoly).FaceVerNb[1][1] = 2;
+    (*pPoly).FaceVerNb[1][2] = 3;
+    (*pPoly).FaceVerNb[2][0] = 1;
+    (*pPoly).FaceVerNb[2][1] = 3;
+    (*pPoly).FaceVerNb[2][2] = 4;
+    (*pPoly).FaceVerNb[3][0] = 1;
+    (*pPoly).FaceVerNb[3][1] = 4;
+    (*pPoly).FaceVerNb[3][2] = 2;
+    (*pPoly).FaceVerNb[4][0] = 2;
+    (*pPoly).FaceVerNb[4][1] = 3;
+    (*pPoly).FaceVerNb[4][2] = 4;
+
+    for (i = 1; i <= 4; i++)
+    {
+      // not sure the normals are outgoing - check the order of the
+      // nodes
+      ut_space_points_plane ((*pPoly).VerCoo[(*pPoly).FaceVerNb[i][0]],
+                             (*pPoly).VerCoo[(*pPoly).FaceVerNb[i][1]],
+                             (*pPoly).VerCoo[(*pPoly).FaceVerNb[i][2]],
+			     ((*pPoly).FaceEq[i]));
+    }
+  }
+  else if (! strcmp (Mesh.EltType, "quad"))
+  {
+    (*pPoly).VerQty = 8;
+    (*pPoly).FaceQty = 6;
+
+    (*pPoly).VerCoo = ut_alloc_2d ((*pPoly).VerQty + 1, 3);
+    for (i = 1; i <= (*pPoly).VerQty; i++)
+    {
+      node = Mesh.EltNodes[elt][i - 1];
+      ut_array_1d_memcpy ((*pPoly).VerCoo[i], 4, Nodes.NodeCoo[node]);
+    }
+
+    (*pPoly).FacePoly = ut_alloc_1d_int ((*pPoly).FaceQty + 1);
+    for (i = 1; i <=(*pPoly).FaceQty; i++)
+      (*pPoly).FacePoly[i] = -i;
+
+    (*pPoly).FaceEq = ut_alloc_2d ((*pPoly).FaceQty + 1, 4);
+    (*pPoly).FaceVerQty = ut_alloc_1d_int ((*pPoly).FaceQty + 1);
+    (*pPoly).FaceVerNb  = ut_alloc_2d_int ((*pPoly).FaceQty + 1, 4);
+
+    ut_array_1d_int_set ((*pPoly).FaceVerQty + 1, (*pPoly).VerQty, 4);
+    (*pPoly).FaceVerNb[1][0] = 0;
+    (*pPoly).FaceVerNb[1][1] = 3;
+    (*pPoly).FaceVerNb[1][2] = 2;
+    (*pPoly).FaceVerNb[1][3] = 1;
+    (*pPoly).FaceVerNb[2][0] = 4;
+    (*pPoly).FaceVerNb[2][1] = 5;
+    (*pPoly).FaceVerNb[2][2] = 6;
+    (*pPoly).FaceVerNb[2][3] = 7;
+    (*pPoly).FaceVerNb[3][0] = 1;
+    (*pPoly).FaceVerNb[3][1] = 2;
+    (*pPoly).FaceVerNb[3][2] = 6;
+    (*pPoly).FaceVerNb[3][3] = 5;
+    (*pPoly).FaceVerNb[4][0] = 0;
+    (*pPoly).FaceVerNb[4][1] = 4;
+    (*pPoly).FaceVerNb[4][2] = 7;
+    (*pPoly).FaceVerNb[4][3] = 3;
+    (*pPoly).FaceVerNb[5][0] = 0;
+    (*pPoly).FaceVerNb[5][1] = 1;
+    (*pPoly).FaceVerNb[5][2] = 5;
+    (*pPoly).FaceVerNb[5][3] = 4;
+    (*pPoly).FaceVerNb[6][0] = 3;
+    (*pPoly).FaceVerNb[6][1] = 7;
+    (*pPoly).FaceVerNb[6][2] = 6;
+    (*pPoly).FaceVerNb[6][3] = 2;
+
+    for (i = 1; i <= 4; i++)
+      ut_space_points_plane ((*pPoly).VerCoo[(*pPoly).FaceVerNb[i][0]],
+                             (*pPoly).VerCoo[(*pPoly).FaceVerNb[i][1]],
+                             (*pPoly).VerCoo[(*pPoly).FaceVerNb[i][2]],
+			     ((*pPoly).FaceEq[i]));
+  }
+  else
+    abort ();
+
+  return;
+}
+
+int
+neut_mesh_elt_mesh (struct NODES Nodes, struct MESH Mesh, int elt,
+                    struct NODES* pENodes, struct MESH* pEMesh)
+{
+  int i, node;
+  int eltnodeqty = neut_elt_nodeqty (Mesh.EltType, Mesh.Dimension, Mesh.EltOrder);
+
+  // Setting *pENodes
+  neut_nodes_set_zero (pENodes);
+
+  (*pENodes).NodeQty = eltnodeqty;
+
+  (*pENodes).NodeCoo = ut_alloc_2d ((*pENodes).NodeQty + 1, 3);
+
+  for (i = 1; i <= eltnodeqty; i++)
+  {
+    node = Mesh.EltNodes[elt][i - 1];
+    ut_array_1d_memcpy ((*pENodes).NodeCoo[i], 3, Nodes.NodeCoo[node]);
+  }
+
+  // Setting *pEMesh
+  neut_mesh_set_zero (pEMesh);
+
+  (*pEMesh).EltType = ut_alloc_1d_char (strlen (Mesh.EltType) + 1);
+  strcpy ((*pEMesh).EltType, Mesh.EltType);
+
+  (*pEMesh).Dimension = Mesh.Dimension;
+  (*pEMesh).EltOrder = Mesh.EltOrder;
+
+  (*pEMesh).EltQty = 1;
+  (*pEMesh).EltNodes = ut_alloc_2d_int (2, eltnodeqty);
+
+  for (i = 0; i < eltnodeqty; i++)
+    (*pEMesh).EltNodes[1][i] = i + 1;
+
+  return 0;
+}
+
+// Turn a quad mesh into a tri mesh by  element subdivision
+void
+neut_mesh_quad_tri (struct NODES Nodes, struct MESH Mesh, struct MESH* pTMesh)
+{
+  int i, j, k, elt;
+  
+  if (strcmp (Mesh.EltType, "quad") != 0)
+    ut_error_reportbug ();
+
+  if (Mesh.Dimension != 3)
+    ut_error_reportbug ();
+
+  // Vertices of the tets describing the cube elt
+  int** nodepos = ut_alloc_2d_int (6, 4);
+
+  nodepos[0][0] = 0;
+  nodepos[0][1] = 1;
+  nodepos[0][2] = 2;
+  nodepos[0][3] = 6;
+
+  nodepos[1][0] = 0;
+  nodepos[1][1] = 3;
+  nodepos[1][2] = 2;
+  nodepos[1][3] = 6;
+
+  nodepos[2][0] = 0;
+  nodepos[2][1] = 6;
+  nodepos[2][2] = 3;
+  nodepos[2][3] = 7;
+
+  nodepos[3][0] = 0;
+  nodepos[3][1] = 6;
+  nodepos[3][2] = 4;
+  nodepos[3][3] = 7;
+
+  nodepos[4][0] = 0;
+  nodepos[4][1] = 4;
+  nodepos[4][2] = 5;
+  nodepos[4][3] = 6;
+
+  nodepos[5][0] = 0;
+  nodepos[5][1] = 5;
+  nodepos[5][2] = 1;
+  nodepos[5][3] = 6;
+
+  // General data
+  (*pTMesh).EltType = ut_alloc_1d_char (4);
+  strcpy ((*pTMesh).EltType, "tri");
+  (*pTMesh).Dimension = 3;
+  (*pTMesh).EltOrder = 1;
+  
+  (*pTMesh).EltQty = 0;
+  (*pTMesh).EltNodes = ut_alloc_2d_int (Mesh.EltQty * 6 + 1, 3);
+
+  // Elt data
+  if (Mesh.EltElset != NULL)
+    (*pTMesh).EltElset = ut_alloc_1d_int (Mesh.EltQty * 6 + 1);
+
+  for (i = 1; i <= Mesh.EltQty; i++)
+    for (j = 0; j < 6; j++)
+    {
+      elt = ++((*pTMesh).EltQty);
+
+      for (k = 0; k < 4; k++)
+	(*pTMesh).EltNodes[elt][k] = Mesh.EltNodes[i][nodepos[j][k]];
+
+      if (Mesh.EltElset != NULL)
+	(*pTMesh).EltElset[elt] = Mesh.EltElset[i];
+    }
+
+  // Elsets
+  (*pTMesh).ElsetQty = Mesh.ElsetQty;
+  (*pTMesh).Elsets = ut_alloc_2d_int ((*pTMesh).ElsetQty + 1, 1);
+  for (i = 1; i <= (*pTMesh).ElsetQty; i++)
+  {
+    (*pTMesh).Elsets[i][0] = 6 * Mesh.Elsets[i][0];
+
+    for (j = 1; j <= Mesh.Elsets[i][0]; j++)
+      for (k = 0; k < 6; k++)
+	(*pTMesh).Elsets[i][++((*pTMesh).Elsets[i][0])] = Mesh.Elsets[i][j];
+  }
+
+  // NodeElts
+  neut_mesh_init_nodeelts (pTMesh, Nodes.NodeQty);
+
+  ut_free_2d_int (nodepos, 6);
+
+  return;
 }

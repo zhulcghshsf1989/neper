@@ -247,7 +247,7 @@ neut_mesh_fprintf_geof_elsets (FILE* file, struct MESH Mesh3D)
     fprintf (file, "\n**elset poly%d\n", i);
     col = 0;
     for (j = 1; j <= Mesh3D.Elsets[i][0]; j++)
-      FPrintfWNC (file, Mesh3D.Elsets[i][j], &col, 72);
+      ut_print_wnc_int (file, Mesh3D.Elsets[i][j], &col, 72);
 
     fprintf (file, "\n");
   }

@@ -148,9 +148,9 @@ UpdateVerState (struct GEO *pGeo, int delver, int newver, int verbosity)
 	    (*pGeo).VerState[newver], delver, (*pGeo).VerState[delver]);
   }
   /* if state of newver is 0, its wgt is 1, else it is the state */
-  wgt1 = IntMax (1, (*pGeo).VerState[newver]);
+  wgt1 = ut_num_max_int (1, (*pGeo).VerState[newver]);
   /* if state of delver is 0, its wgt is 1, else it is the state */
-  wgt2 = IntMax (1, (*pGeo).VerState[delver]);
+  wgt2 = ut_num_max_int (1, (*pGeo).VerState[delver]);
 
   /* wgt of newver becomes wgt1+wgt2 */
   (*pGeo).VerState[newver] = wgt1 + wgt2;
@@ -173,9 +173,8 @@ UpdateVerEdge (struct GEO *pGeo, int edge, int delver, int newver,
   int qty;			/* will be the VerEdgeQty of newver ver */
 
   array =
-    oneDIntCat ((*pGeo).VerEdgeNb[newver], 0, (*pGeo).VerEdgeQty[newver] - 1,
-		(*pGeo).VerEdgeNb[delver], 0, (*pGeo).VerEdgeQty[delver] - 1,
-		0);
+    ut_array_1d_int_cat ((*pGeo).VerEdgeNb[newver], (*pGeo).VerEdgeQty[newver],
+		(*pGeo).VerEdgeNb[delver], (*pGeo).VerEdgeQty[delver]);
 
   if (verbosity >= 3)
   {
@@ -194,7 +193,7 @@ UpdateVerEdge (struct GEO *pGeo, int edge, int delver, int newver,
   }
 
   qty = (*pGeo).VerEdgeQty[delver] + (*pGeo).VerEdgeQty[newver];
-  qty -= oneDIntDeleteNCompress (array, 0, qty - 1, edge, 2);
+  qty -= ut_array_1d_int_deletencompress (array, qty, edge, 2);
 
   (*pGeo).VerEdgeQty[newver] = qty;
   (*pGeo).VerEdgeNb[newver] = ut_realloc_1d_int ((*pGeo).VerEdgeNb[newver], qty);

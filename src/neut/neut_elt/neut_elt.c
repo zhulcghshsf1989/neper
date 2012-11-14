@@ -76,7 +76,7 @@ neut_elt_nodeqty (char *type, int dim, int order)
     res = QuadNodesPerElt[dim][order];
   else
   {
-    ut_print_message (2, 0, "ut_elt_nodeqty does not implemented for non tri elements.\n");
+    ut_print_message (2, 0, "neut_elt_nodeqty: unknown elt type `%s'.\n", type);
     abort ();
   }
 

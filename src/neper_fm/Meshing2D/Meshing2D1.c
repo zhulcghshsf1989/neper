@@ -63,9 +63,9 @@ Meshing2D (struct IN In, struct GEOPARA GeoPara,
   char* mesh2dalgo = ut_alloc_1d_char (100);
   // retrieving list of algorithms to use
   if (strcmp (In.mesh2dalgo, "default") == 0)
-    sprintf (mesh2dalgo, "fron,made");
+    sprintf (mesh2dalgo, "fron,mead");
   else if (strcmp (In.mesh2dalgo, "qualmax") == 0)
-    sprintf (mesh2dalgo, "made,mead,dela,fron");
+    sprintf (mesh2dalgo, "mead,dela,fron");
   else
     sprintf (mesh2dalgo, "%s", In.mesh2dalgo);
 
@@ -104,11 +104,22 @@ Meshing2D (struct IN In, struct GEOPARA GeoPara,
   fflush (stdout);
 
   // Meshing faces in turn ---------------------------------------------
+  int* meshface = ut_alloc_1d_int (Geo.FaceQty + 1);
+  ut_array_1d_int_set (meshface + 1, Geo.FaceQty, 1);
+  meshface[0] = Geo.FaceQty;
+
+  if (In.meshface != NULL)
+    neut_geo_expr_facetab (Geo, In.meshface, meshface);
   
   int fixed_face = 0;
   for (i = 1; i <= Geo.FaceQty; i++)
   {
     // printf ("facesim = %d\n", face_sim[i]);
+    if (meshface[i] == 0)
+    {
+      neut_mesh_addelset (pMesh2D, NULL, 0);
+      continue;
+    }
 
     qmin = 0;
     qmin0 = 0;
@@ -356,6 +367,7 @@ Meshing2D (struct IN In, struct GEOPARA GeoPara,
   }
   fprintf (stdout, "\n");
 
+  ut_free_1d_int (meshface);
 
   if (fixed_face != 0)
     ut_print_message (0, 3, "%d %s been fixed ... ", fixed_face, (fixed_face == 1) ? "face has" : "faces have");

@@ -7,11 +7,13 @@
 #include<string.h>
 #include<gsl/gsl_rng.h>
 
-#include"structAll.h"
 #include"../structIn_t.h"
+#include"neut.h"
 
 #include"RandDistrib/RandDistrib0.h"
 #include"RegDistrib/RegDistrib0.h"
 #include"orilib.h"
 
 #include"GermDistrib0.h"
+
+extern void net_germ_randomize (struct GERMSET* pGermSet, double* size, char* morpho);

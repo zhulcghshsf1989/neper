@@ -7,9 +7,7 @@
 #include<math.h>
 #include<string.h>
 
-#include"structAll.h"
 #include"../structIn_t.h"
-#include"AllUtils.h"
 #include"ut.h"
 #include"neut.h"
 #include"PointPoly/PointPoly0.h"

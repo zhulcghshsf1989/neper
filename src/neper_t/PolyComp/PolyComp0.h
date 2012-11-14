@@ -2,5 +2,4 @@
 /* Copyright (C) 2003-2012, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-extern void PolyComp (struct INTEPARA *, struct POLY, struct GERMSET,
-		      struct POLY **, int);
+extern void PolyComp (struct POLY, struct GERMSET, struct POLY **, int);

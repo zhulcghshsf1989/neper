@@ -40,13 +40,11 @@ DefGermSet (struct GERMSET *pGermSet)
 void
 CreateTess (struct GERMSET GermSet, double *Size, struct TESS *pTess)
 {
-  struct INTEPARA IntePara;
   struct POLY Domain;
   struct POLY *Poly;
 
-  InternalPara (&IntePara);
   CubeDomain (Size, &Domain);
-  PolyComp (&IntePara, Domain, GermSet, &Poly, 0);
+  PolyComp (Domain, GermSet, &Poly, 0);
   Tessellation (GermSet, Poly, pTess);
 
   return;

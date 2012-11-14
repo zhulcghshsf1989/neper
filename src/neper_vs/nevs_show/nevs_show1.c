@@ -265,37 +265,7 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
 	    break;
 	  }
 
-	vals[9] = 0;
-	if (! strcmp (Geo.DomType, "cylinder"))
-	{
-	  int domedge, face, domface1, domface2, poly1, poly2;
-	  if (Geo.EdgeDom[i][0] == 1)
-	  {
-	    domedge = Geo.EdgeDom[i][1];
-	    domface1 = Geo.DomEdgeFaceNb[domedge][0];
-	    domface2 = Geo.DomEdgeFaceNb[domedge][1];
-
-	    poly1 = -1;
-	    poly2 = -1;
-	    for (j = 0; j < Geo.EdgeFaceQty[i]; j++)
-	    {
-	      face = Geo.EdgeFaceNb[i][j];
-	      if (Geo.FaceDom[face][0] == 2)
-	      {
-		if (Geo.FaceDom[face][1] == domface1)
-		  poly1 = Geo.FacePoly[face][0];
-		if (Geo.FaceDom[face][1] == domface2)
-		  poly2 = Geo.FacePoly[face][0];
-	      }
-	    }
-
-	    if (poly1 < 0 || poly2 < 0)
-	      ut_error_reportbug ();
-
-	    if (domface1 > 2 && domface2 > 2 && poly1 == poly2)
-	      vals[9] = 1;
-	  }
-	}
+	vals[9] = neut_geo_edge_fake (Geo, i);
 
 #ifdef HAVE_LIBMATHEVAL
 	status = ut_math_eval (argv[(*pi)], var_qty, vars, vals, &res);

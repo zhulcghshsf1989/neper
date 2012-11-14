@@ -153,3 +153,60 @@ neut_mesh_renumber_crude (struct NODES *pNodes, struct MESH* pMesh2D, struct MES
 }
 */
 
+/*
+void
+neut_mesh_renumber_partition (struct NODES *pNodes, struct MESH* pMesh2D, struct MESH *pMesh, int qty)
+{
+  int i, j;
+  double** GrainCentre = ut_alloc_2d ((*pMesh).ElsetQty + 1, 3);
+  int* sequence = ut_alloc_1d_int ((*pMesh).ElsetQty + 1);
+  double** boundingbox = ut_alloc_2d (3, 2);
+  double* tessbox = ut_alloc_1d (7);
+  struct GERMSET GermSet;
+  struct TESS Tess;
+
+  if ((*pNodes).BBox == NULL)
+    neut_nodes_init_boundingbox (pNodes);
+
+  tessbox[1] = boundingbox[0][0];
+  tessbox[2] = boundingbox[0][1];
+  tessbox[3] = boundingbox[1][0];
+  tessbox[4] = boundingbox[1][1];
+  tessbox[5] = boundingbox[2][0];
+  tessbox[6] = boundingbox[2][1];
+
+  for (i = 1; i <= (*pMesh).ElsetQty; i++)
+    neut_mesh_elsetcentre (*pNodes, *pMesh, (*pMesh).ElbsetNb[i], GrainCentre[i]);
+
+  GermSet.N  = qty;
+  GermSet.Id = 1;
+  GermSet.ttype = 0;
+  GermSet.Random = neut_rand_nnid2rand (GermSet.N, GermSet.Id);
+  GermSet.morpho = ut_alloc_1d_char (100);
+  sprintf (GermSet.morpho, "poisson");
+  RandDistrib (&GermSet, tessbox, 0);
+  CreateTess (GermSet, tessbox, &Tess);
+
+  for (i = 1; i <= qty; i++)
+    for (j = 1; j <= (*pMesh).ElsetQty; j++)
+      if (ut_array_1d_int_eltpos (sequence + 1, sequence[0], j) == -1)
+	if (neut_geo_point_inpoly (GrainCentre[j] - 1, Tess, i) == 1)
+	  sequence[++sequence[0]] = j;
+
+  if (sequence[0] != (*pMesh).ElsetQty)
+  {
+    printf ("bad renumbering in neut_mesh_renumber_partition\n");
+    printf ("sequence[0] = %d != (*pMesh).ElsetQty = %d\n", sequence[0], (*pMesh).ElsetQty);
+    abort ();
+  }
+
+  neut_mesh_renumber_bypoly (sequence, pNodes, pMesh2D, pMesh);
+
+  ut_free_1d_int (sequence);
+  ut_free_2d (GrainCentre, (*pMesh).ElsetQty + 1);
+  ut_free_2d (boundingbox, 3);
+  ut_free_1d (tessbox);
+
+  return;
+}
+*/

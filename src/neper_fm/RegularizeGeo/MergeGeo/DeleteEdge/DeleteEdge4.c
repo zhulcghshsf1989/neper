@@ -26,10 +26,12 @@ DeleteEdgeFromFace (struct GEO *pGeo, int face, int edge, int verbosity)
     oneDIntEltPos ((*pGeo).FaceEdgeNb[face], 1, (*pGeo).FaceVerQty[face],
 		   edge, 0);
 
-  oneDIntDeleteNCompress ((*pGeo).FaceEdgeNb[face], 1,
+  ut_array_1d_int_deletencompress ((*pGeo).FaceEdgeNb[face] + 1,
 			  (*pGeo).FaceVerQty[face], edge, 1);
-  oneDIntCpy ((*pGeo).FaceEdgeOri[face], pos + 1, (*pGeo).FaceVerQty[face],
-	      (*pGeo).FaceEdgeOri[face], pos, 0);
+
+  ut_array_1d_int_memcpy ((*pGeo).FaceEdgeOri[face] + pos,
+			  (*pGeo).FaceVerQty[face] - pos,
+                          (*pGeo).FaceEdgeOri[face] + pos + 1);
 
   (*pGeo).FaceVerQty[face]--;
 
@@ -59,7 +61,7 @@ DeleteVerFromFace (struct GEO *pGeo, int face, int delver, int verbosity)
   }
 
   qty =
-    oneDIntDeleteNCompress ((*pGeo).FaceVerNb[face], 1,
+    ut_array_1d_int_deletencompress ((*pGeo).FaceVerNb[face] + 1,
 			    (*pGeo).FaceVerQty[face], delver, 1);
 
   /* test */
@@ -162,8 +164,8 @@ DeleteFace (struct GEO *pGeo, int face, int edge, int verbosity)
   /* for the nnew edge: determination of the face properties: qty & nbs
    */
   (*pGeo).EdgeFaceNb[nnew] = ut_realloc_1d_int ((*pGeo).EdgeFaceNb[nnew], (*pGeo).EdgeFaceQty[nnew] + (*pGeo).EdgeFaceQty[old]);
-  oneDIntCpy ((*pGeo).EdgeFaceNb[old], 0, (*pGeo).EdgeFaceQty[old] - 1,
-	      (*pGeo).EdgeFaceNb[nnew], (*pGeo).EdgeFaceQty[nnew], 0);
+  ut_array_1d_int_memcpy ((*pGeo).EdgeFaceNb[nnew] + (*pGeo).EdgeFaceQty[nnew],
+                          (*pGeo).EdgeFaceQty[old], (*pGeo).EdgeFaceNb[old]);
 
   (*pGeo).EdgeFaceQty[nnew] += (*pGeo).EdgeFaceQty[old];
 
@@ -176,7 +178,6 @@ DeleteFace (struct GEO *pGeo, int face, int edge, int verbosity)
 
     printf ("sorting\n");
   }
-  /*oneDIntSort((*pGeo).EdgeFaceNb[nnew],0,(*pGeo).EdgeFaceQty[nnew]-1); */
   gsl_sort_int ((*pGeo).EdgeFaceNb[nnew], 1, (*pGeo).EdgeFaceQty[nnew]);
   if (verbosity >= 3)
   {
@@ -187,6 +188,9 @@ DeleteFace (struct GEO *pGeo, int face, int edge, int verbosity)
 
     printf ("compressing\n");
   }
+
+  // Replacing this by ut_array_1d_int_uniq leads to a bug for
+  // neper -FM n2-id1.tess -maxff 20
   (*pGeo).EdgeFaceQty[nnew] =
     1 + oneDIntCompress ((*pGeo).EdgeFaceNb[nnew], 0,
 			 (*pGeo).EdgeFaceQty[nnew] - 1);
@@ -224,7 +228,7 @@ DeleteFace (struct GEO *pGeo, int face, int edge, int verbosity)
 
   /* for the faces of the old edge: edge nb=old <-- nnew
    */
-  for (i = 0; i <= (*pGeo).EdgeFaceQty[old] - 1; i++)
+  for (i = 0; i < (*pGeo).EdgeFaceQty[old]; i++)
   {
     tmpface = (*pGeo).EdgeFaceNb[old][i];
     if (tmpface == face)	/* this is the deleted face */
@@ -238,8 +242,6 @@ DeleteFace (struct GEO *pGeo, int face, int edge, int verbosity)
 	printf ("%d ", (*pGeo).FaceEdgeNb[tmpface][j]);
       printf ("\n");
     }
-
-    /*oneDIntFindNReplace((*pGeo).FaceEdgeNb[tmpface],1,(*pGeo).FaceVerQty[tmpface],old,nnew,1); */
 
     pos =
       oneDIntEltPos ((*pGeo).FaceEdgeNb[tmpface], 1,
@@ -263,7 +265,7 @@ DeleteFace (struct GEO *pGeo, int face, int edge, int verbosity)
       if ((*pGeo).FaceEdgeNb[tmpface][j] ==
 	  (*pGeo).FaceEdgeNb[tmpface][j + 1])
       {
-	oneDIntDeleteNCompress ((*pGeo).FaceEdgeNb[tmpface], 1,
+	ut_array_1d_int_deletencompress ((*pGeo).FaceEdgeNb[tmpface] + 1,
 				(*pGeo).FaceVerQty[tmpface],
 				(*pGeo).FaceEdgeNb[tmpface][j], 2);
 	for (k = (*pGeo).FaceVerQty[tmpface]; k >= j + 2; k--)

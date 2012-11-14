@@ -33,9 +33,9 @@ Here is what a typical run of @mT{} looks like:
     
     ========================    N   e   p   e   r    =======================
     Info   : A 3D random polycrystal generator for the finite element method
-    Info   : Version 1.10.1
-    Info   : (compiled with: gsl libmatheval)
-    Info   : Loading initialization file `/home/rquey/.neperrc'...
+    Info   : Version ...
+    Info   : Compiled with: gsl libmatheval
+    Info   : Ignoring initialization file.
     Info   : ---------------------------------------------------------------
     Info   : MODULE  -T loaded with arguments:
     Info   : [ini file] (none)
@@ -44,13 +44,13 @@ Here is what a typical run of @mT{} looks like:
     Info   : Reading input data ...
     Info   : Creating domain ...
     Info   : Creating polyhedron centres ...
-    Info   : Creating tessellation ...
+    Info   : Creating tessellation ...  100%
     Info   : Writing results ...
     Info   :     [o] Writing file `n10-id1.tess' ...
     Info   :     [o] Wrote file `n10-id1.tess'.
     Info   :     [o] Writing file `n10-id1.oin' ...
     Info   :     [o] Wrote file `n10-id1.oin'.
-    Info   : Elapsed time: 0.006 secs.
+    Info   : Elapsed time: ... secs.
     ========================================================================
     
 @end verbatim
@@ -256,6 +256,9 @@ using module @code{-FM}.)
 It contains a description of the tessellation written under the
 standard ``Polygon File Format'' @file{.ply}.
 
+@c @item tessellation debugging file: @file{.debug}
+@c It contains a human-friendly description of the tessellation, for
+@c debugging.
 @end itemize
 
 @subsection Orientation

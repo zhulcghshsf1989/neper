@@ -19,3 +19,4 @@
 #include "neut_structs/neut_meshdata_struct.h"
 #include "neut_structs/neut_poly_struct.h"
 #include "neut_structs/neut_polymod_struct.h"
+#include "neut_structs/neut_ori_struct.h"

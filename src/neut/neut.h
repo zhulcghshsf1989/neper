@@ -25,8 +25,6 @@
 #include "neut_germset.h"
 #include "neut_tess.h"
 #include "neut_poly.h"
-#include "neut_fod.h"
-#include "neut_fodnodes.h"
 #include "neut_rand.h"
 #include "neut_part.h"
 #include "neut_print.h"
@@ -35,5 +33,6 @@
 #include "neut_multim.h"
 #include "neut_nset.h"
 #include "neut_utils.h"
+#include "neut_povray.h"
 
 #endif /* NEUT_H */

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.6)
-project(neper_t)
+project(neper_t C)
 
 option (HAVE_GSL         "Use the GNU Scientific Library (GSL)" ON )
 option (HAVE_LIBMATHEVAL "Use libmatheval"                      ON )
@@ -7,11 +7,11 @@ option (HAVE_LIBSCOTCH   "Use libscotch"                        OFF)
 
 include_directories("${PROJECT_BINARY_DIR}")
 
-add_definitions(-Wall -W -O3)
+add_definitions(-Wall -W -g -O3)
 
 add_library (neper_t
-./IntePara/IntePara2.c
-./IntePara/IntePara1.c
+./net_lib/net_lib1.c
+./net_utils/net_utils1.c
 ./Tess/Tess2.c
 ./Tess/Tess4.c
 ./Tess/Tess5.c
@@ -43,6 +43,7 @@ add_library (neper_t
 ./GermDistrib/RandDistrib/RandDistrib2.c
 ./GermDistrib/RandDistrib/RandDistrib1.c
 ./GermDistrib/GermDistrib1.c
+./GermDistrib/GermDistrib2.c
 ./net_tess_sort/net_tess_sort1.c
 ./DomainComp/DomainComp1.c
 ./DomainComp/DomainComp2.c
