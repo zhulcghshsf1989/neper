@@ -33,7 +33,7 @@ Here is what a typical run of @mVS{} looks like:
     
     ========================    N   e   p   e   r    =======================
     Info   : A 3D random polycrystal generator for the finite element method
-    Info   : Version 1.10.0
+    Info   : Version 1.10.1
     Info   : (compiled with: gsl libmatheval)
     Info   : Loading initialization file `/home/rquey/.neperrc'...
     Info   : ---------------------------------------------------------------
@@ -67,7 +67,7 @@ Here is what a typical run of @mVS{} looks like:
     Info   :     [o] Writing file `img.png' ...
     Info   :     [o] Wrote file `img.png'.
     Info   : Printing scale ...
-    Info   : Elapsed time: 0.789 secs.
+    Info   : Elapsed time: 0.740 secs.
     ========================================================================
     
 @end verbatim

@@ -23,7 +23,7 @@ Here is what a typical run of @mO{} looks like:
     
     ========================    N   e   p   e   r    =======================
     Info   : A 3D random polycrystal generator for the finite element method
-    Info   : Version 1.10.0
+    Info   : Version 1.10.1
     Info   : (compiled with: gsl libmatheval)
     Info   : Loading initialization file `/home/rquey/.neperrc'...
     Info   : ---------------------------------------------------------------
@@ -33,7 +33,7 @@ Here is what a typical run of @mO{} looks like:
     Info   : ---------------------------------------------------------------
     Info   :     [o] Writing file `n10-id1.ori' ...
     Info   :     [o] Wrote file `n10-id1.ori'.
-    Info   : Elapsed time: 0.001 secs.
+    Info   : Elapsed time: 0.002 secs.
     ========================================================================
     
 @end verbatim

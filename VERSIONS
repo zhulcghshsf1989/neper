@@ -1,4 +1,7 @@
-New in 1.10.0 (June 2012):
+New in 1.10.1 (08 June 2012):
+- Bug fix to get Neper working after invoquing `make install'.
+
+New in 1.10.0 (04 June 2012):
 - General: New (hopefully simpler) installation procedure based on Cmake.
   Added support for domains of any convex polyhedral shape.
 - module -VS: major code rewriting and option changes. New capabilities

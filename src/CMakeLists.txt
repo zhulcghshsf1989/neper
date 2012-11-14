@@ -3,7 +3,7 @@ project(neper)
 
 set (NEPER_VERSION_MAJOR 1)
 set (NEPER_VERSION_MINOR 10)
-set (NEPER_VERSION_PATCH 0)
+set (NEPER_VERSION_PATCH 1)
 set (NEPER_VERSION_DEVEL -1)
 set (NEPER_EMAIL \"neper-users@lists.sourceforge.net\")
 

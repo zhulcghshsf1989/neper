@@ -21,7 +21,7 @@ include_directories("${PROJECT_BINARY_DIR}")
 
 add_definitions(-Wall -W -O3)
 
-add_library (ut SHARED
+add_library (ut
   ut_alloc/ut_alloc.c
   ut_arg/ut_arg.c
   ut_array/ut_array.c
