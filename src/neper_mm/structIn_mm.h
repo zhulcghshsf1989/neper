@@ -38,6 +38,7 @@ struct IN
   char* rset;
   char* abq;
   char* oin;
+  char* nper;
 
   int verbosity;
 };

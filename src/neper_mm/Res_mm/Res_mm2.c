@@ -434,6 +434,19 @@ WriteMapMeshAbq (struct IN In, char *nsetlist,
 }
 
 void
+WriteMapMeshNPer (int **FoDNodes, FILE* file)
+{
+  int i, j;
+
+  for (i = 1; i <= 5; i+=2)
+    for (j = 1; j <= FoDNodes[i][0]; j++)
+      fprintf (file, "%c %d %d\n", 'x' + (i - 1) / 2,
+	             FoDNodes[i][j], FoDNodes[i + 1][j]);
+
+  return;
+}
+
+void
 WriteMapMeshGmsh (char* dim, char *nset, char* faset,
                struct NODES Nodes,   struct MESH* pMesh0D,
 	       struct MESH* pMesh1D, struct MESH* pMesh2D,

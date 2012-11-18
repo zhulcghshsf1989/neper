@@ -73,6 +73,13 @@ Res_mm (struct IN In, struct GEO Geo, struct NODES Nodes,
     ut_file_close (file, In.abq, "w");
   }
 
+  if (! strcmp (GermSet.ttype, "periodic"))
+  {
+    file = ut_file_open (In.nper, "w");
+    WriteMapMeshNPer (FoDNodes, file);
+    ut_file_close (file, In.nper, "w");
+  }
+
   if (In.input == 0 && In.ingeo == NULL && ut_string_inlist (In.format, ',', "oin"))
   {
     ut_print_message (0, 2, "Writing orientation results ...\n");

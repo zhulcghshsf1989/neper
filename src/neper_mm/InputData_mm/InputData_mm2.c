@@ -78,6 +78,7 @@ TreatArg_mm (int fargc, char **fargv, int argc, char **argv,
   (*pIn).geof = ut_string_addextension ((*pIn).body, ".geof");
   (*pIn).abq = ut_string_addextension ((*pIn).body, ".inp");
   (*pIn).oin = ut_string_addextension ((*pIn).body, ".oin");
+  (*pIn).nper = ut_string_addextension ((*pIn).body, ".nper");
   (*pIn).nsitefile = ut_string_addextension ((*pIn).body, ".nsite");
 
   return;

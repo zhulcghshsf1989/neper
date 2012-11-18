@@ -215,6 +215,19 @@ The mesh can be written in the following formats:
 @item Zset/Z@'ebulon format: @file{.geof}
 @end itemize
 
+When the tessellation is periodic, the following file is also provided:
+
+@itemize
+@item Node periodicity conditions: @file{.nper}
+
+It provides a list of pairs of nodes, where each pair is made of nodes
+which correspond to each other on the opposite faces of the
+tessellation.  Column 1: type of face (@var{t} = @samp{x}, @samp{y} or
+@samp{z}), column 2: node on face @samp{@var{t}0}, column 3: node on
+face @samp{@var{t}1}.
+
+@end itemize
+
 When the input data is of type @code{(n, id)}, the following file is
 also generated (as in @mT{}):
 
