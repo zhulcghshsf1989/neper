@@ -716,45 +716,14 @@ at @url{http://neper.sourceforge.net/neper_fm.html}.
 @item    Mesh tessellation n100-id1.tess with a mesh size of rcl = 0.5 and in 2nd-order elements.
 @com{neper -FM n100-id1.tess -maxff 20 -sel 0.05 -rcl 0.5 -order 2}
 @item    Mesh tessellation n100-id1.tess with small elements for the inner grains and bigger elements for the surface grains.
-@com{neper -FM n100-id1.tess -maxff 20 -rcl 0.2 -dbound "body==0" }
+@com{neper -FM n100-id1.tess -maxff 20 -rcl 0.2 -dbound body==0 }
 @comx{-dboundrcl 0.5 -dboundsel 0.05}
 @item    Remesh mesh n150_def.msh (comprising poor-quality elements) into a clean, new mesh. Transport the scalar data of file `n150_def.data' from the deformed mesh to the new mesh.
 @com{neper -FM -remeshtess n150.tess -remesh n150_def.msh -transport }
 @comx{n150_def.msh 1 elt real1 n150_def.data -rcl 0.5 -o n150_new}
+@item    Mesh tessellation n100-id1.tess in 2nd-order elements and partition the mesh in 8 partitions.
+@com{neper -FM n100-id1.tess -maxff 20 -order 2 -partqty 8}
+@item    Mesh tessellation n100-id1.tess with different element sizes along x, y and z: rcl = 1, 1 and 0.25.
+@com{neper -FM n100-id1.tess -maxff 20 -rcl3 1 1 0.25}
 @c Example_end
-@end enumerate
-
-@enumerate
-
-Below are some examples of advanced use.
-
-@item @emph{Multimeshing.} Improve mesh quality as far as possible through 3D multimeshing.
-@com{neper -FM n10-id1.tess -maxff 20 -rcl 0.8 -order 2}
-@comx{-format tess,msh,inp -o n10}
-@comx{-mesh3dalgo netg/gmsh,netg/netg,netg/gmne}
-
-@item @emph{Mesh partitionning.} Like 2., but partition in 8 partitions
-and renumber the nodes and elements accordingly.
-@com{neper -FM n10-id1.tess -maxff 20 -rcl 0.8 -order 2}
-@comx{-format tess,msh,inp -o n10}
-@comx{-partq 8 -partrenum 1}
-
-@item @emph{Orthotropic mesh refinement.} Mesh tessellation
-@file{n10-id1.tess} with different element characteristic lengths
-along x, y and z: @math{@var{rcl}=1}, @math{@var{rcl}=0.5} and
-@math{@var{rcl}=0.25}, respectively. Use geometry regularization.
-@com{neper -FM n10-id1.tess -rcl3 1 0.5 0.25 -maxff 20}
-
-@item @emph{Data transport 1/2.} Like 7., and transport data defined on
-@file{n10.msh} to @file{n10-b.msh}.  The data are 3D vectors given in
-file @file{data} (format = 3 coordinates per line).
-@com{neper -FM -remesh n10.msh -remeshtess n10.tess -rcl 0.5}
-@comx{-transport n10.msh 1 elt real3 data -o n10-b}
-
-@item @emph{Data transport 2/2.} Transport data from an existing old mesh
-@file{n10.msh} to an existing new mesh @file{n10-b.msh}.  The data are
-3D vectors given in file @file{data} (format = 3 coordinates per line). 
-@com{neper -FM -loadmesh n10-b.msh}
-@comx{-transport n10.msh 1 elt real3 data -o n10-b}
-
 @end enumerate
