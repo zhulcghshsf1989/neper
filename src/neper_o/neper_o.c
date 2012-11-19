@@ -22,7 +22,7 @@ neper_o (int fargc, char **fargv, int argc, char **argv)
     Calculating angles  */
   if (! strcmp (In.input, "tess")  || ! strcmp (In.input, "n"))
     CalcOri (In, &Ori);
-  else if (! In.input)
+  else if (In.input != NULL)
     ReadOri (In, &Ori);
 
 /* *********************************************************
