@@ -461,7 +461,6 @@ SetOptions_fm (struct IN *pIn, struct GEOPARA *pGeoPara,
 	(*pIn).partrenumber = ut_arg_nextasint (argv, &i, Arg, 0, 1);
       else if (strcmp (Arg, "-partsets") == 0 && i < argc - 1)
 	(*pIn).partsets = ut_arg_nextasint (argv, &i, Arg, 0, 1);
-     
       else
 	ut_arg_error (Arg, "");
     }

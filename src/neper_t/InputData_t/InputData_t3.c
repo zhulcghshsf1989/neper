@@ -99,6 +99,7 @@ SetOptions_t (struct IN *pIn, struct GEOPARA* pGeoPara, int argc, char **argv)
   // General options ---------------------------------------------------
   sprintf (ArgList[++ArgQty], "-o");
   sprintf (ArgList[++ArgQty], "-v");
+  sprintf (ArgList[++ArgQty], "-libpath");
   // Tessellation options ----------------------------------------------
   sprintf (ArgList[++ArgQty], "-domain");
   sprintf (ArgList[++ArgQty], "-cylinderfacet");
@@ -133,6 +134,7 @@ SetOptions_t (struct IN *pIn, struct GEOPARA* pGeoPara, int argc, char **argv)
   // Restart a job -----------------------------------------------------
   sprintf (ArgList[++ArgQty], "-loadtess");
   sprintf (ArgList[++ArgQty], "-loadvox");
+  // Debugging ---------------------------------------------------------
   sprintf (ArgList[++ArgQty], "-checktess");
 
   // Treating arguments ================================================
@@ -369,6 +371,9 @@ SetOptions_t (struct IN *pIn, struct GEOPARA* pGeoPara, int argc, char **argv)
       (*pIn).input = ut_alloc_1d_char (5);
       strcpy ((*pIn).input, "tess");
       (*pIn).load = ut_arg_nextaschar (argv, &i, Arg);
+
+      if (! strcmp (Arg, "-checktess"))
+	(*pIn).checktess = 1;
     }
     else if (strcmp (Arg, "-loadvox") == 0 && i < argc - 1)
     {

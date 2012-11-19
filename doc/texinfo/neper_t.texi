@@ -267,9 +267,10 @@ any,none}
 @opt{-format,char_string,
 Specify the format of the output file(s). 
 The available formats are the Neper @code{tess} and @code{vox}@comma{}
-the Gmsh @code{geo} and the Ply @code{ply} (combine with commas).
+the Gmsh @code{geo}@comma{} the Ply @code{ply} and the 3DEC @code{3dec}
+(combine with commas).
 ,
-tess@comma{} geo@comma{} ply@comma{} vox,tess}
+tess@comma{} geo@comma{} ply@comma{} 3dec@comma{} vox,tess}
 
 @opt{-voxformat,char_string,
 Specify the format of the vox output file(s). 
@@ -352,6 +353,11 @@ using module @code{-FM}.)
 It contains a description of the tessellation written under the
 standard ``Polygon File Format'' @file{.ply}.
 
+@item 3DEC file: @file{.3dec}
+
+It contains a description of the tessellation written under the
+3DEC @file{.3dec}.
+
 @item Neper voxel file: @file{.vox}
 
 It contains a voxel-based description of the tessellation.
@@ -361,6 +367,8 @@ See @ref{File Formats} for the file syntax.
 @c It contains a human-friendly description of the tessellation, for
 @c debugging.
 @end itemize
+
+>>>>>>> devel
 
 @subsection Statistics
 
@@ -403,5 +411,9 @@ at @url{http://neper.sourceforge.net/neper_t.html}.
 @com{neper -T -n 100 -id 1 -scale 3 1 0.33}
 @item    Generate a polycrystal made of 100 columnar grains.
 @com{neper -T -n 100 -id 1 -morpho columnarz}
+@item    Generate a polycrystal made of approximately 5x5x5 truncated octahedra. 
+@com{neper -T -n 5 -morpho tocta -o tocta5}
+@item    Generate a polycrystal made of 100 grains in a cylindrical domain of height 2 and diameter 1.
+@com{neper -T -n 100 -id 1 -domain cylinder 2 1}
 @c Example_end
 @end enumerate

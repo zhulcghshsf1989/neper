@@ -77,6 +77,7 @@ TreatArg_t (int fargc, char **fargv, int argc, char **argv,
   (*pIn).geo = ut_string_addextension ((*pIn).body, ".geo");
   (*pIn).vox = ut_string_addextension ((*pIn).body, ".vox");
   (*pIn).ply = ut_string_addextension ((*pIn).body, ".ply");
+  (*pIn).dec = ut_string_addextension ((*pIn).body, ".3dec");
   (*pIn).debug = ut_string_addextension ((*pIn).body, ".debug");
 
   if ((*pIn).printpointpoly == 1)

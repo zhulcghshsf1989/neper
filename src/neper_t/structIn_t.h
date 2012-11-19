@@ -42,6 +42,7 @@ struct IN
   char *ste;
   char *stf;
   char *stp;
+  char *dec;
   char *debug;
 
   char* printstattess;

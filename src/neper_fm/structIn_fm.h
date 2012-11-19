@@ -57,7 +57,6 @@ struct IN
 
   char *body;
   char *ingeo;
-
   char *stn;
   char *ste;
   char *stelset;

@@ -45,6 +45,18 @@ Res_t (struct IN In, struct GEO Geo, struct VOX Vox)
       ut_print_message (1, 2, "Cannot write %s (is void) - skipping.\n", In.ply);
   }
 
+  if (ut_string_inlist (In.format, ',', "3dec")) // gmsh ply file
+  {
+    if (Geo.PolyQty != 0)
+    {
+      file = ut_file_open (In.dec, "w");
+      neut_geo_fprintf_dec (file, Geo);
+      ut_file_close (file, In.dec, "w");
+    }
+    else
+      ut_print_message (1, 0, "Geo is void; cannot export; skipping\n");
+  }
+
   if (ut_string_inlist (In.format, ',', "vox")) // vox file
   {
     if (Vox.PolyQty != 0)

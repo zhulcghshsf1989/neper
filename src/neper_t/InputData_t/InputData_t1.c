@@ -125,6 +125,7 @@ net_in_set_zero (struct IN* pIn)
   (*pIn).vox    = NULL;
   (*pIn).geo    = NULL;
   (*pIn).ply   = NULL;
+  (*pIn).dec   = NULL;
   (*pIn).debug   = NULL;
   
   (*pIn).printstattess = ut_alloc_1d_char (5);
@@ -160,6 +161,7 @@ net_in_free (struct IN In)
   ut_free_1d_char (In.vox);
   ut_free_1d_char (In.geo);
   ut_free_1d_char (In.ply);
+  ut_free_1d_char (In.dec);
   ut_free_1d_char (In.debug);
   ut_free_2d_char (In.sorttess, In.sorttess_qty);
   ut_free_1d      (In.domainparms);
