@@ -71,11 +71,10 @@ provides details on the algorithms.  It can be downloaded
 from the Neper homepage or by following this link:
 @url{http://neper.sourceforge.net/neper_paper.pdf}.
 
-@item The Neper Git repository: @url{http://neper.git.sourceforge.net}.
-It is where the development version can be obtained. You can get it
-with Git using the command:@*
-@command{git clone git://neper.git.sourceforge.net/gitroot/neper/neper
-  --branch devel}
+@item The Neper Git repository: @url{http://github.com/rquey/neper}.
+It is where the development version can be downloaded from. The
+repository can be also be cloned using the command
+@w{@samp{@command{git clone git://github.com/rquey/neper.git}}}.
 
 @end itemize
 
@@ -118,14 +117,14 @@ following.  Some dependencies are managed at compilation time,
 @item the GSL library (mandatory) 
 
 It is likely to be available on your system or from your system package
-manager (packages @code{gsl} and @code{gsl-devel}).  Alternatively, the
+manager (binary and development packages).  Alternatively, the
 source code version can be obtained from the GSL homepage,
 @uref{http://www.gnu.org/software/gsl}.
 
 @item the libmatheval library (optional, @emph{included} by default)
 
 It is likely to be available on your system or from your system package
-manager (packages @code{libmatheval} and @code{libmatheval-devel}).
+manager (binary and development packages).
 Alternatively, the source code version can be obtained from the
 libmatheval homepage, @uref{http://www.gnu.org/software/libmatheval}.
 
@@ -236,8 +235,8 @@ An example of initialization file is given below:
 @c @group
 neper comments ------------------------------------------------------
 This is my initialization file (~/.neperrc).
-neper -FM -order 2 -maxff 20 -gmsh my_gmsh_path
-          -rcl 0.8
+neper -FM -order 2
+          -gmsh my_gmsh_path
 neper -MM -order 2
 neper comments ------------------------------------------------------
 @c @end group
