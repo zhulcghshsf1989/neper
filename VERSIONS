@@ -1,4 +1,4 @@
-New in 1.10.2-4-g21f3b44 (devel):
+New in 1.10.2-5-gd36f64d (devel):
 - module -T: added option -checktess, minor improvements.
 - module -FM: minor bug fixes; improved fev format support; added
   individual file extension support in options -stattess and -statmesh.
