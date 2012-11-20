@@ -37,6 +37,11 @@ DeleteEdge (struct GEO *pGeo, int edge, int *pver, double *pmaxff)
       && ((*pGeo).VerDom[ver1][1] != (*pGeo).VerDom[ver2][1]))
     return -2;
 
+  // test for edge equal to a domain edge.
+  if ((*pGeo).EdgeDom[edge][0] == 1
+   && (*pGeo).DomTessEdgeQty[(*pGeo).EdgeDom[edge][1]] == 1)
+    return -2;
+
   // test for edge belonging to a tet polyhedron, which
   // would mean deleting the polyhedron - this is not allowed.
   // test on the number of vertices, NOT on the number of faces.
