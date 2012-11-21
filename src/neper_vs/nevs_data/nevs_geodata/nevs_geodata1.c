@@ -250,7 +250,7 @@ nevs_geodata_fscanf (struct GEO Geo, char* entity, char* type, char* argument,
   else
     ut_error_reportbug ();
 
-  ut_free_2d_char (args, 2);
+  ut_free_2d_char (args, argqty);
   ut_free_1d_int (qty);
   
   return;
