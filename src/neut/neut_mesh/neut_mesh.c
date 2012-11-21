@@ -1073,27 +1073,27 @@ neut_mesh_elt_facetmesh (struct MESH Mesh3D, int elt3d, struct MESH *pMesh2D)
       (*pMesh2D).EltNodes[2][4] = tab[16];
       (*pMesh2D).EltNodes[2][5] = tab[18];
       (*pMesh2D).EltNodes[2][6] = tab[19];
-      (*pMesh2D).EltNodes[1][7] = tab[17];
+      (*pMesh2D).EltNodes[2][7] = tab[17];
 
       (*pMesh2D).EltNodes[3][4] = tab[8];
       (*pMesh2D).EltNodes[3][5] = tab[12];
       (*pMesh2D).EltNodes[3][6] = tab[16];
-      (*pMesh2D).EltNodes[1][7] = tab[10];
+      (*pMesh2D).EltNodes[3][7] = tab[10];
 
       (*pMesh2D).EltNodes[4][4] = tab[13];
       (*pMesh2D).EltNodes[4][5] = tab[14];
       (*pMesh2D).EltNodes[4][6] = tab[19];
-      (*pMesh2D).EltNodes[1][7] = tab[15];
+      (*pMesh2D).EltNodes[4][7] = tab[15];
 
-      (*pMesh2D).EltNodes[3][3] = tab[11];
-      (*pMesh2D).EltNodes[3][4] = tab[14];
-      (*pMesh2D).EltNodes[3][5] = tab[18];
-      (*pMesh2D).EltNodes[1][5] = tab[12];
+      (*pMesh2D).EltNodes[5][4] = tab[11];
+      (*pMesh2D).EltNodes[5][5] = tab[14];
+      (*pMesh2D).EltNodes[5][6] = tab[18];
+      (*pMesh2D).EltNodes[5][7] = tab[12];
 
-      (*pMesh2D).EltNodes[4][3] = tab[9];
-      (*pMesh2D).EltNodes[4][4] = tab[15];
-      (*pMesh2D).EltNodes[4][5] = tab[17];
-      (*pMesh2D).EltNodes[1][5] = tab[10];
+      (*pMesh2D).EltNodes[6][4] = tab[9];
+      (*pMesh2D).EltNodes[6][5] = tab[15];
+      (*pMesh2D).EltNodes[6][6] = tab[17];
+      (*pMesh2D).EltNodes[6][7] = tab[10];
     }
   }
   else

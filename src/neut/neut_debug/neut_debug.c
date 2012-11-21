@@ -52,14 +52,13 @@ neut_debug_mesh (FILE* file, struct MESH Mesh)
   }
 
   fprintf (file, "NodeElts (elt qty then ids) = \n");
-  if (Mesh.NodeElts != NULL)
+  if (Mesh.NodeElts == NULL)
+    fprintf (file, "Mesh.NodeElts is NULL\n");
+  else
   {
-    int i, j, nodeqty = 0;
-    for (i = 1; i <= Mesh.EltQty; i++)
-      for (j = 0; j < eltnodeqty; j++)
-	nodeqty = ut_num_max (nodeqty, Mesh.EltNodes[i][j]);
-
-    for (i = 1; i <= nodeqty; i++)
+    fprintf (file, "Mesh.NodeElts[0][0] = %d (= NodeQty)\n", Mesh.NodeElts[0][0]);
+    fprintf (file, "qty then ids\n");
+    for (i = 1; i <=  Mesh.NodeElts[0][0]; i++)
       ut_array_1d_int_fprintf (file, Mesh.NodeElts[i], Mesh.NodeElts[i][0] + 1, "%d");
   }
 
