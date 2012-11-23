@@ -1,4 +1,4 @@
-New in 2.x.x-14-g0c3e00e (devel2):
+New in 2.x.x-16-g48a01e2 (devel2):
 - module -T: added option -checktess, minor improvements, added
   individual file extension support in -stattess, changed option -neigh 1
   to -statp i,f,npl,fal,feql.
