@@ -35,4 +35,7 @@ extern double ut_num_readwcomma (char *);
 extern int ut_num_even (int);
 extern int ut_num_odd (int);
 
+extern void ut_num_switch (double*, double*);
+extern void ut_num_switch_int (int*, int*);
+
 #endif /* UT_NUM0_H */

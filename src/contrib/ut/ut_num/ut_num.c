@@ -272,3 +272,23 @@ ut_num_odd (int num)
   else
     return 0;
 }
+
+void
+ut_num_switch (double* pa, double* pb)
+{
+  double tmp = (*pa);
+  (*pa) = (*pb);
+  (*pb) = tmp;
+
+  return;
+}
+
+void
+ut_num_switch_int (int* pa, int* pb)
+{
+  int tmp = (*pa);
+  (*pa) = (*pb);
+  (*pb) = tmp;
+
+  return;
+}
