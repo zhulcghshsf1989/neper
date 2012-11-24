@@ -249,5 +249,7 @@ at @url{http://neper.sourceforge.net/neper_mm.html}.
 @com{neper -MM n100-id1.tess}
 @item    Mesh tessellation n100-id1.tess with 40 elements per unit length.
 @com{neper -MM n100-id1.tess -msize 40}
+@item    Provide a mesh of a periodic tessellation made of 100 grains, with identifier 1.
+@com{neper -MM -n 100 -id 1 -msize 40 -ttype periodic}
 @c Example_end
 @end enumerate

@@ -19,7 +19,7 @@ the polycrystal morphology (@pxref{File Formats}).  The @file{.tess}
 file is an input file of the meshing modules, -FM @w{ and -MM}
 (@pxref{Module -FM} and @ref{Module -MM}).  @MT{} also generates as
 output a @file{.oin} file, which contains input data for the
-crystallographic orientation generation with @mO{} (@pxref{Module -O}).
+crystal orientation generation with @mO{} (@pxref{Module -O}).
 The generated tessellation (@file{.tess} file) can be visualized with
 @mVS{} (@ref{Module -VS}).
 
@@ -268,7 +268,7 @@ standard ``Polygon File Format'' @file{.ply}.
 @item 3DEC file: @file{.3dec}
 
 It contains a description of the tessellation written under the
-3DEC @file{.3dec}.
+3DEC format @file{.3dec}.
 
 @c @item tessellation debugging file: @file{.debug}
 @c It contains a human-friendly description of the tessellation, for

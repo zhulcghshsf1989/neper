@@ -98,7 +98,7 @@ This is the @cite{Neper Reference Manual} for Neper
 * Module -T::         The module to generate tessellations. 
 * Module -FM::        The module to generate free meshes of tessellations.
 * Module -MM::        The module to generate mapped meshes of tessellations.
-* Module -O::         The module to generate crystallographic orientations.
+* Module -O::         The module to generate crystal orientations.
 * Module -VS::        The module for visualization.
 * File Formats::      File Formats.
 * Mathematical Expressions:: Details on Mathematical expressions.

@@ -34,7 +34,7 @@ conform exactly to the tessellation morphology.
 Mapped meshes of standard tessellations, periodic tessellations and
 herein called @dfn{subdomain-type} tessellations can be created.
 
-@item @MO{} provides crystallographic orientations for the grains.  The
+@item @MO{} provides crystal orientations for the grains.  The
 orientations are randomly distributed according to a uniform
 distribution.
 
@@ -114,7 +114,7 @@ in the following.
 @subsection Dependencies
 
 Neper has mandatory as well as optional dependencies.  Some dependencies
-are managed at compilation time, which are,
+are managed at compilation time,
 
 @itemize
 
@@ -153,9 +153,9 @@ The following dependencies are only needed at run time,
 @item the Gmsh program (mandatory for module -FM)
 
 This version on Neper is intended to work with Gmsh (version
-@code{2.4.2} or later), which can be downloaded from
-@url{http://www.geuz.org/gmsh}.  A working Gmsh installation must be
-available on your system.
+@code{2.4.2} or later, excluding version @code{2.5.1}), which can be
+downloaded from @url{http://www.geuz.org/gmsh}.  A working Gmsh
+installation must be available on your system.
 
 @item the POV-Ray program (mandatory for module -VS)
 

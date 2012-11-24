@@ -658,7 +658,7 @@ standard ``Polygon File Format'' @file{.ply}.
 @item 3DEC file: @file{.3dec}
 
 It contains a description of the tessellation written under the
-3DEC @file{.3dec}.
+3DEC format @file{.3dec}.
 @end itemize
 
 @subsection Statistics
