@@ -1,10 +1,14 @@
-New in 1.10.2-9-g27b0cab (devel):
+New in 1.10.2-10-g44c9cc4 (devel):
 - module -T: added option -checktess, minor improvements.
-- module -FM: minor bug fixes; improved fev format support; added
-  individual file extension support in options -stattess and -statmesh.
+- module -FM: fixed msh output for meshes with different element
+  dimensions; changed "top" and "bot" nset names for cylindrical
+  domains to "z0" and "z1", minor bug fixes; improved fev format
+  support; added individual file extension support in options -stattess
+  and -statmesh.
 - module -O:  minor bug fixes.
 - module -MM: fasten up meshing; fixed -domain, -scale and -nset options,
-  add .nper file for periodicity conditions; minor other bug fixes.
+  add .nper file for periodicity conditions; fixed msh output for meshes
+  with different element dimensions; minor other bug fixes.
 - module -VS: fasten up meshing reconstruction and PNG file generation,
   added option '-camerasky', added option '-showeltedge', minor fixes.
 - documentation: minor fixes.
