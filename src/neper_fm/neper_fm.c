@@ -186,6 +186,7 @@ neper_fm (int fargc, char **fargv, int argc, char **argv)
   if (Geo.VerQty != 0 &&
      (ut_string_inlist (In.format, ',', "tess")
    || ut_string_inlist (In.format, ',', "geo")
+   || ut_string_inlist (In.format, ',', "3dec")
    || ut_string_inlist (In.format, ',', "ply")))
   {
     header_printed = 1;
@@ -223,6 +224,13 @@ neper_fm (int fargc, char **fargv, int argc, char **argv)
       file = ut_file_open (In.ply, "w");
       neut_geo_fprintf_ply (file, Geo);
       ut_file_close (file, In.ply, "w");
+    }
+
+    if (ut_string_inlist (In.format, ',', "3dec"))
+    {
+      file = ut_file_open (In.dec, "w");
+      neut_geo_fprintf_dec (file, Geo);
+      ut_file_close (file, In.dec, "w");
     }
 
     if (GeoPara.cltype >= 2) // tmp transformation for printing geo

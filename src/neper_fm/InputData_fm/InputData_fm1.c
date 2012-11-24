@@ -33,6 +33,7 @@ nefm_in_set_zero (struct IN* pIn)
   (*pIn).ingeo        = NULL;
   (*pIn).geo          = NULL;
   (*pIn).ply          = NULL;
+  (*pIn).dec          = NULL;
   (*pIn).ff           = NULL;
   (*pIn).stt3         = NULL;
   (*pIn).stt2         = NULL;
@@ -90,6 +91,7 @@ nefm_in_free (struct IN In)
   ut_free_1d_char (In.epart);
   ut_free_1d_char (In.geo);
   ut_free_1d_char (In.ply);
+  ut_free_1d_char (In.dec);
   ut_free_1d_char (In.ingeo);
   ut_free_1d_char (In.ff);
   ut_free_1d_char (In.stt3);

@@ -65,6 +65,7 @@ struct IN
   char *body;
   char *geo;
   char *ply;
+  char *dec;
   char *gmshgeo;
   char *ingeo;
   int printff;	         	

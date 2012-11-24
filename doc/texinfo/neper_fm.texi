@@ -491,9 +491,9 @@ Fem-Evps @code{fev} (all of the @code{parms}@comma{}
 @code{mesh}@comma{} @code{surf}@comma{} @code{opt} and @code{bcs}
 files are written by default.  To restric the list@comma{} provide the
 extensions).  For the tessellation geometry@comma{} the available
-formats are: the Neper @code{tess}@comma{} the Gmsh @code{geo} and the
-Ply @code{ply}.  Combine arguments with commas.,
-anyone of the above list,msh}
+formats are: the Neper @code{tess}@comma{} the Gmsh @code{geo}@comma{}
+the Ply @code{ply} and the 3DEC @code{3dec}.  Combine arguments with
+commas., anyone of the above list,msh}
 
 @opt{-nset, char_string,
 Specify the node sets to provide@comma{} among:
@@ -655,6 +655,10 @@ quality than by using module @code{-FM}.)
 It contains a description of the tessellation written under the
 standard ``Polygon File Format'' @file{.ply}.
 
+@item 3DEC file: @file{.3dec}
+
+It contains a description of the tessellation written under the
+3DEC @file{.3dec}.
 @end itemize
 
 @subsection Statistics

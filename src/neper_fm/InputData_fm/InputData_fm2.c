@@ -118,6 +118,7 @@ TreatArg_fm (int fargc, char **fargv, int argc, char **argv,
   /* Writing all file names */
   (*pIn).geo     = ut_string_addextension ((*pIn).body, ".tess");
   (*pIn).ply     = ut_string_addextension ((*pIn).body, ".ply");
+  (*pIn).dec     = ut_string_addextension ((*pIn).body, ".3dec");
   (*pIn).gmshgeo = ut_string_addextension ((*pIn).body, ".geo");
 
   (*pIn).geof    = ut_string_addextension ((*pIn).body, ".geof");
