@@ -1,5 +1,6 @@
-New in 1.10.2-12-gce25ce3 (devel):
-- module -T: added option -checktess, minor improvements.
+New in 1.10.2-13-gd86c7a0 (devel):
+- module -T: added 3dec geometry format, added option -checktess, minor
+  improvements.
 - module -FM: added 3dec geometry format, fixed msh output for meshes
   with different element dimensions; changed "top" and "bot" nset names
   for cylindrical domains to "z0" and "z1", minor bug fixes; improved

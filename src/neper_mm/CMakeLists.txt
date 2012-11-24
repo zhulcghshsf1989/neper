@@ -11,10 +11,6 @@ add_definitions(-Wall -W -g -O3)
 set (CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
 
 add_library (neper_mm
-./NSite/NSite4.c
-./NSite/NSite3.c
-./NSite/NSite2.c
-./NSite/NSite1.c
 ./Res_mm/Res_mm1.c
 ./Res_mm/Res_mm2.c
 ./Res_mm/Res_mm3.c

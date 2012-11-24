@@ -11,7 +11,6 @@ add_definitions(-Wall -W -g -O3)
 set (CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
 
 add_library (neper_t
-./net_lib/net_lib1.c
 ./net_utils/net_utils1.c
 ./Tess/Tess2.c
 ./Tess/Tess4.c
