@@ -502,13 +502,21 @@ domain faces@comma{} edges and vertices@comma{}
 and @code{facebodies} and @code{edgebodies} for all face and edge
 bodies. To get all of them@comma{} provide @code{all}.
 To get the nset corresponding to individual entities@comma{}
-provide their names@comma{} that is@comma{} for a cubic domain@comma{}
+provide their labels. For a cuboidal domain@comma{} they are
 @code{[x-z][0@comma{}1]} for the
 domain faces@comma{} @code{[x-z][0@comma{}1][x-z][0@comma{}1]} for the
 edges@comma{} and
 @code{[x-z][0@comma{}1][x-z][0@comma{}1][x-z][0@comma{}1]} for the
-vertices.  Append @samp{body} to the name to get only the body nodes of
-the sets. Combine them with commas.
+vertices.
+For a cylindrical domain@comma{} they are @code{z[0@comma{}1]} for the
+@math{z} faces@comma{} and @code{f[1@comma{}2@comma{}...]} for the faces
+on the circular part of the domain.
+For other domains@comma{}
+they are @code{f[1@comma{}2@comma{}...]} for the faces.
+For cylindrical and other types of domains@comma{} edge and
+vertex labels follow the same nomenclature than for cuboidal domains.
+Append @samp{body} to a label to get only the body nodes of
+the set. Combine labels with commas.
 ,
 any, faces}
 

@@ -1,4 +1,4 @@
-New in 1.10.2-10-g44c9cc4 (devel):
+New in 1.10.2-11-gb3c6286 (devel):
 - module -T: added option -checktess, minor improvements.
 - module -FM: fixed msh output for meshes with different element
   dimensions; changed "top" and "bot" nset names for cylindrical
