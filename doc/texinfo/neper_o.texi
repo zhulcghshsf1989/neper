@@ -136,9 +136,4 @@ Below are additional examples.
 orientations from the input file @file{n100-id1.tess}.
 @com{@code{neper -O n100-id1.tess}}
 
-@item @emph{Orientation colour generation.} Generate colours which
-correspond to the orientations written in file @file{n100-id1.ori}
-(Euler angles in Kocks convention).
-@com{@code{neper -O -load ek n100-id1.ori -crysym cubic -col R}}
-
 @end enumerate

@@ -4,7 +4,7 @@ project(neper C)
 set (NEPER_VERSION_MAJOR 2)
 set (NEPER_VERSION_MINOR x)
 set (NEPER_VERSION_PATCH x)
-set (NEPER_VERSION \"2.x.x-16-g48a01e2\ \(devel2\)\")
+set (NEPER_VERSION \"2.x.x-22-gcf4a87e\ \(devel2\)\")
 set (NEPER_EMAIL \"neper-users@lists.sourceforge.net\")
 
 # should we use the optional libraries?
@@ -20,7 +20,7 @@ include_directories("${PROJECT_SOURCE_DIR}/neut")
 include_directories("${PROJECT_SOURCE_DIR}/neper_t")
 include_directories("${PROJECT_SOURCE_DIR}/neper_fm")
 include_directories("${PROJECT_SOURCE_DIR}/neper_o")
-include_directories("${PROJECT_SOURCE_DIR}/neper_mm")
+# include_directories("${PROJECT_SOURCE_DIR}/neper_mm")
 include_directories("${PROJECT_SOURCE_DIR}/neper_vs")
 
 include_directories("${PROJECT_BINARY_DIR}")
@@ -31,7 +31,7 @@ include_directories("${PROJECT_BINARY_DIR}/neut")
 include_directories("${PROJECT_BINARY_DIR}/neper_t")
 include_directories("${PROJECT_BINARY_DIR}/neper_fm")
 include_directories("${PROJECT_BINARY_DIR}/neper_o")
-include_directories("${PROJECT_BINARY_DIR}/neper_mm")
+# include_directories("${PROJECT_BINARY_DIR}/neper_mm")
 include_directories("${PROJECT_BINARY_DIR}/neper_vs")
 
 # configure a header file to pass some of the CMake settings to the

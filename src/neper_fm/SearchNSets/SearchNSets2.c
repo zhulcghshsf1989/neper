@@ -30,8 +30,8 @@ SearchNSets_2d (struct GEO Geo, struct MESH Mesh2D, struct NSET* pNSet2D)
     (*pNSet2D).names[1] = ut_alloc_1d_char (4);
     (*pNSet2D).names[2] = ut_alloc_1d_char (4);
 
-    sprintf ((*pNSet2D).names[1], "bot");
-    sprintf ((*pNSet2D).names[2], "top");
+    sprintf ((*pNSet2D).names[1], "z0");
+    sprintf ((*pNSet2D).names[2], "z1");
 
     for (i = 3; i <= Geo.DomFaceQty; i++)
     {

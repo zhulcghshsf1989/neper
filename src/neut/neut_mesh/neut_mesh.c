@@ -3818,7 +3818,7 @@ neut_elts_fprintf_gmsh (FILE* file, struct MESH Mesh0D,
 			struct MESH Mesh3D, struct PART Part,
 			char* dim)
 {
-  int i, elt_type0D, elt_type1D, elt_type2D, elt_type3D;
+  int i, id, elt_type0D, elt_type1D, elt_type2D, elt_type3D;
   int eltnodeqty1D, eltnodeqty2D, eltnodeqty3D;
 
   eltnodeqty1D = neut_elt_nodeqty (Mesh1D.EltType, Mesh1D.Dimension, Mesh1D.EltOrder);
@@ -3855,6 +3855,8 @@ neut_elts_fprintf_gmsh (FILE* file, struct MESH Mesh0D,
 
   fprintf (file, "%d\n", eltqty);
 
+  id = 1;
+
   // 0D mesh
   if (ut_string_inlist (dim, ',', "0"))
   {
@@ -3862,7 +3864,7 @@ neut_elts_fprintf_gmsh (FILE* file, struct MESH Mesh0D,
       neut_mesh_init_eltelset (&Mesh0D, NULL);
     for (i = 1; i <= Mesh0D.EltQty; i++)
     {
-      fprintf (file, "%d %d 3 0 %d 0 ", i, elt_type0D, Mesh0D.EltElset[i]);
+      fprintf (file, "%d %d 3 0 %d 0 ", id++, elt_type0D, Mesh0D.EltElset[i]);
       ut_array_1d_int_fprintf (file, Mesh0D.EltNodes[i], 1, "%d");
     }
   }
@@ -3875,7 +3877,7 @@ neut_elts_fprintf_gmsh (FILE* file, struct MESH Mesh0D,
 
     for (i = 1; i <= Mesh1D.EltQty; i++)
     {
-      fprintf (file, "%d %d 3 0 %d 0 ", i, elt_type1D, Mesh1D.EltElset[i]);
+      fprintf (file, "%d %d 3 0 %d 0 ", id++, elt_type1D, Mesh1D.EltElset[i]);
       ut_array_1d_int_fprintf (file, Mesh1D.EltNodes[i], eltnodeqty1D, "%d");
     }
   }
@@ -3888,7 +3890,7 @@ neut_elts_fprintf_gmsh (FILE* file, struct MESH Mesh0D,
 
     for (i = 1; i <= Mesh2D.EltQty; i++)
     {
-      fprintf (file, "%d %d 3 0 %d 0 ", i, elt_type2D, Mesh2D.EltElset[i]);
+      fprintf (file, "%d %d 3 0 %d 0 ", id++, elt_type2D, Mesh2D.EltElset[i]);
       ut_array_1d_int_fprintf (file, Mesh2D.EltNodes[i], eltnodeqty2D, "%d");
     }
   }
@@ -3899,13 +3901,13 @@ neut_elts_fprintf_gmsh (FILE* file, struct MESH Mesh0D,
     if (Part.qty > 0)
       for (i = 1; i <= Mesh3D.EltQty; i++)
       {
-	fprintf (file, "%d %d 3 0 %d %d ", i, elt_type3D, Mesh3D.EltElset[i], Part.elt_parts[i] + 1);
+	fprintf (file, "%d %d 3 0 %d %d ", id++, elt_type3D, Mesh3D.EltElset[i], Part.elt_parts[i] + 1);
 	ut_array_1d_int_fprintf (file, Mesh3D.EltNodes[i], eltnodeqty3D, "%d");
       }
     else
       for (i = 1; i <= Mesh3D.EltQty; i++)
       {
-	fprintf (file, "%d %d 3 0 %d 0 ", i, elt_type3D, Mesh3D.EltElset[i]);
+	fprintf (file, "%d %d 3 0 %d 0 ", id++, elt_type3D, Mesh3D.EltElset[i]);
 	ut_array_1d_int_fprintf (file, Mesh3D.EltNodes[i], eltnodeqty3D, "%d");
       }
   }

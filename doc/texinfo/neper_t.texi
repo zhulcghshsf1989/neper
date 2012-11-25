@@ -356,7 +356,7 @@ standard ``Polygon File Format'' @file{.ply}.
 @item 3DEC file: @file{.3dec}
 
 It contains a description of the tessellation written under the
-3DEC @file{.3dec}.
+3DEC format @file{.3dec}.
 
 @item Neper voxel file: @file{.vox}
 
@@ -367,8 +367,6 @@ See @ref{File Formats} for the file syntax.
 @c It contains a human-friendly description of the tessellation, for
 @c debugging.
 @end itemize
-
->>>>>>> devel
 
 @subsection Statistics
 
