@@ -1,4 +1,8 @@
-New in 2.x.x-22-gcf4a87e (devel2):
+New in 2.0.0-devel2-24:
+- module -T: fixed option -pointpoly.
+- module -MM: fixed meshing of regularized tessellations.
+
+New in 1.10.3 (26 Nov 2012):
 - module -T: added 3dec geometry format, added option -checktess, minor
   improvements, added individual file extension support in -stattess,
   changed option -neigh 1 to -statp i,f,npl,fal,feql.

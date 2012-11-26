@@ -1102,6 +1102,7 @@ neut_geo_poly_skinmesh (struct GEO Geo, int nb,
   // adding poly vertices and calculating the inverse array
   neut_geo_poly_vers (Geo, nb, &ver, &verqty);
   ut_array_1d_int_inv (ver, verqty, &verinv, &verinvqty);
+  ut_array_1d_int_addval (verinv, verinvqty, 1, verinv);
 
   for (i = 0; i < verqty; i++)
     neut_nodes_addnode (pNodes, Geo.VerCoo[ver[i]], 1);
