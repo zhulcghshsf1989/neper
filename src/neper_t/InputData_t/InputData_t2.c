@@ -56,7 +56,14 @@ TreatArg_t (int fargc, char **fargv, int argc, char **argv,
       if ((*pGermSet).Id != -1)
 	sprintf ((*pIn).body, "n%d-id%d", (*pGermSet).N, (*pGermSet).Id);
       else
-	sprintf ((*pIn).body, "n%d-rand", (*pGermSet).N);
+      {
+	if (! strcmp ((*pGermSet).morpho, "poisson"))
+	  sprintf ((*pIn).body, "n%d-rand", (*pGermSet).N);
+	else if ((*pGermSet).morpho[0] != '@')
+	  sprintf ((*pIn).body, "n%d-%s", (*pGermSet).N, (*pGermSet).morpho);
+	else
+	  sprintf ((*pIn).body, "n%d-coo", (*pGermSet).N);
+      }
     }
     else if ((*pIn).input == 1)
     {
@@ -64,7 +71,7 @@ TreatArg_t (int fargc, char **fargv, int argc, char **argv,
       ut_string_body ((*pIn).load, (*pIn).body);
     }
     else if ((*pIn).input == 2)
-	sprintf ((*pIn).body, "%s%d", parts[0], (*pGermSet).N1d);
+      sprintf ((*pIn).body, "n%d-%s", (*pGermSet).N1d, (*pGermSet).morpho);
     else
       abort ();
   }
@@ -72,6 +79,7 @@ TreatArg_t (int fargc, char **fargv, int argc, char **argv,
   (*pIn).geo = ut_string_addextension ((*pIn).body, ".tess");
   (*pIn).gmshgeo = ut_string_addextension ((*pIn).body, ".geo");
   (*pIn).ply = ut_string_addextension ((*pIn).body, ".ply");
+  (*pIn).dec = ut_string_addextension ((*pIn).body, ".3dec");
   (*pIn).oin = ut_string_addextension ((*pIn).body, ".oin");
   (*pIn).stt0 = ut_string_addextension ((*pIn).body, ".stt0");
   (*pIn).stt3 = ut_string_addextension ((*pIn).body, ".stt3");

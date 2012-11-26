@@ -1,3 +1,20 @@
+New in 1.10.3 (26 Nov 2012):
+- module -T: added 3dec geometry format, added option -checktess, minor
+  improvements.
+- module -FM: added 3dec geometry format, fixed msh output for meshes
+  with different element dimensions; changed "top" and "bot" nset names
+  for cylindrical domains to "z0" and "z1", minor bug fixes; improved
+  fev format support; added individual file extension support in options
+  -stattess and -statmesh.
+- module -O:  minor bug fixes.
+- module -MM: fasten up meshing; fixed -domain, -scale and -nset options,
+  add .nper file for periodicity conditions; fixed msh output for meshes
+  with different element dimensions; minor other bug fixes.
+- module -VS: fasten up meshing reconstruction and PNG file generation,
+  added option '-camerasky', added option '-showeltedge', minor fixes.
+- documentation: minor fixes.
+- General: minor fixes.
+
 New in 1.10.2 (O9 Aug 2012):
 - module -T: fixed -centroid option.
 - module -FM: fixed list of available meshing algorithms.  Added

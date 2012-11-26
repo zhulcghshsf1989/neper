@@ -45,13 +45,12 @@ void
 DistribFromFile (char* filename, int N, double*** pGermsCoo)
 {
   FILE *file = ut_file_open (filename, "r");
-  int i, j;
+  int i;
 
   (*pGermsCoo) = ut_alloc_2d (N + 1, 4);
 
   for (i = 1; i <= N; i++)
-    for (j = 1; j <= 3; j++)
-      fscanf (file, "%lf", &((*pGermsCoo)[i][j]));
+    ut_array_1d_fscanf (file, (*pGermsCoo)[i] + 1, 3);
 
   ut_file_close (file, filename, "r");
 

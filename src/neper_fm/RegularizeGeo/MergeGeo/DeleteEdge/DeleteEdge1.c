@@ -37,18 +37,31 @@ DeleteEdge (struct GEO *pGeo, int edge, int *pver, double *pmaxff)
       && ((*pGeo).VerDom[ver1][1] != (*pGeo).VerDom[ver2][1]))
     return -2;
 
-  // test for edge belonging to a polyhedron with 4 faces only, which
+  // test for edge equal to a domain edge.
+  if ((*pGeo).EdgeDom[edge][0] == 1
+   && (*pGeo).DomTessEdgeQty[(*pGeo).EdgeDom[edge][1]] == 1)
+    return -2;
+
+  // test for edge belonging to a tet polyhedron, which
   // would mean deleting the polyhedron - this is not allowed.
+  // test on the number of vertices, NOT on the number of faces.
+  // (a regularized poly can have 4 faces, but > 4 vertices).
   int* poly = NULL;
   int polyqty;
+  int* ver = NULL;
+  int verqty;
   neut_geo_edge_polys (*pGeo, edge, &poly, &polyqty);
   for (i = 0; i < polyqty; i++)
-    if ((*pGeo).PolyFaceQty[poly[i]] == 4)
+  {
+    neut_geo_poly_vers (*pGeo, poly[i], &ver, &verqty);
+    if (verqty == 4)
     {
       ut_free_1d_int (poly);
       return -2;
     }
+  }
   ut_free_1d_int (poly);
+  ut_free_1d_int (ver);
 
   // test for edge leading to the a "bow tie"-shaped face after being
   // deleted

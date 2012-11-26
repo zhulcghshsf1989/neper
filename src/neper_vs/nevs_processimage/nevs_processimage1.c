@@ -81,7 +81,8 @@ nevs_processimage (char** argv, int* pi)
 
   ut_file_openmessage (argv[++(*pi)], "w");
   sprintf (command, "%s -average %s", command, argv[*pi]);
-  system (command);
+  if (system (command) == -1)
+    abort ();
   ut_file_closemessage (argv[*pi], "w");
 
   ut_free_1d_char (img1);

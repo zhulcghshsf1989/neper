@@ -46,6 +46,13 @@ nevs_show_init (
       ut_array_1d_int_set ((*pPrint).showelt + 1, Mesh3D.EltQty, 1);
     }
     
+    if ((*pPrint).showeltedge[0] == -1)
+    {
+      (*pPrint).showeltedge = ut_realloc_1d_int ((*pPrint).showeltedge, Mesh3D.EltQty + 1);
+      (*pPrint).showeltedge[0] = Mesh3D.EltQty;
+      ut_array_1d_int_set ((*pPrint).showeltedge + 1, Mesh3D.EltQty, 1);
+    }
+    
     if ((*pPrint).showelt2d[0] == -1)
     {
       (*pPrint).showelt2d = ut_realloc_1d_int ((*pPrint).showelt2d, Mesh2D.EltQty + 1);

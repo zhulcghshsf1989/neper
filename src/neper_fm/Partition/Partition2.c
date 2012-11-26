@@ -24,8 +24,11 @@ PartitionNodes (struct IN In, SCOTCH_Mesh * pSCMesh, SCOTCH_Arch * pArch,
   SCOTCH_stratInit (&Strat);
   SCOTCH_graphInit (&Graph);
 
-  SCOTCH_stratGraphMap (&Strat,
+  int status = SCOTCH_stratGraphMap (&Strat,
 			"r{job=t,map=t,poli=S,sep=m{type=h,vert=80,low=h{pass=10}f{bal=0.0005,move=80}x,asc=b{bnd=d{dif=1,rem=1,pass=40}f{bal=0.005,move=80},org=f{bal=0.005,move=80}}x}|m{type=h,vert=80,low=h{pass=10}f{bal=0.0005,move=80}x,asc=b{bnd=d{dif=1,rem=1,pass=40}f{bal=0.005,move=80},org=f{bal=0.005,move=80}}x}}");
+  if (status != 0)
+    status = SCOTCH_stratGraphMap (&Strat,
+			  "b{job=t,map=t,poli=S,sep=m{type=h,vert=80,low=h{pass=10}f{bal=0.0005,move=80}x,asc=b{bnd=d{dif=1,rem=1,pass=40}f{bal=0.005,move=80},org=f{bal=0.005,move=80}}x}|m{type=h,vert=80,low=h{pass=10}f{bal=0.0005,move=80}x,asc=b{bnd=d{dif=1,rem=1,pass=40}f{bal=0.005,move=80},org=f{bal=0.005,move=80}}x}}");
 
   parttab = ut_alloc_1d_int ((*pMesh).EltQty * eltnodeqty * 2 + 2);
   if (strcmp (In.partmethod, "none") != 0)

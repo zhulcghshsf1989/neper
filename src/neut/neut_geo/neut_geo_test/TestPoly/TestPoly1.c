@@ -5,34 +5,24 @@
 #include"TestPoly.h"
 
 int
-TestPoly (struct GEO Geo, int i)
+TestPoly (struct GEO Geo, int i, int verbosity)
 {
   int res;
-  int verbosity = 0;
 
-  res = TestPolyReciprocityFace (Geo, i);
-  if (res != 0)
-  {
-    if (verbosity == 1)
-      printf ("TestPolyReciprocityFace failed\n");
-    return res;
-  }
+  if (verbosity)
+    ut_print_message (0, 2, "Checking poly %d ...\n", i);
 
-  res = TestPolyCoplaneityFace (Geo, i);
+  res = TestPolyReciprocityFace (Geo, i, verbosity);
   if (res != 0)
-  {
-    if (verbosity == 1)
-      ut_print_message (1, 0, "Poly %d has coplanar faces.  This may be a bug.\n", i);
     return res;
-  }
 
-  res = TestPolyOrientationFace (Geo, i);
+  res = TestPolyCoplaneityFace (Geo, i, verbosity);
   if (res != 0)
-  {
-    if (verbosity == 1)
-      printf ("TestPolyOrientationFace failed\n");
     return res;
-  }
+
+  res = TestPolyOrientationFace (Geo, i, verbosity);
+  if (res != 0)
+    return res;
 
   return 0;
 }

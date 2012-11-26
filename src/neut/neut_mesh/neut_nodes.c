@@ -240,18 +240,6 @@ neut_nodes_nodes (struct NODES Old, struct NODES* pNew)
 }
 
 void
-neut_nodes_deform (struct NODES* pNodes, double* gsize)
-{
-  int i, j;
-
-  for (i = 1; i <= (*pNodes).NodeQty; i++)
-    for (j = 0; j < 3; j++)
-      (*pNodes).NodeCoo[i][j] *= gsize[j];
-
-  return;
-}
-
-void
 neut_nodes_proj_alongontomesh (struct NODES *pN, double* n, struct NODES N, struct MESH M, int elset)
 {
   int i, j, elt, status;

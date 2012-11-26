@@ -18,6 +18,7 @@ Res_mm (struct IN In, struct GEO Geo, struct NODES Nodes,
   char *expandnset = NULL;
   char *expandfaset = NULL;
 
+  // CLEAN by replacing neut_utils_nset_expand by neut_set_expand
   neut_utils_nset_expand (In.nset, &expandnset);
   neut_utils_nset_expand (In.faset, &expandfaset);
 
@@ -70,6 +71,13 @@ Res_mm (struct IN In, struct GEO Geo, struct NODES Nodes,
     WriteMapMeshAbq (In, expandnset, expandfaset,
 		   Nodes, (*pMesh3D), FoDNodes, file);
     ut_file_close (file, In.abq, "w");
+  }
+
+  if (! strcmp (GermSet.ttype, "periodic"))
+  {
+    file = ut_file_open (In.nper, "w");
+    WriteMapMeshNPer (FoDNodes, file);
+    ut_file_close (file, In.nper, "w");
   }
 
   if (In.input == 0 && In.ingeo == NULL && ut_string_inlist (In.format, ',', "oin"))

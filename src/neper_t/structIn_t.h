@@ -11,6 +11,7 @@ struct IN
   char* domainparms2;
   double *F;
   int verbosity;
+  int checktess;
 
   char *format;
   char *body;
@@ -18,6 +19,7 @@ struct IN
   char *geo;
   char *gmshgeo;
   char *ply;
+  char *dec;
   char *oin;
   char *mast;
   char *asy;
@@ -26,7 +28,7 @@ struct IN
   char *neigh;
   char *debug;
 
-  int stattess;
+  char* printstattess;
   int sorttess_qty;
   char** sorttess;
 

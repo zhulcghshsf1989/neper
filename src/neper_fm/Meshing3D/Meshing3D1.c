@@ -27,7 +27,8 @@ Meshing3D (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
   max_elapsed_t = 0;
 
   if (In.mesh3dreport == 1)
-    system ("mkdir -p neper-report");
+    if (system ("mkdir -p neper-report") == -1)
+      abort ();
 
   // breaking algo string into mesher / optimizer
   

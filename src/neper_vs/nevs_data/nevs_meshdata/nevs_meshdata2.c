@@ -62,22 +62,22 @@ nevs_meshdata_fscanf_set2entity (struct MESH Mesh1D,
   else if (! strcmp (type, "colscheme"))
   {
     (*pMeshData).colscheme[id2] = ut_alloc_1d_char (strlen ((*pMeshData).colscheme[id]) + 1);
-    sprintf ((*pMeshData).colscheme[id2], (*pMeshData).colscheme[id]);
+    strcpy ((*pMeshData).colscheme[id2], (*pMeshData).colscheme[id]);
   }
   else if (! strcmp (type, "scalemin"))
   {
     (*pMeshData).scalemin[id2] = ut_alloc_1d_char (strlen ((*pMeshData).scalemin[id]) + 1);
-    sprintf ((*pMeshData).scalemin[id2], (*pMeshData).scalemin[id]);
+    strcpy ((*pMeshData).scalemin[id2], (*pMeshData).scalemin[id]);
   }
   else if (! strcmp (type, "scalemax"))
   {
     (*pMeshData).scalemax[id2] = ut_alloc_1d_char (strlen ((*pMeshData).scalemax[id]) + 1);
-    sprintf ((*pMeshData).scalemax[id2], (*pMeshData).scalemax[id]);
+    strcpy ((*pMeshData).scalemax[id2], (*pMeshData).scalemax[id]);
   }
   else if (! strcmp (type, "scaleticks"))
   {
     (*pMeshData).scaleticks[id2] = ut_alloc_1d_char (strlen ((*pMeshData).scaleticks[id]) + 1);
-    sprintf ((*pMeshData).scaleticks[id2], (*pMeshData).scaleticks[id]);
+    strcpy ((*pMeshData).scaleticks[id2], (*pMeshData).scaleticks[id]);
   }
   else
     ut_error_reportbug ();

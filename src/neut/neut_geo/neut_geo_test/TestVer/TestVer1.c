@@ -5,22 +5,16 @@
 #include"TestVer.h"
 
 int
-TestVer (struct GEO Geo, int i, int print)
+TestVer (struct GEO Geo, int i, int verbosity)
 {
-  int res;
+  if (verbosity)
+    ut_print_message (0, 2, "Checking vertex %d ...\n", i);
 
-  res = TestVerEdgeQtyNNb (Geo, i, print);
-  if (res != 0)
-    return res;
-  res = TestVerEdgeReciprocity (Geo, i);
-  if (res != 0)
-    return res;
-  res = TestVerBoundNCoo (Geo, i);
-  if (res != 0)
-    return res;
-  res = TestVerFaceCoplaneity (Geo, i);
-  if (res != 0)
-    return res;
-
-  return 0;
+  if (TestVerEdgeQtyNNb      (Geo, i, verbosity) != 0
+   || TestVerEdgeReciprocity (Geo, i, verbosity) != 0
+   || TestVerBoundNCoo       (Geo, i, verbosity) != 0
+   || TestVerFaceCoplaneity  (Geo, i, verbosity) != 0)
+    return -1;
+  else
+    return 0;
 }

@@ -48,7 +48,7 @@ SetOptions_o (struct ORI *pOri, struct IN *pIn,
   sprintf (ArgList[++ArgQty], "-crysym");
   sprintf (ArgList[++ArgQty], "-descriptor");
   sprintf (ArgList[++ArgQty], "-format");
-  sprintf (ArgList[++ArgQty], "-colour");
+  sprintf (ArgList[++ArgQty], "-colour,-color");
   sprintf (ArgList[++ArgQty], "-load");
 
   for (i = 1; i <= argc - 1; i++)

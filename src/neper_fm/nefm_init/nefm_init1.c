@@ -108,7 +108,7 @@ nefm_init_remesh (struct IN In, struct GEO* pGeo, struct NODES* pRNodes,
     neut_geo_fscanf (file, pGeo);
     ut_file_close (file, In.remeshtess, "r");
     ut_print_message (0, 2, "Testing tessellation ...\n");
-    neut_geo_test (*pGeo);
+    neut_geo_test (*pGeo, 0);
     
     ReconMesh ("3,2,1,0", *pRNodes, pRMesh0D, pRMesh1D, pRMesh2D, pRMesh3D, NULL);
     
@@ -218,7 +218,7 @@ nefm_init_remap (struct IN In, struct GEO* pGeo, struct NODES* pRNodes,
     neut_geo_fscanf (file, pGeo);
     ut_file_close (file, In.transporttess, "r");
     ut_print_message (0, 2, "Testing tessellation ...\n");
-    neut_geo_test (*pGeo);
+    neut_geo_test (*pGeo, 0);
     
     ReconMesh ("3,2,1,0", *pRNodes, pRMesh0D, pRMesh1D, pRMesh2D, pRMesh3D, NULL);
     

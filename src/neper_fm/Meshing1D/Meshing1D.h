@@ -18,3 +18,5 @@
 extern void EdgeMeshing (struct GEO, int, double, double, struct
     NODES, struct NODES*, struct MESH*);
 extern double NextCoo (double, double, double);
+extern void nefm_mesh_1d_unitsegment (double cl1, double cl2, double clt, double pl,
+                     int* pqty, double** pcoo, double** pcl);

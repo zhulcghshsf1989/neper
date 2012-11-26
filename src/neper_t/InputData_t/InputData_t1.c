@@ -17,6 +17,7 @@ void
 net_in_set_zero (struct IN* pIn)
 {
   (*pIn).input = 0;
+  (*pIn).checktess = 0;
 
   (*pIn).domain = NULL;
   (*pIn).F = NULL;
@@ -29,6 +30,7 @@ net_in_set_zero (struct IN* pIn)
   (*pIn).geo   = NULL;
   (*pIn).gmshgeo   = NULL;
   (*pIn).ply   = NULL;
+  (*pIn).dec   = NULL;
   (*pIn).oin  = NULL;
   (*pIn).mast  = NULL;
   (*pIn).asy   = NULL;
@@ -37,7 +39,8 @@ net_in_set_zero (struct IN* pIn)
   (*pIn).neigh   = NULL;
   (*pIn).debug   = NULL;
   
-  (*pIn).stattess = 0;
+  (*pIn).printstattess = ut_alloc_1d_char (5);
+  strcpy ((*pIn).printstattess, "none");
   (*pIn).sorttess_qty = 0;
   (*pIn).sorttess = NULL;
   (*pIn).printneighbour = 0;
@@ -65,6 +68,7 @@ net_in_free (struct IN In)
   ut_free_1d_char (In.geo);
   ut_free_1d_char (In.gmshgeo);
   ut_free_1d_char (In.ply);
+  ut_free_1d_char (In.dec);
   ut_free_1d_char (In.oin);
   ut_free_1d_char (In.mast);
   ut_free_1d_char (In.asy);

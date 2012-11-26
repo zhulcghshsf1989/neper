@@ -12,6 +12,6 @@
 
 #include"TestEdge0.h"
 
-extern int TestEdgeLength (struct GEO, int);
-extern int TestEdgeReciprocityVer (struct GEO, int);
-extern int TestEdgeReciprocityFace (struct GEO, int);
+extern int TestEdgeLength (struct GEO, int, int);
+extern int TestEdgeReciprocityVer (struct GEO, int, int);
+extern int TestEdgeReciprocityFace (struct GEO, int, int);

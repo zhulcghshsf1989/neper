@@ -142,36 +142,59 @@ ut_string_fnrs (char *string, char* find, char* replace, int repeat)
 int
 ut_string_comp (char *in, char **list, int qty, char *out)
 {
-  int i;
+  int i, j;
   int res = 0;
+  char*** list2 = ut_alloc_1d_ppchar (qty + 1);
+  int* qty2 = ut_alloc_1d_int (qty + 1);
+
+  for (i = 1; i <= qty; i++)
+    ut_string_separate (list[i], ',', &(list2[i]), &(qty2[i]));
 
   /* Checking if it matches exactly */
   for (i = 1; i <= qty; i++)	/* for every list parameter */
-    if (strcmp (in, list[i]) == 0)
-    {
-      sprintf (out, "%s", list[i]);
-      return 0;
-    }
-
-  for (i = 1; i <= qty; i++)	/* for every list parameter */
   {
-    /* else, checking if one possibility could be ok */
-    if (strncmp (in, list[i], strlen (in)) == 0)
-    {
-      if (res == 0)		/* this is a good possibility. */
+    for (j = 0; j < qty2[i]; j++)
+      if (! strcmp (in, list2[i][j]))
+      {
 	res = i;
-      else			/* ie there are several possibilities: nok */
-	return 1;
-    }
+	break;
+      }
+
+    if (res != 0)
+      break;
   }
 
-  if (res != 0)
-  {
-    sprintf (out, "%s", list[res]);	/* this is the goo possibility. */
+  if (res == 0)
+    for (i = 1; i <= qty; i++)	/* for every list parameter */
+    {
+      for (j = 0; j < qty2[i]; j++)
+	if (strncmp (in, list2[i][j], strlen (in)) == 0)
+	{
+	  if (res == 0)
+	  {
+	    res = i;
+	    break;
+	  }
+	  else
+	    res = -2;
+	}
+
+      if (res == -2)
+	break;
+    }
+
+  if (res > 0)
+    strcpy (out, list2[res][0]);	/* this is the goo possibility. */
+
+  for (i = 1; i <= qty; i++)
+    ut_free_2d_char (list2[i], qty2[i]);
+  free (list2);
+  ut_free_1d_int (qty2);
+
+  if (res > 0)
     return 0;
-  }
   else
-    return -1;			/* there is no possibility. */
+    return (res == -2) ? 1 : -1;
 }
 
 char *
@@ -403,13 +426,12 @@ ut_string_separate (char* string, char c, char*** parts, int* pqty)
     sprintf (tmp[(*pqty)++], "%s", val);
   }
 
-  (*parts) = ut_alloc_1d_pchar (*pqty + 1);
+  (*parts) = ut_alloc_1d_pchar (*pqty);
   for (i = 0; i < (*pqty); i++)
   {
     (*parts)[i] = ut_alloc_1d_char (strlen (tmp[i]) + 1);
-    sprintf ((*parts)[i], "%s", tmp[i]);
+    strcpy ((*parts)[i], tmp[i]);
   }
-  (*parts)[(*pqty)] = NULL;
 
   ut_free_2d_char (tmp, strlen(string) + 1);
   ut_free_1d_char (val);
@@ -521,66 +543,6 @@ ut_string_paste (char * string1, char* string2)
 }
 
 
-double
-ut_string_exp_value (char *expr, unsigned int qty, double *d1, double *d2)
-{
-  unsigned int i;
-  int nb;
-  double res = 0;
-  char expr2[1000];
-  char command[1000];
-  FILE *file;
-
-  nb = 0;
-  for (i = 0; i <= strlen (expr) - 1; i++)
-  {
-    if (expr[i] != 't')
-    {
-      expr2[nb] = expr[i];
-      nb++;
-    }
-    else if (expr[i] == 't' &&
-	     ((i > 0 && isalpha (expr[i - 1])) || isalpha (expr[i + 1])))
-    {
-      expr2[nb] = expr[i];
-      nb++;
-    }
-    else
-    {
-      expr2[nb] = '$';
-      nb++;
-      expr2[nb] = '1';
-      nb++;
-    }
-  }
-  expr2[nb] = '\0';
-
-  /*
-     for(i=0;i<=strlen(expr2)-1;i++)
-     printf("%c",expr2[i]);
-     printf("\n");
-   */
-
-  file = ut_file_open ("devtmp", "W");
-  for (i = 0; i < qty; i++)
-    fprintf (file, "%.12f\n", d1[i]);
-  ut_file_close (file, "devtmp", "W");
-
-  sprintf (command, "awk '{print %s}' devtmp > devtmp2", expr2);
-  /*printf("command=%s\n",command); */
-  system (command);
-
-  file = ut_file_open ("devtmp2", "R");
-  for (i = 0; i < qty; i++)
-    fscanf (file, "%lf", &d2[i]);
-  ut_file_close (file, "devtmp2", "R");
-
-  remove ("devtmp");
-  remove ("devtmp2");
-
-  return res;
-}
-
 int
 ut_char_zero (char c)
 {
@@ -603,7 +565,8 @@ ut_string_format (char* in, char* format)
   isstring = 0;
   for (i = 0; i < length; i++)
   {
-    if (in[i] >= '0' && in[i] <= '9')
+    if ((i == 0 && in[i] == '-')
+     || (in[i] >= '0' && in[i] <= '9'))
       nbqty++;
     else if (in[i] == '.')
     {

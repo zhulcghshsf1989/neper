@@ -13,10 +13,7 @@
 #include "../ut_sys.h"
 #include "../ut.h"
 
-void
-sighandler ()
-{
-}
+void sighandler () {}
 
 int
 ut_sys_runwtime (char* exec, char *command, double t)
@@ -30,6 +27,7 @@ ut_sys_runwtime (char* exec, char *command, double t)
 
   memset (&act, 0, sizeof (struct sigaction));
   act.sa_handler = sighandler;
+  // act.sa_flags = SA_RESTART;
 
   value.it_value.tv_sec  = (long int)(t);
   value.it_value.tv_usec = (long int)((double)(t - value.it_value.tv_sec) * 1000000);
@@ -41,6 +39,8 @@ ut_sys_runwtime (char* exec, char *command, double t)
   sigaction (SIGALRM, &act, 0);
 
   ut_string_separate (command, ' ', &list, &qty);
+  list = ut_realloc_1d_pchar (list, qty + 1);
+  list[qty] = NULL;
   pid = fork ();
   if (pid == 0)
   {

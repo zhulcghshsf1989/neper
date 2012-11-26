@@ -28,6 +28,11 @@ nevs_print_header (FILE* file, struct PRINT Print)
 
   fprintf (file, "angle %f\n", Print.cameraangle);
 
+  fprintf (file, "sky <%f, %f, %f>\n",
+                 Print.camerasky[0],
+                 Print.camerasky[2],
+                 Print.camerasky[1]);
+
   fprintf (file, "}\n");
 
   if (Print.showshadow == 1)

@@ -102,3 +102,41 @@ neut_geo_fprintf_ply (FILE* file, struct GEO Geo)
 
   return;
 }
+
+void
+neut_geo_fprintf_dec (FILE* file, struct GEO Geo)
+{
+  int i, j, k, l, face, ver, faceid;
+
+  fprintf (file, "; 3DEC input deck produced by Neper.\n");
+
+  faceid = 0;
+  for (i = 1; i <= Geo.PolyQty; i++)
+  {
+    fprintf (file, "; block %d\n", i);
+    fprintf (file, "poly reg %4d mat   1 con   1 &\n", i);
+
+    for (j = 1; j <= Geo.PolyFaceQty[i]; j++)
+    {
+      face = Geo.PolyFaceNb[i][j];
+
+      fprintf (file, "face ID %9d ", ++faceid);
+      for (k = 1; k <= Geo.FaceVerQty[face]; k++)
+      {
+	ver = Geo.FaceVerNb[face][k];
+	if (k > 1)
+	  fprintf (file, "                  ");
+
+	for (l = 0; l < 3; l++)
+	  fprintf (file, "%.12f ", Geo.VerCoo[ver][l]);
+	fprintf (file, "&\n");
+      }
+    }
+
+    fprintf (file, "\n");
+  }
+
+  fprintf (file, "ret\n");
+
+  return;
+}

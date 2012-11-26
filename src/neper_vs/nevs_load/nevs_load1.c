@@ -33,10 +33,7 @@ nevs_load (char** argv, int* pi, struct NODES *pNodes,
 
     // WORKAROUND for the case of elttype="quad" for which Geo is not
     // reconstructed properly.
-    if (! strcmp ((*pMesh3D).EltType, "tri"))
-      ReconMesh ("3,2,1,0", (*pNodes), pMesh0D, pMesh1D, pMesh2D, pMesh3D, pGeo);
-    else
-      ReconMesh ("3,2,1,0", (*pNodes), pMesh0D, pMesh1D, pMesh2D, pMesh3D, NULL);
+    ReconMesh ("3,2,1,0", (*pNodes), pMesh0D, pMesh1D, pMesh2D, pMesh3D, pGeo);
   }
 
   else

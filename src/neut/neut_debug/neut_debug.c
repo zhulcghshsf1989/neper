@@ -48,6 +48,16 @@ neut_debug_mesh (FILE* file, struct MESH Mesh)
       ut_array_1d_int_fprintf (file, Mesh.Elsets[i], Mesh.Elsets[i][0] + 1, "%d");
   }
 
+  if (Mesh.NodeElts == NULL)
+    fprintf (file, "Mesh.NodeElts is NULL\n");
+  else
+  {
+    fprintf (file, "Mesh.NodeElts[0][0] = %d (= NodeQty)\n", Mesh.NodeElts[0][0]);
+    fprintf (file, "qty then ids\n");
+    for (i = 1; i <=  Mesh.NodeElts[0][0]; i++)
+      ut_array_1d_int_fprintf (file, Mesh.NodeElts[i], Mesh.NodeElts[i][0] + 1, "%d");
+  }
+
   fprintf (file, "====== End of Mesh =======================================\n");
   return;
 }

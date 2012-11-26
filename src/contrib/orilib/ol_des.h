@@ -1,3 +1,4 @@
+/* This file is part of the 'orilib' software. */
 /* Copyright (C) 2007-2009, 2012 Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 #ifndef OL_DES
@@ -5,6 +6,8 @@
 
 #include "ol_glo.h"
 #include "ol_cal.h"
+
+extern int ol_des_size (char*);
 
 extern double* ol_e_alloc (void);
 extern void ol_e_free (double *);

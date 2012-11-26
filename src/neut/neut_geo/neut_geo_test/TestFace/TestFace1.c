@@ -5,52 +5,19 @@
 #include"TestFace.h"
 
 int
-TestFace (struct GEO Geo, int i)
+TestFace (struct GEO Geo, int i, int verbosity)
 {
-  int res;
-  int verbosity = 0;
+  if (verbosity)
+    ut_print_message (0, 2, "Checking face %d ...\n", i);
 
-  res = TestFaceReciprocityEdge (Geo, i);
-  if (verbosity == 1)
-    printf ("TestFaceReciprocityEdge: %d\n", res);
-  if (res != 0)
-    return res;
-
-  res = TestFaceReciprocityVer (Geo, i);
-  if (verbosity == 1)
-    printf ("TestFaceReciprocityVer: %d\n", res);
-  if (res != 0)
-    return res;
-
-  res = TestFaceReciprocityPoly (Geo, i);
-  if (verbosity == 1)
-    printf ("TestFaceReciprocityPoly: %d\n", res);
-  if (res != 0)
-    return res;
-
-  res = TestFaceState (Geo, i);
-  if (verbosity == 1)
-    printf ("TestFaceState: %d\n", res);
-  if (res != 0)
-    return res;
-
-  res = TestFaceBound (Geo, i);
-  if (verbosity == 1)
-    printf ("TestFaceBound: %d\n", res);
-  if (res != 0)
-    return res;
-
-  res = TestFaceSelfIntersect (Geo, i);
-  if (verbosity == 1)
-    printf ("TestFaceSelfIntersect: %d\n", res);
-  if (res != 0)
-    return res;
-
-  res = neut_geo_test_face_normal (Geo, i);
-  if (verbosity == 1)
-    printf ("neut_geo_test_face_normal: %d\n", res);
-  if (res != 0)
-    return res;
-
-  return 0;
+  if (TestFaceReciprocityEdge   (Geo, i, verbosity) != 0
+   || TestFaceReciprocityVer    (Geo, i, verbosity) != 0
+   || TestFaceReciprocityPoly   (Geo, i, verbosity) != 0
+   || TestFaceState             (Geo, i, verbosity) != 0
+   || TestFaceBound             (Geo, i, verbosity) != 0
+   || TestFaceSelfIntersect     (Geo, i, verbosity) != 0
+   || neut_geo_test_face_normal (Geo, i, verbosity) != 0)
+   return -1;
+  else
+    return 0;
 }

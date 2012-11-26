@@ -5,6 +5,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
+#include<string.h>
 
 #include"../structIn_fm.h"
 #include"ut.h"

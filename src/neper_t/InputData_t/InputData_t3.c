@@ -52,7 +52,10 @@ SetDefaultOptions_t (struct IN *pIn, struct GERMSET *pGermSet)
   (*pIn).point = ut_alloc_1d_char (100);
   (*pIn).polyid = ut_alloc_1d_char (100);
   
-  (*pIn).stattess = 0;
+  ut_free_1d_char ((*pIn).printstattess);
+  (*pIn).printstattess = ut_alloc_1d_char (5);
+  strcpy ((*pIn).printstattess, "none");
+
   (*pIn).sorttess_qty = 0;
 
   (*pIn).centroid = 0;
@@ -79,10 +82,6 @@ SetOptions_t (struct IN *pIn, struct GERMSET *pGermSet,
   sprintf (ArgList[++ArgQty], "-id");
   sprintf (ArgList[++ArgQty], "-morpho");
   sprintf (ArgList[++ArgQty], "-centroid");
-  sprintf (ArgList[++ArgQty], "-centrecoo");
-  sprintf (ArgList[++ArgQty], "-centercoo");
-  sprintf (ArgList[++ArgQty], "-gcoo");
-  sprintf (ArgList[++ArgQty], "-regular");
   // General options ---------------------------------------------------
   sprintf (ArgList[++ArgQty], "-o");
   sprintf (ArgList[++ArgQty], "-v");
@@ -100,15 +99,14 @@ SetOptions_t (struct IN *pIn, struct GERMSET *pGermSet,
   // Output options ----------------------------------------------------
   sprintf (ArgList[++ArgQty], "-format");
   // Post-processing ---------------------------------------------------
-  sprintf (ArgList[++ArgQty], "-stat");
   sprintf (ArgList[++ArgQty], "-stattess");
   sprintf (ArgList[++ArgQty], "-sort");
   sprintf (ArgList[++ArgQty], "-sorttess");
   sprintf (ArgList[++ArgQty], "-pointpoly");
-  sprintf (ArgList[++ArgQty], "-neighbour");
-  sprintf (ArgList[++ArgQty], "-neighbor");
+  sprintf (ArgList[++ArgQty], "-neighbour,-neighbor");
   // Restart a job -----------------------------------------------------
   sprintf (ArgList[++ArgQty], "-loadtess");
+  sprintf (ArgList[++ArgQty], "-checktess");
 
   // Treating arguments ================================================
   
@@ -241,8 +239,11 @@ SetOptions_t (struct IN *pIn, struct GERMSET *pGermSet,
       ut_free_1d_char ((*pIn).format);
       (*pIn).format = ut_arg_nextaschar (argv, &i, Arg);
     }
-    else if (strcmp (Arg, "-stattess") == 0 || strcmp (Arg, "-stat") == 0)
-      (*pIn).stattess = ut_arg_nextasint (argv, &i, Arg, 0, 1);
+    else if (strcmp (Arg, "-stattess") == 0 && i < argc - 1)
+    {
+      ut_free_1d_char ((*pIn).printstattess);
+      (*pIn).printstattess = ut_arg_nextaschar (argv, &i, Arg);
+    }
     else if ((strcmp (Arg, "-sorttess") == 0 ||
 	      strcmp (Arg, "-sort") == 0   ) && i < argc - 2) 
     {
@@ -254,10 +255,14 @@ SetOptions_t (struct IN *pIn, struct GERMSET *pGermSet,
 
 /*---------------------------------------------------------------------- 
 * load capability */
-    else if (strcmp (Arg, "-loadtess") == 0 && i < argc - 1)
+    else if ((! strcmp (Arg, "-loadtess") && i < argc - 1)
+          || (! strcmp (Arg, "-checktess") && i < argc - 1))
     {
       (*pIn).input = 1;
       (*pIn).load = ut_arg_nextaschar (argv, &i, Arg);
+
+      if (! strcmp (Arg, "-checktess"))
+	(*pIn).checktess = 1;
     }
     else
     {

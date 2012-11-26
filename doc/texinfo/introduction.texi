@@ -25,7 +25,7 @@ of tessellations, that is, meshes comprised of tetrahedral elements
 that conform to the tessellation morphology.  Neper includes several
 advanced features that are necessary to get good-quality meshes:
 optimized meshing rules, a geometry regularization approach,
-multimeshing (the competitive use of several meshers) and
+multimeshing (the competitive use of several meshing algorithms) and
 remeshing.
 
 @item @MMM{} is for generating mapped meshes of tessellations.  These
@@ -34,7 +34,7 @@ conform exactly to the tessellation morphology.
 Mapped meshes of standard tessellations, periodic tessellations and
 herein called @dfn{subdomain-type} tessellations can be created.
 
-@item @MO{} provides crystallographic orientations for the grains.  The
+@item @MO{} provides crystal orientations for the grains.  The
 orientations are randomly distributed according to a uniform
 distribution.
 
@@ -54,12 +54,11 @@ are available:
 
 @itemize
 @item The Neper reference manual.  It describes all the Neper
-capabilities.  Each module is the subject of a specific chapter, in
-which all the available commands as well as the result files are
-described in detail.  Some examples are also provided.  The Neper
-documentation comes in two formats: a PDF file and an info file.
-Provided that the info file is properly installed at your site, it
-can be accessed by running the shell command: @command{info neper}.
+capabilities. It is made of one chapter for each module, describing
+the available commands and result files, and providing some examples.
+The manual comes both as a PDF file and an info file.  Provided
+that the info file is properly installed at your site, it can be
+accessed by the command: @command{info neper}.
 
 @item The Neper homepage: @url{http://neper.sourceforge.net}.  It is
 where the Neper distribution can be downloaded from. It also provides an
@@ -74,9 +73,13 @@ provides details on the algorithms.  It can be downloaded
 from the Neper homepage or by following this link:
 @url{http://neper.sourceforge.net/neper_paper.pdf}.
 
+@item The Neper Git repository: @url{http://github.com/rquey/neper}.
+It is where the development version can be downloaded from. The
+repository can be also be cloned using the command
+@w{@samp{@command{git clone git://github.com/rquey/neper.git}}}.
+
 @end itemize
 
-@need 2000
 @section Installing Neper
 
 Neper is written in (mostly ANSI) C and can run on any Unix-like system.
@@ -103,7 +106,7 @@ Neper's @file{src} directory,
 @end itemize
 
 This will use the default configuration options, including on which
-dependencies are used, and should work out of the box provided that the
+dependencies are used, and should work out of the box as soon as the
 required libraries are installed in standard system locations.  A finer
 configuration can be achieved before building Neper, as described
 in the following.
@@ -111,21 +114,21 @@ in the following.
 @subsection Dependencies
 
 Neper has mandatory as well as optional dependencies.  Some dependencies
-are needed at compilation time.  They are,
+are managed at compilation time,
 
 @itemize
 
 @item the GSL library (mandatory) 
 
 It is likely to be available on your system or from your system package
-manager (packages @code{gsl} and @code{gsl-devel}).  Alternatively, the
+manager (binary and development packages).  Alternatively, the
 source code version can be obtained from the GSL homepage,
 @uref{http://www.gnu.org/software/gsl}.
 
 @item the libmatheval library (optional, @emph{included} by default)
 
 It is likely to be available on your system or from your system package
-manager (packages @code{libmatheval} and @code{libmatheval-devel}).
+manager (binary and development packages).
 Alternatively, the source code version can be obtained from the
 libmatheval homepage, @uref{http://www.gnu.org/software/libmatheval}.
 
@@ -143,17 +146,16 @@ Optional dependencies can be toggled on / off using Cmake's GUI
 @code{HAVE_@var{LIBRARYNAME}} to ON or OFF, respectively. 
 
 @sp 1
-The following dependencies are not managed during the compilation.  They
-are only needed at run time,
+The following dependencies are only needed at run time,
 
 @itemize
 
 @item the Gmsh program (mandatory for module -FM)
 
 This version on Neper is intended to work with Gmsh (version
-@code{2.4.2} or later), which can be downloaded from
-@url{http://www.geuz.org/gmsh}.  A working Gmsh installation must be
-available on your system.
+@code{2.4.2} or later, excluding version @code{2.5.1}), which can be
+downloaded from @url{http://www.geuz.org/gmsh}.  A working Gmsh
+installation must be available on your system.
 
 @item the POV-Ray program (mandatory for module -VS)
 
@@ -205,10 +207,10 @@ long as the abbreviation is not ambiguous. For example, in module
 @option{-des} or even safely @w{to @option{-d}}.  Logical options can be
 selected by giving the @w{value @samp{1}} or disabled by @w{giving
 @samp{0}}.  Neper is highly parametrable, and as a consequence includes
-quite a large number of options.  For clarity sake, they are tagged
-according to their importance level in the reference manual:
-@w{`[Option]'} or @w{`[Secondary option]'}.  The post-processing options
-are tagged @w{`[Post-processing]'}.
+quite a large number of options.  For clarity, they are tagged by
+importance level in the reference manual: @w{`[Option]'} or
+@w{`[Secondary option]'}.  Post-processing options are tagged
+@w{`[Post-processing]'}.
 
 @subsection Initialization File
 
@@ -224,12 +226,11 @@ as value of the @var{my_file} argument.
 
 When a module of Neper is called, 
 Neper looks for the occurrence of @samp{neper @var{module_name}} in the
-initialization file, then reads all the arguments until the subsequent
-occurrence of @samp{neper} (which should denote the beginning of
-another module option field) or the end of the file.  Moreover, any
-comments can be written after giving @samp{neper comments}.  The
-arguments may be any legal arguments, but are typically limited to
-frequently-used options.
+initialization file, then reads all arguments until the next occurrence
+of @samp{neper} (which should denote the beginning of another module
+option field) or the end of the file.  Moreover, any comments can be
+written after giving @samp{neper comments}.  The arguments may be any
+legal arguments, but are typically limited to frequently-used options.
 
 @c @medskip
 An example of initialization file is given below:
@@ -238,9 +239,9 @@ An example of initialization file is given below:
 @example
 @c @group
 neper comments ------------------------------------------------------
-This is my default initialization file (~/.neperrc).
-neper -FM -order 2 -maxff 20 -gmsh my_gmsh_path
-          -rcl 0.8
+This is my initialization file (~/.neperrc).
+neper -FM -order 2
+          -gmsh my_gmsh_path
 neper -MM -order 2
 neper comments ------------------------------------------------------
 @c @end group
@@ -248,11 +249,11 @@ neper comments ------------------------------------------------------
 @c @end cartouche
 
 @c @medskip
-If @samp{neper @var{module_name}} is not found, or if the initialization
-file is not found, Neper will just consider the command line arguments.
-Also, note that if an argument is initialized several times (for
-example, both in the initialization file and at the command line), the
-last specified value is retained.
+If the initialization file is not found, or if @samp{neper
+@var{module_name}} is not found is the file, Neper will just consider
+the command line arguments.  Also note that if an argument is
+initialized several times (for example, both in the initialization file
+and at the command line), the last specified value is considered.
 
 @subsection Conventions
 

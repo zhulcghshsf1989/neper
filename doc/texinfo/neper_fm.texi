@@ -131,13 +131,14 @@ Here is what a typical run of @mFM{} looks like:
     Info   :   - 0D meshing ...  100%
     Info   :   - 1D meshing ...  100%
     Info   :   - 2D meshing ...  100% (0.26|0.85/16%|83%)
-    Info   :   - 3D meshing ...  100% (0.88|0.91/100%| 0%)
+    Info   :   - 3D meshing ...  100% (0.89|0.91/100%| 0%)
     Info   :   - Searching nsets ...
+    Info   : Writing geometry results ...
     Info   : Writing mesh results ...
     Info   :   - Preparing mesh ...
     Info   :   - Mesh properties:
     Info   :     > Node number:      299
-    Info   :     > Elt  number:     1034
+    Info   :     > Elt  number:     1041
     Info   :     > Mesh volume:    1.000
     Info   :   - Writing mesh ...
     Info   :     [o] Writing file `n10-id1.msh' ...
@@ -226,7 +227,7 @@ any, -rcl 1}
 
 @opt{-dim,integer,
 Specify the mesh dimension.,
-0 to 3,3}
+0 to 3,max of -outdim (default = 3)}
 
 @opt{-order,integer,
 Specify the mesh order.,
@@ -273,7 +274,8 @@ The following options define the 2D and 3D-meshing algorithms.  The
 algorithms have the format @samp{@var{mesh}} or
 @samp{@var{mesh}/@var{opti}}, where @code{@var{mesh}} and
 @code{@var{opti}} stand for the meshing and optimization algorithms and
-are 4-character long. @emph{Multimeshing} can be used by providing
+are 4-character long. (The @samp{:} character can also be used as a
+separator.) @emph{Multimeshing} can be used by providing
 several algorithms combined with commas, e.g@.
 @code{@var{mesh1}/@var{opti1},@var{mesh1}/@var{opti2},@var{mesh2}/@var{opti2}}.
 The 2D and 3D meshings are carried out using the Gmsh@footnote{Ch.@
@@ -478,30 +480,43 @@ any,none}
 @opt{-outdim,char_string,
 Specify the dimensions of the mesh to output. It can go from 0 to
 3@comma{} for point to volume elements (combine with commas).,
-0@comma{} 1@comma{} 2@comma{} 3@comma{},
+0@comma{} 1@comma{} 2@comma{} 3,
 0@comma{}1@comma{}2@comma{}3}
 
 @opt{-format,char_string,
 Specify the format of the output file(s). For the mesh@comma{} the
-available formats are: @code{msh} for Gmsh@comma{} @code{abq} for
-Abaqus@comma{} @code{geof} for Zset/Z@'ebulon@comma{} and @code{fev} for
-Fem-Evps.  For the tessellation geometry@comma{} the available formats
-are: @code{tess} and @code{geo}.  Combine arguments with commas.,
-anyone of the above list,msh}
+available formats are: the Gmsh @code{msh}@comma{} the Abaqus
+@code{inp}@comma{} the Zset/Z@'ebulon @code{geof} and the 
+Fem-Evps @code{fev} (all of the @code{parms}@comma{}
+@code{mesh}@comma{} @code{surf}@comma{} @code{opt} and @code{bcs}
+files are written by default.  To restric the list@comma{} provide the
+extensions).  For the tessellation geometry@comma{} the available
+formats are: the Neper @code{tess}@comma{} the Gmsh @code{geo}@comma{}
+the Ply @code{ply} and the 3DEC @code{3dec}.  Combine arguments with
+commas., anyone of the above list,msh}
 
 @opt{-nset, char_string,
 Specify the node sets to provide@comma{} among:
 @code{faces}@comma{} @code{edges}@comma{} @code{vertices} for all
 domain faces@comma{} edges and vertices@comma{}
 and @code{facebodies} and @code{edgebodies} for all face and edge
-bodies. To get the nset corresponding to individual entities@comma{}
-provide their names@comma{} that is@comma{} for a cubic domain@comma{}
+bodies. To get all of them@comma{} provide @code{all}.
+To get the nset corresponding to individual entities@comma{}
+provide their labels. For a cuboidal domain@comma{} they are
 @code{[x-z][0@comma{}1]} for the
 domain faces@comma{} @code{[x-z][0@comma{}1][x-z][0@comma{}1]} for the
 edges@comma{} and
 @code{[x-z][0@comma{}1][x-z][0@comma{}1][x-z][0@comma{}1]} for the
-vertices.  Append @samp{body} to the name to get only the body nodes of
-the sets. Combine them with commas.
+vertices.
+For a cylindrical domain@comma{} they are @code{z[0@comma{}1]} for the
+@math{z} faces@comma{} and @code{f[1@comma{}2@comma{}...]} for the faces
+on the circular part of the domain.
+For other domains@comma{}
+they are @code{f[1@comma{}2@comma{}...]} for the faces.
+For cylindrical and other types of domains@comma{} edge and
+vertex labels follow the same nomenclature than for cuboidal domains.
+Append @samp{body} to a label to get only the body nodes of
+the set. Combine labels with commas.
 ,
 any, faces}
 
@@ -514,18 +529,20 @@ faces@comma{} [x-z][0@comma{}1] (for a cubic domain),none}
 
 @subsection Post-Processing Options
 
-@post{-stattess,logical,
-Provide statistics on the tessellation.
+@post{-stattess, char_string,
+Provide statistics on the tessellation.  Give as argument the
+file extensions (combine with commas).
 ,
-0 or 1, 0,
+none@comma{} all@comma{} stt[0-3], none,
 .stt#}
 
-@post{-statmesh,logical,
+@post{-statmesh, char_string,
 Provide information and statistics on the elements and element
-sets.
+sets.  Give as argument the file extensions (combine with commas).
 ,
-0 or 1, 0,
-.stm#}
+none@comma{} all@comma{} stn@comma{} stm[1-5],
+none,
+.stn' and `.stm#}
 
 @subsection Advanced Options
 
@@ -638,6 +655,10 @@ quality than by using module @code{-FM}.)
 It contains a description of the tessellation written under the
 standard ``Polygon File Format'' @file{.ply}.
 
+@item 3DEC file: @file{.3dec}
+
+It contains a description of the tessellation written under the
+3DEC format @file{.3dec}.
 @end itemize
 
 @subsection Statistics
@@ -660,17 +681,38 @@ formats are provided below.  All files are formatted with one entity
 @code{@var{xc}}, @code{@var{yc}} and @code{@var{zc}} denote the centroid
 (centre of mass) coordinates.
 
-@need 2000
+@sp 1
 The following are for statistics on the mesh.
 
 @itemize
-@item Mesh non-quality statistics file, @file{.stm1}:
+@item Node statistics file, @file{.stn}:
+@w{@code{@var{id x y z dim}}}.
+
+@item 3D element non-quality statistics file, @file{.stm1}:
 @w{@code{@var{id elset_id true vol mean_length x y z}}}.
 
-@item Mesh quality statistics file, @file{.stm2}:
+@item 3D element quality statistics file, @file{.stm2}:
 @w{@code{@var{id elset_id true radius_ratio angle_min}}}.
 
+@item 3D element quality statistics file (2), @file{.stm3}:
+@w{@code{@var{angle_1 angle_2 ... angle_12}}}.
+
+@item 3D element set non-quality statistics file, @file{.stm4}:
+@w{@code{@var{id number_of_elts vol xc yc zc}}}.
+
+@item 3D element set quality statistics file, @file{.stm5}:@*
+@w{@code{@var{id true body number_of_elts radius_ratio_min
+  Osize@math{^{1/3}}}}}.
+
 @end itemize
+
+@code{dim} denotes the dimension of a node (0 if it belongs to a 0D
+element@comma{} 1 of it belongs to a 1D element@comma{} etc.).
+@code{@var{angle_min}} denotes the minimum angle between two edges of an
+element.  @code{@var{angle_1}}, @code{@var{angle_2}}, etc.@ are the
+individual angles.  @code{@var{radius_ratio_min}} denotes the minimum
+radius ratio over an element set.  See the neper reference paper for the
+definition of @code{@var{Osize}}.
 
 @section Examples
 
@@ -686,45 +728,14 @@ at @url{http://neper.sourceforge.net/neper_fm.html}.
 @item    Mesh tessellation n100-id1.tess with a mesh size of rcl = 0.5 and in 2nd-order elements.
 @com{neper -FM n100-id1.tess -maxff 20 -sel 0.05 -rcl 0.5 -order 2}
 @item    Mesh tessellation n100-id1.tess with small elements for the inner grains and bigger elements for the surface grains.
-@com{neper -FM n100-id1.tess -maxff 20 -rcl 0.2 -dbound "body==0" }
+@com{neper -FM n100-id1.tess -maxff 20 -rcl 0.2 -dbound body==0 }
 @comx{-dboundrcl 0.5 -dboundsel 0.05}
 @item    Remesh mesh n150_def.msh (comprising poor-quality elements) into a clean, new mesh. Transport the scalar data of file `n150_def.data' from the deformed mesh to the new mesh.
 @com{neper -FM -remeshtess n150.tess -remesh n150_def.msh -transport }
 @comx{n150_def.msh 1 elt real1 n150_def.data -rcl 0.5 -o n150_new}
+@item    Mesh tessellation n100-id1.tess in 2nd-order elements and partition the mesh in 8 partitions.
+@com{neper -FM n100-id1.tess -maxff 20 -order 2 -partqty 8}
+@item    Mesh tessellation n100-id1.tess with different element sizes along x, y and z: rcl = 1, 1 and 0.25.
+@com{neper -FM n100-id1.tess -maxff 20 -rcl3 1 1 0.25}
 @c Example_end
-@end enumerate
-
-@enumerate
-
-Below are some examples of advanced use.
-
-@item @emph{Multimeshing.} Improve mesh quality as far as possible through 3D multimeshing.
-@com{neper -FM n10-id1.tess -maxff 20 -rcl 0.8 -order 2}
-@comx{-format tess,msh,abq -o n10}
-@comx{-mesh3dalgo netg/gmsh,netg/netg,netg/gmne}
-
-@item @emph{Mesh partitionning.} Like 2., but partition in 8 partitions
-and renumber the nodes and elements accordingly.
-@com{neper -FM n10-id1.tess -maxff 20 -rcl 0.8 -order 2}
-@comx{-format tess,msh,abq -o n10}
-@comx{-partq 8 -partrenum 1}
-
-@item @emph{Orthotropic mesh refinement.} Mesh tessellation
-@file{n10-id1.tess} with different element characteristic lengths
-along x, y and z: @math{@var{rcl}=1}, @math{@var{rcl}=0.5} and
-@math{@var{rcl}=0.25}, respectively. Use geometry regularization.
-@com{neper -FM n10-id1.tess -rcl3 1 0.5 0.25 -maxff 20}
-
-@item @emph{Data transport 1/2.} Like 7., and transport data defined on
-@file{n10.msh} to @file{n10-b.msh}.  The data are 3D vectors given in
-file @file{data} (format = 3 coordinates per line).
-@com{neper -FM -remesh n10.msh -remeshtess n10.tess -rcl 0.5}
-@comx{-transport n10.msh 1 elt real3 data -o n10-b}
-
-@item @emph{Data transport 2/2.} Transport data from an existing old mesh
-@file{n10.msh} to an existing new mesh @file{n10-b.msh}.  The data are
-3D vectors given in file @file{data} (format = 3 coordinates per line). 
-@com{neper -FM -loadmesh n10-b.msh}
-@comx{-transport n10.msh 1 elt real3 data -o n10-b}
-
 @end enumerate

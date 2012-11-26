@@ -63,7 +63,9 @@ ReadEltsProp (FILE * msh, struct MESH *pMesh, int **pelt_nbs, int MaxEltQty)
       status = 0;
     else
     {
-      fscanf (msh, "%d", &tag_qty);
+      if (fscanf (msh, "%d", &tag_qty) != 1)
+	abort ();
+
       ut_file_skip (msh, tag_qty + eltnodeqty);
 
       if (tmp == elttype)
@@ -89,17 +91,22 @@ ReadEltsProp (FILE * msh, struct MESH *pMesh, int **pelt_nbs, int MaxEltQty)
     fgetpos (msh, &beg_elt);
 
     if (contiguous == 0)
-      fscanf(msh, "%d", &((*pelt_nbs)[i]));
+      if (fscanf(msh, "%d", &((*pelt_nbs)[i])) != 1)
+	abort ();
 
     ut_file_skip (msh, 1 + contiguous);
 
-    fscanf (msh, "%d", &tag_qty);
+    if (fscanf (msh, "%d", &tag_qty) != 1)
+      abort ();
 
     ut_file_skip (msh, 1);
-    fscanf (msh, "%d", &((*pMesh).EltElset[i]));
+    if (fscanf (msh, "%d", &((*pMesh).EltElset[i])) != 1)
+      abort ();
+
     ut_file_skip (msh, tag_qty - 2);
     for (j = 0; j < eltnodeqty; j++)
-      fscanf (msh, "%d", &(*pMesh).EltNodes[i][j]);
+      if (fscanf (msh, "%d", &(*pMesh).EltNodes[i][j]) != 1)
+	abort ();
   }
     
   ut_free_1d_char (type);

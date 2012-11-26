@@ -19,6 +19,7 @@ configure_file (
 include_directories("${PROJECT_BINARY_DIR}")
 
 add_definitions(-Wall -W -O3)
+set (CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
 
 add_library (ut 
   ut_alloc/ut_alloc.c
@@ -54,7 +55,7 @@ endif ()
 if (HAVE_GSL)
   find_package(GSL REQUIRED)
   set (EXTRA_LIBS ${EXTRA_LIBS} ${GSL_LIBRARIES})
-  include_directories (${GSL_INCLUDE_DIR})
+  include_directories (${GSL_INCLUDE_DIRS})
 endif (HAVE_GSL)
 
 if (HAVE_LIBMATHEVAL)

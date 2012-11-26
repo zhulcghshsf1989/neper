@@ -5,38 +5,13 @@
 #include"TestDom.h"
 
 int
-neut_geo_test_dom (struct GEO Geo)
+neut_geo_test_dom (struct GEO Geo, int verbosity)
 {
-  int status;
-
-  status = neut_geo_test_dom_def (Geo);
-  if (status != 0)
-  {
-    printf ("neut_geo_test_dom failed (returned %d)\n", status);
-    return status;
-  }
-
-  status = neut_geo_test_dom_tessver (Geo);
-  if (status != 0)
-  {
-    printf ("neut_geo_test_dom_tessver failed (returned %d)\n", status);
-    return status;
-  }
-
-  status = neut_geo_test_dom_tessedge (Geo);
-  if (status != 0)
-  {
-    printf ("neut_geo_test_dom_tessedge failed (returned %d)\n", status);
-    abort ();
-    return status;
-  }
-
-  status = neut_geo_test_dom_tessface (Geo);
-  if (status != 0)
-  {
-    printf ("neut_geo_test_dom_tessface failed (returned %d)\n", status);
-    return status;
-  }
-
-  return 0;
+  if (neut_geo_test_dom_def      (Geo, verbosity) != 0
+   || neut_geo_test_dom_tessver  (Geo, verbosity) != 0
+   || neut_geo_test_dom_tessedge (Geo, verbosity) != 0
+   || neut_geo_test_dom_tessface (Geo, verbosity) != 0)
+    return -1;
+  else
+    return 0;
 }

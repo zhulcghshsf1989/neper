@@ -5,13 +5,15 @@
 #include"TestEdge.h"
 
 int
-TestEdgeLength (struct GEO Geo, int i)
+TestEdgeLength (struct GEO Geo, int i, int verbosity)
 {
   double eps = 1e-15;
 
   if (Geo.EdgeLength[i] < eps)
   {
-    /*printf("edge %d has a zero-length.\n",i); */
+    if (verbosity)
+      ut_print_message (0, 2, "length is zero.\n");
+
     return 2;
   }
 
@@ -19,7 +21,7 @@ TestEdgeLength (struct GEO Geo, int i)
 }
 
 int
-TestEdgeReciprocityVer (struct GEO Geo, int i)
+TestEdgeReciprocityVer (struct GEO Geo, int i, int verbosity)
 {
   int j;
   int ver;
@@ -30,7 +32,9 @@ TestEdgeReciprocityVer (struct GEO Geo, int i)
     if (ut_array_1d_int_eltpos (Geo.VerEdgeNb[ver], Geo.VerEdgeQty[ver], i)
 	== -1)
     {
-      /*printf("ver %d of edge %d = ver %d has not edge %d\n",j,i,ver,i); */
+      if (verbosity)
+	ut_print_message (2, 3, "based on ver %d, but edge not in ver edge list.\n", ver);
+
       return 2;
     }
   }
@@ -39,7 +43,7 @@ TestEdgeReciprocityVer (struct GEO Geo, int i)
 }
 
 int
-TestEdgeReciprocityFace (struct GEO Geo, int i)
+TestEdgeReciprocityFace (struct GEO Geo, int i, int verbosity)
 {
   int j;
   int face;
@@ -47,22 +51,22 @@ TestEdgeReciprocityFace (struct GEO Geo, int i)
   /* this test could be more accurate (considering edge ver bounds) */
   if (Geo.EdgeFaceQty[i] < 2)
   {
-    /*printf("edge %d has less than 2 = %d faces\n",i,Geo.EdgeFaceQty[i]); */
+    if (verbosity)
+      ut_print_message (2, 3, "number of faces = %d < 2.\n", Geo.EdgeFaceQty[i]);
+
     return 2;
   }
 
-  for (j = 0; j <= Geo.EdgeFaceQty[i] - 1; j++)
+  for (j = 0; j < Geo.EdgeFaceQty[i]; j++)
   {
     face = Geo.EdgeFaceNb[i][j];
-    /*printf("\n");
-       for(k=0;k<=Geo.FaceVerQty[face]-1;k++)
-       printf("%d ",Geo.FaceEdgeNb[face][k]);
-       printf("\n"); */
 
     if (ut_array_1d_int_eltpos (Geo.FaceEdgeNb[face] + 1, Geo.FaceVerQty[face], i)
 	== -1)
     {
-      /*printf("face %d of edge %d = face %d has not edge %d\n",j,i,face,i); */
+      if (verbosity)
+	ut_print_message (2, 3, "face %d is in face list, but face not based on edge.\n", face);
+      
       return 2;
     }
   }

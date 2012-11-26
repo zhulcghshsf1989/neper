@@ -65,13 +65,14 @@ struct IN
   char *body;
   char *geo;
   char *ply;
+  char *dec;
   char *gmshgeo;
   char *ingeo;
   int printff;	         	
   char *ff;
 
-  int printstattess;
-  int printstatmesh;
+  char* printstattess;
+  char* printstatmesh;
 
   char *stt3;
   char *stt2;

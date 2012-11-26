@@ -6,6 +6,7 @@
 #define  GEOIMPORT0_H
 
 extern void neut_geo_fscanf (FILE*, struct GEO*);
+extern void neut_geo_fscanf_verbosity (FILE*, struct GEO*, int);
 extern void neut_geo_name_fscanf (char*, struct GEO*);
 
 #endif /* GEOIMPORT0_H */

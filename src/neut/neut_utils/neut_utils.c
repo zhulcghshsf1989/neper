@@ -11,6 +11,7 @@ neut_utils_nset_expand (char *nset, char **pexpandnset)
 
   sprintf ((*pexpandnset), "%s", nset);
 
+  ut_string_fnrs ((*pexpandnset), "all", "faces,facebodies,edges,edgebodies,vertices", 1000);
   ut_string_fnrs ((*pexpandnset), "faces", "x0,x1,y0,y1,z0,z1", 1000);
   ut_string_fnrs ((*pexpandnset), "edges",
 		  "x0y0,x0y1,x1y0,x1y1,y0z0,y0z1,y1z0,y1z1,x0z0,x0z1,x1z0,x1z1",

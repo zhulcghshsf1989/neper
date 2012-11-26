@@ -7,10 +7,10 @@
 
 #include "neut_structs.h"
 
-extern int neut_geo_test (struct GEO);
+extern int neut_geo_test (struct GEO, int);
 extern int neut_geo_testAroundVer (struct GEO, int, int);
 extern int neut_geo_testAroundVer2 (struct GEO, int, int);
-extern int neut_geo_test_face_normal (struct GEO, int);
-extern int neut_geo_test_dom (struct GEO);
+extern int neut_geo_test_face_normal (struct GEO, int, int);
+extern int neut_geo_test_dom (struct GEO, int);
 
 #endif  /* GEOTEST_H */

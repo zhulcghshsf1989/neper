@@ -29,7 +29,8 @@ neut_mesh_fscanf_msh (FILE * msh, struct NODES *pNodes, struct MESH
   // neut_nodes_renumber_continuous (pNodes, node_nbs, &nodes_old_new);
   
   ut_file_skip (msh, 1);
-  fscanf (msh, "%d", &leftelts);
+  if (fscanf (msh, "%d", &leftelts) != 1)
+    abort ();
 
   if (pMesh0D != NULL)
     leftelts -= ReadMeshOfDim (msh, pMesh0D, node_nbs, 0, leftelts);

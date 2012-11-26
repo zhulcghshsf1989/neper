@@ -235,17 +235,20 @@ ut_file_closemessage (char *name, char *mode)
   return;
 }
 
-void
+int
 ut_file_skip (FILE * file, int qty)
 {
   int i, status;
   char trash[1000];
 
   if (qty == 0)
-    return;
+    return 0;
   else if (qty > 0)
     for (i = 0; i < qty; i++)
-      fscanf (file, "%s", trash);
+    {
+      if (fscanf (file, "%s", trash) != 1)
+	return -1;
+    }
   else
     for (i = 0; i > qty; i--)
     {
@@ -257,27 +260,28 @@ ut_file_skip (FILE * file, int qty)
       while (status != 1);
     }
 
-  return;
+  return 0;
 }
 
-void
+int
 ut_file_skip_char (FILE * file, int qty)
 {
   int i;
   char trash;
 
   if (qty == 0)
-    return;
+    return 0;
   else if (qty > 0)
     for (i = 0; i < qty; i++)
-      fscanf (file, "%c", &trash);
+      if (fscanf (file, "%c", &trash) != 1)
+	return -1;
   else
     abort ();
 
-  return;
+  return 0;
 }
 
-void
+int
 ut_file_tofile (FILE * in, int qty, FILE * out, char *a, char *b)
 {
   int i;
@@ -285,27 +289,30 @@ ut_file_tofile (FILE * in, int qty, FILE * out, char *a, char *b)
 
   for (i = 0; i < qty; i++)
   {
-    fscanf (in, "%s", s);
+    if (fscanf (in, "%s", s) != 1)
+      return -1;
     fprintf (out, "%s%s", s, a);
   }
   fprintf (out, "%s", b);
 
-  return;
+  return 0;
 }
 
 
-double
-ut_file_readwcomma (FILE * file)
+int
+ut_file_readwcomma (FILE* file, double* pres)
 {
-  char *tmp = ut_alloc_1d_char (100);
-  double res;
+  char *tmp = ut_alloc_1d_char (1000);
 
-  fscanf (file, "%s", tmp);
-  res = ut_num_readwcomma (tmp);
+  int status = 0;
+  if (fscanf (file, "%s", tmp) == 1)
+    (*pres) = ut_num_readwcomma (tmp);
+  else
+    status = -1;
 
   ut_free_1d_char (tmp);
 
-  return res;
+  return status;
 }
 
 int
@@ -329,38 +336,43 @@ ut_file_testformat (char* filename, char* format)
 int
 ut_file_format (char* filename, char** pformat)
 {
-  int res;
+  int res, status;
   FILE* file = ut_file_open (filename, "R");
   char* string = ut_alloc_1d_char (1000);
 
-  res = -1;
+  status = fscanf (file, "%s", string);
 
-  fscanf (file, "%s", string);
-
-  if (strcmp (string, "***tess") == 0)
+  if (status != 1)
+  {
+    (*pformat) = NULL;
+    res = -1;
+  }
+  else if (strcmp (string, "***tess") == 0)
   {
     (*pformat) = ut_alloc_1d_char (5);
     sprintf ((*pformat), "tess");
     res = 1;
   }
-  if (strcmp (string, "***vox") == 0)
+  else if (strcmp (string, "***vox") == 0)
   {
     (*pformat) = ut_alloc_1d_char (4);
     sprintf ((*pformat), "vox");
     res = 1;
   }
-  if (strcmp (string, "$MeshFormat") == 0)
+  else if (strcmp (string, "$MeshFormat") == 0)
   {
     (*pformat) = ut_alloc_1d_char (9);
     sprintf ((*pformat), "gmsh_msh");
     res = 1;
   }
-  if (strcmp (string, "***geometry") == 0)
+  else if (strcmp (string, "***geometry") == 0)
   {
     (*pformat) = ut_alloc_1d_char (12);
     sprintf ((*pformat), "zebulon_geof");
     res = 1;
   }
+  else
+    res = -1;
 
   ut_file_close (file, filename, "R");
   
@@ -375,6 +387,7 @@ ut_file_format (char* filename, char** pformat)
 int
 ut_file_string_goto (FILE * file, char* string)
 {
+  int status;
   unsigned int j;
   char c;
   fpos_t pos;
@@ -386,8 +399,8 @@ ut_file_string_goto (FILE * file, char* string)
     match = 1;
     for (j = 0; j < strlen (string); j++)
     {
-      fscanf (file, "%c", &c);
-      if (c != string[j])
+      status = fscanf (file, "%c", &c);
+      if (status != 1 || c != string[j])
       {
 	match = 0;
 	break;
@@ -405,10 +418,14 @@ ut_file_string_untilchar (FILE * file, char* string, char c)
 {
   int i;
 
-  fscanf (file ,"%c", &(string[0]));
+  if (fscanf (file, "%c", &(string[0])) != 1)
+    return -1;
+
   for (i = 1; ; i++)
   {
-    fscanf (file ,"%c", string + i);
+    if (fscanf (file ,"%c", string + i) != 1)
+      return -1;
+
     if (string[i] == c)
       break;
   }
@@ -420,18 +437,19 @@ ut_file_string_untilchar (FILE * file, char* string, char c)
 int
 ut_file_string_scanncomp (FILE * file, char* string)
 {
-  char *scan;
-  int res;
+  int status;
+  char* scan = ut_alloc_1d_char (1000);
 
-  scan = ut_alloc_1d_char (1000);
+  status = fscanf (file, "%s", scan);
 
-  fscanf (file, "%s", scan);
-
-  res = strcmp (string, scan);
+  if (status == 1)
+    status = strcmp (string, scan);
+  else
+    status = -1;
 
   ut_free_1d_char (scan);
 
-  return res;
+  return status;
 }
 
 
@@ -654,7 +672,8 @@ ut_file_nextint (FILE * file, int* pval)
   fpos_t pos;
 
   fgetpos (file, &pos);
-  fscanf (file, "%d", &tmp);
+  if (fscanf (file, "%d", &tmp) != 1)
+    return -1;
 
   if (fscanf (file, "%d", pval) != 1)
     return -1;
@@ -672,7 +691,8 @@ ut_file_nextchar (FILE * file, char* pval)
   fpos_t pos;
 
   fgetpos (file, &pos);
-  fscanf (file, "%c", &tmp);
+  if (fscanf (file, "%c", &tmp) != 1)
+    return -1;
 
   if (fscanf (file, "%c", pval) != 1)
     return -1;
@@ -684,18 +704,40 @@ ut_file_nextchar (FILE * file, char* pval)
 }
 
 int
-ut_file_line_nbwords_pointer (FILE* file)
+ut_file_nextstring (FILE * file, char* pval)
 {
-  char trash[10000];
+  fpos_t pos;
+
+  fgetpos (file, &pos);
+  if (fscanf (file, "%s", pval) != 1)
+    return -1;
+  else
+  {
+    fsetpos (file, &pos);
+    return 1;
+  }
+}
+
+int
+ut_file_line_nbwords_pointer (FILE* file, int* pqty)
+{
+  int status;
+  char* trash = ut_alloc_1d_char (10000);
   fpos_t pos;
 
   fgetpos (file, &pos);
 
-  fgets (trash, 9999, file);
+  trash = fgets (trash, 10000, file);
+
+  status = 0;
+  if (strlen (trash) == 9999)
+    status = -1;
   
   fsetpos (file, &pos);
 
-  return ut_string_nbwords (trash);
+  (*pqty) = ut_string_nbwords (trash);
+
+  return status;
 }
 
 /*

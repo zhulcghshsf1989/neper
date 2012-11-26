@@ -29,3 +29,5 @@ extern void EoD2CoDNodes (int **EoDNodes, int ***pCoDNodes);
 extern void FoD2FoDBNodes (int **FoDNodes, int **EoDNodes, int ***pFoDBNodes);
 extern void EoD2EoDBNodes (int **EoDNodes, int **CoDNodes, int ***pEoDBNodes);
 extern void WriteNSet (char *name, int *NodeSet, char *format, FILE * file);
+
+extern void WriteMapMeshNPer (int**, FILE*);
