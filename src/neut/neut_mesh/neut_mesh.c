@@ -1903,6 +1903,7 @@ neut_mesh1d_mesh0d (struct NODES Nodes, struct MESH Mesh1D,
     (*pVerEdgeNb)
       = ut_realloc_2d_int_addline (*pVerEdgeNb, i, elset1dqty);
     ut_array_1d_int_memcpy ((*pVerEdgeNb)[i - 1], elset1dqty, elset1d);
+    (*pVerEdgeQty)[i - 1] = elset1dqty;
 
     if (verbosity)
       ut_print_progress_nonl (stdout, i, (*pMesh0D).EltQty, "[2/2] %3.0f%%", progress);

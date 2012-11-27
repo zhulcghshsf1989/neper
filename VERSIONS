@@ -1,4 +1,4 @@
-New in 2.0.0-devel2-24:
+New in 2.0.0-devel2-25:
 - module -T: fixed option -pointpoly.
 - module -MM: fixed meshing of regularized tessellations.
 
