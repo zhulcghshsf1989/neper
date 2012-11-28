@@ -284,7 +284,6 @@ It contains data for generating the grain orientations, and
 is an input file for @mO{} (@pxref{Module -O}).
 @end itemize
 
-@need 400
 @subsection Statistics
 
 Several files are provided for statistics on tessellations, whose
@@ -304,6 +303,48 @@ formats are provided below.  All files are formatted with one entity
 
 @code{@var{xc}}, @code{@var{yc}} and @code{@var{zc}} denote the centroid
 (centre of mass) coordinates.
+
+For a given polyhedron, the @code{body} and @code{true} variables are
+defined as follows.
+@itemize
+@c
+@item @code{@var{body}} is an integer equal to @code{0} if the
+polyhedron is at the domain boundary, i.e.@ if it shares at least one
+face with it, and is equal to @code{1} or higher otherwise.  This is
+determined as follows: if a polyhedron is surrounded by polyhedra with
+@code{@var{body}} values equal to or higher than @code{@var{n}}, its
+@code{@var{body}} value is equal to @w{@code{@var{n} + 1}}.
+Therefore, @code{body} tends to increase with the distance to the domain
+boundary and can be used to define grains that may suffer from
+boundary effects.
+@c
+@item @code{@var{true}} is an integer equal to @code{0} it the
+polyhedron shape is biased by the domain boundary, and is equal to
+@code{1} or higher otherwise. A value higher than @code{0} is achieved
+if and only if any polyhedron centre that would
+have been located outside the domain (where it could not be)
+would not have affected the shape of the polyhedron. This condition is
+fulfilled if the distance between the centre of the polyhedron and any
+of its vertices is lower than the minimum distance between a vertex
+of the polyhedron and the domain boundary.  @code{@var{true}} is
+extended to values higher than @code{1} in the same way as body:
+if a
+polyhedron is surrounded by polyhedra with @code{@var{true}} values
+equal to or higher than @code{@var{n}}, its @code{@var{true}} value is equal
+to @w{@code{@var{n} + 1}}.
+As @code{@var{body}}, @code{@var{true}} tends to increase with the
+distance to the domain boundary,
+and
+@iftex
+@math{@var{true}@leq@var{body}}.
+@end iftex
+@ifinfo
+@code{@var{true}<=@var{body}}.
+@end ifinfo
+@code{@var{true}} is especially useful for statistics on
+the polyhedra (morphology, mesh, etc.), for which only polyhedra with
+@math{@var{true}@geq 1} should be considered.
+@end itemize
 
 @subsection Post-Processing
 

@@ -1,4 +1,4 @@
-New in 1.10.4-devel-1:
+New in 1.10.4-devel-2:
 - module -T: fixed option -pointpoly.
 - module -MM: fixed meshing of regularized tessellations.
 
