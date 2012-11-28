@@ -304,35 +304,8 @@ conditions for the polyhedra at the domain boundary different than those
 that apply to the inner polyhedra.  This is useful for coarsening the
 meshes of the boundary grains when they are disregarded in the analysis
 due to possible boundary effects.
-The domain boundary polyhedra can be defined using the
-following variables: 
-@itemize
-@item @code{@var{body}}: the minimum number of polyhedra between the
-considered polyhedron and the domain boundary. Its value is 0 for
-polyhedra intersecting the domain boundary, and increases with the
-distance to the domain boundary.
-
-@item @code{@var{true}}: a polyhedron is said to be @dfn{true} if its
-shape is not biased by the domain boundary.  This requires the
-polyhedron not to be cut by the domain boundary, but actually the
-condition is a bit more restrictive.  The value of @code{@var{true}}
-is an integer equal to 0 for polyhedra which do not match the
-above-mentionned criterion, and higher values otherwise.
-For the latter cases, the value of @code{@var{true}} is defined to be
-equal to @math{n} for true polyhedra surrounded by polyhedra whose value
-of @code{@var{true}} is higher than or equal to @math{(n-1)}.  This
-definition is consistent with the one of the @code{@var{body}} variable,
-in terms of how the values of neighbouring grains compare.  As for
-@code{@var{body}}, the value of @code{@var{true}} increases with the
-distance to the domain boundary, but typically
-@iftex
-@math{@var{true} @leq @var{body}}.
-@end iftex
-@ifinfo
-true <= body.
-@end ifinfo
-
-@end itemize
+The domain boundary polyhedra can be defined using the @code{@var{body}} and
+@code{@var{true}} variables (@pxref{Module -T}).
 
 @opt{-dbound,char_string,
 Define which polyhedra belong to the domain boundary.  The expression

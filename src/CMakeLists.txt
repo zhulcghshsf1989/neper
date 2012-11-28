@@ -4,7 +4,7 @@ project(neper C)
 set (NEPER_VERSION_MAJOR 2)
 set (NEPER_VERSION_MINOR 0)
 set (NEPER_VERSION_PATCH 0)
-set (NEPER_VERSION \"2.0.0-devel2-25\ \")
+set (NEPER_VERSION \"2.0.0-devel2-27\ \")
 set (NEPER_EMAIL \"neper-users@lists.sourceforge.net\")
 
 # should we use the optional libraries?
