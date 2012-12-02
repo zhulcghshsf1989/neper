@@ -16,6 +16,10 @@ struct GEOPARA
   double pcl;	
   double maxff;
 
+  int msizetype;
+  int msize;
+  int* msize3;
+
   int seltype;
   double sel;
   double rsel;

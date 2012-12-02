@@ -1407,6 +1407,29 @@ neut_mesh_init_eltelset (struct MESH *pMesh, int *elset_nbs)
   return;
 }
 
+void
+neut_mesh_init_elsets (struct MESH *pMesh)
+{
+  int i, elset;
+  
+  (*pMesh).ElsetQty  = 0;
+  for (i = 1; i <= (*pMesh).EltQty; i++)
+    (*pMesh).ElsetQty = ut_num_max ((*pMesh).EltElset[i], (*pMesh).ElsetQty);
+
+  // Init Elsets from EltElset
+  (*pMesh).Elsets = ut_alloc_2d_int ((*pMesh).ElsetQty + 1, 1);
+  for (i = 1; i <= (*pMesh).EltQty; i++)
+  {
+    elset = (*pMesh).EltElset[i];
+    (*pMesh).Elsets[elset][0]++;
+    (*pMesh).Elsets[elset]
+      = ut_realloc_1d_int ((*pMesh).Elsets[elset], (*pMesh).Elsets[elset][0] + 1);
+    (*pMesh).Elsets[elset][(*pMesh).Elsets[elset][0]] = i;
+  }
+
+  return;
+}
+
 /* This routine returns the communications of an element. *pcomqty is
  * the number of partitions with which there are communications;
  * for each partition i, coms[i][0] is the number of the partition and
@@ -1830,7 +1853,6 @@ neut_mesh1d_mesh0d (struct NODES Nodes, struct MESH Mesh1D,
   char* progress = ut_alloc_1d_char (20);
 
   neut_mesh_set_zero (&EltMesh0D);
-  Nodes.NodeQty = Nodes.NodeQty;
 
   if (Mesh1D.EltElset == NULL)
   {

@@ -6,9 +6,9 @@
 
 void
 nem_stat (struct NODES Nodes,
-       struct MESH Mesh0D, struct MESH Mesh1D,
-       struct MESH Mesh2D, struct MESH Mesh3D, 
-       struct IN In, struct GEOPARA GeoPara, struct GEO* pGeo)
+	  struct MESH Mesh0D, struct MESH Mesh1D,
+	  struct MESH Mesh2D, struct MESH Mesh3D, 
+	  struct IN In, struct GEOPARA GeoPara, struct GEO Geo)
 {
   FILE* file = NULL;
   char* name = NULL;
@@ -29,7 +29,7 @@ nem_stat (struct NODES Nodes,
     name = ut_string_addextension (In.body, "stelt");
 
     file = ut_file_open (name, "w");
-    nem_stat_elts (file, In.ste, Nodes, Mesh3D, pGeo);
+    nem_stat_elts (file, In.ste, Nodes, Mesh3D, Geo);
     ut_file_close (file, name, "w");
 
     ut_free_1d_char (name);
@@ -40,7 +40,7 @@ nem_stat (struct NODES Nodes,
     name = ut_string_addextension (In.body, "stelset");
 
     file = ut_file_open (name, "w");
-    nem_stat_elsets (file, In.stelset, Nodes, Mesh3D, GeoPara, pGeo);
+    nem_stat_elsets (file, In.stelset, Nodes, Mesh3D, GeoPara, Geo);
     ut_file_close (file, name, "w");
 
     ut_free_1d_char (name);

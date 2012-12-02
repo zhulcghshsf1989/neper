@@ -9,6 +9,7 @@
 #include"ut.h"
 #include"neut.h"
 #include"structIn_t.h"
+#include"net_init/net_init0.h"
 #include"DomainComp/DomainComp0.h"
 #include"GermDistrib/GermDistrib0.h"
 #include"PolyComp/PolyComp0.h"

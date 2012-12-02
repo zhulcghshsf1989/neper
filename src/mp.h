@@ -15,5 +15,4 @@
 #include"neper_t/neper_t0.h"
 #include"neper_o/neper_o0.h"
 #include"neper_fm/neper_fm0.h"
-#include"neper_mm/neper_mm0.h"
 #include"neper_vs/neper_vs0.h"

@@ -6,10 +6,9 @@
 
 void
 Remeshing (struct IN In, struct GEOPARA GeoPara, struct GEO* pGeo,
-    struct NODES* pRNodes, struct MESH RMesh0D, struct MESH* pRMesh1D,
-    struct MESH* pRMesh2D, struct MESH RMesh3D, struct NODES *pNodes,
-    struct MESH* pMesh0D, struct MESH* pMesh1D, struct MESH* pMesh2D,
-    struct MESH* pMesh3D)
+    struct NODES* pRNodes, struct MESH* pRMesh1D, struct MESH* pRMesh2D,
+    struct NODES *pNodes, struct MESH* pMesh0D, struct MESH* pMesh1D,
+    struct MESH* pMesh2D, struct MESH* pMesh3D)
 {
   int i, j, k, edge, face, elt1d, pos;
   double** face_eq = ut_alloc_2d ((*pGeo).FaceQty + 1, 4);
@@ -29,34 +28,30 @@ Remeshing (struct IN In, struct GEOPARA GeoPara, struct GEO* pGeo,
   int toredo;
   struct PART Part;
 
+  neut_gmsh_rc ("bak");
+
+  if (strcmp ((*pRMesh2D).EltType, "tri") != 0)
+  {
+    ut_print_message (2, 0, "Input mesh is not a free mesh.\n");
+    printf ("elttype = %s\n", (*pMesh3D).EltType);
+    abort ();
+  }
+
   neut_part_set_zero (&Part);
 
   Premeshing (*pGeo, pRNodes, pRMesh1D, pRMesh2D, NULL, NULL, NULL, face_eq, edge_op, face_op);
 
   // generating new meshes ---------------------------------------------
   Meshing0D (*pGeo, GeoPara, pNodes, pMesh0D);
+  neut_mesh_init_nodeelts (pMesh0D, (*pNodes).NodeQty);
+
   Meshing1D (*pGeo, GeoPara, pRNodes, pRMesh1D, edge_op, pNodes, pMesh1D);
+  neut_mesh_init_nodeelts (pMesh1D, (*pNodes).NodeQty);
+
   Meshing2D (In, GeoPara, *pGeo, NULL, NULL, NULL, face_eq, face_op, pRNodes, pRMesh2D, \
              *pMesh0D, *pMesh1D, pNodes, pMesh2D);
-  
-  neut_mesh_init_eltelset (pMesh2D, NULL);
-
-  /*
-  file = ut_file_open ("debug", "w");
-  WriteMeshGmsh (file, "0,1,2", *pNodes, *pMesh0D, *pMesh1D, *pMesh2D, *pMesh3D, NULL, NULL, NULL, Part);
-  ut_file_close (file, "debug", "w");
-  */
-  
-  /*
-  file = ut_file_open ("debug", "r");
-  neut_mesh_fscanf_msh (file, pNodes, pMesh0D, pMesh1D, pMesh2D, NULL);
-  ut_file_close (file, "debug", "r");
-  */ 
-
-  neut_mesh_init_eltelset (pMesh2D, NULL);
-  neut_mesh_init_nodeelts (pMesh0D, (*pNodes).NodeQty);
-  neut_mesh_init_nodeelts (pMesh1D, (*pNodes).NodeQty);
   neut_mesh_init_nodeelts (pMesh2D, (*pNodes).NodeQty);
+  neut_mesh_init_eltelset (pMesh2D, NULL);
 
   ut_print_message (0, 2, "Checking 2D mesh for pinching out ...\n");
 
@@ -139,9 +134,6 @@ Remeshing (struct IN In, struct GEOPARA GeoPara, struct GEO* pGeo,
 
   Meshing3D (In, GeoPara, *pGeo, pNodes, *pMesh2D, pMesh3D);
 
-  RMesh0D.EltQty = RMesh0D.EltQty;
-  RMesh3D.EltQty = RMesh3D.EltQty;
-  
   ut_free_2d (face_eq, (*pGeo).FaceQty + 1);
   ut_free_1d_int (face_op);
   ut_free_1d_int (edge_op);

@@ -390,7 +390,8 @@ BuildMMesh3D (int *size, int order,
   ut_free_3d_int (O2YNMap, size[0] + 2, size[1] + 1);
   ut_free_3d_int (O2ZNMap, size[0] + 2, size[1] + 2);
 
-  SearchFoDNodes_cube (*pNodes, pFoDNodes);
+  // SearchFoDNodes_cube (*pNodes, pFoDNodes);
+  pFoDNodes = pFoDNodes;
 
   ut_free_1d_int (nqty);
 

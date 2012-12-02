@@ -74,6 +74,7 @@ add_library (neut
 ./neut_vox/neut_vox_fprintf/neut_vox_fprintf1.c
 ./neut_vox/neut_vox_fprintf/neut_vox_fprintf2.c
 ./neut_vox/neut_vox_op/neut_vox_op1.c
+./neut_vox/neut_vox_gen/neut_vox_gen1.c
 )
 
 ## Link libraries

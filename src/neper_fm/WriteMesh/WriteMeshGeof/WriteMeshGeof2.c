@@ -23,8 +23,7 @@ neut_mesh_fprintf_geof_nodes (FILE* out, struct NODES Nodes)
   {
     fprintf (out, "%d", i);
     for (j = 0; j < 3; j++)
-      fprintf (out, "  %.12f",
-	  (fabs (Nodes.NodeCoo[i][j]) < 1e-12) ? 0 : Nodes.NodeCoo[i][j]);
+      fprintf (out, "  %.12f", Nodes.NodeCoo[i][j]);
     fprintf (out, "\n");
   }
 
@@ -39,30 +38,85 @@ neut_mesh_fprintf_geof_elts (FILE* out, struct MESH Mesh)
   fprintf (out, "\n**element\n");
   fprintf (out, "%d\n", Mesh.EltQty);
 
-  if (Mesh.Dimension == 3 && Mesh.EltOrder == 1)
-    for (i = 1; i <= Mesh.EltQty; i++)
+  if (! strcmp (Mesh.EltType, "tet"))
+  {
+    if (Mesh.Dimension == 3 && Mesh.EltOrder == 1)
+      for (i = 1; i <= Mesh.EltQty; i++)
+      {
+	fprintf (out, "%d c3d4", i);
+	for (j = 0; j < 4; j++)
+	  fprintf (out, " %d", Mesh.EltNodes[i][j]);
+	fprintf (out, "\n");
+      }
+    else if (Mesh.Dimension == 3 && Mesh.EltOrder == 2)
+      for (i = 1; i <= Mesh.EltQty; i++)
+      {
+	fprintf (out, "%d c3d10", i);
+	fprintf (out, " %d", Mesh.EltNodes[i][0]);
+	fprintf (out, " %d", Mesh.EltNodes[i][1]);
+	fprintf (out, " %d", Mesh.EltNodes[i][2]);
+	fprintf (out, " %d", Mesh.EltNodes[i][4]);
+	fprintf (out, " %d", Mesh.EltNodes[i][5]);
+	fprintf (out, " %d", Mesh.EltNodes[i][6]);
+	fprintf (out, " %d", Mesh.EltNodes[i][7]);
+	fprintf (out, " %d", Mesh.EltNodes[i][9]);
+	fprintf (out, " %d", Mesh.EltNodes[i][8]);
+	fprintf (out, " %d", Mesh.EltNodes[i][3]);
+	fprintf (out, "\n");
+      }
+  }
+  
+  else if (! strcmp (Mesh.EltType, "quad"))
+  {
+    if (Mesh.Dimension == 3 && Mesh.EltOrder == 1)
     {
-      fprintf (out, "%d c3d4", i);
-      for (j = 0; j < 4; j++)
-	fprintf (out, " %d", Mesh.EltNodes[i][j]);
-      fprintf (out, "\n");
+      for (i = 1; i <= Mesh.EltQty; i++)
+      {
+	fprintf (out, "%d c3d8", i);
+
+	fprintf (out, " %d", Mesh.EltNodes[i][0]);
+	fprintf (out, " %d", Mesh.EltNodes[i][1]);
+	fprintf (out, " %d", Mesh.EltNodes[i][2]);
+	fprintf (out, " %d", Mesh.EltNodes[i][3]);
+	fprintf (out, " %d", Mesh.EltNodes[i][4]);
+	fprintf (out, " %d", Mesh.EltNodes[i][5]);
+	fprintf (out, " %d", Mesh.EltNodes[i][6]);
+	fprintf (out, " %d", Mesh.EltNodes[i][7]);
+
+	fprintf (out, "\n");
+      }
     }
-  else if (Mesh.Dimension == 3 && Mesh.EltOrder == 2)
-    for (i = 1; i <= Mesh.EltQty; i++)
+    else
     {
-      fprintf (out, "%d c3d10", i);
-      fprintf (out, " %d", Mesh.EltNodes[i][0]);
-      fprintf (out, " %d", Mesh.EltNodes[i][1]);
-      fprintf (out, " %d", Mesh.EltNodes[i][2]);
-      fprintf (out, " %d", Mesh.EltNodes[i][4]);
-      fprintf (out, " %d", Mesh.EltNodes[i][5]);
-      fprintf (out, " %d", Mesh.EltNodes[i][6]);
-      fprintf (out, " %d", Mesh.EltNodes[i][7]);
-      fprintf (out, " %d", Mesh.EltNodes[i][9]);
-      fprintf (out, " %d", Mesh.EltNodes[i][8]);
-      fprintf (out, " %d", Mesh.EltNodes[i][3]);
-      fprintf (out, "\n");
+      for (i = 1; i <= Mesh.EltQty; i++)
+      {
+	fprintf (out, "%d c3d20", i);
+
+	fprintf (out, " %d", Mesh.EltNodes[i][0]);
+	fprintf (out, " %d", Mesh.EltNodes[i][8]);
+	fprintf (out, " %d", Mesh.EltNodes[i][1]);
+	fprintf (out, " %d", Mesh.EltNodes[i][11]);
+	fprintf (out, " %d", Mesh.EltNodes[i][2]);
+	fprintf (out, " %d", Mesh.EltNodes[i][13]);
+	fprintf (out, " %d", Mesh.EltNodes[i][3]);
+	fprintf (out, " %d", Mesh.EltNodes[i][9]);
+	fprintf (out, " %d", Mesh.EltNodes[i][10]);
+	fprintf (out, " %d", Mesh.EltNodes[i][12]);
+	fprintf (out, " %d", Mesh.EltNodes[i][14]);
+	fprintf (out, " %d", Mesh.EltNodes[i][15]);
+	fprintf (out, " %d", Mesh.EltNodes[i][4]);
+	fprintf (out, " %d", Mesh.EltNodes[i][16]);
+	fprintf (out, " %d", Mesh.EltNodes[i][5]);
+	fprintf (out, " %d", Mesh.EltNodes[i][18]);
+	fprintf (out, " %d", Mesh.EltNodes[i][6]);
+	fprintf (out, " %d", Mesh.EltNodes[i][19]);
+	fprintf (out, " %d", Mesh.EltNodes[i][7]);
+	fprintf (out, " %d", Mesh.EltNodes[i][17]);
+
+	fprintf (out, "\n");
+      }
     }
+  }
 
   return;
 }
@@ -122,6 +176,227 @@ neut_mesh_fprintf_geof_nsets (FILE* file, struct NSET NSet0D, struct NSET NSet1D
 
   return;
 }
+
+/*
+void
+neut_mesh_fprintf_geof_fasets (FILE* file, struct NSET NSet0D, struct NSET NSet1D,
+                               struct NSET NSet2D, char* faset)
+{
+  int x, y, z;
+
+  if (ut_string_inlist (faset, ',', "x0"))
+  {
+    fprintf (file, "\n**faset x0\n");
+    x = 1;
+
+    if (In.morder == 1)
+      for (y = 1; y <= Mesh.msize[1]; y++)
+	for (z = 1; z <= Mesh.msize[2]; z++)
+	{
+	  elt = EltCoo2Id (x, y, z, Mesh.msize[0], Mesh.msize[1]);
+	  fprintf (file, "q4");
+	  fprintf (file, " %d", Mesh.EltNodes[elt][0]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][4]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][7]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][3]);
+	  fprintf (file, "\n");
+	}
+    else
+      for (y = 1; y <= Mesh.msize[1]; y++)
+	for (z = 1; z <= Mesh.msize[2]; z++)
+	{
+	  elt = EltCoo2Id (x, y, z, Mesh.msize[0], Mesh.msize[1]);
+	  fprintf (file, "q8");
+	  fprintf (file, " %d", Mesh.EltNodes[elt][0]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][10]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][4]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][17]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][7]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][15]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][3]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][9]);
+	  fprintf (file, "\n");
+	}
+    }
+
+  if (ut_string_inlist (faset, ',', "x1"))
+  {
+    fprintf (file, "\n**faset x1\n");
+    x = Mesh.msize[0];
+
+    if (In.morder == 1)
+      for (y = 1; y <= Mesh.msize[1]; y++)
+	for (z = 1; z <= Mesh.msize[2]; z++)
+	{
+	  elt = EltCoo2Id (x, y, z, Mesh.msize[0], Mesh.msize[1]);
+	  fprintf (file, "q4");
+	  fprintf (file, " %d", Mesh.EltNodes[elt][1]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][2]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][6]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][5]);
+	  fprintf (file, "\n");
+	}
+    else
+      for (y = 1; y <= Mesh.msize[1]; y++)
+	for (z = 1; z <= Mesh.msize[2]; z++)
+	{
+	  elt = EltCoo2Id (x, y, z, Mesh.msize[0], Mesh.msize[1]);
+	  fprintf (file, "q8");
+	  fprintf (file, " %d", Mesh.EltNodes[elt][1]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][11]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][2]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][14]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][6]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][18]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][5]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][12]);
+	  fprintf (file, "\n");
+	}
+  }
+
+  if (ut_string_inlist (faset, ',', "y0"))
+  {
+    fprintf (file, "\n**faset y0\n");
+    y = 1;
+
+    if (In.morder == 1)
+      for (x = 1; x <= Mesh.msize[0]; x++)
+	for (z = 1; z <= Mesh.msize[2]; z++)
+	{
+	  elt = EltCoo2Id (x, y, z, Mesh.msize[0], Mesh.msize[1]);
+	  fprintf (file, "q4");
+	  fprintf (file, " %d", Mesh.EltNodes[elt][0]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][1]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][5]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][4]);
+	  fprintf (file, "\n");
+	}
+    else
+      for (x = 1; x <= Mesh.msize[0]; x++)
+	for (z = 1; z <= Mesh.msize[2]; z++)
+	{
+	  elt = EltCoo2Id (x, y, z, Mesh.msize[0], Mesh.msize[1]);
+	  fprintf (file, "q8");
+	  fprintf (file, " %d", Mesh.EltNodes[elt][0]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][8]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][1]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][12]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][5]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][16]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][4]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][10]);
+	  fprintf (file, "\n");
+	}
+  }
+
+  if (ut_string_inlist (faset, ',', "y1"))
+  {
+    fprintf (file, "\n**faset y1\n");
+    y = Mesh.msize[1];
+
+    if (In.morder == 1)
+      for (x = 1; x <= Mesh.msize[0]; x++)
+	for (z = 1; z <= Mesh.msize[2]; z++)
+	{
+	  elt = EltCoo2Id (x, y, z, Mesh.msize[0], Mesh.msize[1]);
+	  fprintf (file, "q4");
+	  fprintf (file, " %d", Mesh.EltNodes[elt][3]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][7]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][6]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][2]);
+	  fprintf (file, "\n");
+	}
+    else
+      for (x = 1; x <= Mesh.msize[0]; x++)
+	for (z = 1; z <= Mesh.msize[2]; z++)
+	{
+	  elt = EltCoo2Id (x, y, z, Mesh.msize[0], Mesh.msize[1]);
+	  fprintf (file, "q8");
+	  fprintf (file, " %d", Mesh.EltNodes[elt][3]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][15]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][7]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][19]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][6]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][14]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][2]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][13]);
+	  fprintf (file, "\n");
+	}
+  }
+
+  if (ut_string_inlist (faset, ',', "z0"))
+  {
+    fprintf (file, "\n**faset z0\n");
+    z = 1;
+
+    if (In.morder == 1)
+      for (x = 1; x <= Mesh.msize[0]; x++)
+	for (y = 1; y <= Mesh.msize[1]; y++)
+	{
+	  elt = EltCoo2Id (x, y, z, Mesh.msize[0], Mesh.msize[1]);
+	  fprintf (file, "q4");
+	  fprintf (file, " %d", Mesh.EltNodes[elt][0]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][3]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][2]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][1]);
+	  fprintf (file, "\n");
+	}
+    else
+      for (x = 1; x <= Mesh.msize[0]; x++)
+	for (y = 1; y <= Mesh.msize[1]; y++)
+	{
+	  elt = EltCoo2Id (x, y, z, Mesh.msize[0], Mesh.msize[1]);
+	  fprintf (file, "q8");
+	  fprintf (file, " %d", Mesh.EltNodes[elt][0]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][9]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][3]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][13]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][2]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][11]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][1]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][8]);
+	  fprintf (file, "\n");
+	}
+  }
+
+  if (ut_string_inlist (faset, ',', "z1"))
+  {
+    fprintf (file, "\n**faset z1\n");
+    z = Mesh.msize[2];
+
+    if (In.morder == 1)
+      for (x = 1; x <= Mesh.msize[0]; x++)
+	for (y = 1; y <= Mesh.msize[1]; y++)
+	{
+	  elt = EltCoo2Id (x, y, z, Mesh.msize[0], Mesh.msize[1]);
+	  fprintf (file, "q4");
+	  fprintf (file, " %d", Mesh.EltNodes[elt][4]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][5]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][6]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][7]);
+	  fprintf (file, "\n");
+	}
+    else
+      for (x = 1; x <= Mesh.msize[0]; x++)
+	for (y = 1; y <= Mesh.msize[1]; y++)
+	{
+	  elt = EltCoo2Id (x, y, z, Mesh.msize[0], Mesh.msize[1]);
+	  fprintf (file, "q8");
+	  fprintf (file, " %d", Mesh.EltNodes[elt][4]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][16]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][5]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][18]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][6]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][19]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][7]);
+	  fprintf (file, " %d", Mesh.EltNodes[elt][17]);
+	  fprintf (file, "\n");
+	}
+  }
+
+  return;
+}
+*/
 
 void
 neut_mesh_fprintf_geof_sethead (FILE* file)

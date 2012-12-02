@@ -154,7 +154,7 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   
     if (GeoPara.maxff > 0)
     {
-      nefm_init_geo_b (&Geo, &GeoPara);
+      net_init_reg (&Geo, &GeoPara);
       RegularizeGeo (&Geo, GeoPara, In);
     }
 

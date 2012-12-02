@@ -3,7 +3,6 @@
 /* See the COPYING file in the top-level directory. */
 
 extern void Remeshing (struct IN, struct GEOPARA, struct GEO*, struct
-    NODES*, struct MESH, struct MESH*, struct MESH*, struct MESH,
-    struct NODES*, struct MESH*, struct MESH*, struct MESH*, struct
-    MESH*);
+    NODES*, struct MESH*, struct MESH*, struct NODES*, struct MESH*,
+    struct MESH*, struct MESH*, struct MESH*);
 

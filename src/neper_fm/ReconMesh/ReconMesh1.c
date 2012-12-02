@@ -5,16 +5,14 @@
 #include "ReconMesh.h"
 
 void
-ReconMesh (char* dim, struct NODES Nodes, struct MESH *pMesh0D,
+ReconMesh (char* dim, struct NODES* pNodes, struct MESH *pMesh0D,
 	  struct MESH *pMesh1D, struct MESH *pMesh2D, struct MESH *pMesh3D,
 	  struct GEO* pGeo)
 {
   struct GEO Geob;
   struct GEO* pGeob = &Geob;
-
-  // Disabling geo reconstruction is pGeo == NULL or quad elt mesh
-  int reconst_geo
-    = (! strcmp ((*pMesh3D).EltType, "quad") || pGeo == NULL) ? 0 : 1;
+  // Disabling geo reconstruction is pGeo == NULL
+  int reconst_geo = (pGeo == NULL) ? 0 : 1;
 
   // if pGeo is NULL, working with pGeob. 
   if (! reconst_geo)
@@ -37,26 +35,29 @@ ReconMesh (char* dim, struct NODES Nodes, struct MESH *pMesh0D,
   (*pGeob).morpho = ut_alloc_1d_char (10);
   strcpy ((*pGeob).morpho, "unknown");
 
+  neut_nodes_init_boundingbox (pNodes);
+
   if ((*pMesh3D).NodeElts == NULL)
-    neut_mesh_init_nodeelts (pMesh3D, Nodes.NodeQty);
+    neut_mesh_init_nodeelts (pMesh3D, (*pNodes).NodeQty);
 
-  ReconMesh_2d (Nodes, pMesh2D, pMesh3D, pGeob);
+  if (ut_string_inlist (dim, ',', "2"))
+    ReconMesh_2d (*pNodes, pMesh2D, pMesh3D, pGeob);
 
-  ReconMesh_1d (Nodes, pMesh1D, pMesh2D, pGeob);
+  if (ut_string_inlist (dim, ',', "1"))
+    ReconMesh_1d (*pNodes, pMesh1D, pMesh2D, pGeob);
 
-  // This trick is to avoid failure with mapped meshes, in the geo
-  // reconstruction in ReconMesh_0D
-  if (reconst_geo)
-    ReconMesh_0d (Nodes, pMesh0D, pMesh1D, pGeob);
-  else
-    ReconMesh_0d (Nodes, pMesh0D, pMesh1D, NULL);
+  if (ut_string_inlist (dim, ',', "0"))
+    ReconMesh_0d (*pNodes, pMesh0D, pMesh1D, pGeob);
 
   ut_array_1d_int_set ((*pGeob).FaceState + 1, (*pGeob).FaceQty, 1);
   ut_array_1d_int_set ((*pGeob).VerState + 1, (*pGeob).VerQty, 1);
 
+  if (ut_string_inlist (dim, ',', "3") && ut_string_inlist (dim, ',', "2")
+   && ut_string_inlist (dim, ',', "1") && ut_string_inlist (dim, ',', "0"))
+  {
   if (reconst_geo)
   {
-    ReconMesh_finalizegeo (pGeob, Nodes, *pMesh0D, *pMesh1D, *pMesh2D,
+    ReconMesh_finalizegeo (pGeob, *pNodes, *pMesh0D, *pMesh1D, *pMesh2D,
       *pMesh3D);
 
     // If the domain is not defined, initializing it.
@@ -71,6 +72,7 @@ ReconMesh (char* dim, struct NODES Nodes, struct MESH *pMesh0D,
   }
   else
     neut_geo_free (pGeob);
+  }
 
   /*
   neut_debug_geo (stdout, *pGeo);

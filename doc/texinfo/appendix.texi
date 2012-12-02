@@ -573,10 +573,10 @@ from @code{1} to @code{total_number_of_polyhedra}.
 polyhedron.
 
 @item @code{@var{poly_true}} is an integer equal to the ``true'' value
-of a polyhedron (@pxref{Module -FM}).
+of a polyhedron (@pxref{Module -M}).
 
 @item @code{@var{poly_body}} is an integer equal to the ``body'' value
-of a polyhedron (@pxref{Module -FM}). 
+of a polyhedron (@pxref{Module -M}). 
 
 @item @code{**domain} denotes the beginning of the domain field.
 

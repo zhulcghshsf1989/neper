@@ -14,26 +14,28 @@ add_library (neper_fm
 ./nem_stat/nem_stat1.c
 ./nem_stat/nem_stat2.c
 ./ReadMesh/ReadMesh1.c
-./Meshing0D/Meshing0D2.c
-./Meshing0D/Meshing0D1.c
+nem_meshing/nem_meshing.c
+nem_meshing/Meshing0D/Meshing0D2.c
+nem_meshing/Meshing0D/Meshing0D1.c
+nem_meshing/Premeshing/Premeshing2.c
+nem_meshing/Premeshing/Premeshing1.c
+nem_cleaning/nem_cleaning1.c
 ./InputData_fm/InputData_fm1.c
 ./InputData_fm/InputData_fm2.c
 ./InputData_fm/InputData_fm3.c
-./Premeshing/Premeshing2.c
-./Premeshing/Premeshing1.c
 ./nefm/nefm_mesh_stellar/nefm_mesh_stellar1.c
 ./nefm/nefm_mesh_stellar/nefm_mesh_stellar2.c
 ./nefm/nefm_geo/nefm_geo1.c
 ./nefm/nefm_mesh_gmsh/nefm_mesh_gmsh3.c
 ./nefm/nefm_mesh_gmsh/nefm_mesh_gmsh2.c
 ./nefm/nefm_mesh_gmsh/nefm_mesh_gmsh1.c
-./nefm_init/nefm_init1.c
-./nefm_init/nefm_init2.c
-./Meshing3D/Meshing3D1.c
-./Meshing3D/Meshing3D2.c
-./Meshing1D/Meshing1D2.c
-./Meshing1D/Meshing1D1.c
-./Meshing1D/Meshing1D3.c
+./nem_init/nem_init1.c
+./nem_init/nem_init2.c
+nem_meshing/Meshing3D/Meshing3D1.c
+nem_meshing/Meshing3D/Meshing3D2.c
+nem_meshing/Meshing1D/Meshing1D2.c
+nem_meshing/Meshing1D/Meshing1D1.c
+nem_meshing/Meshing1D/Meshing1D3.c
 ./Remapping/Remapping2.c
 ./Remapping/Remapping1.c
 ./Partition/Partition5.c
@@ -41,7 +43,7 @@ add_library (neper_fm
 ./Partition/Partition4.c
 ./Partition/Partition3.c
 ./Partition/Partition2.c
-./Meshing2D/Meshing2D1.c
+nem_meshing/Meshing2D/Meshing2D1.c
 ./Remeshing/Remeshing2.c
 ./Remeshing/Remeshing1.c
 ./ReconMesh/ReconMesh1.c
@@ -60,6 +62,10 @@ add_library (neper_fm
 ./WriteMesh/WriteMeshScotch/WriteMeshScotch1.c
 ./SearchNSets/SearchNSets1.c
 ./SearchNSets/SearchNSets2.c
+# ./SearchNSets/SearchNSets_mm/SearchNSets_mm1.c
+# ./SearchNSets/SearchNSets_mm/SearchNSets_mm2.c
+./nem_meshing_hex/RMeshing1.c
+./nem_meshing_hex/RMeshing2.c
 ./neper_fm.c
 )
 

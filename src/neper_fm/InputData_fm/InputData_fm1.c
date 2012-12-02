@@ -30,7 +30,8 @@ nefm_in_set_zero (struct IN* pIn)
   (*pIn).partarchfile = NULL;
   (*pIn).npart        = NULL;
   (*pIn).epart        = NULL;
-  (*pIn).ingeo        = NULL;
+  (*pIn).tess         = NULL;
+  (*pIn).vox          = NULL;
   (*pIn).stn          = NULL;
   (*pIn).ste          = NULL;
   (*pIn).stelset      = NULL;
@@ -71,7 +72,8 @@ nefm_in_free (struct IN In)
   ut_free_1d_char (In.partarchfile);
   ut_free_1d_char (In.npart);
   ut_free_1d_char (In.epart);
-  ut_free_1d_char (In.ingeo);
+  ut_free_1d_char (In.tess);
+  ut_free_1d_char (In.vox);
   ut_free_1d_char (In.stn);
   ut_free_1d_char (In.ste);
   ut_free_1d_char (In.stelset);

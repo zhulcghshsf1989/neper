@@ -23,6 +23,8 @@ WriteMeshGeof (FILE* file, struct NODES Nodes, struct MESH Mesh2D,
 
   neut_mesh_fprintf_geof_nsets (file, NSet0D, NSet1D, NSet2D, nsets);
 
+  // neut_mesh_fprintf_geof_fasets (file, NSet0D, NSet1D, NSet2D, fasets);
+
   /*
   if (liset == 1 && (Geo.VerQty == 0 || !FoD))
     ut_print_message (1, 3, "Cannot output lisets (input is not a Geo).\n");
