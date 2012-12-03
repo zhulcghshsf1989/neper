@@ -23,7 +23,8 @@ neut_mesh_fprintf_geof_nodes (FILE* out, struct NODES Nodes)
   {
     fprintf (out, "%d", i);
     for (j = 0; j < 3; j++)
-      fprintf (out, "  %.12f", Nodes.NodeCoo[i][j]);
+      fprintf (out, "  %.12f",
+	  (fabs (Nodes.NodeCoo[i][j]) < 1e-12) ? 0 : Nodes.NodeCoo[i][j]);
     fprintf (out, "\n");
   }
 
@@ -38,7 +39,7 @@ neut_mesh_fprintf_geof_elts (FILE* out, struct MESH Mesh)
   fprintf (out, "\n**element\n");
   fprintf (out, "%d\n", Mesh.EltQty);
 
-  if (! strcmp (Mesh.EltType, "tet"))
+  if (! strcmp (Mesh.EltType, "tri"))
   {
     if (Mesh.Dimension == 3 && Mesh.EltOrder == 1)
       for (i = 1; i <= Mesh.EltQty; i++)
