@@ -96,12 +96,12 @@ This is the @cite{Neper Reference Manual} for Neper
 * Copying::           Copying
 * Introduction::      Introduction
 * Module -T::         The module to generate tessellations. 
-* Module -FM::        The module to generate free meshes of tessellations.
-* Module -MM::        The module to generate mapped meshes of tessellations.
+* Module -M::         The module to mesh tessellations.
 * Module -O::         The module to generate crystal orientations.
 * Module -VS::        The module for visualization.
 * Mathematical Expressions:: Format of mathematical expressions.
-* Statistics Keys:: 
+* Statistics Keys::   Statistics Keys.
+* Rotations::         Rotations.
 * Colours::           Colours.
 * File Formats::      File Formats.
 * Versions::          Versions
@@ -119,12 +119,8 @@ Neper
 @w{module -T}
 @end macro
 
-@macro mMM
-@w{module -MM}
-@end macro
-
-@macro mFM
-@w{module -FM}
+@macro mM
+@w{module -M}
 @end macro
 
 @macro mO
@@ -139,12 +135,8 @@ Neper
 @w{Module -T}
 @end macro
 
-@macro MMM
-@w{Module -MM}
-@end macro
-
-@macro MFM
-@w{Module -FM}
+@macro MM
+@w{Module -M}
 @end macro
 
 @macro MO
@@ -263,8 +255,7 @@ Result file: extension @file{\e\}.
 @include copying.texi
 @include introduction.texi
 @include neper_t.texi
-@include neper_fm.texi
-@include neper_mm.texi
+@include neper_m.texi
 @include neper_o.texi
 @include neper_vs.texi
 @include appendix.texi

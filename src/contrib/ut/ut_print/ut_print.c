@@ -323,6 +323,8 @@ ut_print_message (int head, int level, char *s, ...)
   vfprintf (stdout, s, args);
   va_end (args);
 
+  fflush (stdout);
+
   return;
 }
 
@@ -384,6 +386,8 @@ ut_print_messagewnc (int head, int max, char *message)
   }
 
   ut_free_1d_char (Header);
+
+  fflush (stdout);
 
   return;
 }

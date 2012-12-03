@@ -15,6 +15,7 @@ struct IN
   /* MESH */
   int morder;
   int meshdim;
+  char* elttype;
 
   char* meshpoly;
   char* meshface;
@@ -34,6 +35,8 @@ struct IN
   int    mesh3diter;
   int    mesh3dreport;
   double mesh3dclconv;
+
+  int singnodedup;
 
   char *nset;		/* list of nsets (sep by ',') if nset = 0 */
   char* faset;          /* surfs to print */
@@ -56,7 +59,8 @@ struct IN
   char*** remapspec;
 
   char *body;
-  char *ingeo;
+  char *tess;
+  char *vox;
   char *stn;
   char *ste;
   char *stelset;

@@ -6,7 +6,6 @@
 
 extern void Partition (struct IN, struct NODES *, struct MESH *,
 		       struct MESH *, struct MESH *, struct MESH *,
-		       struct NSET *, struct NSET *, struct NSET *,
 		       struct PART *);
 
 #endif

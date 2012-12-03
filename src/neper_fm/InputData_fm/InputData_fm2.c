@@ -16,8 +16,8 @@ TreatArg_fm (int fargc, char **fargv, int argc, char **argv,
   SetOptions_fm (pIn, pGeoPara, argc, argv);
 
   (*pIn).mesh = 0;
-  if ((*pIn).ingeo != NULL && 
-     (ut_string_inlist ((*pIn).format, ',', "msh")
+  if (((*pIn).tess != NULL || (*pIn).vox != NULL)
+   && (ut_string_inlist ((*pIn).format, ',', "msh")
    || ut_string_inlist ((*pIn).format, ',', "geof")
    || ut_string_inlist ((*pIn).format, ',', "abq")
    || ut_string_inlist ((*pIn).format, ',', "inp")
@@ -97,10 +97,15 @@ TreatArg_fm (int fargc, char **fargv, int argc, char **argv,
   /* Recording body */
   if ((*pIn).body == NULL)
   {
-    if ((*pIn).ingeo != NULL && strlen ((*pIn).ingeo) != 0)
+    if ((*pIn).tess != NULL && strlen ((*pIn).tess) != 0)
     {
-      (*pIn).body = ut_alloc_1d_char (strlen ((*pIn).ingeo) + 1);
-      ut_string_body ((*pIn).ingeo, (*pIn).body);
+      (*pIn).body = ut_alloc_1d_char (strlen ((*pIn).tess) + 1);
+      ut_string_body ((*pIn).tess, (*pIn).body);
+    }
+    else if ((*pIn).vox != NULL && strlen ((*pIn).vox) != 0)
+    {
+      (*pIn).body = ut_alloc_1d_char (strlen ((*pIn).vox) + 1);
+      ut_string_body ((*pIn).vox, (*pIn).body);
     }
     else if ((*pIn).loadmesh != NULL)
     {
@@ -113,7 +118,6 @@ TreatArg_fm (int fargc, char **fargv, int argc, char **argv,
       ut_string_body ((*pIn).remesh2, (*pIn).body);
     }
   }
-
 
   /* Writing all file names */
   (*pIn).geof    = ut_string_addextension ((*pIn).body, ".geof");

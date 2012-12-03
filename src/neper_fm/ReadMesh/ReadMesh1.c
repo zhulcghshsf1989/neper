@@ -5,10 +5,11 @@
 #include "ReadMesh.h"
 
 void
-ReadMesh (char* filename, struct NODES *pNodes,
+ReadMesh (char* filename, char* filename2, struct NODES *pNodes,
           struct MESH *pMesh0D, struct MESH *pMesh1D,
 	  struct MESH *pMesh2D, struct MESH *pMesh3D)
 {
+  int i;
   FILE *file = NULL, *file2 = NULL, *file3 = NULL;
   char *parms = NULL, *mesh = NULL, *opt = NULL;
   char *stenode = NULL, *steele = NULL;
@@ -102,6 +103,14 @@ ReadMesh (char* filename, struct NODES *pNodes,
   neut_mesh_init_nodeelts (pMesh2D, (*pNodes).NodeQty);
   neut_mesh_init_nodeelts (pMesh1D, (*pNodes).NodeQty);
   neut_mesh_init_nodeelts (pMesh0D, (*pNodes).NodeQty);
+
+  if (filename2 != NULL)
+  {
+    file = ut_file_open (filename2, "r");
+    for (i = 1; i <= (*pNodes).NodeQty; i++)
+      ut_array_1d_fscanf (file, (*pNodes).NodeCoo[i], 3);
+    ut_file_close (file, filename2, "r");
+  }
 
   ut_free_1d_char (filetype);
 

@@ -9,9 +9,7 @@ void
 PartitionNodes (struct IN In, SCOTCH_Mesh * pSCMesh, SCOTCH_Arch * pArch,
 		struct NODES *pNodes, struct MESH *pMesh0D,
 		struct MESH *pMesh1D, struct MESH *pMesh2D,
-		struct MESH *pMesh, struct NSET *pNSet0D,
-	       	struct NSET *pNSet1D, struct NSET *pNSet2D,
-		struct PART *pPart)
+		struct MESH *pMesh,   struct PART *pPart)
 {
   SCOTCH_Num *parttab;
   int eltnodeqty =
@@ -68,18 +66,23 @@ PartitionNodes (struct IN In, SCOTCH_Mesh * pSCMesh, SCOTCH_Arch * pArch,
       if (qty != (*pNodes).NodeQty)
 	ut_error_reportbug ();
 
+      /*
       // renumbering nset nodes 
-      for (i = 1; i <= (*pNSet0D).qty; i++)
-	for (j = 0; j < (*pNSet0D).nodeqty[i]; j++)
-	  (*pNSet0D).nodes[i][j] = node_nbs[(*pNSet0D).nodes[i][j]];
+      if (pNSet0D != NULL)
+	for (i = 1; i <= (*pNSet0D).qty; i++)
+	  for (j = 0; j < (*pNSet0D).nodeqty[i]; j++)
+	    (*pNSet0D).nodes[i][j] = node_nbs[(*pNSet0D).nodes[i][j]];
 
-      for (i = 1; i <= (*pNSet1D).qty; i++)
-	for (j = 0; j < (*pNSet1D).nodeqty[i]; j++)
-	  (*pNSet1D).nodes[i][j] = node_nbs[(*pNSet1D).nodes[i][j]];
+      if (pNSet1D != NULL)
+	for (i = 1; i <= (*pNSet1D).qty; i++)
+	  for (j = 0; j < (*pNSet1D).nodeqty[i]; j++)
+	    (*pNSet1D).nodes[i][j] = node_nbs[(*pNSet1D).nodes[i][j]];
 
-      for (i = 1; i <= (*pNSet2D).qty; i++)
-	for (j = 0; j < (*pNSet2D).nodeqty[i]; j++)
-	  (*pNSet2D).nodes[i][j] = node_nbs[(*pNSet2D).nodes[i][j]];
+      if (pNSet2D != NULL)
+	for (i = 1; i <= (*pNSet2D).qty; i++)
+	  for (j = 0; j < (*pNSet2D).nodeqty[i]; j++)
+	    (*pNSet2D).nodes[i][j] = node_nbs[(*pNSet2D).nodes[i][j]];
+      */
 
       neut_nodes_renumber_switch (pNodes, node_nbs);
       neut_nodes_renumber_switch_mesh (pMesh, node_nbs);

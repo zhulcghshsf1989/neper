@@ -11,6 +11,7 @@ add_definitions(-Wall -W -g -O3)
 set (CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
 
 add_library (neper_t
+./net_init/net_init1.c
 ./RegularizeGeo/MergeGeo/MergeGeo2.c
 ./RegularizeGeo/MergeGeo/MergeGeo1.c
 ./RegularizeGeo/MergeGeo/DeleteEdge/DeleteEdge1.c

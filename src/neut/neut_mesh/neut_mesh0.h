@@ -48,6 +48,7 @@ extern void neut_mesh_free (struct MESH *);
 
 extern void neut_mesh_init_nodeelts (struct MESH*, int);
 extern void neut_mesh_init_eltelset (struct MESH*, int*);
+extern void neut_mesh_init_elsets (struct MESH*);
 
 extern int neut_mesh_elt_partqty (struct MESH, int, int*);
 extern int neut_mesh_elt_isbound (struct MESH, int, int*);

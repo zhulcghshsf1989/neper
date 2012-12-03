@@ -31,10 +31,9 @@ The tessellations can be scaled to generate morphological textures (flat
 or elongated grains).  The module generates as output a tessellation
 file @file{.tess} that describes exhaustively the polycrystal morphology
 (@pxref{File Formats}).  The @file{.tess} file is an input file of the
-meshing modules, -FM @w{ and -MM} (@pxref{Module -FM} and @ref{Module
--MM}), and the orientation generation module, -O (@pxref{Module -O}).
-The generated tessellation (@file{.tess} file) can be visualized with
-@mVS{} (@ref{Module -VS}).
+meshing module, -M (@pxref{Module -M}), and the orientation generation
+module, -O (@pxref{Module -O}).  The generated tessellation
+(@file{.tess} file) can be visualized with @mVS{} (@ref{Module -VS}).
 
 @sp 1
 Here is what a typical run of @mT{} looks like:
@@ -233,7 +232,7 @@ Absolute or Relative Small Edge (maximum) Length.
 default @code{-rsel 1} leads to a length of 0.25 for a unit volume
 polyhedron.
 The value also enables to avoid mesh refinement with
-the default meshing parameters (@pxref{Module -FM}).
+the default meshing parameters (@pxref{Module -M}).
 Use this option if you want to choose a different length.,
 any,-rsel 1}
 
@@ -278,6 +277,20 @@ The available formats are @code{ascii}@comma{} @code{binary8}@comma{}
 @code{binary16} and @code{binary32}.
 ,
 ascii@comma{} binary8@comma{} binary16@comma{} binary32,binary16}
+
+@opt{-voxsize,integer,
+Specify the number of voxels along a dimension of the domain. 
+In case of a domain of different sizes along the three
+dimensions@comma{} the argument is the geometrical average of
+the number of voxels along the three dimensions@comma{} so that the voxels are
+as cubic as possible.
+,
+any, 20}
+
+@optsec{-voxsize3,integer integer integer,
+Specify the number of voxels along the three dimensions of the domain. 
+,
+any, none}
 
 @subsection Post-Processing Options
 

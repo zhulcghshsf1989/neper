@@ -21,8 +21,7 @@
 
 extern void PartitionNodes (struct IN, SCOTCH_Mesh *, SCOTCH_Arch *,
 			    struct NODES *, struct MESH *, struct MESH *,
-			    struct MESH *, struct MESH *, struct NSET *,
-			    struct NSET *, struct NSET *, struct PART *);
+			    struct MESH *, struct MESH *, struct PART *);
 
 extern void PartitionElts (struct IN, struct MESH *, struct PART *);
 extern void PartitionElts_Match (struct IN, struct MESH *, struct PART *);

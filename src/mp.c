@@ -35,9 +35,9 @@ main (int argc, char **argv)
   sprintf (ArgList[++ArgQty], "--version");
   sprintf (ArgList[++ArgQty], "--license");
   sprintf (ArgList[++ArgQty], "--rcfile");
-  sprintf (ArgList[++ArgQty], "-MM");
-  sprintf (ArgList[++ArgQty], "-FM");
   sprintf (ArgList[++ArgQty], "-T");
+  sprintf (ArgList[++ArgQty], "-FM");
+  sprintf (ArgList[++ArgQty], "-M");
   sprintf (ArgList[++ArgQty], "-O");
   sprintf (ArgList[++ArgQty], "-TR");
   sprintf (ArgList[++ArgQty], "-VS");
@@ -146,10 +146,9 @@ main (int argc, char **argv)
     neper_t (fargc, fargv, argc - 1, argv + 1);
   else if (strcmp (Arg, "-O") == 0)
     neper_o (fargc, fargv, argc - 1, argv + 1);
-  else if (strcmp (Arg, "-FM") == 0)
+  else if (strcmp (Arg, "-FM") == 0
+        || strcmp (Arg, "-M")  == 0)
     neper_fm (fargc, fargv, argc - 1, argv + 1);
-  else if (strcmp (Arg, "-MM") == 0)
-    neper_mm (fargc, fargv, argc - 1, argv + 1);
   else if (strcmp (Arg, "-VS") == 0)
     neper_vs (fargc, fargv, argc - 1, argv + 1);
 

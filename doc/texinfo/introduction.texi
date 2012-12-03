@@ -5,12 +5,12 @@
 
 @subsection Description
 
-Neper is a 3D random polycrystal generator for the finite element method.
-It is built around several modules:
+Neper is a software package for 3D random polycrystal generation and
+meshing.  It is built around several modules:
 
 
 @itemize @bullet
-@item @MT{} is for generating polycrystal morphologies.  They are
+@item @MT{} is the module for generating polycrystals.  They are
 respresented as Voronoi tessellations, or regular tessellations made of
 truncated octahedra.  The tessellations are space-filling, and the
 vertices, edges, faces and volumes, represent the quadruple points,
@@ -21,16 +21,13 @@ deformed to account for morphological texture.  @MT{} also includes an
 advanced ``regularization'' capability to remove the small features of
 the tessellations, which enables to obtain better quality meshes.
 
-@item @MFM{} aims at generating free (or ``unstructured'') meshes of
-tessellations, that is, meshes comprised of tetrahedral elements that
-conform to the tessellation morphology.  Neper includes several features
-that are necessary to get good-quality meshes: optimized meshing rules,
-multimeshing (the concurrent use of several meshing algorithms) and
-remeshing.
-
-@item @MMM{} is for generating mapped meshes of tessellations.  These
-meshes are comprised of regular hexahedral elements and so do not
-conform exactly to the tessellation morphology.
+@item @MM{} is the module for meshing polycrystals. Two capabilities are
+available: meshing into tetrahedral elements that conform to the
+tessellation morphology, or meshing into regular hexahedral elements.
+Tetrahedral element meshing includes features that are necessary to get
+good-quality meshes: optimized meshing rules and multimeshing (the
+concurrent use of several meshing algorithms). Remeshing is available to
+generate a new, good-quality mesh from a deformed mesh.
 
 @item @MO{} provides crystal orientations for the grains.  The
 orientations are randomly distributed according to a uniform
@@ -130,7 +127,7 @@ libmatheval homepage, @uref{http://www.gnu.org/software/libmatheval}.
 
 @item the libScotch library (optional, @emph{not included} by default)
 
-@MFM{} includes mesh partitioning capabilities, which make use of the
+@MM{} includes mesh partitioning capabilities, which make use of the
 Scotch mesh partitioner (version @code{5.1.12} or later).  It can be
 downloaded from the Scotch homepage,
 @url{www.labri.fr/perso/pelegrin/scotch}.
@@ -144,7 +141,7 @@ The following dependencies are only needed at run time,
 @c
 @itemize
 
-@item the Gmsh program (mandatory for module -FM)
+@item the Gmsh program (mandatory for module -M)
 
 This version on Neper is intended to work with Gmsh (version
 @code{2.4.2} or later, excluding version @code{2.5.1}), which can be
@@ -189,7 +186,7 @@ with a number of arguments:
 @com{neper @var{module_name} @var{module_arguments}}
 
 The module names are @option{-T}, 
-@option{-FM}, @option{-MM}, @option{-O} and @option{-VS}. 
+@option{-M}, @option{-O} and @option{-VS}. 
 The module arguments can include both required input
 data and options.  Options start @w{by @samp{-}}.  The options can be
 given in arbitrary order (except for module @code{-VS}) and are to be
@@ -235,7 +232,7 @@ An example of initialization file is given below:
 @c @group
 neper comments ------------------------------------------------------
 This is my initialization file (~/.neperrc).
-neper -FM -order 2
+neper -M -order 2
           -gmsh my_gmsh_path
 neper -MM -order 2
 neper comments ------------------------------------------------------

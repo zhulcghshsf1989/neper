@@ -10,5 +10,6 @@
 #include "neut_vox/neut_vox_fscanf.h"
 #include "neut_vox/neut_vox_fprintf.h"
 #include "neut_vox/neut_vox_op.h"
+#include "neut_vox/neut_vox_gen.h"
 
 #endif /* NEUT_VOX_H */

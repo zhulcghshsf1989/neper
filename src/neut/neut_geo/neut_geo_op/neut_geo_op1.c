@@ -8,6 +8,15 @@ void
 neut_geo_set_zero (struct GEO* pGeo)
 {
   (*pGeo).version = NULL;
+  (*pGeo).N = 0;
+  (*pGeo).Id = -1;
+  (*pGeo).morpho = 0;
+  (*pGeo).Type = NULL;
+  (*pGeo).sel = 0;
+  (*pGeo).maxff = 0;
+  (*pGeo).dbound = NULL;
+  (*pGeo).dboundsel = 0;
+
   (*pGeo).VerQty = 0;
   (*pGeo).FaceQty = 0;
   (*pGeo).EdgeQty = 0;
@@ -42,14 +51,6 @@ neut_geo_set_zero (struct GEO* pGeo)
   (*pGeo).PolyTrue = NULL;
   (*pGeo).PolyBody = NULL;
   (*pGeo).CenterCoo = NULL;
-  (*pGeo).morpho = NULL;
-  (*pGeo).Type = NULL;
-  (*pGeo).Id = -1;
-  
-  (*pGeo).sel = 0;
-  (*pGeo).maxff = 0;
-  (*pGeo).dbound = NULL;
-  (*pGeo).dboundsel = 0;
 
   (*pGeo).DomType = NULL;
 

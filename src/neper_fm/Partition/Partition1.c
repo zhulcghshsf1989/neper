@@ -8,7 +8,6 @@
 void
 Partition (struct IN In, struct NODES *pNodes, struct MESH *pMesh0D,
 	   struct MESH *pMesh1D, struct MESH *pMesh2D, struct MESH *pMesh,
-	   struct NSET *pNSet0D, struct NSET *pNSet1D, struct NSET *pNSet2D,
 	   struct PART *pPart)
 {
   FILE *file;
@@ -52,7 +51,7 @@ Partition (struct IN In, struct NODES *pNodes, struct MESH *pMesh0D,
 
   ut_print_message (0, 2, "Partitioning nodes ...\n");
   PartitionNodes (In, &SCMesh, &Arch, pNodes, pMesh0D, pMesh1D, pMesh2D,
-		  pMesh, pNSet0D, pNSet1D, pNSet2D, pPart);
+		  pMesh, pPart);
 
   ut_print_message (0, 2, "Partitioning elements ...\n");
   PartitionElts (In, pMesh, pPart);

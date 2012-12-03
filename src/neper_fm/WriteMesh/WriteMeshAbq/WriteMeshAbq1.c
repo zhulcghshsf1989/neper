@@ -84,18 +84,21 @@ WriteMeshAbq (FILE* file, char* dim, struct NODES Nodes,
 
   if (ut_string_inlist (dim, ',', "2"))
   {
-    fprintf (file, "\n*Element, type=");
-    if (Mesh2D.EltOrder == 1)
-      fprintf (file, "CPE3\n");
-    else if (Mesh2D.EltOrder == 2)
-      fprintf (file, "CPE6\n");
-
-    for (i = 1; i <= Mesh2D.EltQty; i++)
+    if (! strcmp (Mesh3D.EltType, "tri"))
     {
-      fprintf (file, "%d, ", i);
-      for (j = 0; j < eltnodeqty2D - 1; j++)
-	fprintf (file, "%d, ", Mesh2D.EltNodes[i][seq2d[j]]);
-      fprintf (file, "%d\n", Mesh2D.EltNodes[i][seq2d[eltnodeqty2D - 1]]);
+      fprintf (file, "\n*Element, type=");
+      if (Mesh2D.EltOrder == 1)
+	fprintf (file, "CPE3\n");
+      else if (Mesh2D.EltOrder == 2)
+	fprintf (file, "CPE6\n");
+
+      for (i = 1; i <= Mesh2D.EltQty; i++)
+      {
+	fprintf (file, "%d, ", i);
+	for (j = 0; j < eltnodeqty2D - 1; j++)
+	  fprintf (file, "%d, ", Mesh2D.EltNodes[i][seq2d[j]]);
+	fprintf (file, "%d\n", Mesh2D.EltNodes[i][seq2d[eltnodeqty2D - 1]]);
+      }
     }
   }
 
@@ -104,18 +107,77 @@ WriteMeshAbq (FILE* file, char* dim, struct NODES Nodes,
   if (ut_string_inlist (dim, ',', "3"))
   {
     fprintf (file, "\n*Element, type=");
-    if (Mesh3D.EltOrder == 1)
-      fprintf (file, "C3D4\n");
-    else if (Mesh3D.EltOrder == 2)
-      fprintf (file, "C3D10\n");
 
-    for (i = 1; i <= Mesh3D.EltQty; i++)
+    if (! strcmp (Mesh3D.EltType, "tri"))
     {
-      fprintf (file, "%d, ", i);
-      for (j = 0; j < eltnodeqty3D - 1; j++)
-	fprintf (file, "%d, ", Mesh3D.EltNodes[i][seq3d[j]]);
-      fprintf (file, "%d\n", Mesh3D.EltNodes[i][seq3d[eltnodeqty3D - 1]]);
+      if (Mesh3D.EltOrder == 1)
+	fprintf (file, "C3D4\n");
+      else if (Mesh3D.EltOrder == 2)
+	fprintf (file, "C3D10\n");
+
+      for (i = 1; i <= Mesh3D.EltQty; i++)
+      {
+	fprintf (file, "%d, ", i);
+	for (j = 0; j < eltnodeqty3D - 1; j++)
+	  fprintf (file, "%d, ", Mesh3D.EltNodes[i][seq3d[j]]);
+	fprintf (file, "%d\n", Mesh3D.EltNodes[i][seq3d[eltnodeqty3D - 1]]);
+      }
     }
+
+    else if (! strcmp (Mesh3D.EltType, "quad"))
+    {
+      if (Mesh3D.EltOrder == 1)
+      {
+	fprintf (file, "C3D8\n");
+
+	for (i = 1; i <= Mesh3D.EltQty; i++)
+	{
+	  fprintf (file, "%d,", i);
+
+	  fprintf (file, " %d," , Mesh3D.EltNodes[i][0]);
+	  fprintf (file, " %d," , Mesh3D.EltNodes[i][1]);
+	  fprintf (file, " %d," , Mesh3D.EltNodes[i][2]);
+	  fprintf (file, " %d," , Mesh3D.EltNodes[i][3]);
+	  fprintf (file, " %d," , Mesh3D.EltNodes[i][4]);
+	  fprintf (file, " %d," , Mesh3D.EltNodes[i][5]);
+	  fprintf (file, " %d," , Mesh3D.EltNodes[i][6]);
+	  fprintf (file, " %d\n", Mesh3D.EltNodes[i][7]);
+	}
+      }
+      else
+      {
+	fprintf (file, "C3D20\n");
+
+	for (i = 1; i <= Mesh3D.EltQty; i++)
+	{
+	  fprintf (file, "%d, ", i);
+
+	  fprintf (file, "%d, ", Mesh3D.EltNodes[i][0]);
+	  fprintf (file, "%d, ", Mesh3D.EltNodes[i][1]);
+	  fprintf (file, "%d, ", Mesh3D.EltNodes[i][2]);
+	  fprintf (file, "%d, ", Mesh3D.EltNodes[i][3]);
+	  fprintf (file, "%d, ", Mesh3D.EltNodes[i][4]);
+	  fprintf (file, "%d, ", Mesh3D.EltNodes[i][5]);
+	  fprintf (file, "%d, ", Mesh3D.EltNodes[i][6]);
+	  fprintf (file, "%d, ", Mesh3D.EltNodes[i][7]);
+	  fprintf (file, "%d, ", Mesh3D.EltNodes[i][8]);
+	  fprintf (file, "%d, ", Mesh3D.EltNodes[i][11]);
+	  fprintf (file, "%d, ", Mesh3D.EltNodes[i][13]);
+	  fprintf (file, "%d, ", Mesh3D.EltNodes[i][9]);
+	  fprintf (file, "%d, ", Mesh3D.EltNodes[i][16]);
+	  fprintf (file, "%d, ", Mesh3D.EltNodes[i][18]);
+	  fprintf (file, "%d, ", Mesh3D.EltNodes[i][19]);
+	  fprintf (file, "%d, ", Mesh3D.EltNodes[i][17]);
+	  fprintf (file, "%d, ", Mesh3D.EltNodes[i][10]);
+	  fprintf (file, "%d, ", Mesh3D.EltNodes[i][12]);
+	  fprintf (file, "%d, ", Mesh3D.EltNodes[i][14]);
+	  fprintf (file, "%d\n", Mesh3D.EltNodes[i][15]);
+	}
+      }
+    }
+
+    else 
+      ut_error_reportbug ();
   }
 
 // 2D elsets -----------------------------------------------------------

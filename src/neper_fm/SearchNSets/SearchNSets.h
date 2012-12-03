@@ -10,6 +10,7 @@
 #include"neut.h"
 
 #include"SearchNSets0.h"
+#include"SearchNSets_mm/SearchNSets_mm0.h"
 
 extern void SearchNSets_2d (struct GEO, struct MESH, struct NSET*);
 extern void SearchNSets_1d (struct GEO, struct MESH, struct NSET, struct NSET*);

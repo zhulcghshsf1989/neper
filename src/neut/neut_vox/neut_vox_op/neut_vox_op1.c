@@ -204,7 +204,6 @@ neut_vox_scale (struct VOX* pVox, double scale1, double scale2,
   return;
 }
 
-
 void
 neut_vox_gridscale (struct VOX* pVox, double scale1, double scale2, double scale3)
 {
