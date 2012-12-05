@@ -20,7 +20,7 @@
 #include"nem_meshing/nem_meshing0.h"
 #include"nem_meshing_hex/RMeshing0.h"
 #include"nem_cleaning/nem_cleaning0.h"
-#include"SearchNSets/SearchNSets0.h"
+#include"nem_nsets/nem_nsets0.h"
 #include"WriteMesh/WriteMesh0.h"
 #include"nem_stat/nem_stat0.h"
 #include"ReadMesh/ReadMesh0.h"

@@ -122,3 +122,25 @@ neut_nset_free (struct NSET* pNSet)
 
   return;
 }
+
+void
+neut_nsets_inter (struct NSET NSet, int id1, int id2,
+                  char** pname, int** pnodes, int* pnodeqty)
+{
+  if (pname != NULL)
+  {
+    (*pname)
+      = ut_alloc_1d_char (strlen (NSet.names[id1]) + strlen (NSet.names[id2]) + 1);
+    sprintf ((*pname), "%s%s", NSet.names[id1], NSet.names[id2]);
+  }
+
+  (*pnodes) = ut_alloc_1d_int (NSet.nodeqty[id1] + NSet.nodeqty[id2]);
+
+  ut_array_1d_int_inter (NSet.nodes[id1], NSet.nodeqty[id1],
+			 NSet.nodes[id2], NSet.nodeqty[id2],
+			 (*pnodes) , pnodeqty);
+
+  (*pnodes) = ut_realloc_1d_int ((*pnodes), (*pnodeqty));
+
+  return;
+}

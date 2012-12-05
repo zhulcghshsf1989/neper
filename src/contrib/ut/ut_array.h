@@ -1,8 +1,8 @@
 /* Copyright (C) 2007-2009, 2012 Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
-#ifndef UT_ARRAY0_H
-#define UT_ARRAY0_H
+#ifndef UT_ARRAY_H
+#define UT_ARRAY_H
 
 extern void ut_array_1d_scale (double *, int, double);
 extern void ut_array_1d_int_scale (int *, int, int);
@@ -112,6 +112,7 @@ extern void ut_array_1d_memcpy (double *, int, double *);
 extern void ut_array_1d_int_memcpy (int *, int, int *);
 extern void ut_array_2d_memcpy (double **, int, int, double **);
 extern void ut_array_2d_int_memcpy (int **, int, int, int **);
+extern void ut_array_1d_pchar_memcpy (char**, int, char**);
 extern void ut_array_3d_memcpy (double ***, int, int, int, double ***);
 extern void ut_array_3d_int_memcpy (int ***, int, int, int, int ***);
 extern void ut_array_3d_uchar_memcpy (unsigned char ***, int, int, int, unsigned char ***);
@@ -128,6 +129,7 @@ extern void ut_array_1d_sort_index_perm (int*, int, int*);
 extern void ut_array_1d_int_sort (int *, int);
 extern void ut_array_1d_int_sort_index (int *, int, int *);
 extern void ut_array_1d_int_dsort_index (int *, int, int *);
+extern void ut_array_1d_pchar_sort (char**, int);
 extern void ut_array_1d_abssort (double *, int);
 extern void ut_array_1d_abssort_index (double *, int, int *);
 extern void ut_array_1d_int_abssort_index (int *, int, int *);
@@ -228,4 +230,4 @@ extern int ut_array_1d_int_diff (int*, int, int*, int);
 
 extern int ut_array_1d_int_percent (int* array, int size, int* percent);
 
-#endif /* UT_ARRAY0_H */
+#endif /* UT_ARRAY_H */

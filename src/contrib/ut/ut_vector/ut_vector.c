@@ -4,9 +4,8 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
-
-#include "../ut_vector.h"
-#include "../ut.h"
+#include"ut_vector.h"
+#include"ut.h"
 
 double
 ut_vector_norm (double *a)
@@ -88,7 +87,6 @@ ut_vector_int_angle (int *a, int *b)
 {
   return (180 / M_PI) * ut_vector_int_angle_rad (a, b);
 }
-
 
 void
 ut_vector_covar (double** R, int qty, double **evect, double *eval)

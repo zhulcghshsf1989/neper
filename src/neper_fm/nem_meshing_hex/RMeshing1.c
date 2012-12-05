@@ -6,12 +6,14 @@
 
 void
 nem_geo_mesh_hex (struct IN In, struct GEOPARA GeoPara, struct GEO Geo, 
-		  struct NODES *pNodes, struct MESH *pMesh3D)
+		  struct NODES *pNodes, struct MESH* pMesh0D,
+		  struct MESH* pMesh1D, struct MESH* pMesh2D, 
+		  struct MESH *pMesh3D, struct NSET* pNSet2D)
 {
   int i;
   int* msize = ut_alloc_1d_int (3);
   double** dsize = ut_alloc_2d (3, 2);
-  
+
   neut_geo_boundingbox (Geo, dsize);
 
   double cl;
@@ -30,8 +32,7 @@ nem_geo_mesh_hex (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
   ut_print_message (0, 2, "3D meshing ... ");
 
   int*** pFoDNodes = NULL;
-  BuildMMesh3D (msize, In.morder, pNodes, pMesh3D, pFoDNodes);
-
+  BuildMMesh3D (msize, In.morder, pNodes, pMesh3D, pNSet2D);
   neut_nodes_scale (pNodes, dsize[0][1], dsize[1][1], dsize[2][1]);
   neut_mesh_scale  (pMesh3D, dsize[0][1], dsize[1][1], dsize[2][1]);
 
@@ -39,8 +40,11 @@ nem_geo_mesh_hex (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
 
   // ut_print_message (0, 2, "Searching elsets ... ");
   RMeshingFGeo (Geo, pMesh3D);
-  
+
   neut_mesh_init_elsets (pMesh3D);
+
+  ReconMesh (In.outdim, pNodes, pMesh0D, pMesh1D, pMesh2D,
+		        pMesh3D, NULL);
 
   int* meshpoly = ut_alloc_1d_int (Geo.PolyQty + 1);
 
@@ -86,6 +90,9 @@ nem_vox_mesh_hex (struct IN In, struct GEOPARA GeoPara, struct VOX Vox,
   double* scale = ut_alloc_1d (3);
   double** dsize = ut_alloc_2d (3, 2);
   struct GEO Geo;
+  struct NSET NSet2D;
+
+  neut_nset_set_zero (&NSet2D);
 
   neut_geo_set_zero (&Geo);
 
@@ -104,8 +111,7 @@ nem_vox_mesh_hex (struct IN In, struct GEOPARA GeoPara, struct VOX Vox,
   printf ("\n");
   ut_print_message (0, 2, "3D meshing ... ");
 
-  int*** pFoDNodes = NULL;
-  BuildMMesh3D (msize, In.morder, pNodes, pMesh3D, pFoDNodes);
+  BuildMMesh3D (msize, In.morder, pNodes, pMesh3D, &NSet2D);
   neut_nodes_scale (pNodes, dsize[0][1], dsize[1][1], dsize[2][1]);
   neut_mesh_scale  (pMesh3D, dsize[0][1], dsize[1][1], dsize[2][1]);
 

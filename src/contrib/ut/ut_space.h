@@ -1,8 +1,8 @@
 /* Copyright (C) 2007-2009, 2012 Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
-#ifndef UT_SPACE0_H
-#define UT_SPACE0_H
+#ifndef UT_SPACE_H
+#define UT_SPACE_H
 
 #include "ut_config.h"
 
@@ -65,4 +65,4 @@ extern int ut_space_points_uvect (double*, double*, double*);
 
 extern void ut_space_string_plane (char*, double*);
 
-#endif /* UT_SPACE0_H */
+#endif /* UT_SPACE_H */

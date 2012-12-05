@@ -4,9 +4,8 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-
-#include "../ut_color.h"
-#include "../ut.h"
+#include "ut_color.h"
+#include "ut.h"
 
 int
 ut_color_name_valid (char *name)

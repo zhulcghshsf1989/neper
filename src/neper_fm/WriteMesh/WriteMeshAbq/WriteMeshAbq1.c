@@ -13,7 +13,7 @@ WriteMeshAbq (FILE* file, char* dim, struct NODES Nodes,
   int i, j, eltnodeqty2D, eltnodeqty3D;
   int seq2d[6]  = {0,1,2,3,4,5};
   int seq3d[10] = {0,1,2,3,4,5,6,7,9,8};
-  int col;
+  int col, call;
 
   Mesh1D.EltQty = Mesh1D.EltQty;
 
@@ -36,49 +36,10 @@ WriteMeshAbq (FILE* file, char* dim, struct NODES Nodes,
 	  (fabs (Nodes.NodeCoo[i][j]) < 1e-12) ? 0 : Nodes.NodeCoo[i][j]);
     fprintf (file, "\n");
   }
+  fprintf (file, "\n");
 
 /*----------------------------------------------------------------------
  * elements */
-
-  // 0D mesh
-  /*
-  if (ut_string_inlist (dim, ',', "0"))
-  {
-    if (Mesh0D.EltElset == NULL)
-      neut_mesh_init_eltelset (&Mesh0D, NULL);
-    for (i = 1; i <= Mesh0D.EltQty; i++)
-    {
-      fprintf (file, "%d %d 3 0 %d 0 ", i, elt_type0D, Mesh0D.EltElset[i]);
-      ut_array_1d_int_fprintf (file, Mesh0D.EltNodes[i], 1, "%d");
-    }
-  }
-
-  // 1D mesh
-  if (ut_string_inlist (dim, ',', "1"))
-  {
-    if (Mesh1D.EltElset == NULL)
-      neut_mesh_init_eltelset (&Mesh1D, NULL);
-
-    for (i = 1; i <= Mesh1D.EltQty; i++)
-    {
-      fprintf (file, "%d %d 3 0 %d 0 ", i, elt_type1D, Mesh1D.EltElset[i]);
-      ut_array_1d_int_fprintf (file, Mesh1D.EltNodes[i], eltnodeqty1D, "%d");
-    }
-  }
-
-  // 2D mesh
-  if (ut_string_inlist (dim, ',', "2"))
-  {
-    if (Mesh2D.EltElset == NULL)
-      neut_mesh_init_eltelset (&Mesh2D, NULL);
-
-    for (i = 1; i <= Mesh2D.EltQty; i++)
-    {
-      fprintf (file, "%d %d 3 0 %d 0 ", i, elt_type2D, Mesh2D.EltElset[i]);
-      ut_array_1d_int_fprintf (file, Mesh2D.EltNodes[i], eltnodeqty2D, "%d");
-    }
-  }
-  */
 
 // 2D elts -------------------------------------------------------------
 
@@ -86,7 +47,7 @@ WriteMeshAbq (FILE* file, char* dim, struct NODES Nodes,
   {
     if (! strcmp (Mesh3D.EltType, "tri"))
     {
-      fprintf (file, "\n*Element, type=");
+      fprintf (file, "*Element, type=");
       if (Mesh2D.EltOrder == 1)
 	fprintf (file, "CPE3\n");
       else if (Mesh2D.EltOrder == 2)
@@ -100,13 +61,15 @@ WriteMeshAbq (FILE* file, char* dim, struct NODES Nodes,
 	fprintf (file, "%d\n", Mesh2D.EltNodes[i][seq2d[eltnodeqty2D - 1]]);
       }
     }
+
+    fprintf (file, "\n");
   }
 
 // 3D elts -------------------------------------------------------------
 
   if (ut_string_inlist (dim, ',', "3"))
   {
-    fprintf (file, "\n*Element, type=");
+    fprintf (file, "*Element, type=");
 
     if (! strcmp (Mesh3D.EltType, "tri"))
     {
@@ -178,6 +141,8 @@ WriteMeshAbq (FILE* file, char* dim, struct NODES Nodes,
 
     else 
       ut_error_reportbug ();
+
+    fprintf (file, "\n");
   }
 
 // 2D elsets -----------------------------------------------------------
@@ -186,11 +151,13 @@ WriteMeshAbq (FILE* file, char* dim, struct NODES Nodes,
   {
     for (i = 1; i <= Mesh2D.ElsetQty; i++)
     {
-      fprintf (file, "\n*Elset, elset=face%d\n", i);
+      fprintf (file, "*Elset, elset=face%d\n", i);
       col = 0;
-      for (j = 1; j < Mesh2D.Elsets[i][0]; j++)
-	ut_print_wnc (file, &col, 72, "%d, ", Mesh2D.Elsets[i][j]);
-      ut_print_wnc (file, &col, 72, "%d\n", Mesh2D.Elsets[i][Mesh2D.Elsets[i][0]]);
+      call = 0;
+      for (j = 1; j <= Mesh2D.Elsets[i][0]; j++)
+	ut_print_wnc_wncall (file, &col, 72, &call, 16, 
+	    (j < Mesh2D.Elsets[i][0]) ? "%d," : "%d\n", Mesh2D.Elsets[i][j]);
+      fprintf (file, "\n");
     }
   }
 
@@ -200,11 +167,13 @@ WriteMeshAbq (FILE* file, char* dim, struct NODES Nodes,
   {
     for (i = 1; i <= Mesh3D.ElsetQty; i++)
     {
-      fprintf (file, "\n*Elset, elset=poly%d\n", i);
+      fprintf (file, "*Elset, elset=poly%d\n", i);
       col = 0;
-      for (j = 1; j < Mesh3D.Elsets[i][0]; j++)
-	ut_print_wnc (file, &col, 72, "%d, ", Mesh3D.Elsets[i][j]);
-      ut_print_wnc (file, &col, 72, "%d\n", Mesh3D.Elsets[i][Mesh3D.Elsets[i][0]]);
+      call = 0;
+      for (j = 1; j <= Mesh3D.Elsets[i][0]; j++)
+	ut_print_wnc_wncall (file, &col, 72, &call, 16, 
+	    (j < Mesh3D.Elsets[i][0]) ? "%d," : "%d\n", Mesh3D.Elsets[i][j]);
+      fprintf (file, "\n");
     }
   }
 

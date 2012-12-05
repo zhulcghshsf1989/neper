@@ -52,7 +52,7 @@ nem_init_scaling (struct GEO* pGeo, struct VOX* pVox, struct NODES* pRNodes,
     struct MESH RMesh3D, struct GEOPARA* pGeoPara)
 {
   int i, polyqty;
-  double* scale = ut_alloc_1d (3);
+  double* scale = NULL;
   double vol;
   char input;
 
@@ -66,11 +66,15 @@ nem_init_scaling (struct GEO* pGeo, struct VOX* pVox, struct NODES* pRNodes,
     input = 'v'; // vox
     polyqty = (*pVox).PolyQty;
   }
-  else 
+  else if (RMesh3D.EltQty > 0)
   {
     input = 'm'; // mesh
     polyqty = RMesh3D.ElsetQty;
   }
+  else
+    return;
+
+  scale = ut_alloc_1d (3);
 
   if ((*pGeoPara).cltype == 1 || (*pGeoPara).cltype == 3
    || ((*pGeoPara).dboundrcl > 0 && (*pGeoPara).dboundcl < 0))

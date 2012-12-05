@@ -1,8 +1,8 @@
 /* Copyright (C) 2007-2009, 2012 Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
-#ifndef UT_FREE0_H
-#define UT_FREE0_H
+#ifndef UT_FREE_H
+#define UT_FREE_H
 
 extern void ut_free_1d_int (int *);
 extern void ut_free_1d_ushort (unsigned short *);
@@ -36,4 +36,4 @@ extern void ut_free_3d (double ***, unsigned int, unsigned int);
 extern void ut_free_3d_char (char ***, unsigned int, unsigned int);
 extern void ut_free_4d (double ****, unsigned int, unsigned int, unsigned int);
 
-#endif /* UT_FREE0_H */
+#endif /* UT_FREE_H */

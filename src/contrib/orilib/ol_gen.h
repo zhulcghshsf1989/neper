@@ -27,3 +27,25 @@ extern void ol_nb_max_rtheta_rad (double, double, double, double, double *,
 				  double *);
 
 #endif /* OL_GEN */
+#ifndef OL_GENx
+#define OL_GENx
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<math.h>
+#include"ut.h"
+#define isNaN(x) ((x) != (x))
+#endif /* OL_GENx */
+#ifndef OL_GENx
+#define OL_GENx
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<math.h>
+#include"ut.h"
+#define isNaN(x) ((x) != (x))
+#include "ol_glo.h"
+#include "ol_des.h"
+#endif /* OL_GENx */

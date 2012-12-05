@@ -100,7 +100,8 @@ neper_fm (int fargc, char **fargv, int argc, char **argv)
     else if (! strcmp (In.elttype, "hex"))
     {
       if (In.tess != NULL)
-	nem_geo_mesh_hex (In, GeoPara, Geo, &Nodes, &Mesh3D);
+	nem_geo_mesh_hex (In, GeoPara, Geo, &Nodes, &Mesh0D, &Mesh1D,
+	    &Mesh2D, &Mesh3D, &NSet2D);
       else if (In.vox != NULL)
 	nem_vox_mesh_hex (In, GeoPara, Vox, &Nodes, &Mesh0D, &Mesh1D,
 	    &Mesh2D, &Mesh3D);
@@ -132,8 +133,10 @@ neper_fm (int fargc, char **fargv, int argc, char **argv)
   }
 
   // Reconstructing mesh if necessary (2D, 1D, 0D from 3D) ###
-  if (Mesh3D.EltQty != 0 && (Mesh2D.EltQty == 0 || Mesh1D.EltQty == 0
-   || Mesh0D.EltQty == 0 || Geo.VerQty == 0))
+  if ((ut_string_inlist (In.outdim, ',', "2") && Mesh2D.EltQty == 0)
+   || (ut_string_inlist (In.outdim, ',', "1") && Mesh1D.EltQty == 0)
+   || (ut_string_inlist (In.outdim, ',', "0") && Mesh0D.EltQty == 0)
+   || (Geo.PolyQty == 0 && strlen (In.nset) > 0))
   {
     ut_print_message (0, 1, "Reconstructing mesh ...\n");
     ReconMesh (In.outdim, &Nodes, &Mesh0D, &Mesh1D, &Mesh2D,
@@ -163,7 +166,7 @@ neper_fm (int fargc, char **fargv, int argc, char **argv)
   if (strlen (In.nset) > 0 && Mesh3D.EltQty > 0)
   {
     ut_print_message (0, 2, "Searching nsets ...\n");
-    SearchNSets (In.nset, Geo, Mesh0D, Mesh1D, Mesh2D, &NSet0D, &NSet1D, &NSet2D);
+    nem_nsets (In, Geo, Mesh0D, Mesh1D, Mesh2D, &NSet0D, &NSet1D, &NSet2D);
   }
 
   // ###################################################################

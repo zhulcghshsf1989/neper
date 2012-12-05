@@ -4,9 +4,8 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-
-#include "../ut_option.h"
-#include"../ut.h"
+#include"ut_option.h"
+#include"ut.h"
 
 /* Reading options from optionsfile. */
 void

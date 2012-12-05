@@ -6,9 +6,8 @@
 #include<math.h>
 #include<string.h>
 #include<ctype.h>
-
-#include "../ut_string.h"
-#include"../ut.h"
+#include"ut_string.h"
+#include"ut.h"
  
 int
 ut_string_fnr (char *string, char find, char replace)
@@ -409,8 +408,6 @@ ut_string_stringpos (char *string, char *string2, int nb)
   return res;
 }
 
-
-
 void
 ut_string_separate (char* string, char c, char*** parts, int* pqty)
 {
@@ -542,14 +539,36 @@ ut_string_paste (char * string1, char* string2)
   return res;
 }
 
-
-int
-ut_char_zero (char c)
+char*
+ut_string_array_paste (char** string, int qty)
 {
-  if (c == ' ' || c == '\t' || c == '\n')
-    return 1;
-  else
-    return 0;
+  int i;
+  char* res;
+
+  int length = 1;
+  for (i = 0; i < qty; i++) 
+    length += strlen (string[i]);
+
+  res = ut_alloc_1d_char (length);
+  for (i = 0; i < qty; i++) 
+    res = strcat (res, string[i]);
+  
+  return res;
+}
+
+char*
+ut_string_array_paste_cmp (char** string, int qty)
+{
+  char* res;
+  char** stringcpy = ut_alloc_1d_pchar (qty);
+
+  ut_array_1d_pchar_memcpy (stringcpy, qty, string);
+  ut_array_1d_pchar_sort (stringcpy, qty);
+  res = ut_string_array_paste (stringcpy, qty);
+
+  ut_free_2d_char (stringcpy, qty);
+  
+  return res;
 }
 
 int
@@ -618,3 +637,4 @@ ut_string_format_strcmp (char* in, char* format)
 
   return status;
 }
+

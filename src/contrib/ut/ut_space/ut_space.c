@@ -4,9 +4,8 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
-
-#include "../ut_space.h"
-#include "../ut.h"
+#include"ut_space.h"
+#include"ut.h"
 
 #ifdef HAVE_GSL
 #include<gsl/gsl_rng.h>
@@ -221,8 +220,6 @@ ut_space_indomain2d_int (int **P, int qty, int *A)
   return res;
 }
 
-
-
 /* indicates the half-space whose a specified point belongs to. */
 int
 ut_space_planeside (double *P, double *C)
@@ -309,7 +306,6 @@ ut_space_trianglenormal (double *p1, double *p2, double *p3, double *n)
 
   return;
 }
-
 
 int
 ut_space_pointaligned (double *p1, double *p2, double *p3, double eps)

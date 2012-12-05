@@ -4,10 +4,9 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
-
-#include "ut_config.h"
-#include "../ut_mat.h"
-#include"../ut.h"
+#include"ut_config.h"
+#include"ut_mat.h"
+#include"ut.h"
 
 int
 ut_mat_product (double **a, int a1, int a2, double **b, int b1, int b2,

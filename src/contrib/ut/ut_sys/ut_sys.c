@@ -1,17 +1,16 @@
 /* Copyright (C) 2007-2009, 2012 Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
-#include <stdlib.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <sys/wait.h>
-#include <sys/time.h>
-#include <signal.h>
-#include <string.h>
-#include <float.h>
-
-#include "../ut_sys.h"
-#include "../ut.h"
+#include<stdlib.h>
+#include<unistd.h>
+#include<stdio.h>
+#include<sys/wait.h>
+#include<sys/time.h>
+#include<signal.h>
+#include<string.h>
+#include<float.h>
+#include"ut_sys.h"
+#include"ut.h"
 
 void sighandler () {}
 

@@ -148,7 +148,8 @@ neut_mmesh_2d_fprintf (struct NODES Nodes, struct MESH Mesh, char *filename)
 
 void
 BuildMMesh3D (int *size, int order,
-	      struct NODES *pNodes, struct MESH *pMesh, int ***pFoDNodes)
+	      struct NODES *pNodes, struct MESH *pMesh,
+	      struct NSET* pNSet2D)
 {
   int i, j, k, elt, x, y, z, pos1, pos2, nid, eid, nodesperelt;
   double nx, ny, nz;
@@ -390,8 +391,7 @@ BuildMMesh3D (int *size, int order,
   ut_free_3d_int (O2YNMap, size[0] + 2, size[1] + 1);
   ut_free_3d_int (O2ZNMap, size[0] + 2, size[1] + 2);
 
-  // SearchFoDNodes_cube (*pNodes, pFoDNodes);
-  pFoDNodes = pFoDNodes;
+  SearchFoDNodes_cube (*pNodes, pNSet2D);
 
   ut_free_1d_int (nqty);
 
@@ -422,7 +422,7 @@ BuildMMesh3DCentre (int sizeX, int sizeY, int sizeZ, int *pEltQty,
 }
 
 void
-SearchFoDNodes_cube (struct NODES Nodes, int ***pFoDNodes)
+SearchFoDNodes_cube (struct NODES Nodes, struct NSET* pNSet2D)
 {
   int face, i, coo;
   int* tmp = ut_alloc_1d_int (Nodes.NodeQty + 1);
@@ -437,16 +437,21 @@ SearchFoDNodes_cube (struct NODES Nodes, int ***pFoDNodes)
     domain[2 * i + 1] -= eps;
   }
 
-  (*pFoDNodes) = ut_alloc_1d_pint (7);
+  (*pNSet2D).qty     = 6;
+  (*pNSet2D).names   = ut_alloc_2d_char (7, 10);
+  (*pNSet2D).nodeqty = ut_alloc_1d_int ((*pNSet2D).qty + 1);
+  (*pNSet2D).nodes   = ut_alloc_1d_pint ((*pNSet2D).qty + 1);
+
+  strcpy ((*pNSet2D).names[1], "x0");
+  strcpy ((*pNSet2D).names[2], "x1");
+  strcpy ((*pNSet2D).names[3], "y0");
+  strcpy ((*pNSet2D).names[4], "y1");
+  strcpy ((*pNSet2D).names[5], "z0");
+  strcpy ((*pNSet2D).names[6], "z1");
 
   for (face = 1; face <= 6; face++)
   {
-    if (face == 1 || face == 2)
-      coo = 0;
-    else if (face == 3 || face == 4)
-      coo = 1;
-    else
-      coo = 2;
+    coo = (face - 1) / 2;
 
     tmp[0] = 0;
     if (face % 2 == 1)
@@ -462,8 +467,9 @@ SearchFoDNodes_cube (struct NODES Nodes, int ***pFoDNodes)
 	  tmp[++tmp[0]] = i;
     }
 
-    (*pFoDNodes)[face] = ut_alloc_1d_int (tmp[0] + 1);
-    ut_array_1d_int_memcpy ((*pFoDNodes)[face], tmp[0] + 1, tmp);
+    (*pNSet2D).nodeqty[face] = tmp[0];
+    (*pNSet2D).nodes[face] = ut_alloc_1d_int ((*pNSet2D).nodeqty[face]);
+    ut_array_1d_int_memcpy ((*pNSet2D).nodes[face], tmp[0], tmp + 1);
   }
   
   return;

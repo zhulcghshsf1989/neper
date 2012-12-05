@@ -62,23 +62,15 @@ neut_mesh_fprintf_abq_nsets (FILE* file, struct NSET NSet0D,
 void
 neut_mesh_fprintf_abq_nset (FILE* file, char* name, int qty, int* nodeset)
 {
-  int i, col, nb;
+  int i, col, call;
 
-  fprintf (file, "\n*Nset, nset=%s\n", name);
+  fprintf (file, "*Nset, nset=%s\n", name);
 
   col = 0;
-  nb = 0;
-  for (i = 0; i < qty - 1; i++)
-  {
-    ut_print_wnc (file, &col, 72, "%d, ", nodeset[i]);
-    if (++nb == 16)
-    {
-      fprintf (file, "\n");
-      col = 0;
-      nb = 0;
-    }
-  }
-  ut_print_wnc (file, &col, 72, "%d\n", nodeset[qty - 1]);
+  call = 0;
+  for (i = 0; i < qty; i++)
+    ut_print_wnc_wncall (file, &col, 72, &call, 16, (i < qty - 1) ? "%d," : "%d\n", nodeset[i]); 
+  fprintf (file, "\n");
 
   return;
 }

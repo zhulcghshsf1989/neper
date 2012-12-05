@@ -11,8 +11,8 @@ set (ORILIB_VERSION_PATCH 1)
 set (ORILIB_VERSION_DEVEL 2)
 
 # should we use the optional libraries?
-option (HAVE_GSL      "Use the GNU Scientific Library (GSL)" ON)
-option (HAVE_LIBMATHEVAL "Use libmatheval"                   OFF)
+# option (HAVE_GSL      "Use the GNU Scientific Library (GSL)" ON)
+# option (HAVE_LIBMATHEVAL "Use libmatheval"                   OFF)
 
 # configure a header file to pass some of the CMake settings
 # to the source code
@@ -22,8 +22,8 @@ configure_file (
 )
 
 include_directories("${PROJECT_BINARY_DIR}")
-include_directories("${PROJECT_BINARY_DIR}/ut")
-include_directories("${PROJECT_SOURCE_DIR}/ut")
+include_directories("${PROJECT_BINARY_DIR}/contrib/ut")
+include_directories("${PROJECT_SOURCE_DIR}/contrib/ut")
 
 
 add_definitions(-Wall -W -O3)

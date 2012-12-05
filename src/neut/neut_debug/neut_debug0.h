@@ -9,6 +9,7 @@
 
 extern void neut_debug_nodes (FILE*, struct NODES);
 extern void neut_debug_mesh (FILE*, struct MESH);
+extern void neut_debug_nset (FILE*, struct NSET);
 extern void neut_debug_fod (FILE*, int**);
 extern void neut_debug_fodnodes (FILE*, int**);
 extern void neut_debug_geo (FILE*, struct GEO);

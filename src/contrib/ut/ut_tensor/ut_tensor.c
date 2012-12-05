@@ -3,9 +3,8 @@
 
 #include<stdio.h>
 #include<math.h>
-
-#include"../ut_tensor.h"
-#include"../ut.h"
+#include"ut_tensor.h"
+#include"ut.h"
 
 void
 ut_tensor_vec2leq (double *vec, double *leq)

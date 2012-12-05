@@ -66,6 +66,31 @@ neut_debug_mesh (FILE* file, struct MESH Mesh)
   return;
 }
 
+void
+neut_debug_nset (FILE* file, struct NSET NSet)
+{
+  int i;
+
+  fprintf (file, "====== Beginning of NSet =================================\n");
+  fprintf (file, "NSet:\n");
+  fprintf (file, "qty = %d\n", NSet.qty);
+
+  fprintf (file, "names = \n");
+  for (i = 1; i <= NSet.qty; i++)
+    printf ("%s\n", NSet.names[i]);
+
+  fprintf (file, "nodeqty = \n");
+  for (i = 1; i <= NSet.qty; i++)
+    printf ("%d\n", NSet.nodeqty[i]);
+
+  fprintf (file, "nodes = \n");
+  for (i = 1; i <= NSet.qty; i++)
+    ut_array_1d_int_fprintf (stdout, NSet.nodes[i], NSet.nodeqty[i], "%d");
+
+  fprintf (file, "====== End of NSet =======================================\n");
+  return;
+}
+
 
 void
 neut_debug_fod (FILE* file, int** FoD)

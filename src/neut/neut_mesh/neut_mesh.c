@@ -1716,7 +1716,17 @@ neut_mesh2d_mesh1d (struct NODES Nodes, struct MESH Mesh2D,
       // means not recorded yet
       if (elt2d[0] >= i)
 	if (elset2dqty > 1)
+	{
+	  // elset2dqty > 1 means that the element is shared by several
+	  // surfaces.  2 usually denotes an element which is on an edge
+	  // of the domain.  However, for an hex mesh, it can also happen
+	  // in the bulk and should not be taken as an acceptable
+	  // solution.  elt2dqty > 2 means bulk.
+	  if (elset2dqty == 2 && elt2dqty > 2)
+	      continue;
+
 	  neut_mesh_addelt (pMesh1D, EltMesh1D.EltNodes[j]);
+	}
     }
 
     if (verbosity)
@@ -1881,6 +1891,10 @@ neut_mesh1d_mesh0d (struct NODES Nodes, struct MESH Mesh1D,
     for (j = 1; j <= 2; j++)
     {
       neut_mesh_elt0delts1d   (EltMesh0D, j, Mesh1D, elt1d, &elt1dqty);
+      // elt1dqty == 1 means that an edge has a dead end.
+      if (elt1dqty == 1)
+	ut_error_reportbug ();
+
       neut_mesh_elt0delsets1d (EltMesh0D, j, Mesh1D, elset1d, &elset1dqty);
 
       // means not recorded yet

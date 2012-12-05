@@ -3,9 +3,8 @@
 
 #include<stdio.h>
 #include<math.h>
-
-#include "../ut_num.h"
-#include "../ut.h"
+#include"ut_num.h"
+#include"ut.h"
 
 double
 ut_num_atan2 (double s, double c)

@@ -3,9 +3,8 @@
 
 #include<stdio.h>
 #include<stdlib.h>
-
-#include "../ut_free.h"
-#include"../ut.h"
+#include"ut_free.h"
+#include"ut.h"
 
 void
 ut_free_1d_int (int *res)

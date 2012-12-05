@@ -8,5 +8,7 @@
 extern void neut_nset_expand (struct NSET, struct NSET, struct NSET, char*, char**);
 extern void neut_nset_set_zero (struct NSET*);
 extern void neut_nset_free (struct NSET*);
+extern void neut_nsets_inter (struct NSET NSet, int id1, int id2, char** pname,
+			      int** pnodes, int* pnodeqty);
 
 #endif /* NEUT_NSET0_H */

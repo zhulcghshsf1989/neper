@@ -7,11 +7,11 @@
 #include<float.h>
 #include<math.h>
 #include<assert.h>
-
-#include "../ut_array.h"
-#include "../ut.h"
+#include"ut_array.h"
+#include"ut.h"
 
 int ut_array_1d_int_sort_comp (const void *, const void *);
+int ut_array_1d_pchar_sort_comp (const void *, const void *);
 int ut_array_1d_sort_comp (const void *, const void *);
 int ut_array_1d_int_sort_index_comp (const void *, const void *);
 int ut_array_1d_sort_index_comp (const void *, const void *);
@@ -513,7 +513,6 @@ ut_array_2dns_int_fprintf (FILE * file, int **a, int size1, int* size2,
   return res;
 }
 
-
 int
 ut_array_2d_float_fprintf (FILE * file, float **a, int size1, int size2,
 		     char *format)
@@ -684,7 +683,6 @@ ut_array_2d_col_max (double **a, int col, int size)
 
   return max;
 }
-
 
 double
 ut_array_2d_stddev (double **a, double mean, int size1, int size2)
@@ -971,7 +969,6 @@ ut_array_1d_max_index (double *a, int size)
   return pos;
 }
 
-
 int
 ut_array_1d_int_min (int *a, int size)
 {
@@ -1004,7 +1001,6 @@ ut_array_1d_float_min (float *a, int size)
 
   return min;
 }
-
 
 float
 ut_array_2d_float_min (float **a, int size1, int size2)
@@ -1305,7 +1301,6 @@ ut_array_2d_mean (double **a, int size1, int size2)
 
   return mean;
 }
-
 
 double
 ut_array_2d_gmean (double **a, int size1, int size2)
@@ -1628,6 +1623,20 @@ ut_array_2d_int_memcpy (int **dest, int size1, int size2, int **src)
 }
 
 void
+ut_array_1d_pchar_memcpy (char** dest, int size1, char** src)
+{
+  int i;
+
+  for (i = 0; i < size1; i++)
+  {
+    dest[i] = ut_alloc_1d_char (strlen (src[i]) + 1);
+    strcpy (dest[i], src[i]);
+  }
+
+  return;
+}
+
+void
 ut_array_3d_int_memcpy (int ***dest, int size1, int size2, int size3, int ***src)
 {
   int i, j, k;
@@ -1724,6 +1733,20 @@ ut_array_1d_int_sort_comp (const void *i, const void *j)
   return *(int *) i - *(int *) j;
 }
 
+void
+ut_array_1d_pchar_sort (char **array, int size)
+{
+  qsort (array, size, sizeof (char*), ut_array_1d_pchar_sort_comp);
+
+  return;
+}
+
+int
+ut_array_1d_pchar_sort_comp (const void *i, const void *j)
+{
+  return strcmp (*(char **) i, *(char **)j);
+}
+
 int
 ut_array_1d_sort_comp (const void *i, const void *j)
 {
@@ -1815,12 +1838,6 @@ ut_array_1d_sort_index (double* array, int size, int* pos)
   return;
 }
 
-
-
-
-
-
-
 /* The subroutine sorts the array from element beg */
 /* to element end, using the bubble sorting algorithm. */
 void
@@ -1885,7 +1902,6 @@ ut_array_1d_int_abssort_index (int *array, int size, int *pos)
 
   return;
 }
-
 
 void
 ut_array_1d_switch (double *array, int n1, int n2)
@@ -2121,7 +2137,6 @@ ut_array_1d_int_find (int *array, int n1, int val)
 
   return res;
 }
-
 
 void
 ut_array_1d_int_findnreplace (int *array, int n1, int val, int val2)
@@ -3061,7 +3076,6 @@ ut_array_1d_requal (double* a, double* b, int qty, double eps)
 
   return 1;
 }
-
 
 double
 ut_array_2d_cov (double** data, double mean1, double mean2, int qty, int col1, int col2)

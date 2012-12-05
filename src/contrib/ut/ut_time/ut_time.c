@@ -5,8 +5,7 @@
 #include<stdlib.h>
 #include<time.h>
 #include<sys/time.h>
-
-#include "../ut_time.h"
+#include"ut_time.h"
 
 double
 ut_time_subtract (struct timeval *x, struct timeval *y)

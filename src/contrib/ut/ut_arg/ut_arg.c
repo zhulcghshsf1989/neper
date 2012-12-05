@@ -4,9 +4,8 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-
-#include "../ut_arg.h"
-#include "../ut.h"
+#include"ut_arg.h"
+#include"ut.h"
 
 int
 ut_arg_nextasint (char **argv, int *pi, char *option, int min, int max)

@@ -11,8 +11,8 @@ extern void neut_mmesh_2d_fprintf (struct NODES, struct MESH, char*);
 extern void BuildMMesh3DCentre (int sizeX, int sizeY, int sizeZ, int *pEltQty,
 		    double ***pEltCoo);
 extern void BuildMMesh3D (int *size, int order,
-	      struct NODES *pNodes, struct MESH *pMesh, int ***pFoDNodes);
-extern void SearchFoDNodes_cube (struct NODES Nodes, int ***pFoDNodes);
+	      struct NODES *pNodes, struct MESH *pMesh, struct NSET*);
+extern void SearchFoDNodes_cube (struct NODES Nodes, struct NSET*);
 extern int EltCoo2Id (int X, int Y, int Z, int XEQty, int YEQty);
 
 #endif

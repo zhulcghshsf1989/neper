@@ -139,3 +139,25 @@ extern int ol_lauegroup_qty (char*);
 extern void ol_g_lng (double**, double**);
 
 #endif /* OL_CAL */
+#ifndef OL_CALx
+#define OL_CALx
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<math.h>
+#include"ut.h"
+#define isNaN(x) ((x) != (x))
+#endif /* OL_CALx */
+#ifndef OL_CALx
+#define OL_CALx
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<math.h>
+#include"ut.h"
+#define isNaN(x) ((x) != (x))
+#include "ol_glo.h"
+#include "ol_des.h"
+#endif /* OL_CALx */

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
 project(ut C)
-# The version number.
+
 set (UT_VERSION_MAJOR 1)
 set (UT_VERSION_MINOR 0)
 set (UT_VERSION_PATCH 0)
@@ -17,6 +17,7 @@ configure_file (
 )
 
 include_directories("${PROJECT_BINARY_DIR}")
+include_directories("${PROJECT_SOURCE_DIR}")
 
 add_definitions(-Wall -W -O3)
 set (CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
@@ -26,7 +27,6 @@ add_library (ut
   ut_arg/ut_arg.c
   ut_array/ut_array.c
   ut_color/ut_color.c
-  ut_fig/ut_fig.c
   ut_file/ut_file.c
   ut_free/ut_free.c
   ut_math/ut_math.c
@@ -69,13 +69,13 @@ endif(HAVE_LIBMATHEVAL)
 target_link_libraries (ut ${EXTRA_LIBS})
 
 # Installation of the library
-# SET (CMAKE_INSTALL_PREFIX /usr/local/lib)
+# SET (CMAKE_INSTALL_PREFIX /usr/local/lib/ut)
+# SET (DESTDIR /usr/local/lib/ut)
 
 set (INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ut_alloc.h)
 set (INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ut_arg.h)
 set (INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ut_array.h)
 set (INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ut_color.h)
-set (INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ut_fig.h)
 set (INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ut_file.h)
 set (INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ut_free.h)
 set (INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ut_math.h)

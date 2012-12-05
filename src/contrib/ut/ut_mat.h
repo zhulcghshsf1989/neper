@@ -1,8 +1,8 @@
 /* Copyright (C) 2007-2009, 2012 Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
-#ifndef UT_MAT0_H
-#define UT_MAT0_H
+#ifndef UT_MAT_H
+#define UT_MAT_H
 
 extern int ut_mat_product (double **, int, int, double **, int, int,
 			   double **);
@@ -24,4 +24,4 @@ extern int  ut_mat_inverse (double**, int, double**);
 extern void  ut_mat_sym (double**, int, double**);
 extern void  ut_mat_skew (double**, int, double**);
 
-#endif /* UT_MAT0_H */
+#endif /* UT_MAT_H */

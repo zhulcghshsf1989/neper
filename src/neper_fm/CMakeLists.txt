@@ -60,8 +60,8 @@ nem_meshing/Meshing2D/Meshing2D1.c
 ./WriteMesh/WriteMeshGeof/WriteMeshGeof2.c
 ./WriteMesh/WriteMeshGeof/WriteMeshGeof3.c
 ./WriteMesh/WriteMeshScotch/WriteMeshScotch1.c
-./SearchNSets/SearchNSets1.c
-./SearchNSets/SearchNSets2.c
+./nem_nsets/nem_nsets1.c
+./nem_nsets/nem_nsets2.c
 # ./SearchNSets/SearchNSets_mm/SearchNSets_mm1.c
 # ./SearchNSets/SearchNSets_mm/SearchNSets_mm2.c
 ./nem_meshing_hex/RMeshing1.c

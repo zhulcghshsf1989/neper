@@ -5,9 +5,8 @@
 #include<stdlib.h>
 #include<string.h>
 #include<stdarg.h>
-
-#include "../ut_file.h"
-#include"../ut.h"
+#include"ut_file.h"
+#include"ut.h"
 
 int
 ut_file_nblines (char *filename)
@@ -236,7 +235,7 @@ ut_file_closemessage (char *name, char *mode)
 }
 
 int
-ut_file_skip (FILE * file, int qty)
+ut_file_skip (FILE* file, int qty)
 {
   int i, status;
   char trash[1000];
@@ -640,14 +639,18 @@ ut_file_testpos (FILE* file, char* p)
     }
     status = fscanf (file, "%c", &c2);
 
-    if (status == 1 && ut_char_zero (c) == 1 && ut_char_zero (c2) == 0)
+    if (status == 1
+     && (c == ' ' || c == '\t' || c == '\n')
+     && ! (c2 == ' ' || c2 == '\t' || c2 == '\n'))
       res = 1;
   }
   else if (strcmp (p, "we") == 0)
   {
     status = fscanf (file, "%c%c", &c, &c2);
 
-    if (status == 2 && ut_char_zero (c) == 0 && ut_char_zero (c2) == 1)
+    if (status == 2
+     && ! (c == ' ' || c == '\t' || c == '\n')
+     && (c2 == ' ' || c2 == '\t' || c2 == '\n'))
       res = 1;
   }
   else if (strcmp (p, "fe") == 0)

@@ -3,9 +3,8 @@
 
 #include<stdio.h>
 #include<math.h>
-
-#include "../ut_legacy.h"
-#include "../ut.h"
+#include "ut_legacy.h"
+#include "ut.h"
 
 /* oneDIntEltPos searches value from beg to end in array. It records
  * its position in array and add the value near. If the position such

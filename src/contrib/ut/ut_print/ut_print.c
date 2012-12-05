@@ -7,9 +7,8 @@
 #include<stdarg.h>
 #include<unistd.h>
 #include<math.h>
-
-#include "../ut_print.h"
-#include"../ut.h"
+#include"ut_print.h"
+#include"ut.h"
 
 void
 ut_print_wnc_int (FILE * file, int nb, int *pnbcol, int nbcolmax)

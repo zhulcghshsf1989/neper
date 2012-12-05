@@ -3,9 +3,40 @@
 
 #include<stdio.h>
 #include<stdlib.h>
+#include"ut_alloc.h"
+#include"ut.h"
 
-#include "../ut_alloc.h"
-#include"../ut.h"
+double *
+ut_alloc_1d_double (unsigned int line)
+{
+  double *res = (double *) calloc (line, sizeof (double));
+  if (!res)
+  {
+    printf ("memory allocation failed! (%d)\n", line);
+    abort ();
+  }
+
+  return res;
+}
+
+double *
+ut_alloc_1d (unsigned int line)
+{
+  return ut_alloc_1d_double (line);
+}
+
+float *
+ut_alloc_1d_float (unsigned int line)
+{
+  float *res = (float *) calloc (line, sizeof (float));
+  if (!res)
+  {
+    printf ("memory allocation failed! (%d)\n", line);
+    abort ();
+  }
+
+  return res;
+}
 
 int *
 ut_alloc_1d_int (unsigned int line)
@@ -20,10 +51,23 @@ ut_alloc_1d_int (unsigned int line)
   return res;
 }
 
-int *
-ut_realloc_1d_int (int* res, unsigned int line)
+size_t *
+ut_alloc_1d_sizet (unsigned int line)
 {
-  res = (int *) realloc (res, line * sizeof (int));
+  size_t *res = (size_t *) calloc (line, sizeof (size_t));
+  if (!res)
+  {
+    printf ("memory allocation failed! (%d)\n", line);
+    abort ();
+  }
+
+  return res;
+}
+
+unsigned int *
+ut_alloc_1d_uint (unsigned int line)
+{
+  unsigned int *res = (unsigned int *) calloc (line, sizeof (int));
   if (!res)
   {
     printf ("memory allocation failed! (%d)\n", line);
@@ -46,10 +90,10 @@ ut_alloc_1d_ushort (unsigned int line)
   return res;
 }
 
-unsigned short *
-ut_realloc_1d_ushort (unsigned short* res, unsigned int line)
+char *
+ut_alloc_1d_char (unsigned int line)
 {
-  res = (unsigned short *) realloc (res, line * sizeof (unsigned short));
+  char *res = (char *) calloc (line, sizeof (char));
   if (!res)
   {
     printf ("memory allocation failed! (%d)\n", line);
@@ -72,10 +116,10 @@ ut_alloc_1d_uchar (unsigned int line)
   return res;
 }
 
-unsigned char *
-ut_realloc_1d_uchar (unsigned char* res, unsigned int line)
+double **
+ut_alloc_1d_pdouble (unsigned int line)
 {
-  res = (unsigned char *) realloc (res, line * sizeof (unsigned char));
+  double **res = (double **) calloc (line, sizeof (double *));
   if (!res)
   {
     printf ("memory allocation failed! (%d)\n", line);
@@ -85,23 +129,10 @@ ut_realloc_1d_uchar (unsigned char* res, unsigned int line)
   return res;
 }
 
-double *
-ut_realloc_1d (double* res, unsigned int line)
+int **
+ut_alloc_1d_pint (unsigned int line)
 {
-  res = (double *) realloc (res, line * sizeof (double));
-  if (!res)
-  {
-    printf ("memory allocation failed! (%d)\n", line);
-    abort ();
-  }
-  
-  return res;
-}
-
-unsigned int *
-ut_alloc_1d_uint (unsigned int line)
-{
-  unsigned int *res = (unsigned int *) calloc (line, sizeof (int));
+  int **res = (int **) calloc (line, sizeof (int *));
   if (!res)
   {
     printf ("memory allocation failed! (%d)\n", line);
@@ -111,10 +142,11 @@ ut_alloc_1d_uint (unsigned int line)
   return res;
 }
 
-float *
-ut_alloc_1d_float (unsigned int line)
+unsigned short **
+ut_alloc_1d_pushort (unsigned int line)
 {
-  float *res = (float *) calloc (line, sizeof (float));
+  unsigned short **res =
+    (unsigned short **) calloc (line, sizeof (unsigned short *));
   if (!res)
   {
     printf ("memory allocation failed! (%d)\n", line);
@@ -124,10 +156,11 @@ ut_alloc_1d_float (unsigned int line)
   return res;
 }
 
-double *
-ut_alloc_1d_double (unsigned int line)
+unsigned char **
+ut_alloc_1d_puchar (unsigned int line)
 {
-  double *res = (double *) calloc (line, sizeof (double));
+  unsigned char **res =
+    (unsigned char **) calloc (line, sizeof (unsigned char *));
   if (!res)
   {
     printf ("memory allocation failed! (%d)\n", line);
@@ -137,16 +170,10 @@ ut_alloc_1d_double (unsigned int line)
   return res;
 }
 
-double *
-ut_alloc_1d (unsigned int line)
+char **
+ut_alloc_1d_pchar (unsigned int line)
 {
-  return ut_alloc_1d_double (line);
-}
-
-char *
-ut_alloc_1d_char (unsigned int line)
-{
-  char *res = (char *) calloc (line, sizeof (char));
+  char **res = (char **) calloc (line, sizeof (char *));
   if (!res)
   {
     printf ("memory allocation failed! (%d)\n", line);
@@ -156,10 +183,10 @@ ut_alloc_1d_char (unsigned int line)
   return res;
 }
 
-char *
-ut_realloc_1d_char (char* res, unsigned int line)
+int ***
+ut_alloc_1d_ppint (unsigned int line)
 {
-  res = (char *) realloc (res, line * sizeof (char));
+  int ***res = (int ***) calloc (line, sizeof (int **));
   if (!res)
   {
     printf ("memory allocation failed! (%d)\n", line);
@@ -169,24 +196,62 @@ ut_realloc_1d_char (char* res, unsigned int line)
   return res;
 }
 
+unsigned short ***
+ut_alloc_1d_ppushort (unsigned int line)
+{
+  unsigned short ***res = (unsigned short ***) calloc (line, sizeof (int **));
+  if (!res)
+  {
+    printf ("memory allocation failed! (%d)\n", line);
+    abort ();
+  }
+
+  return res;
+}
+
+unsigned char ***
+ut_alloc_1d_ppuchar (unsigned int line)
+{
+  unsigned char ***res = (unsigned char ***) calloc (line, sizeof (int **));
+  if (!res)
+  {
+    printf ("memory allocation failed! (%d)\n", line);
+    abort ();
+  }
+
+  return res;
+}
+
+double ***
+ut_alloc_1d_ppdouble (unsigned int line)
+{
+  double ***res = (double ***) calloc (line, sizeof (double **));
+  if (!res)
+  {
+    printf ("memory allocation failed! (%d)\n", line);
+    abort ();
+  }
+
+  return res;
+}
+
+char ***
+ut_alloc_1d_ppchar (unsigned int line)
+{
+  char ***res = (char ***) calloc (line, sizeof (char **));
+  if (!res)
+  {
+    printf ("memory allocation failed! (%d)\n", line);
+    abort ();
+  }
+
+  return res;
+}
 
 FILE **
 ut_alloc_1d_pfile (unsigned int line)
 {
   FILE **res = (FILE **) calloc (line, sizeof (FILE *));
-  if (!res)
-  {
-    printf ("memory allocation failed! (%d)\n", line);
-    abort ();
-  }
-
-  return res;
-}
-
-size_t *
-ut_alloc_1d_sizet (unsigned int line)
-{
-  size_t *res = (size_t *) calloc (line, sizeof (size_t));
   if (!res)
   {
     printf ("memory allocation failed! (%d)\n", line);
@@ -224,7 +289,8 @@ unsigned short **
 ut_alloc_2d_ushort (unsigned int line, unsigned int column)
 {
   unsigned int i;
-  unsigned short **res = (unsigned short **) calloc (line, sizeof (unsigned short *));
+  unsigned short **res =
+    (unsigned short **) calloc (line, sizeof (unsigned short *));
   if (!res)
   {
     printf ("memory allocation failed! (%dx%d)\n", line, column);
@@ -248,7 +314,8 @@ unsigned char **
 ut_alloc_2d_uchar (unsigned int line, unsigned int column)
 {
   unsigned int i;
-  unsigned char **res = (unsigned char **) calloc (line, sizeof (unsigned char *));
+  unsigned char **res =
+    (unsigned char **) calloc (line, sizeof (unsigned char *));
   if (!res)
   {
     printf ("memory allocation failed! (%dx%d)\n", line, column);
@@ -383,7 +450,7 @@ ut_alloc_2d_pchar (unsigned int line, unsigned int column)
 
   for (i = 0; i < line; i++)
   {
-    res[i] = (char **) calloc (column, sizeof (char*));
+    res[i] = (char **) calloc (column, sizeof (char *));
     if (!res[i])
     {
       printf ("memory allocation failed! (%dx%d)\n", line, column);
@@ -430,10 +497,12 @@ ut_alloc_3d_int (unsigned int line, unsigned int column, unsigned int depth)
 }
 
 unsigned short ***
-ut_alloc_3d_ushort (unsigned int line, unsigned int column, unsigned int depth)
+ut_alloc_3d_ushort (unsigned int line, unsigned int column,
+		    unsigned int depth)
 {
   unsigned int i, j;
-  unsigned short ***res = (unsigned short ***) calloc (line, sizeof (unsigned short **));
+  unsigned short ***res =
+    (unsigned short ***) calloc (line, sizeof (unsigned short **));
   if (!res)
   {
     printf ("memory allocation failed! (%dx%dx%d)\n", line, column, depth);
@@ -468,7 +537,8 @@ unsigned char ***
 ut_alloc_3d_uchar (unsigned int line, unsigned int column, unsigned int depth)
 {
   unsigned int i, j;
-  unsigned char ***res = (unsigned char ***) calloc (line, sizeof (unsigned char **));
+  unsigned char ***res =
+    (unsigned char ***) calloc (line, sizeof (unsigned char **));
   if (!res)
   {
     printf ("memory allocation failed! (%dx%dx%d)\n", line, column, depth);
@@ -504,7 +574,7 @@ ut_alloc_3d_uint (unsigned int line, unsigned int column, unsigned int depth)
 {
   unsigned int i, j;
   unsigned int ***res = (unsigned int ***) calloc (line, sizeof
-						    (unsigned int **));
+						   (unsigned int **));
   if (!res)
   {
     printf ("memory allocation failed! (%dx%dx%d)\n", line, column, depth);
@@ -572,8 +642,7 @@ ut_alloc_3d_double (unsigned int line, unsigned int column,
 }
 
 float ***
-ut_alloc_3d_float (unsigned int line, unsigned int column,
-		    unsigned int depth)
+ut_alloc_3d_float (unsigned int line, unsigned int column, unsigned int depth)
 {
   unsigned int i, j;
   float ***res = (float ***) calloc (line, sizeof (float **));
@@ -647,216 +716,6 @@ ut_alloc_3d_char (unsigned int line, unsigned int column, unsigned int depth)
   return res;
 }
 
-int **
-ut_alloc_1d_pint (unsigned int line)
-{
-  int **res = (int **) calloc (line, sizeof (int *));
-  if (!res)
-  {
-    printf ("memory allocation failed! (%d)\n", line);
-    abort ();
-  }
-
-  return res;
-}
-
-unsigned short **
-ut_alloc_1d_pushort (unsigned int line)
-{
-  unsigned short **res = (unsigned short **) calloc (line, sizeof (unsigned short *));
-  if (!res)
-  {
-    printf ("memory allocation failed! (%d)\n", line);
-    abort ();
-  }
-
-  return res;
-}
-
-unsigned char **
-ut_alloc_1d_puchar (unsigned int line)
-{
-  unsigned char **res = (unsigned char **) calloc (line, sizeof (unsigned char *));
-  if (!res)
-  {
-    printf ("memory allocation failed! (%d)\n", line);
-    abort ();
-  }
-
-  return res;
-}
-
-
-int **
-ut_realloc_1d_pint (int** res, unsigned int line)
-{
-  res = realloc (res, line * sizeof (int*));
-  if (!res)
-  {
-    printf ("memory allocation failed! (%d)\n", line);
-    abort ();
-  }
-
-  return res;
-}
-
-unsigned short **
-ut_realloc_1d_pushort (unsigned short** res, unsigned int line)
-{
-  res = realloc (res, line * sizeof (unsigned short*));
-  if (!res)
-  {
-    printf ("memory allocation failed! (%d)\n", line);
-    abort ();
-  }
-
-  return res;
-}
-
-unsigned char **
-ut_realloc_1d_puchar (unsigned char** res, unsigned int line)
-{
-  res = realloc (res, line * sizeof (unsigned char*));
-  if (!res)
-  {
-    printf ("memory allocation failed! (%d)\n", line);
-    abort ();
-  }
-
-  return res;
-}
-
-char **
-ut_realloc_1d_pchar (char** res, unsigned int line)
-{
-  res = realloc (res, line * sizeof (char*));
-  if (!res)
-  {
-    printf ("memory allocation failed! (%d)\n", line);
-    abort ();
-  }
-
-  return res;
-}
-
-double **
-ut_realloc_1d_pdouble (double** res, unsigned int line)
-{
-  res = realloc (res, line * sizeof (double*));
-  if (!res)
-  {
-    printf ("memory allocation failed! (%d)\n", line);
-    abort ();
-  }
-
-  return res;
-}
-
-double ***
-ut_realloc_1d_ppdouble (double*** res, unsigned int line)
-{
-  res = realloc (res, line * sizeof (double**));
-  if (!res)
-  {
-    printf ("memory allocation failed! (%d)\n", line);
-    abort ();
-  }
-
-  return res;
-}
-
-char **
-ut_alloc_1d_pchar (unsigned int line)
-{
-  char **res = (char **) calloc (line, sizeof (char *));
-  if (!res)
-  {
-    printf ("memory allocation failed! (%d)\n", line);
-    abort ();
-  }
-
-  return res;
-}
-
-double **
-ut_alloc_1d_pdouble (unsigned int line)
-{
-  double **res = (double **) calloc (line, sizeof (double *));
-  if (!res)
-  {
-    printf ("memory allocation failed! (%d)\n", line);
-    abort ();
-  }
-
-  return res;
-}
-
-int ***
-ut_alloc_1d_ppint (unsigned int line)
-{
-  int ***res = (int ***) calloc (line, sizeof (int **));
-  if (!res)
-  {
-    printf ("memory allocation failed! (%d)\n", line);
-    abort ();
-  }
-
-  return res;
-}
-
-unsigned short ***
-ut_alloc_1d_ppushort (unsigned int line)
-{
-  unsigned short ***res = (unsigned short ***) calloc (line, sizeof (int **));
-  if (!res)
-  {
-    printf ("memory allocation failed! (%d)\n", line);
-    abort ();
-  }
-
-  return res;
-}
-
-unsigned char ***
-ut_alloc_1d_ppuchar (unsigned int line)
-{
-  unsigned char ***res = (unsigned char ***) calloc (line, sizeof (int **));
-  if (!res)
-  {
-    printf ("memory allocation failed! (%d)\n", line);
-    abort ();
-  }
-
-  return res;
-}
-
-double ***
-ut_alloc_1d_ppdouble (unsigned int line)
-{
-  double ***res = (double ***) calloc (line, sizeof (double **));
-  if (!res)
-  {
-    printf ("memory allocation failed! (%d)\n", line);
-    abort ();
-  }
-
-  return res;
-}
-
-char ***
-ut_alloc_1d_ppchar (unsigned int line)
-{
-  char ***res = (char ***) calloc (line, sizeof (char **));
-  if (!res)
-  {
-    printf ("memory allocation failed! (%d)\n", line);
-    abort ();
-  }
-
-  return res;
-}
-
-
 double ****
 ut_alloc_4d_double (unsigned int dim1, unsigned int dim2,
 		    unsigned int dim3, unsigned int dim4)
@@ -910,8 +769,150 @@ ut_alloc_4d (unsigned int dim1, unsigned int dim2,
   return ut_alloc_4d_double (dim1, dim2, dim3, dim4);
 }
 
-int**
-ut_realloc_2d_int_addline (int** array, int line, int col)
+int *
+ut_realloc_1d_int (int *res, unsigned int line)
+{
+  res = (int *) realloc (res, line * sizeof (int));
+  if (!res)
+  {
+    printf ("memory allocation failed! (%d)\n", line);
+    abort ();
+  }
+
+  return res;
+}
+
+unsigned short *
+ut_realloc_1d_ushort (unsigned short *res, unsigned int line)
+{
+  res = (unsigned short *) realloc (res, line * sizeof (unsigned short));
+  if (!res)
+  {
+    printf ("memory allocation failed! (%d)\n", line);
+    abort ();
+  }
+
+  return res;
+}
+
+unsigned char *
+ut_realloc_1d_uchar (unsigned char *res, unsigned int line)
+{
+  res = (unsigned char *) realloc (res, line * sizeof (unsigned char));
+  if (!res)
+  {
+    printf ("memory allocation failed! (%d)\n", line);
+    abort ();
+  }
+
+  return res;
+}
+
+double *
+ut_realloc_1d (double *res, unsigned int line)
+{
+  res = (double *) realloc (res, line * sizeof (double));
+  if (!res)
+  {
+    printf ("memory allocation failed! (%d)\n", line);
+    abort ();
+  }
+
+  return res;
+}
+
+char *
+ut_realloc_1d_char (char *res, unsigned int line)
+{
+  res = (char *) realloc (res, line * sizeof (char));
+  if (!res)
+  {
+    printf ("memory allocation failed! (%d)\n", line);
+    abort ();
+  }
+
+  return res;
+}
+int **
+ut_realloc_1d_pint (int **res, unsigned int line)
+{
+  res = realloc (res, line * sizeof (int *));
+  if (!res)
+  {
+    printf ("memory allocation failed! (%d)\n", line);
+    abort ();
+  }
+
+  return res;
+}
+
+unsigned short **
+ut_realloc_1d_pushort (unsigned short **res, unsigned int line)
+{
+  res = realloc (res, line * sizeof (unsigned short *));
+  if (!res)
+  {
+    printf ("memory allocation failed! (%d)\n", line);
+    abort ();
+  }
+
+  return res;
+}
+
+unsigned char **
+ut_realloc_1d_puchar (unsigned char **res, unsigned int line)
+{
+  res = realloc (res, line * sizeof (unsigned char *));
+  if (!res)
+  {
+    printf ("memory allocation failed! (%d)\n", line);
+    abort ();
+  }
+
+  return res;
+}
+
+char **
+ut_realloc_1d_pchar (char **res, unsigned int line)
+{
+  res = realloc (res, line * sizeof (char *));
+  if (!res)
+  {
+    printf ("memory allocation failed! (%d)\n", line);
+    abort ();
+  }
+
+  return res;
+}
+
+double **
+ut_realloc_1d_pdouble (double **res, unsigned int line)
+{
+  res = realloc (res, line * sizeof (double *));
+  if (!res)
+  {
+    printf ("memory allocation failed! (%d)\n", line);
+    abort ();
+  }
+
+  return res;
+}
+
+double ***
+ut_realloc_1d_ppdouble (double ***res, unsigned int line)
+{
+  res = realloc (res, line * sizeof (double **));
+  if (!res)
+  {
+    printf ("memory allocation failed! (%d)\n", line);
+    abort ();
+  }
+
+  return res;
+}
+
+int **
+ut_realloc_2d_int_addline (int **array, int line, int col)
 {
   array = ut_realloc_1d_pint (array, line);
   array[line - 1] = ut_alloc_1d_int (col);
@@ -919,8 +920,8 @@ ut_realloc_2d_int_addline (int** array, int line, int col)
   return array;
 }
 
-unsigned short**
-ut_realloc_2d_ushort_addline (unsigned short** array, int line, int col)
+unsigned short **
+ut_realloc_2d_ushort_addline (unsigned short **array, int line, int col)
 {
   array = ut_realloc_1d_pushort (array, line);
   array[line - 1] = ut_alloc_1d_ushort (col);
@@ -928,8 +929,8 @@ ut_realloc_2d_ushort_addline (unsigned short** array, int line, int col)
   return array;
 }
 
-unsigned char**
-ut_realloc_2d_uchar_addline (unsigned char** array, int line, int col)
+unsigned char **
+ut_realloc_2d_uchar_addline (unsigned char **array, int line, int col)
 {
   array = ut_realloc_1d_puchar (array, line);
   array[line - 1] = ut_alloc_1d_uchar (col);
@@ -937,8 +938,8 @@ ut_realloc_2d_uchar_addline (unsigned char** array, int line, int col)
   return array;
 }
 
-double**
-ut_realloc_2d_addline (double** array, int line, int col)
+double **
+ut_realloc_2d_addline (double **array, int line, int col)
 {
   array = ut_realloc_1d_pdouble (array, line);
   array[line - 1] = ut_alloc_1d (col);
@@ -946,8 +947,8 @@ ut_realloc_2d_addline (double** array, int line, int col)
   return array;
 }
 
-char**
-ut_realloc_2d_char_addline (char** array, int line, int col)
+char **
+ut_realloc_2d_char_addline (char **array, int line, int col)
 {
   array = ut_realloc_1d_pchar (array, line);
   array[line - 1] = ut_alloc_1d_char (col);
@@ -955,8 +956,8 @@ ut_realloc_2d_char_addline (char** array, int line, int col)
   return array;
 }
 
-int**
-ut_realloc_2d_int_delline (int** array, int oldline, int line)
+int **
+ut_realloc_2d_int_delline (int **array, int oldline, int line)
 {
   int i;
   for (i = oldline - 1; i >= line; i--)
@@ -966,8 +967,8 @@ ut_realloc_2d_int_delline (int** array, int oldline, int line)
   return array;
 }
 
-unsigned short**
-ut_realloc_2d_ushort_delline (unsigned short** array, int oldline, int line)
+unsigned short **
+ut_realloc_2d_ushort_delline (unsigned short **array, int oldline, int line)
 {
   int i;
   for (i = oldline - 1; i >= line; i--)
@@ -977,8 +978,8 @@ ut_realloc_2d_ushort_delline (unsigned short** array, int oldline, int line)
   return array;
 }
 
-unsigned char**
-ut_realloc_2d_uchar_delline (unsigned char** array, int oldline, int line)
+unsigned char **
+ut_realloc_2d_uchar_delline (unsigned char **array, int oldline, int line)
 {
   int i;
   for (i = oldline - 1; i >= line; i--)
@@ -988,8 +989,8 @@ ut_realloc_2d_uchar_delline (unsigned char** array, int oldline, int line)
   return array;
 }
 
-double**
-ut_realloc_2d_delline (double** array, int oldline, int line)
+double **
+ut_realloc_2d_delline (double **array, int oldline, int line)
 {
   int i;
   for (i = oldline - 1; i >= line; i--)
@@ -999,12 +1000,11 @@ ut_realloc_2d_delline (double** array, int oldline, int line)
   return array;
 }
 
-double***
-ut_realloc_3d_addarray (double*** array, int line, int col, int depth)
+double ***
+ut_realloc_3d_addarray (double ***array, int line, int col, int depth)
 {
   array = ut_realloc_1d_ppdouble (array, line);
   array[line - 1] = ut_alloc_2d (col, depth);
 
   return array;
 }
-

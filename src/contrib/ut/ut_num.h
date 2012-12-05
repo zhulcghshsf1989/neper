@@ -1,8 +1,8 @@
 /* Copyright (C) 2007-2009, 2012 Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
-#ifndef UT_NUM0_H
-#define UT_NUM0_H
+#ifndef UT_NUM_H
+#define UT_NUM_H
 
 extern int ut_num_min_int (int, int);
 extern int ut_num_max_int (int, int);
@@ -38,4 +38,4 @@ extern int ut_num_odd (int);
 extern void ut_num_switch (double*, double*);
 extern void ut_num_switch_int (int*, int*);
 
-#endif /* UT_NUM0_H */
+#endif /* UT_NUM_H */

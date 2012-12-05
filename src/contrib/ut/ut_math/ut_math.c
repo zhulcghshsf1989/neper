@@ -7,9 +7,8 @@
 #include<float.h>
 #include<math.h>
 #include<assert.h>
-
-#include "../ut_math.h"
-#include "ut_config.h"
+#include"ut_math.h"
+#include"ut_config.h"
 
 #ifdef HAVE_LIBMATHEVAL
 #include<matheval.h>
@@ -141,7 +140,7 @@ ut_math_eval (char* expr, int var_qty, char** vars, double* vals,
 
     if (status == -1)
     {
-      #ifdef HAVE_LIBMATHEVAL
+#ifdef HAVE_LIBMATHEVAL
       f = evaluator_create (exprcpy);
       if (f == NULL)
       {

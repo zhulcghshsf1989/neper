@@ -6,7 +6,6 @@
 #include "ut_arg.h"
 #include "ut_array.h"
 #include "ut_color.h"
-#include "ut_fig.h"
 #include "ut_file.h"
 #include "ut_free.h"
 #include "ut_math.h"

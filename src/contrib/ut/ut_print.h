@@ -1,8 +1,8 @@
 /* Copyright (C) 2007-2009, 2012 Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
-#ifndef UT_PRINT0_H
-#define UT_PRINT0_H
+#ifndef UT_PRINT_H
+#define UT_PRINT_H
 
 extern void ut_print_wnc_int (FILE *, int, int *, int);
 extern void ut_print_wnc_int_header (FILE *, int, int *, int, char*);
@@ -24,4 +24,4 @@ extern void ut_print_reportbug (void);
 extern void ut_print_gplv3 (FILE*);
 extern void ut_error_reportbug (void);
 
-#endif /* UT_PRINT0_H */
+#endif /* UT_PRINT_H */
