@@ -147,6 +147,7 @@ struct GEO
   int** DomTessEdgeNb; // 1 indexed
 
   int   DomFaceQty;
+  char**   DomFaceLabel;
   double** DomFaceEq;
   int*  DomFaceVerQty;
   int** DomFaceVerNb;  // 1 indexed

@@ -437,8 +437,8 @@ and
 @ @ @  @var{total_number_of_dom_faces}                                   @*
 @ @ @  @var{dom_face_id} @var{number_of_dom_tess_faces} 				 
 			@var{dom_tess_face_1} @var{dom_tess_face_2} @var{...} @*
-@ @ @ @ @ @ @ @ @ @ @ @ @ @ @  @var{dom_face_eq_a} @var{dom_face_eq_b} @var{dom_face_eq_c} 
-							  @var{dom_face_eq_d} @*
+@ @ @ @ @ @ @ @ @var{dom_face_eq_a} @var{dom_face_eq_b} @var{dom_face_eq_c}
+				@var{dom_face_eq_d} @var{dom_face_label} @*
 @ @ @ @ @ @ @ @ @ @ @ @ @ @ @  @var{number_of_dom_vertices} @var{dom_ver_1} @ @var{dom_ver_2} @ @var{...} @*
 @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @var{dom_edge_1} @var{dom_edge_2}
 							            @var{...} @*
@@ -682,6 +682,14 @@ face has.
 parameters of the equation of a domain face and are defined in the same
 way than @code{@var{face_eq_a}}, etc.@ (see above).
 
+@item @code{@var{dom_face_label}} is the label of a domain face. If
+@var{@code{dom_type}} is @samp{@code{cube}}, it is one of
+@samp{@code{x0}}, @samp{@code{x1}}, @samp{@code{y0}}, @samp{@code{y1}},
+@samp{@code{z0}} or @samp{@code{z1}}.  If @var{@code{dom_type}} is
+@samp{@code{cylinder}}, it is one of @samp{@code{z0}}, @samp{@code{z1}},
+@samp{@code{f1}}, @samp{@code{f2}}, @dots{} Otherwise, it is one of
+@samp{@code{f1}}, @samp{@code{f2}}, @dots{}
+
 @item @code{@var{number_of_dom_vertices}} is the number of
 domain vertices (and edges) that a domain face has. 
 
@@ -718,7 +726,7 @@ where,
 
 @itemize
 
-@item @code{@var{format}} is the file format, currently @samp{1.10}
+@item @code{@var{format}} is the file format, currently @samp{2.0}
 (character string).
 
 @item @code{@var{data_format}} is the format of the data in field

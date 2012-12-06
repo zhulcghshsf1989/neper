@@ -42,6 +42,8 @@ neut_geo_init_domain_memcpy (struct GEO* pGeo, struct POLY Domain, char* type)
 	                        DomGeo.FaceEdgeNb[i] + 1);
   }
 
+  neut_geo_init_domain_facelabel (pGeo);
+
   // Edges
   (*pGeo).DomEdgeQty = DomGeo.EdgeQty;
   (*pGeo).DomEdgeVerNb = ut_alloc_2d_int (DomGeo.EdgeQty + 1, 2);
@@ -71,6 +73,82 @@ neut_geo_init_domain_memcpy (struct GEO* pGeo, struct POLY Domain, char* type)
   }
 
   neut_geo_free (&DomGeo);
+
+  return;
+}
+
+
+void
+neut_geo_init_domain_facelabel (struct GEO* pGeo)
+{
+  int i, j, id;
+  double* dist = NULL;
+
+  if (! strcmp ((*pGeo).DomType, "cube"))
+  {
+    (*pGeo).DomFaceLabel = ut_alloc_2d_char (7, 3);
+    strcpy ((*pGeo).DomFaceLabel[1], "x0");
+    strcpy ((*pGeo).DomFaceLabel[2], "x1");
+    strcpy ((*pGeo).DomFaceLabel[3], "y0");
+    strcpy ((*pGeo).DomFaceLabel[4], "y1");
+    strcpy ((*pGeo).DomFaceLabel[5], "z0");
+    strcpy ((*pGeo).DomFaceLabel[6], "z1");
+  }
+
+  else if (! strcmp ((*pGeo).DomType, "cylinder"))
+  {
+    (*pGeo).DomFaceLabel = ut_alloc_2d_char ((*pGeo).DomFaceQty + 1, 10);
+    strcpy ((*pGeo).DomFaceLabel[1], "z0");
+    strcpy ((*pGeo).DomFaceLabel[2], "z1");
+    for (i = 3; i <= (*pGeo).DomFaceQty; i++)
+      sprintf ((*pGeo).DomFaceLabel[i], "f%d\n", i - 2);
+  }
+
+  else // unknown domain type
+  {
+    if ((*pGeo).DomVerQty == 8 && (*pGeo).DomEdgeQty == 12
+     && (*pGeo).DomFaceQty == 6)
+    {
+      strcpy ((*pGeo).DomType, "cube");
+      (*pGeo).DomFaceLabel = ut_alloc_2d_char (7, 3);
+
+      double** n = ut_alloc_2d (6, 3);
+      n[0][0] =  1;
+      n[1][0] = -1;
+      n[2][1] =  1;
+      n[3][1] = -1;
+      n[4][2] =  1;
+      n[5][2] = -1;
+      char** label = ut_alloc_2d_char (6, 3);
+      strcpy (label[0], "x0");
+      strcpy (label[1], "x1");
+      strcpy (label[2], "y0");
+      strcpy (label[3], "y1");
+      strcpy (label[4], "z0");
+      strcpy (label[5], "z1");
+
+      dist = ut_alloc_1d (6);
+
+      for (i = 1; i <= 6; i++)
+      {
+	for (j = 0; j < 6; j++)
+	  dist[j] = ut_space_dist (n[j], (*pGeo).DomFaceEq[i] + 1);
+
+	id = ut_array_1d_min_index (dist, 6);
+	strcpy ((*pGeo).DomFaceLabel[i], label[id]);
+      }
+
+      ut_free_1d (dist);
+      ut_free_2d (n, 6);
+      ut_free_2d_char (label, 6);
+    }
+
+    else
+    {
+
+
+    }
+  }
 
   return;
 }

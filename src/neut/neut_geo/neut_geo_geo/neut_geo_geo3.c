@@ -446,6 +446,10 @@ neut_geo_geoDomainData (struct GEO GeoA, struct GEO *pGeoB)
   (*pGeoB).DomFaceEq = ut_alloc_2d ((*pGeoB).DomFaceQty + 1, 4);
   ut_array_2d_memcpy ((*pGeoB).DomFaceEq + 1, (*pGeoB).DomFaceQty, 4,
                           GeoA.DomFaceEq + 1);
+  (*pGeoB).DomFaceLabel = ut_alloc_1d_pchar ((*pGeoB).DomFaceQty + 1);
+  ut_array_1d_pchar_memcpy ((*pGeoB).DomFaceLabel + 1, (*pGeoB).DomFaceQty,
+                                GeoA.DomFaceLabel + 1);
+
 
   (*pGeoB).DomTessFaceQty = ut_alloc_1d_int ((*pGeoB).DomFaceQty + 1);
   ut_array_1d_int_memcpy ((*pGeoB).DomTessFaceQty + 1, (*pGeoB).DomFaceQty,

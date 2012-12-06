@@ -155,4 +155,10 @@ extern void neut_geo_init_domain_poly (struct GEO* pGeo, struct POLY Domain, cha
 ///
 extern void neut_geo_init_domain_memcpy (struct GEO* pGeo, struct POLY Domain, char* type);
 
+/// \brief Initialize the face labels of the domain of a GEO.
+///
+///
+///
+extern void neut_geo_init_domain_facelabel (struct GEO* pGeo);
+
 #endif /* NEUT_GEO_OP_H */

@@ -346,7 +346,7 @@ ut_file_format (char* filename, char** pformat)
     (*pformat) = NULL;
     res = -1;
   }
-  else if (strcmp (string, "***tess") == 0)
+  else if (strncmp (string, "***tess", 7) == 0)
   {
     (*pformat) = ut_alloc_1d_char (5);
     sprintf ((*pformat), "tess");

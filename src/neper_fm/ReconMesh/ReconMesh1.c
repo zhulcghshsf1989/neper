@@ -12,6 +12,7 @@ ReconMesh (char* dim, struct NODES* pNodes, struct MESH *pMesh0D,
   struct GEO Geob;
   struct GEO* pGeob = &Geob;
 
+  int recon_dim;
   // Disabling geo reconstruction is pGeo == NULL
   int reconst_geo // = (pGeo == NULL) ? 0 : 1;
     = (! strcmp ((*pMesh3D).EltType, "quad") || pGeo == NULL) ? 0 : 1;
@@ -39,16 +40,24 @@ ReconMesh (char* dim, struct NODES* pNodes, struct MESH *pMesh0D,
 
   neut_nodes_init_boundingbox (pNodes);
 
+  recon_dim = 3;
+  if (ut_string_inlist (dim, ',', "0"))
+    recon_dim = 0;
+  else if (ut_string_inlist (dim, ',', "1"))
+    recon_dim = 1;
+  else if (ut_string_inlist (dim, ',', "2"))
+    recon_dim = 2;
+
   if ((*pMesh3D).NodeElts == NULL)
     neut_mesh_init_nodeelts (pMesh3D, (*pNodes).NodeQty);
 
-  if (ut_string_inlist (dim, ',', "2"))
+  if (recon_dim <= 2)
     ReconMesh_2d (*pNodes, pMesh2D, pMesh3D, pGeob);
 
-  if (ut_string_inlist (dim, ',', "1"))
+  if (recon_dim <= 1)
     ReconMesh_1d (*pNodes, pMesh1D, pMesh2D, pGeob);
 
-  if (ut_string_inlist (dim, ',', "0"))
+  if (recon_dim <= 0)
   {
     if (reconst_geo)
       ReconMesh_0d (*pNodes, pMesh0D, pMesh1D, pGeob);

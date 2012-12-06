@@ -55,6 +55,8 @@ add_library (neut
 ./neut_geo/neut_geo_fscanf/neut_geo_fscanf1.c
 ./neut_geo/neut_geo_fscanf/neut_geo_fscanf_1p9/neut_geo_fscanf2_1p9.c
 ./neut_geo/neut_geo_fscanf/neut_geo_fscanf_1p9/neut_geo_fscanf1_1p9.c
+./neut_geo/neut_geo_fscanf/neut_geo_fscanf_1p10/neut_geo_fscanf2_1p10.c
+./neut_geo/neut_geo_fscanf/neut_geo_fscanf_1p10/neut_geo_fscanf1_1p10.c
 ./neut_geo/neut_geo_op/neut_geo_op1.c
 ./neut_geo/neut_geo_op/neut_geo_op2.c
 ./neut_geo/neut_geo_test/neut_geo_test1.c

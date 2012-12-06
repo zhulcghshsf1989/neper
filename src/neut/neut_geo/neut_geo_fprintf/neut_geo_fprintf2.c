@@ -12,7 +12,7 @@ GEHead (struct GEO Geo, FILE * file)
 
   fprintf (file, "***tess\n");
   fprintf (file, " **format\n");
-  fprintf (file, "   1.10\n");
+  fprintf (file, "   2.0\n");
   fprintf (file, " **general\n");
   fprintf (file, "   %d %d %s %s\n", Geo.N, Geo.Id, Geo.Type, Geo.morpho);
 
@@ -216,7 +216,8 @@ GEDomain (struct GEO Geo, FILE * file)
     fprintf (file, "     ");
     for (j = 1; j <= 3; j++)
       fprintf (file, "%.12f ", Geo.DomFaceEq[i][j]);
-    fprintf (file, "%.12f\n", Geo.DomFaceEq[i][0]);
+    fprintf (file, "%.12f ", Geo.DomFaceEq[i][0]);
+    fprintf (file, "%s\n", Geo.DomFaceLabel[i]);
 
     fprintf (file, "   %3d ", Geo.DomFaceVerQty[i]);
     ut_array_1d_int_fprintf (file, Geo.DomFaceVerNb[i] + 1, Geo.DomFaceVerQty[i], "%d");

@@ -2,10 +2,10 @@
 /* Copyright (C) 2003-2012, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-#include"neut_geo_fscanf_lcl.h"
+#include "neut_geo_fscanf_lcl_1p10.h"
 
 void
-neut_geo_fscanf_version (FILE* file, char* version)
+neut_geo_fscanf_version_1p10 (FILE* file, char* version)
 {
   int status = 0;
   char* tmp = ut_alloc_1d_char (1000);
@@ -48,18 +48,18 @@ neut_geo_fscanf_version (FILE* file, char* version)
 
 /* Geometry exportation: head */
 void
-neut_geo_fscanf_head (struct GEO* pGeo, FILE * file)
+neut_geo_fscanf_head_1p10 (struct GEO* pGeo, FILE * file)
 {
   if (ut_file_string_scanncomp (file, "***tess")  != 0
    || ut_file_string_scanncomp (file, "**format") != 0
-   || ut_file_string_scanncomp (file, "2.0")      != 0)
+   || ut_file_string_scanncomp (file, "1.10")     != 0)
   {
     ut_print_message (2, 0, "Input file is not a valid tessellation file.\n");
     abort ();
   }
 
-  (*pGeo).version = ut_alloc_1d_char (4);
-  sprintf ((*pGeo).version, "2.0");
+  (*pGeo).version = ut_alloc_1d_char (5);
+  sprintf ((*pGeo).version, "1.10");
 
   if (ut_file_string_scanncomp (file, "**general") != 0)
   {
@@ -115,7 +115,7 @@ neut_geo_fscanf_head (struct GEO* pGeo, FILE * file)
 
 /* Geometry exportation: foot */
 void
-neut_geo_fscanf_foot (FILE * file)
+neut_geo_fscanf_foot_1p10 (FILE * file)
 {
   if (ut_file_string_scanncomp (file, "***end") != 0)
     abort ();
@@ -125,7 +125,7 @@ neut_geo_fscanf_foot (FILE * file)
 
 /* Geometry exportation: vertex */
 void
-neut_geo_fscanf_ver (struct GEO* pGeo, FILE * file)
+neut_geo_fscanf_ver_1p10 (struct GEO* pGeo, FILE * file)
 {
   int i, ver, status;
 
@@ -163,7 +163,7 @@ neut_geo_fscanf_ver (struct GEO* pGeo, FILE * file)
 
 /* Geometry exportation: edge */
 void
-neut_geo_fscanf_edge (struct GEO* pGeo, FILE * file)
+neut_geo_fscanf_edge_1p10 (struct GEO* pGeo, FILE * file)
 {
   int i, edge, status;
 
@@ -201,7 +201,7 @@ neut_geo_fscanf_edge (struct GEO* pGeo, FILE * file)
 
 /* Geometry exportation: face */
 void
-neut_geo_fscanf_face (struct GEO* pGeo, FILE * file)
+neut_geo_fscanf_face_1p10 (struct GEO* pGeo, FILE * file)
 {
   int i, j, face, tmp, status;
 
@@ -261,7 +261,7 @@ neut_geo_fscanf_face (struct GEO* pGeo, FILE * file)
 
 /* Geometry exportation: poly */
 void
-neut_geo_fscanf_poly (struct GEO* pGeo, FILE * file)
+neut_geo_fscanf_poly_1p10 (struct GEO* pGeo, FILE * file)
 {
   int i, poly, status;
 
@@ -304,11 +304,11 @@ neut_geo_fscanf_poly (struct GEO* pGeo, FILE * file)
 
 /* Geometry import: domain */
 void
-neut_geo_fscanf_domain (struct GEO* pGeo, FILE * file)
+neut_geo_fscanf_domain_1p10 (struct GEO* pGeo, FILE * file)
 {
   int i, id;
 
-  if (! strncmp ((*pGeo).version, "2.0", 4))
+  if (! strncmp ((*pGeo).version, "1.10", 4))
   {
     (*pGeo).DomType = ut_alloc_1d_char (10);
 
@@ -367,7 +367,6 @@ neut_geo_fscanf_domain (struct GEO* pGeo, FILE * file)
       abort ();
 
     (*pGeo).DomFaceEq = ut_alloc_2d ((*pGeo).DomFaceQty + 1, 4);
-    (*pGeo).DomFaceLabel = ut_alloc_2d_char ((*pGeo).DomFaceQty + 1, 10);
     (*pGeo).DomTessFaceQty = ut_alloc_1d_int ((*pGeo).DomFaceQty + 1);
     (*pGeo).DomTessFaceNb  = ut_alloc_1d_pint ((*pGeo).DomFaceQty + 1);
     (*pGeo).DomFaceVerQty  = ut_alloc_1d_int ((*pGeo).DomFaceQty + 1);
@@ -389,11 +388,9 @@ neut_geo_fscanf_domain (struct GEO* pGeo, FILE * file)
 
       ut_array_1d_int_fscanf (file, (*pGeo).DomTessFaceNb[i] + 1, (*pGeo).DomTessFaceQty[i]);
       ut_array_1d_fscanf (file, (*pGeo).DomFaceEq[i] + 1, 3);
-      if (fscanf (file, "%lf", &((*pGeo).DomFaceEq[i][0])) != 1)
-	abort ();
-      if (fscanf (file, "%s", (*pGeo).DomFaceLabel[i]) != 1)
-	abort ();
-      if (fscanf (file, "%d", &((*pGeo).DomFaceVerQty[i])) != 1)
+
+      if (fscanf (file, "%lf%d", &((*pGeo).DomFaceEq[i][0]),
+				 &((*pGeo).DomFaceVerQty[i])) != 2)
 	abort ();
 
       (*pGeo).DomFaceVerNb[i]  = ut_alloc_1d_int ((*pGeo).DomFaceVerQty[i] + 1);
@@ -403,7 +400,6 @@ neut_geo_fscanf_domain (struct GEO* pGeo, FILE * file)
       ut_array_1d_int_fscanf (file, (*pGeo).DomFaceEdgeNb[i] + 1, (*pGeo).DomFaceVerQty[i]);
     }
   }
-
   else if (! strcmp ((*pGeo).version, "1.9.2"))
   {
     double** bbox = ut_alloc_2d (3, 2);

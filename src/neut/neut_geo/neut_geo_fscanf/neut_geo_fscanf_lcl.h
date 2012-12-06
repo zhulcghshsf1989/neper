@@ -11,6 +11,7 @@
 
 #include"../neut_geo_fscanf.h"
 #include"neut_geo_fscanf_1p9/neut_geo_fscanf0_1p9.h"
+#include"neut_geo_fscanf_1p10/neut_geo_fscanf0_1p10.h"
 
 extern void neut_geo_fscanf_version (FILE*, char*);
 extern void neut_geo_fscanf_foot (FILE *);

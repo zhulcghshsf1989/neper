@@ -13,38 +13,11 @@ nem_nsets_2d_geo (struct GEO Geo, struct MESH Mesh2D, struct NSET* pNSet2D)
   (*pNSet2D).names = ut_alloc_1d_pchar ((*pNSet2D).qty + 1);
 
   // setting up face nset labels
-  if (! strcmp (Geo.DomType, "cube"))
+  for (i = 1; i <= (*pNSet2D).qty; i++)
   {
-    for (i = 1; i <= Geo.DomFaceQty; i++)
-      (*pNSet2D).names[i] = ut_alloc_1d_char (3);
-
-    sprintf ((*pNSet2D).names[1], "x0");
-    sprintf ((*pNSet2D).names[2], "x1");
-    sprintf ((*pNSet2D).names[3], "y0");
-    sprintf ((*pNSet2D).names[4], "y1");
-    sprintf ((*pNSet2D).names[5], "z0");
-    sprintf ((*pNSet2D).names[6], "z1");
+    (*pNSet2D).names[i] = ut_alloc_1d_char (strlen (Geo.DomFaceLabel[i]) + 1);
+    strcpy ((*pNSet2D).names[i], Geo.DomFaceLabel[i]);
   }
-  else if (! strcmp (Geo.DomType, "cylinder"))
-  {
-    (*pNSet2D).names[1] = ut_alloc_1d_char (4);
-    (*pNSet2D).names[2] = ut_alloc_1d_char (4);
-
-    sprintf ((*pNSet2D).names[1], "z0");
-    sprintf ((*pNSet2D).names[2], "z1");
-
-    for (i = 3; i <= Geo.DomFaceQty; i++)
-    {
-      (*pNSet2D).names[i] = ut_alloc_1d_char (10);
-      sprintf ((*pNSet2D).names[i], "f%d", i - 2);
-    }
-  }
-  else
-    for (i = 1; i <= Geo.DomFaceQty; i++)
-    {
-      (*pNSet2D).names[i] = ut_alloc_1d_char (10);
-      sprintf ((*pNSet2D).names[i], "f%d", i);
-    }
 
   // Computing nsets
   (*pNSet2D).nodeqty = ut_alloc_1d_int  (Geo.DomFaceQty + 1);

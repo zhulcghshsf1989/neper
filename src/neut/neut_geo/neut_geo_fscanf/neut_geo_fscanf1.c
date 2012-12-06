@@ -27,23 +27,35 @@ neut_geo_fscanf_verbosity (FILE* file, struct GEO* pGeo, int verbosity)
     (*pGeo).DomType = ut_alloc_1d_char (5);
     strcpy ((*pGeo).DomType, "cube");
     (*pGeo).version = ut_alloc_1d_char (5);
-    strcpy ((*pGeo).version, "1.10");
+    strcpy ((*pGeo).version, "2.0");
     neut_geo_init_domain (pGeo);
-
-    ut_free_1d_char (version);
-    return;
   }
 
-  neut_geo_fscanf_head (pGeo, file);
-  neut_geo_fscanf_ver (pGeo, file);
-  neut_geo_fscanf_edge (pGeo, file);
-  neut_geo_fscanf_face (pGeo, file);
-  neut_geo_fscanf_poly (pGeo, file);
-  neut_geo_fscanf_domain (pGeo, file);
-  neut_geo_fscanf_foot (file);
+  else if (! strcmp (version, "1.10"))
+  {
+    neut_geo_fscanf_1p10 (file, pGeo);
+    neut_geo_init_domain_facelabel (pGeo);
+  }
 
-  sprintf ((*pGeo).version, "1.10"); // new at format 1.10
-  neut_geo_init_edgelength (pGeo);
+  else if (! strcmp (version, "2.0"))
+  {
+    neut_geo_fscanf_head (pGeo, file);
+    neut_geo_fscanf_ver (pGeo, file);
+    neut_geo_fscanf_edge (pGeo, file);
+    neut_geo_fscanf_face (pGeo, file);
+    neut_geo_fscanf_poly (pGeo, file);
+    neut_geo_fscanf_domain (pGeo, file);
+    neut_geo_fscanf_foot (file);
+
+    sprintf ((*pGeo).version, "2.0"); // new at format 2.0
+    neut_geo_init_edgelength (pGeo);
+  }
+
+  else
+  {
+    ut_print_message (2, 2, "Unsupported tess file version `%s'.\n", version);
+    abort ();
+  }
 
   if (neut_geo_test (*pGeo, verbosity) != 0)
   {

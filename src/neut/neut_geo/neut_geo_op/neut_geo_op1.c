@@ -66,6 +66,7 @@ neut_geo_set_zero (struct GEO* pGeo)
   (*pGeo).DomTessEdgeNb = NULL;
 
   (*pGeo).DomFaceQty = 0;
+  (*pGeo).DomFaceLabel = NULL;
   (*pGeo).DomFaceEq = NULL;
   (*pGeo).DomFaceVerQty = NULL;
   (*pGeo).DomFaceVerNb = NULL;
@@ -131,6 +132,7 @@ neut_geo_free (struct GEO* pGeo)
   ut_free_1d_int ((*pGeo).DomTessEdgeQty);
   ut_free_2d_int ((*pGeo).DomTessEdgeNb, (*pGeo).DomEdgeQty + 1);
 
+  ut_free_2d_char ((*pGeo).DomFaceLabel, (*pGeo).DomFaceQty + 1);
   ut_free_2d ((*pGeo).DomFaceEq, (*pGeo).DomFaceQty + 1);
   ut_free_1d_int ((*pGeo).DomFaceVerQty);
   ut_free_2d_int ((*pGeo).DomFaceVerNb, (*pGeo).DomFaceQty + 1);
@@ -842,6 +844,9 @@ neut_geo_init_domain (struct GEO* pGeo)
 
   neut_geo_init_edgedom (pGeo);
   neut_geo_init_verdom (pGeo);
+
+  // Settings face labels
+  neut_geo_init_domain_facelabel (pGeo);
 
   return;
 }
