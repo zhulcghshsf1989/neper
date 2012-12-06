@@ -104,7 +104,7 @@ neper_fm (int fargc, char **fargv, int argc, char **argv)
 	    &Mesh2D, &Mesh3D, &NSet2D);
       else if (In.vox != NULL)
 	nem_vox_mesh_hex (In, GeoPara, Vox, &Nodes, &Mesh0D, &Mesh1D,
-	    &Mesh2D, &Mesh3D);
+	    &Mesh2D, &Mesh3D, &NSet2D);
     }
   }
 

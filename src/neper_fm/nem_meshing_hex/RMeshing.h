@@ -15,6 +15,6 @@
 #include"RMeshing0.h"
 
 extern void RMeshingFGeo (struct GEO Geo, struct MESH* pMesh);
-extern void RMeshing_meshpoly (char*, struct VOX, struct MESH*, struct NODES*, int***);
+extern void RMeshing_meshpoly (char*, struct VOX, struct MESH*, struct NODES*, struct NSET*);
 extern void RMeshing_cleaning (struct MESH* pMesh, struct NODES* pNodes, int*** pFoDNodes);
 extern void RMeshing_singnodedup (struct MESH* pMesh, struct NODES* pNodes, int*** pFoDNodes);

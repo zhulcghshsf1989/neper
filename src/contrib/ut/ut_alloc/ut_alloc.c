@@ -772,11 +772,19 @@ ut_alloc_4d (unsigned int dim1, unsigned int dim2,
 int *
 ut_realloc_1d_int (int *res, unsigned int line)
 {
-  res = (int *) realloc (res, line * sizeof (int));
-  if (!res)
+  if (line == 0)
   {
-    printf ("memory allocation failed! (%d)\n", line);
-    abort ();
+    ut_free_1d_int (res);
+    return NULL;
+  }
+  else
+  {
+    res = (int *) realloc (res, line * sizeof (int));
+    if (!res)
+    {
+      printf ("memory allocation failed! (%d)\n", line);
+      abort ();
+    }
   }
 
   return res;
@@ -785,11 +793,19 @@ ut_realloc_1d_int (int *res, unsigned int line)
 unsigned short *
 ut_realloc_1d_ushort (unsigned short *res, unsigned int line)
 {
-  res = (unsigned short *) realloc (res, line * sizeof (unsigned short));
-  if (!res)
+  if (line == 0)
   {
-    printf ("memory allocation failed! (%d)\n", line);
-    abort ();
+    ut_free_1d_ushort (res);
+    return NULL;
+  }
+  else
+  {
+    res = (unsigned short *) realloc (res, line * sizeof (unsigned short));
+    if (!res)
+    {
+      printf ("memory allocation failed! (%d)\n", line);
+      abort ();
+    }
   }
 
   return res;
@@ -798,11 +814,19 @@ ut_realloc_1d_ushort (unsigned short *res, unsigned int line)
 unsigned char *
 ut_realloc_1d_uchar (unsigned char *res, unsigned int line)
 {
-  res = (unsigned char *) realloc (res, line * sizeof (unsigned char));
-  if (!res)
+  if (line == 0)
   {
-    printf ("memory allocation failed! (%d)\n", line);
-    abort ();
+    ut_free_1d_uchar (res);
+    return NULL;
+  }
+  else
+  {
+    res = (unsigned char *) realloc (res, line * sizeof (unsigned char));
+    if (!res)
+    {
+      printf ("memory allocation failed! (%d)\n", line);
+      abort ();
+    }
   }
 
   return res;
@@ -811,11 +835,19 @@ ut_realloc_1d_uchar (unsigned char *res, unsigned int line)
 double *
 ut_realloc_1d (double *res, unsigned int line)
 {
-  res = (double *) realloc (res, line * sizeof (double));
-  if (!res)
+  if (line == 0)
   {
-    printf ("memory allocation failed! (%d)\n", line);
-    abort ();
+    ut_free_1d (res);
+    return NULL;
+  }
+  else
+  {
+    res = (double *) realloc (res, line * sizeof (double));
+    if (!res)
+    {
+      printf ("memory allocation failed! (%d)\n", line);
+      abort ();
+    }
   }
 
   return res;
@@ -824,11 +856,19 @@ ut_realloc_1d (double *res, unsigned int line)
 char *
 ut_realloc_1d_char (char *res, unsigned int line)
 {
-  res = (char *) realloc (res, line * sizeof (char));
-  if (!res)
+  if (line == 0)
   {
-    printf ("memory allocation failed! (%d)\n", line);
-    abort ();
+    ut_free_1d_char (res);
+    return NULL;
+  }
+  else
+  {
+    res = (char *) realloc (res, line * sizeof (char));
+    if (!res)
+    {
+      printf ("memory allocation failed! (%d)\n", line);
+      abort ();
+    }
   }
 
   return res;

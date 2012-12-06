@@ -13,4 +13,5 @@ extern void
 nem_vox_mesh_hex (struct IN In, struct GEOPARA GeoPara, struct VOX Vox, 
                   struct NODES* pNodes,
 		  struct MESH* pMesh0D, struct MESH* pMesh1D,
-		  struct MESH* pMesh2D, struct MESH* pMesh3D);
+		  struct MESH* pMesh2D, struct MESH* pMesh3D,
+		  struct NSET* pNSet2D);

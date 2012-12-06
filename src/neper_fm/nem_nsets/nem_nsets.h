@@ -21,3 +21,8 @@ extern void nem_nsets_1dbody_geo (struct GEO, struct NSET, struct NSET*);
 extern void nem_nsets_1d_geo_hex (struct GEO Geo, struct NSET NSet2D, struct NSET* pNSet1D);
 extern void nem_nsets_0d_geo_hex (struct GEO Geo, struct NSET NSet2D, struct NSET  NSet1D,
                                   struct NSET* pNSet0D);
+
+extern void nem_nsets_1d_hex (struct NSET NSet2D, struct NSET* pNSet1D);
+extern void nem_nsets_0d_hex (struct NSET NSet1D, struct NSET* pNSet0D);
+extern void nem_nsets_2dbody_hex (struct NSET NSet1D, struct NSET* pNSet2D);
+extern void nem_nsets_1dbody_hex (struct NSET NSet0D, struct NSET* pNSet1D);

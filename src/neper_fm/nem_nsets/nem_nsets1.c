@@ -42,6 +42,20 @@ nem_nsets (struct IN In, struct GEO Geo, struct MESH Mesh0D, struct MESH Mesh1D,
 	nem_nsets_1dbody_geo (Geo, *pNSet0D, pNSet1D);
       }
     }
+
+    else
+    {
+      nem_nsets_1d_hex (*pNSet2D, pNSet1D);
+      nem_nsets_0d_hex (*pNSet1D, pNSet0D);
+
+      if (ut_string_finds (In.nset, "all") != -1
+       || ut_string_finds (In.nset, "body") != -1
+       || ut_string_finds (In.nset, "bodies") != -1)
+      {
+	nem_nsets_2dbody_hex (*pNSet1D, pNSet2D);
+	nem_nsets_1dbody_hex (*pNSet0D, pNSet1D);
+      }
+    }
   }
 
   return;

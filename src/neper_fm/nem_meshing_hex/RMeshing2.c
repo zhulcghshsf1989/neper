@@ -41,7 +41,7 @@ RMeshingFGeo (struct GEO Geo, struct MESH* pMesh)
 
 void
 RMeshing_meshpoly (char* meshpoly, struct VOX Vox, struct MESH* pMesh, struct NODES* pNodes,
-                   int*** pFoDNodes)
+                   struct NSET* pNSet2D)
 {
   int i, polyqty;
   int* poly = NULL;
@@ -52,7 +52,7 @@ RMeshing_meshpoly (char* meshpoly, struct VOX Vox, struct MESH* pMesh, struct NO
     if (ut_array_1d_int_eltpos (poly, polyqty, i) == -1)
       neut_mesh_rmelset (pMesh, *pNodes, i);
 
-  neut_nodes_rmorphans (pNodes, pMesh, pFoDNodes);
+  neut_nodes_rmorphans (pNodes, pMesh, pNSet2D);
 
   ut_free_1d_int (poly);
 
