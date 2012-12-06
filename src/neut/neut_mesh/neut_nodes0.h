@@ -29,6 +29,6 @@ extern int neut_nodes_point_closestnode (struct NODES, double*, int*);
 extern int  neut_nodes_eltdim (struct MESH, struct MESH,
 			       struct MESH, struct MESH, int);
 
-extern int neut_nodes_rmorphans (struct NODES*, struct MESH*, int***);
+extern int neut_nodes_rmorphans (struct NODES*, struct MESH*, struct NSET*);
 
 #endif

@@ -31,7 +31,6 @@ nem_geo_mesh_hex (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
   printf ("\n");
   ut_print_message (0, 2, "3D meshing ... ");
 
-  int*** pFoDNodes = NULL;
   BuildMMesh3D (msize, In.morder, pNodes, pMesh3D, pNSet2D);
   neut_nodes_scale (pNodes, dsize[0][1], dsize[1][1], dsize[2][1]);
   neut_mesh_scale  (pMesh3D, dsize[0][1], dsize[1][1], dsize[2][1]);
@@ -43,14 +42,14 @@ nem_geo_mesh_hex (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
 
   neut_mesh_init_elsets (pMesh3D);
 
+  neut_mesh_rmelset (pMesh3D, *pNodes, 0);
+  neut_nodes_rmorphans (pNodes, pMesh3D, pNSet2D);
+
   ReconMesh (In.outdim, pNodes, pMesh0D, pMesh1D, pMesh2D,
 		        pMesh3D, NULL);
 
   int* meshpoly = ut_alloc_1d_int (Geo.PolyQty + 1);
 
-  neut_mesh_rmelset (pMesh3D, *pNodes, 0);
-
-  neut_nodes_rmorphans (pNodes, pMesh3D, pFoDNodes);
   ut_free_2d_int ((*pMesh3D).NodeElts, (*pNodes).NodeQty + 1);
   neut_mesh_init_nodeelts (pMesh3D, (*pNodes).NodeQty);
 

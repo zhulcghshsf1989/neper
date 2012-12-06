@@ -406,7 +406,7 @@ neut_nodes_eltdim (struct MESH Mesh0D,
 }
 
 int
-neut_nodes_rmorphans (struct NODES* pNodes, struct MESH* pMesh, int*** pFoDNodes)
+neut_nodes_rmorphans (struct NODES* pNodes, struct MESH* pMesh, struct NSET* pNSet2D)
 {
   int i, j, nodeqty;
   int eltnodeqty = neut_elt_nodeqty ((*pMesh).EltType, (*pMesh).Dimension, (*pMesh).EltOrder);
@@ -449,14 +449,15 @@ neut_nodes_rmorphans (struct NODES* pNodes, struct MESH* pMesh, int*** pFoDNodes
     for (j = 0; j < eltnodeqty; j++)
       (*pMesh).EltNodes[i][j] = old_new[(*pMesh).EltNodes[i][j]];
 
-  if (pFoDNodes != NULL)
-    for (i = 1; i <= 6; i++)
+  if (pNSet2D != NULL)
+    for (i = 1; i <= (*pNSet2D).qty; i++)
     {
-      for (j = 1; j <= (*pFoDNodes)[i][0]; j++)
-	(*pFoDNodes)[i][j] = old_new[(*pFoDNodes)[i][j]];
+      for (j = 0; j < (*pNSet2D).nodeqty[i]; j++)
+	(*pNSet2D).nodes[i][j] = old_new[(*pNSet2D).nodes[i][j]];
 
-      (*pFoDNodes)[i][0] -= ut_array_1d_int_deletencompress
-   	        ((*pFoDNodes)[i] + 1, (*pFoDNodes)[i][0], 0, (*pFoDNodes)[i][0]);
+      (*pNSet2D).nodeqty[i]
+	-= ut_array_1d_int_deletencompress ((*pNSet2D).nodes[i],
+	        (*pNSet2D).nodeqty[i], 0, (*pNSet2D).nodeqty[i]);
     }
 
   ut_free_1d_int (old_new);
