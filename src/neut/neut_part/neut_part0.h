@@ -2,12 +2,13 @@
 /* Copyright (C) 2003-2012, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-#ifndef UT_PART0_H
-#define UT_PART0_H
+#ifndef NEUT_PART0_H
+#define NEUT_PART0_H
 
 #include"../neut_structs.h"
 
 extern void neut_part_set_zero (struct PART*);
 extern void neut_part_free (struct PART);
+extern void neut_part_fprintf (char*, struct PART);
 
-#endif /* UT_PART0_H */
+#endif /* NEUT_PART0_H */

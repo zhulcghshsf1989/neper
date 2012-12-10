@@ -148,15 +148,21 @@ and
 @end ifinfo
 @code{@var{true}} is especially useful for statistics on
 the polyhedra (morphology, mesh, etc.), for which only polyhedra with
-@math{@var{true}@geq 1} should be considered.
+@iftex
+@math{@var{true}@geq 1}
+@end iftex
+@ifinfo
+@var{true} >= 1
+@end ifinfo
+should be considered.
 @end itemize
 The definitions of @code{@var{body}} and @code{@var{body}} are somewhat
 different for vertices, edges and faces.
 If at least one polyhedron to which the entity belongs have a
-@code{@var{body}} value equal to or higher than @code{1}, then the 
+@code{@var{body}} value equal to or higher than @code{1}, then the
 entity has a @code{@var{body}} value of @w{@code{1}}.
 If all polyhedra to which the entity belongs have a
-@code{@var{body}} value equal to or higher than @code{1}, then the 
+@code{@var{body}} value equal to or higher than @code{1}, then the
 entity has a @code{@var{body}} value of @w{@code{2}}.
 @code{@var{true}} is defined in the same way.
 
@@ -368,7 +374,7 @@ character string of format: @samp{@w{R_value,G_value,B_value}}.  The
 @section Tessellation file @file{.tess}
 
 Here are details on the @file{.tess} file format version
-@code{1.10}.  Developers may note that read and write functions are
+@code{2.0}.  Developers may note that read and write functions are
 available as @code{neut_geo_fscanf ()} and @code{neut_geo_fprintf ()},
 defined in directories @file{neut/neut_geo/neut_geo_fscanf}
 and
@@ -435,7 +441,7 @@ and
 @ @ @  ...                                                               @*
 @ @  *face                                                             @*
 @ @ @  @var{total_number_of_dom_faces}                                   @*
-@ @ @  @var{dom_face_id} @var{number_of_dom_tess_faces} 				 
+@ @ @  @var{dom_face_id} @var{number_of_dom_tess_faces}
 			@var{dom_tess_face_1} @var{dom_tess_face_2} @var{...} @*
 @ @ @ @ @ @ @ @ @var{dom_face_eq_a} @var{dom_face_eq_b} @var{dom_face_eq_c}
 				@var{dom_face_eq_d} @var{dom_face_label} @*
@@ -454,7 +460,7 @@ where (with identifiers being integer numbers),
 
 @item @code{**format} denotes the beginning the format field.
 
-@item @code{@var{format}} is the file format, currently @samp{1.10}
+@item @code{@var{format}} is the file format, currently @samp{2.0}
 (character string).
 
 @item @code{**general} denotes the beginning the general information field.
@@ -507,7 +513,7 @@ boundary, used for regularization.  It is provided only if
 @item @code{@var{total_number_of_vertices}} is the total number of
 vertices.
 
-@item @code{@var{dom_entity_type}} is an integer equal to the type of 
+@item @code{@var{dom_entity_type}} is an integer equal to the type of
 domain entity that a tessellation vertex, edge or face belongs to.  The
 value is equal to @code{0} for a domain vertex, @code{1} for a domain
 edge and @code{2} for a domain face, and @code{-1} for none.
@@ -627,7 +633,7 @@ polyhedron.
 of a polyhedron (@pxref{Module -M}).
 
 @item @code{@var{poly_body}} is an integer equal to the ``body'' value
-of a polyhedron (@pxref{Module -M}). 
+of a polyhedron (@pxref{Module -M}).
 
 @item @code{**domain} denotes the beginning of the domain field.
 
@@ -654,7 +660,7 @@ domain edges.
 ranges between @code{1} to @code{total_number_of_dom_edges}.
 
 @item @code{@var{number_of_dom_tess_edges}} is the number of
-tessellation edges that a domain edge has. 
+tessellation edges that a domain edge has.
 
 @item @code{@var{dom_ver_1}}, @code{@var{dom_ver_2}}, @code{...} are
 identifiers of the domain vertices that a domain edge or face has.
@@ -691,7 +697,7 @@ way than @code{@var{face_eq_a}}, etc.@ (see above).
 @samp{@code{f1}}, @samp{@code{f2}}, @dots{}
 
 @item @code{@var{number_of_dom_vertices}} is the number of
-domain vertices (and edges) that a domain face has. 
+domain vertices (and edges) that a domain face has.
 
 @item @code{@var{dom_edge_1}}, @code{@var{dom_edge_2}}, @code{...} are
 identifiers of the domain edges that a domain face has.
@@ -703,7 +709,7 @@ identifiers of the domain edges that a domain face has.
 @section Voxel file @file{.vox}
 
 Here are details on the @file{.vox} file format version
-@code{1.10}.  The developers may note that read and write functions are
+@code{2.0}.  The developers may note that read and write functions are
 available as @code{neut_vox_fscanf ()} and @code{neut_vox_fprintf ()},
 defined in directories @file{neut/neut_vox/neut_vox_fscanf}
 and

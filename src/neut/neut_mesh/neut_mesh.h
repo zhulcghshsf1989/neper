@@ -11,7 +11,6 @@
 #include"neut.h"
 
 #include"neut_mesh0.h"
-#include"fscanf_msh/fscanf_msh0.h"
 
 // #ifdef HAVE_LIBSCOTCH
 // #include <scotch.h>

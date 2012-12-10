@@ -28,3 +28,26 @@ neut_part_free (struct PART Part)
 
   return;
 }
+
+void
+neut_part_fprintf (char* body, struct PART Part)
+{
+  int i;
+  FILE* file = NULL;
+  char *npart, *epart;
+
+  npart = ut_string_addextension (body, ".npart");
+  epart = ut_string_addextension (body, ".epart");
+
+  file = ut_file_open (npart, "w");
+  for (i = 1; i <= Part.node_parts[0]; i++)
+    fprintf (file, "%d\n", Part.node_parts[i] + 1);
+  ut_file_close (file, npart, "w");
+
+  file = ut_file_open (epart, "w");
+  for (i = 1; i <= Part.elt_parts[0]; i++)
+    fprintf (file, "%d\n", Part.elt_parts[i] + 1);
+  ut_file_close (file, epart, "w");
+
+  return;
+}

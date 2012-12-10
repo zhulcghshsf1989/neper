@@ -28,7 +28,7 @@ DomainComp (struct IN In, struct POLY *pDomain)
     else
     {
       double cl;
-      rcl2cl (1, M_PI * rad * rad * h, In.n, &cl);
+      rcl2cl (1, M_PI * rad * rad * h, In.n, NULL, &cl);
       qty = (int) floor (2 * M_PI * rad / cl);
       qty = ut_num_max_int (qty, 5);
       qty += 2;

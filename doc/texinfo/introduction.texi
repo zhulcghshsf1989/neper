@@ -1,5 +1,5 @@
 @node Introduction
-@chapter Introduction 
+@chapter Introduction
 
 @section The Neper Project
 
@@ -19,7 +19,8 @@ respectively.  The tessellations are brick-shape by default, but can be
 of any convex shape.  After they have been generated, they can be
 deformed to account for morphological texture.  @MT{} also includes an
 advanced ``regularization'' capability to remove the small features of
-the tessellations, which enables to obtain better quality meshes.
+the tessellations, which subsequently enables to obtain better quality
+meshes.
 
 @item @MM{} is the module for meshing polycrystals. Two capabilities are
 available: meshing into tetrahedral elements that conform to the
@@ -33,8 +34,9 @@ generate a new, good-quality mesh from a deformed mesh.
 orientations are randomly distributed according to a uniform
 distribution.
 
-@item @MVS{} is for printing publication-quality images of the
-tessellations and meshes.
+@item @MVS{} is for generating publication-quality images of the
+tessellations and meshes. It is possible to visualize data on them
+and to make slices.
 
 @end itemize
 
@@ -44,33 +46,33 @@ ASCII files. This makes it possible to automate all treatments.
 
 @subsection Resources
 
-Several, complementary resources describing the Neper capabilities 
-are available: 
+Several, complementary resources describing the Neper capabilities
+are available:
 
 @itemize
-@item The Neper reference manual.  It describes all the Neper
+@item The Neper reference manual, which is the present document.  It describes all the Neper
 capabilities. It is made of one chapter for each module, describing
 the available commands and result files, and providing some examples.
 The manual comes both as a PDF file and an info file.  Provided
 that the info file is properly installed at your site, it can be
 accessed by the command: @command{info neper}.
 
-@item The Neper homepage: @url{http://neper.sourceforge.net}.  It is
+@item The Neper homepage, @url{http://neper.sourceforge.net}.  It is
 where the Neper distribution can be downloaded from. It also provides an
 introduction to Neper, with some examples and illustrations.
 
-@item The Neper paper, 
+@item The Neper paper,
 ``@cite{R.@ Quey, P.R.@ Dawson and F.@ Barbe, Large-scale 3D random
 polycrystals for the finite element method: Generation, meshing and
 remeshing, Comput.@ Methods Appl.@ Mech.@ Engrg., vol.@ 200, pp.@
-1729-1745, 2011.}'',
+1729-1745, 2011.}''. It
 provides details on the algorithms.  It can be downloaded
 from the Neper homepage or by following this link:
 @url{http://neper.sourceforge.net/neper_paper.pdf}.
 
-@item The Neper Git repository: @url{http://github.com/rquey/neper}.
+@item The Neper Git repository, @url{http://github.com/rquey/neper}.
 It is where the development version can be downloaded from. The
-repository can be also be cloned using the command
+repository can also be cloned using the command
 @w{@samp{@command{git clone git://github.com/rquey/neper.git}}}.
 
 @end itemize
@@ -111,7 +113,7 @@ following.  Some dependencies are managed at compilation time,
 
 @itemize
 
-@item the GSL library (mandatory) 
+@item the GSL library (mandatory)
 
 It is likely to be available on your system or from your system package
 manager (binary and development packages).  Alternatively, the
@@ -135,7 +137,7 @@ downloaded from the Scotch homepage,
 
 Optional dependencies can be toggled on / off using Cmake's GUI
 (@command{cmake-gui}) or @command{ccmake}, by setting variables
-@code{HAVE_@var{LIBRARYNAME}} to ON or OFF, respectively. 
+@code{HAVE_@var{LIBRARYNAME}} to ON or OFF, respectively.
 
 The following dependencies are only needed at run time,
 @c
@@ -185,8 +187,8 @@ with a number of arguments:
 
 @com{neper @var{module_name} @var{module_arguments}}
 
-The module names are @option{-T}, 
-@option{-M}, @option{-O} and @option{-VS}. 
+The module names are @option{-T},
+@option{-M}, @option{-O} and @option{-VS}.
 The module arguments can include both required input
 data and options.  Options start @w{by @samp{-}}.  The options can be
 given in arbitrary order (except for module @code{-VS}) and are to be
@@ -198,7 +200,7 @@ long as the abbreviation is not ambiguous. For example, in module
 @code{-O}, the option @option{-descriptor} can be abbreviated to
 @option{-des} or even safely @w{to @option{-d}}.  Logical options can be
 selected by giving the @w{value @samp{1}} or disabled by @w{giving
-@samp{0}}.  Neper is highly parametrable, and as a consequence includes
+@samp{0}}.  Neper is highly parametrable and as a consequence includes
 quite a large number of options.  For clarity, they are tagged by
 importance level in the reference manual: @w{`[Option]'} or
 @w{`[Secondary option]'}.  Post-processing options are tagged
@@ -216,7 +218,7 @@ modified through option @option{--rcfile}, which has to be loaded
 To inhibit the reading of an initialization file, provide `@code{none}'
 as value of the @var{my_file} argument.
 
-When a module of Neper is called, 
+When a module of Neper is called,
 Neper looks for the occurrence of @samp{neper @var{module_name}} in the
 initialization file, then reads all arguments until the next occurrence
 of @samp{neper} (which should denote the beginning of another module
@@ -232,9 +234,8 @@ An example of initialization file is given below:
 @c @group
 neper comments ------------------------------------------------------
 This is my initialization file (~/.neperrc).
-neper -M -order 2
-          -gmsh my_gmsh_path
-neper -MM -order 2
+neper -T -maxff 20
+neper -M -order 2 -gmsh my_gmsh_path
 neper comments ------------------------------------------------------
 @c @end group
 @end example
@@ -245,8 +246,9 @@ If the initialization file is not found, or if @samp{neper
 @var{module_name}} is not found is the file, Neper will just consider
 the command line arguments.  Also note that if an argument is
 initialized several times (for example, both in the initialization file
-and at the command line), the last specified value is considered.
+and at the command line), the last specified value is retained.
 
+@need 4000
 @subsection Conventions
 
 @subsubsection Manual
@@ -254,7 +256,7 @@ and at the command line), the last specified value is considered.
 The Neper documentation is maintained as a Texinfo manual.  Here are
 the writing conventions used in the document:
 
-@enumerate 
+@enumerate
 @item A command that can be typed in a terminal is printed like @command{this}, or, in the case of a major command, like @com{this}
 @item a program (or command) option is printed like @option{this};
 @item The name of a variable is printed like @code{this};
@@ -264,7 +266,7 @@ the writing conventions used in the document:
 @end enumerate
 
 @c Some abbreviations are used consistently for options:
-@c 
+@c
 @c @multitable @columnfractions 0.5 0.5
 @c @item
 @c @multitable @columnfractions 0.2 0.6
@@ -278,7 +280,7 @@ the writing conventions used in the document:
 @c @item min   @tab minimum
 @c @item max   @tab maximum
 @c @end multitable
-@c 
+@c
 @c @tab
 @c @multitable @columnfractions 0.3 0.6
 @c @item algo  @tab algorithm
@@ -290,7 +292,7 @@ the writing conventions used in the document:
 @c @item nset  @tab node set
 @c @item elset @tab @w{element set}
 @c @end multitable
-@c 
+@c
 @c @end multitable
 
 @subsubsection Option Arguments

@@ -148,7 +148,7 @@ main (int argc, char **argv)
     neper_o (fargc, fargv, argc - 1, argv + 1);
   else if (strcmp (Arg, "-FM") == 0
         || strcmp (Arg, "-M")  == 0)
-    neper_fm (fargc, fargv, argc - 1, argv + 1);
+    neper_m (fargc, fargv, argc - 1, argv + 1);
   else if (strcmp (Arg, "-VS") == 0)
     neper_vs (fargc, fargv, argc - 1, argv + 1);
 

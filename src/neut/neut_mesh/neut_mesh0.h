@@ -7,7 +7,13 @@
 
 #include"../neut_structs.h"
 #include "neut_mesh_renumber/neut_mesh_renumber0.h"
-#include "fscanf_msh/fscanf_msh0.h"
+#include "neut_mesh_fscanf/neut_mesh_fscanf0.h"
+#include "neut_mesh_fprintf/neut_mesh_fprintf_fepx/neut_mesh_fprintf_fepx0.h"
+#include "neut_mesh_fprintf/neut_mesh_fprintf_geof/neut_mesh_fprintf_geof0.h"
+#include "neut_mesh_fprintf/neut_mesh_fprintf_gmsh/neut_mesh_fprintf_gmsh0.h"
+#include "neut_mesh_fprintf/neut_mesh_fprintf_inp/neut_mesh_fprintf_inp0.h"
+#include "neut_mesh_fprintf/neut_mesh_fprintf_scotch/neut_mesh_fprintf_scotch0.h"
+#include "neut_mesh_fprintf/neut_mesh_fprintf_stellar/neut_mesh_fprintf_stellar0.h"
 
 #ifdef HAVE_LIBSCOTCH
 #include <scotch.h>
@@ -36,7 +42,7 @@ extern void neut_mesh_elt_reversenodes (struct MESH*, int);
 extern void neut_mesh_eltnormal (struct MESH, struct NODES, int, double *);
 extern void neut_mesh_elteq (struct MESH, struct NODES, int, double *);
 extern void neut_mesh_set_zero (struct MESH *);
-extern void neut_mesh_fscanf_fev (FILE *, FILE *, FILE *, struct NODES *,
+extern void neut_mesh_fscanf_fepx (FILE *, FILE *, FILE *, struct NODES *,
 				 struct MESH *);
 extern int neut_mesh_elt_elset (struct MESH, int);
 extern void neut_mesh_centre (struct NODES, struct MESH, double *);
@@ -128,7 +134,7 @@ extern int neut_mesh_meancl (struct NODES, struct MESH, double*);
 extern int neut_mesh_dispfromcl (struct NODES, struct MESH, double, double*);
 extern int neut_mesh_elset_dispfromcl (struct NODES, struct MESH, int, double, double*);
 
-extern void rcl2cl (double, double, int, double*);
+extern void rcl2cl (double, double, int, char*, double*);
 extern void rsel2sel (double, double, int, double*);
 
 extern void neut_mesh_fprintf_gmsh (FILE*, char*, struct NODES, struct

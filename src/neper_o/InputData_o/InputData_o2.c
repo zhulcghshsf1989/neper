@@ -28,10 +28,10 @@ TreatArg_o (int fargc, char **fargv, int argc, char **argv,
     ut_print_message (2, 1, "Unknow orientation descriptor `%s'\n",
 	(*pIn).descriptor);
 
-  if (strcmp ((*pIn).format, "fev") == 0
+  if (strcmp ((*pIn).format, "fepx") == 0
    && strcmp ((*pIn).descriptor, "ek") != 0)
     {
-      ut_print_message (2, 1, "With format `fev', the descriptor must be `ek'.\n");
+      ut_print_message (2, 1, "With format `fepx', the descriptor must be `ek'.\n");
       abort ();
     }
 

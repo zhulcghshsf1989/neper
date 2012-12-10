@@ -21,7 +21,7 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   neut_geo_set_zero     (&Geo);
   neut_vox_set_zero     (&Vox);
   net_in_set_zero       (&In);
-  nefm_geopara_set_zero (&GeoPara);
+  nem_geopara_set_zero (&GeoPara);
   neut_germset_set_zero (&GermSet);
   neut_poly_set_zero    (&Domain);
 

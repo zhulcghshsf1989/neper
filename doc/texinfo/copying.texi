@@ -53,7 +53,7 @@ The list is archived at
 
 @item neper-users: the ``read-write'' list for users.  Please send all
 questions, bug reports, requests or any errors or omissions in this
-manual to this list.  
+manual to this list.
 
 @w{To subscribe, visit
 @url{https://lists.sourceforge.net/lists/listinfo/neper-users}};
@@ -86,7 +86,7 @@ polycrystals for the finite element method: Generation, meshing and
 remeshing.  Computer Methods in Applied Mechanics and
 Engineering, vol.@ 200, pp.@ 1729--1745, 2011}.
 
-@item @cite{@w{Neper}: 
+@item @cite{@w{Neper}:
 a 3D random polycrystal generator for the finite element method
 (@w{version @value{NEPER_VERSION_SHORT}}),
 @url{http://neper.sourceforge.net}}.

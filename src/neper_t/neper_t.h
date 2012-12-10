@@ -20,7 +20,7 @@
 #include"net_vox/net_vox0.h"
 
 #include"InputData_t/InputData_t0.h"
-#include"neper_fm/InputData_fm/InputData_fm0.h"
+#include"neper_m/nem_input/nem_input0.h"
 #include"RegularizeGeo/RegularizeGeo0.h"
 #include"Res_t/Res_t0.h"
 

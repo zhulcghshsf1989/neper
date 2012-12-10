@@ -5,16 +5,18 @@
 and meshes can be rendered as publication-quality images.  It is also
 possible to visualize data on them using colours, or displacements of
 the nodes and to plot data on slices of the mesh.  The output file is a
-PNG image file.  Although this module has limited capabilities (compared
-to visualization applications such as Paraview, etc.), it can be useful
-for rapid and non-interactive rendering.
+PNG image file.  An advantage of this module over other visualization
+applications is that it enables to accurately monitor how the
+tessellations and meshes are displayed, and to perform non-interactive
+rendering.
 
 Contrary to the other modules, @mVS{} executes the provided arguments
 one after the other. Typically, using @mVS{} consists in loading a
 tessellation and / or a mesh (options starting by @option{-load}), then
 data fields to render them.  The data can apply to the tessellation
 entities: polyhedra, faces, edges and vertices, and to the mesh
-entities: 3D elements, 2D elements, 1D elements, 0D elements and nodes
+entities: @w{3D elements}, @w{2D elements}, @w{1D elements}, @w{0D
+elements} and nodes
 (options starting by @option{-data}).  The entities that are to be
 visible on the rendered image, for example particular tessellation
 polyhedra, element sets or elements, can also be specified (options
@@ -27,10 +29,10 @@ ray-tracing library is used for generating the images.
 Here is what a typical run of @mVS{} looks like:
 
 @c typical_start
-@verbatim 
-    $ neper -VS -loadtess n10-id1.tess -loadmesh n10-id1.msh \ 
+@verbatim
+    $ neper -VS -loadtess n10-id1.tess -loadmesh n10-id1.msh \
                 -dataelsetcol ori=n10-id1.ori -print img
-    
+
     ========================    N   e   p   e   r    =======================
     Info   : A 3D random polycrystal generator for the finite element method
     Info   : Version ...
@@ -69,7 +71,7 @@ Here is what a typical run of @mVS{} looks like:
     Info   : Printing scale ...
     Info   : Elapsed time: ... secs.
     ========================================================================
-    
+
 @end verbatim
 @c typical_end
 
@@ -83,7 +85,7 @@ Load a tessellation from a file (@file{.tess}).
 any, none}
 
 @opt{-loadmesh, file_name,
-Load a mesh from a file (must be a @file{.msh}).
+Load a mesh from a file (@file{.msh}).
 ,
 any, none}
 
@@ -93,10 +95,10 @@ The following options enable to define the properties (colour and size) of
 the tessellation entities (polyhedra, faces, edges and vertices).  This
 can be done either directly, by specifying the property values (e.g.@
 the RGB channel values for colour) or indirectly, e.g.@ using scalar
-values that are rendered in colour using a given @emph{@w{olour
+values that are rendered in colour using a given @emph{@w{colour
 scheme}}.  In this case, a scale image is generated in addition to the
 tessellation image.  The scale properties can be set up (minimum,
-maximum and tick values).  The image as @samp{-scale@var{entity}} as suffix.
+maximum and tick values).
 
 @opt{-datapolycol, char_string,
 Set the colours of the tessellation polyhedra.  The argument can be
@@ -126,19 +128,19 @@ list of colours.
 }
 
 @opt{-datapolyscalemin, real,
-Set the minimum of the scale relative to the "-datapolycol scal=" data.
+Set the minimum of the scale relative to the @samp{-datapolycol scal} data.
 ,
 any, data minimum
 }
 
 @opt{-datapolyscalemax, real,
-Set the maximum of the scale relative to the "-datapolycol scal=" data.
+Set the maximum of the scale relative to the @samp{-datapolycol scal} data.
 ,
 any, data maximum
 }
 
 @opt{-datapolyscaleticks, real,
-Set the ticks of the scale relative to the "-datapolycol scal=" data.
+Set the ticks of the scale relative to the @samp{-datapolycol scal} data.
 Provide a string composed of values separated by commas.
 (Use @samp{_} to get a blank space.)
 ,
@@ -152,7 +154,7 @@ for the argument format.
 any, white}
 
 @opt{-datafacecolscheme, char_string,
-Set the colour scheme used to get colours from the data of 
+Set the colour scheme used to get colours from the data of
 the tessellation faces loaded with option @option{-datafacecol}.
 See option @option{-datapolycolscheme} for the argument format.
 ,
@@ -161,19 +163,19 @@ see option @option{-datapolycolscheme}
 }
 
 @opt{-datafacescalemin, real,
-Set the minimum of the scale relative to the "-datafacecol scal=" data.
+Set the minimum of the scale relative to the @samp{-datafacecol scal} data.
 ,
 any, data minimum
 }
 
 @opt{-datafacescalemax, real,
-Set the maximum of the scale relative to the "-datafacecol scal=" data.
+Set the maximum of the scale relative to the @samp{-datafacecol scal} data.
 ,
 any, data maximum
 }
 
 @opt{-datafacescaleticks, real,
-Set the ticks of the scale relative to the "-datafacecol scal=" data.
+Set the ticks of the scale relative to the @samp{-datafacecol scal} data.
 Provide a string composed of values separated by commas.
 (Use @samp{_} to get a blank space.)
 ,
@@ -195,7 +197,7 @@ for the argument format.
 any, black}
 
 @opt{-dataedgecolscheme, char_string,
-Set the colour scheme used to get colours from the data of 
+Set the colour scheme used to get colours from the data of
 the tessellation edges loaded with option @option{-dataedgecol}.
 See option @option{-datapolycolscheme} for the argument format.
 ,
@@ -204,19 +206,19 @@ see option @option{-datapolycolscheme}
 }
 
 @opt{-dataedgescalemin, real,
-Set the minimum of the scale relative to the "-dataedgecol scal=" data.
+Set the minimum of the scale relative to the @samp{-dataedgecol scal} data.
 ,
 any, data minimum
 }
 
 @opt{-dataedgescalemax, real,
-Set the maximum of the scale relative to the "-dataedgecol scal=" data.
+Set the maximum of the scale relative to the @samp{-dataedgecol scal} data.
 ,
 any, data maximum
 }
 
 @opt{-dataedgescaleticks, real,
-Set the ticks of the scale relative to the "-dataedgecol scal=" data.
+Set the ticks of the scale relative to the @samp{-dataedgecol scal} data.
 Provide a string composed of values separated by commas.
 (Use @samp{_} to get a blank space.)
 ,
@@ -236,7 +238,7 @@ for the argument format.
 any, black}
 
 @opt{-datavercolscheme, char_string,
-Set the colour scheme used to get colours from the data of 
+Set the colour scheme used to get colours from the data of
 the tessellation vertices loaded with option @option{-datavercol}.
 See option @option{-datapolycolscheme} for the argument format.
 ,
@@ -245,19 +247,19 @@ see option @option{-datapolycolscheme}
 }
 
 @opt{-dataverscalemin, real,
-Set the minimum of the scale relative to the "-datavercol scal=" data.
+Set the minimum of the scale relative to the @samp{-datavercol scal} data.
 ,
 any, data minimum
 }
 
 @opt{-dataverscalemax, real,
-Set the maximum of the scale relative to the "-datavercol scal=" data.
+Set the maximum of the scale relative to the @samp{-datavercol scal} data.
 ,
 any, data maximum
 }
 
 @opt{-dataverscaleticks, real,
-Set the ticks of the scale relative to the "-datavercol scal=" data.
+Set the ticks of the scale relative to the @samp{-datavercol scal} data.
 Provide a string composed of values separated by commas.
 (Use @samp{_} to get a blank space.)
 ,
@@ -273,14 +275,14 @@ the RGB channel values for colour) or indirectly, e.g.@ using scalar
 values that are rendered in colour using a given @emph{@w{colour
 scheme}}.  In this case, a scale image is generated in addition to the
 mesh image.  The scale properties can be set up (minimum,
-maximum and tick values).  The image as @samp{-scale@var{entity}} as suffix.
+maximum and tick values).
 
 @c 3D
 The following options enable to load data relative to the 3D mesh
 elements.  Note that @code{elt3d} can be abbreviated to @code{elt} in
 the option names,
-and that the options can be applied to element sets instead of
-elements by changing @samp{elt} to @samp{elset}.
+and that the options can be applied to element sets
+by changing @samp{elt} to @samp{elset}.
 
 @opt{-dataelt3dcol, char_string,
 Set the colours of the 3D elements.  The argument can be
@@ -310,19 +312,19 @@ list of colours.
 }
 
 @opt{-dataelt3dscalemin, real,
-Set the minimum of the scale relative to the "-dataelt3dcol scal=" data.
+Set the minimum of the scale relative to the @samp{-dataelt3dcol scal} data.
 ,
 any, data minimum
 }
 
 @opt{-dataelt3dscalemax, real,
-Set the maximum of the scale relative to the "-dataelt3dcol scal=" data.
+Set the maximum of the scale relative to the @samp{-dataelt3dcol scal} data.
 ,
 any, data maximum
 }
 
 @opt{-dataelt3dscaleticks, real,
-Set the ticks of the scale relative to the "-dataelt3dcol scal=" data.
+Set the ticks of the scale relative to the @samp{-dataelt3dcol scal=} data.
 Provide a string composed of values separated by commas.
 (Use @samp{_} to get a blank space.)
 ,
@@ -356,8 +358,8 @@ any, proportional to the polyhedron size}
 
 @sp 1
 The following options enable to load data relative to the 2D elements.
-Note that the options can be applied to element sets instead of
-elements by changing @samp{elt} to @samp{elset}.
+Note that the options can be applied to element sets
+by changing @samp{elt} to @samp{elset}.
 
 @opt{-dataelt2dcol, char_string,
 Set the colours of the 2D elements.
@@ -375,19 +377,19 @@ see option @option{-dataelt3dcolscheme}
 }
 
 @opt{-dataelt2dscalemin, real,
-Set the minimum of the scale relative to the "-dataelt2dcol scal=" data.
+Set the minimum of the scale relative to the @samp{-dataelt2dcol scal=} data.
 ,
 any, data minimum
 }
 
 @opt{-dataelt2dscalemax, real,
-Set the maximum of the scale relative to the "-dataelt2dcol scal=" data.
+Set the maximum of the scale relative to the @samp{-dataelt2dcol scal=} data.
 ,
 any, data maximum
 }
 
 @opt{-dataelt2dscaleticks, real,
-Set the ticks of the scale relative to the "-dataelt2dcol scal=" data.
+Set the ticks of the scale relative to the @samp{-dataelt2dcol scal=} data.
 Provide a string composed of values separated by commas.
 (Use @samp{_} to get a blank space.)
 ,
@@ -411,19 +413,19 @@ see option @option{-dataelt3dcolscheme}
 }
 
 @opt{-dataelt2dedgescalemin, real,
-Set the minimum of the scale relative to the "-dataelt2dedgecol scal=" data.
+Set the minimum of the scale relative to the @samp{-dataelt2dedgecol scal} data.
 ,
 any, data minimum
 }
 
 @opt{-dataelt2dedgescalemax, real,
-Set the maximum of the scale relative to the "-dataelt2dedgecol scal=" data.
+Set the maximum of the scale relative to the @samp{-dataelt2dedgecol scal} data.
 ,
 any, data maximum
 }
 
 @opt{-dataelt2dedgescaleticks, real,
-Set the ticks of the scale relative to the "-dataelt2dedgecol scal=" data.
+Set the ticks of the scale relative to the @samp{-dataelt2dedgecol scal} data.
 Provide a string composed of values separated by commas.
 (Use @samp{_} to get a blank space.)
 ,
@@ -440,8 +442,8 @@ any, proportional to the polyhedron size}
 
 @sp 1
 The following options enable to load data relative to the 1D elements.
-Note that the options can be applied to element sets instead of
-elements by changing @samp{elt} to @samp{elset}.
+Note that the options can be applied to element sets
+by changing @samp{elt} to @samp{elset}.
 
 @opt{-dataelt1dcol, char_string,
 Set the colours of the 1D elements.
@@ -460,19 +462,19 @@ see option @option{-dataelt3dcolscheme}
 }
 
 @opt{-dataelt1dscalemin, real,
-Set the minimum of the scale relative to the "-dataelt1dcol scal=" data.
+Set the minimum of the scale relative to the @samp{-dataelt1dcol scal} data.
 ,
 any, data minimum
 }
 
 @opt{-dataelt1dscalemax, real,
-Set the maximum of the scale relative to the "-dataelt1dcol scal=" data.
+Set the maximum of the scale relative to the @samp{-dataelt1dcol scal} data.
 ,
 any, data maximum
 }
 
 @opt{-dataelt1dscaleticks, real,
-Set the ticks of the scale relative to the "-dataelt1dcol scal=" data.
+Set the ticks of the scale relative to the @samp{-dataelt1dcol scal} data.
 Provide a string composed of values separated by commas.
 (Use @samp{_} to get a blank space.)
 ,
@@ -488,8 +490,8 @@ any, proportional to 3D elset size}
 @sp 1
 The following options enable to load data relative to the 0D mesh
 elements.
-Note that the options can be applied to element sets instead of
-elements by changing @samp{elt} to @samp{elset}.
+Note that the options can be applied to element sets
+by changing @samp{elt} to @samp{elset}.
 
 @opt{-dataelt0dcol, char_string,
 Set the colours of the 0D elements.
@@ -508,19 +510,19 @@ see option @option{-dataelt3dcolscheme}
 }
 
 @opt{-dataelt0dscalemin, real,
-Set the minimum of the scale relative to the "-dataelt0dcol scal=" data.
+Set the minimum of the scale relative to the @samp{-dataelt0dcol scal} data.
 ,
 any, data minimum
 }
 
 @opt{-dataelt0dscalemax, real,
-Set the maximum of the scale relative to the "-dataelt0dcol scal=" data.
+Set the maximum of the scale relative to the @samp{-dataelt0dcol scal} data.
 ,
 any, data maximum
 }
 
 @opt{-dataelt0dscaleticks, real,
-Set the ticks of the scale relative to the "-dataelt0dcol scal=" data.
+Set the ticks of the scale relative to the @samp{-dataelt0dcol scal} data.
 Provide a string composed of values separated by commas.
 (Use @samp{_} to get a blank space.)
 ,
@@ -569,19 +571,19 @@ see option @option{-dataelt3dcolscheme}
 }
 
 @opt{-datanodescalemin, real,
-Set the minimum of the scale relative to the "-datanodecol scal=" data.
+Set the minimum of the scale relative to the @samp{-datanodecol scal} data.
 ,
 any, data minimum
 }
 
 @opt{-datanodescalemax, real,
-Set the maximum of the scale relative to the "-datanodecol scal=" data.
+Set the maximum of the scale relative to the @samp{-datanodecol scal} data.
 ,
 any, data maximum
 }
 
 @opt{-datanodescaleticks, real,
-Set the ticks of the scale relative to the "-datanodecol scal=" data.
+Set the ticks of the scale relative to the @samp{-datanodecol scal} data.
 Provide a string composed of values separated by commas.
 (Use @samp{_} to get a blank space.)
 ,
@@ -589,7 +591,7 @@ any, none
 }
 
 @opt{-datanoderad, file_name,
-Set the radii of the nodes. 
+Set the radii of the nodes.
 See option @option{-dataeltedgerad} for the argument format.
 ,
 any, none}
@@ -615,19 +617,19 @@ see option @option{-dataelt3dcolscheme}
 }
 
 @opt{-datanode2eltscalemin, real,
-Set the minimum of the scale relative to the "-datanode2eltcol scal=" data.
+Set the minimum of the scale relative to the @samp{-datanode2eltcol scal} data.
 ,
 any, data minimum
 }
 
 @opt{-datanode2eltscalemax, real,
-Set the maximum of the scale relative to the "-datanode2eltcol scal=" data.
+Set the maximum of the scale relative to the @samp{-datanode2eltcol scal} data.
 ,
 any, data maximum
 }
 
 @opt{-datanode2eltscaleticks, real,
-Set the ticks of the scale relative to the "-datanode2eltcol scal=" data.
+Set the ticks of the scale relative to the @samp{-datanode2eltcol scal} data.
 Provide a string composed of values separated by commas.
 (Use @samp{_} to get a blank space.)
 ,
@@ -729,6 +731,7 @@ Show the interpolations of the tessellation faces (if any).
 ,
 0 or 1, 0}
 
+@need 4000
 The following options apply to the entities of the mesh.
 
 @opt{-showelt, char_string,
@@ -814,35 +817,6 @@ Specify the type of projection of the camera.
 ,
 perspective or orthographic, perspective}
 
-@c @subsection Scale Bar Settings
-@c 
-@c @opt{-scalecolscheme, char_string,
-@c Specify the colour scheme of the scale. 
-@c ,
-@c any, blue@comma{}cyan@comma{}yellow@comma{}red}
-@c 
-@c @opt{-scalemin, real,
-@c Specify the minimum of the scale. 
-@c ,
-@c any, minimum of the data}
-@c 
-@c @opt{-scalemax, real,
-@c Specify the maximum of the scale. 
-@c ,
-@c any, maximum of the data}
-@c 
-@c @opt{-scaleticks, char_string,
-@c Specify the ticks of the scale. By default@comma{} ten ticks are written.  Use
-@c this option to specify particular ticks.  Give the tick values
-@c separated by commas.
-@c ,
-@c any, none}
-@c 
-@c @opt{-scaleheight, real,
-@c Specify the height of the scale. 
-@c ,
-@c any, 1}
-
 @subsection Output Image Settings
 
 @opt{-imagesize, integer integer,
@@ -899,14 +873,14 @@ A PNG image can be obtained from the @file{.pov} file by invoquing
 POV-Ray as follows (see the POV-Ray documentation for details and
 further commands):
 @com{povray Input_File_Name=@var{file.pov} +W@var{image_width}
-  +H@var{image_height} -D}. 
+  +H@var{image_height} -D}.
 
 @section Examples
 
 Below are some examples of use of neper -VS.  Illustrations can be found
 at @url{http://neper.sourceforge.net/neper_vs.html}.
 
-@enumerate 
+@enumerate
 @c Example_beg
 @item    Print out tessellation n100-id1.tess with a camera angle of 12 degrees, an image size of 900x450 pixels and an image antialiasing level of 2 (better quality).
 @com{neper -VS -loadtess n100-id1.tess -cameraangle 24 -imagesize 900 450 }
@@ -922,7 +896,7 @@ at @url{http://neper.sourceforge.net/neper_vs.html}.
 @com{neper -VS -loadmesh n100-id1.msh -dataeltedgerad 0.0015 }
 @comx{-dataelt1drad 0.0045 -cameraangle 24 -imagesize 900 450 -imageantialias }
 @comx{2 -print img}
-@item    Print out mesh n100-id1.msh with the colours written in file `n100-id1.col' to render the grains. 
+@item    Print out mesh n100-id1.msh with the colours written in file `n100-id1.col' to render the grains.
 @com{neper -VS -loadmesh n100-id1.msh -dataelsetcol ori=n100-id1.ori }
 @comx{-dataeltedgerad 0.0015 -dataelt1drad 0.0045 -cameraangle 24 -imagesize }
 @comx{900 450 -imageantialias 2 -print img}

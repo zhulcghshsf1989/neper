@@ -6,31 +6,32 @@
 convex shape.  The centres of the polyhedra can be randomly distributed
 in the domain, which leads to @dfn{random Voronoi tessellations} (also
 called @dfn{Poisson Voronoi tessellations}).  It is also possible to
-generate columnar (2D) and bamboo (1D) grain morphologies, as well as
-regular, periodic, arrangment of polyhedra (truncated octahedra are
-currently available).  Two other types of tessellation can be obtained:
+generate columnar (2D) and bamboo (1D) grain morphologies, or regular,
+periodic, arrangment of polyhedra (truncated octahedra are currently
+available), or to use any pre-defined distribution of
+centres. Two other types of tessellation can be obtained:
 @dfn{periodic tessellations}, whose grains show periodicity conditions
 at the domain boundary, and @dfn{subdomain-type tessellations}.  The
 latter are cut out from tessellations of larger domains, and which have
 the same polyhedron volume density.  Thus, the tessellations contain
-grains whose centres are not within the domain. This behaviour is
-controlled by option @option{-ttype}.  It is also possible to generate
-centroidal Voronoi tessellations@footnote{Q. Du, V.  Faber and M.
-Gunzburger, Centroidal Voronoi Tessellations: Applications and
-Algorithms, SIAM Review, 41, 637--676, 1999.}, or even to load a
-user-defined distribution of centres.  
+grains with centres located outside the domain. This behaviour is
+controlled by option @option{-ttype} (periodic and subdomain
+tessellations are only available in @file{.vox} format.)
+It is possible to generate centroidal Voronoi tessellations.
 Neper also includes an advanced tessellation @dfn{regularization}
 capability.  It consists in
-removing the small features of the tessellation (the edges and faces).
+removing the small features of the tessellation (the small edges and faces).
 @c which are smaller than the target element size and as a consequence
 @c would need local mesh over-refinements.
-Using this capability is done by allowing some level of geometrical
+This capability can be enabled by allowing some level of geometrical
 distortion, the face @dfn{flatness fault}, through option
 @option{-maxff} (value in degree).
 The tessellations can be scaled to generate morphological textures (flat
 or elongated grains).  The module generates as output a tessellation
 file @file{.tess} that describes exhaustively the polycrystal morphology
-(@pxref{File Formats}).  The @file{.tess} file is an input file of the
+(@pxref{File Formats}). Other file formats are available, including
+third-party software formats and the Neper voxel format @file{.vox}.
+The @file{.tess} file is an input file of the
 meshing module, -M (@pxref{Module -M}), and the orientation generation
 module, -O (@pxref{Module -O}).  The generated tessellation
 (@file{.tess} file) can be visualized with @mVS{} (@ref{Module -VS}).
@@ -40,9 +41,9 @@ Here is what a typical run of @mT{} looks like:
 
 @sp 1
 @c typical_start
-@verbatim 
+@verbatim
     $ neper -T -n 10 -id 1
-    
+
     ========================    N   e   p   e   r    =======================
     Info   : A 3D random polycrystal generator for the finite element method
     Info   : Version ...
@@ -63,7 +64,6 @@ Here is what a typical run of @mT{} looks like:
     Info   :     [o] Wrote file `n10-id1.tess'.
     Info   : Elapsed time: ... secs.
     ========================================================================
-    
 @end verbatim
 @c typical_end
 
@@ -73,9 +73,9 @@ Here is what a typical run of @mT{} looks like:
 @subsection Input Data
 
 By default, the domain to tessellate is taken as a cube of unit size.
-For defining another domain, see option @option{-domain}.
+See option @option{-domain} for other possibilities.
 
-@inp{-n,integer, 
+@inp{-n,integer,
 Number of polyhedra of the tessellation@comma{} except for regular
 morphologies (truncated octahedra@comma{} etc.@comma{} see option
 @option{-morpho} for details).,
@@ -111,30 +111,31 @@ The available values are
 see above list, standard}
 
 @inp{-centroid,logical,
-Use this option to turn the tessellation centroidal.
+Use this option to get a centroidal tessellation.  Note that the
+generation of a centroidal Voronoi tessellation@footnote{Q.@: Du, V.@:
+Faber and M.@: Gunzburger@comma{} Centroidal Voronoi Tessellations:
+Applications and Algorithms@comma{} SIAM Review@comma{} 41@comma{}
+637--676@comma{} 1999.} is based on Lloyd's algorithm and can be two to
+three orders of magnitude as long as for the equivalent Voronoi
+tessellation.  See options @option{-centroidfact}@comma{}
+@option{-centroidconv} and @option{-centroiditermax} for convergence
+criteria.
 ,
 0 or 1, 0}
 
-The generation of a centroidal Voronoi tessellation is based on Lloyd's
-algorithm and can be two to three orders of magnitude as long as for the
-equivalent Voronoi tessellation.  The convergence criteria are
-controlled by options @option{-centroidfact}, @option{-centroidconv}
-and @option{-centroiditermax}.
-
-@sp 1
 Is it also possible to load a tessellation or voxel data from a file,
 
 @inp{-loadtess,file_name,
-Load a tessellation from a file.  Provide as argument the file name.  
+Load a tessellation from a file.  Provide as argument the file name.
 ,
 any,none}
 
 @inp{-loadvox,file_name,
-Load voxel data from a file.  Provide as argument the file name.  
+Load voxel data from a file.  Provide as argument the file name.
 ,
 any,none}
 
-@subsection Domain Options 
+@subsection Domain Options
 
 @opt{-domain,char_string @dots{},
 Specify the type of domain and its size.  For a cuboidal shape@comma{}
@@ -149,7 +150,7 @@ total number of planes then@comma{} for each plane@comma{} the
 parameters of its equation (@math{a}@comma{} @math{b}@comma{} @math{c}
 and @math{d} for an equation of the form @math{a@,x+b@,y+c@,z=d}). The
 plane normal must be an outgoing vector of the polyhedron.
-, 
+,
 see above list, cube 1 1 1}
 
 @optsec{-cylinderfacet, integer,
@@ -158,12 +159,12 @@ domain.
 ,
 any >= 3, function of the poly rad}
 
-@subsection Tessellation Options 
+@subsection Tessellation Options
 
 @opt{-scale,real real real,
 Specify the factors in the x@comma{} y and z directions by which the
 tessellation is to be scaled (once generated).
-, 
+,
 any,none}
 
 @optsec{-sort,char_string char_string,
@@ -177,20 +178,20 @@ centre coordinates@comma{} @var{cenx}@comma{} @var{ceny} and
 @var{body}@comma{} and the volume @var{vol}., any,none}
 
 @optsec{-randomize,real integer,
-This option can be used to ``randomize'' the coordinates of the 
+This option can be used to ``randomize'' the coordinates of the
 polyhedron centres.  Provide as argument the maximum shift distance and
 an identifier for the randomization. The resulting centre shift
 distances are uniformly distributed between 0 and the maximum shift
 distance.
-, 
+,
 any > 0 any,none}
- 
+
 @optsec{-randomizedir,char_string,
 This option can be used with option @option{-randomize}@comma{} to
 specify the possible directions in which the polyhedron centres are to
 be shifted.  Provide as argument the directions. Combine them
 with @samp{@comma{}}.
-, 
+,
 x@comma{} y@comma{} z,x@comma{}y@comma{}z}
 
 @optsec{-centroidfact,real,
@@ -199,24 +200,24 @@ specify the factor by which the germ positions are shifted between
 their current positions and the centroid positions@comma{} at each
 iteration.  (Lloyd's algorithm is obtained for a value of 1@comma{} but
 a lower value can lead to faster convergence.)
-, 
+,
 0 to 1,0.5}
 
 @optsec{-centroidconv,real,
 This option can be used with option @option{-morpho centroid}@comma{} to
 specify the maximum tolerance on the distance between the polyhedron
-centres and centroids. 
+centres and centroids.
 The tolerance is relative to the average grain radius.
-, 
+,
 any > 0,0.02}
 
 @optsec{-centroiditermax,integer,
 This option can be used with option @option{-morpho centroid}@comma{} to
 specify the maximum number of iterations. You should consider using option
 @option{-centroidconv} instead.
-, 
+,
 any, 1000}
- 
+
 @subsection Regularization Options
 
 A non-zero value of @var{maxff} is necessary to enable geometry
@@ -227,7 +228,7 @@ Maximum face flatness fault which is allowed (in degree).,
 0 to 180 (recommended: 20),0}
 
 @optsec{-sel or -rsel,real,
-Absolute or Relative Small Edge (maximum) Length.
+Absolute or relative small edge (maximum) length.
 @code{rsel} is defined relative to the average polyhedron volume.  The
 default @code{-rsel 1} leads to a length of 0.25 for a unit volume
 polyhedron.
@@ -244,7 +245,7 @@ An example is @code{"body<=1"}.
 any, none}
 
 @optsec{-dboundsel and -dboundrsel,real,
-Absolute or Relative Small Edge (maximum) Length at the domain boundary.
+Absolute or relative small edge (maximum) length at the domain boundary.
 These options are equivalent to options @option{-sel} and
 @option{-rsel}@comma{} but apply to the domain boundary.,
 any,-dboundrsel 1}
@@ -264,7 +265,7 @@ Specify the output file name.,
 any,none}
 
 @opt{-format,char_string,
-Specify the format of the output file(s). 
+Specify the format of the output file(s).
 The available formats are the Neper @code{tess} and @code{vox}@comma{}
 the Gmsh @code{geo}@comma{} the Ply @code{ply} and the 3DEC @code{3dec}
 (combine with commas).
@@ -272,23 +273,23 @@ the Gmsh @code{geo}@comma{} the Ply @code{ply} and the 3DEC @code{3dec}
 tess@comma{} geo@comma{} ply@comma{} 3dec@comma{} vox,tess}
 
 @opt{-voxformat,char_string,
-Specify the format of the vox output file(s). 
+Specify the format of the vox output file(s).
 The available formats are @code{ascii}@comma{} @code{binary8}@comma{}
 @code{binary16} and @code{binary32}.
 ,
 ascii@comma{} binary8@comma{} binary16@comma{} binary32,binary16}
 
 @opt{-voxsize,integer,
-Specify the number of voxels along a dimension of the domain. 
+Specify the number of voxels along a direction of the domain.
 In case of a domain of different sizes along the three
 dimensions@comma{} the argument is the geometrical average of
-the number of voxels along the three dimensions@comma{} so that the voxels are
-as cubic as possible.
+the number of voxels along the three directions@comma{} so that the
+voxels are as cubic as possible.
 ,
 any, 20}
 
 @optsec{-voxsize3,integer integer integer,
-Specify the number of voxels along the three dimensions of the domain. 
+Specify the number of voxels along the three directions of the domain.
 ,
 any, none}
 
@@ -333,11 +334,11 @@ points.
 ,
 any,none,
 .polyid}
- 
+
 @subsection Debugging Options
 
 @inp{-checktess,file_name,
-Check a tessellation from a file.  Provide as argument the file name.  
+Check a tessellation from a file.  Provide as argument the file name.
 Use this option if the tessellation file fails to load using
 @option{-loadtess} or in the other modules.
 ,
@@ -385,7 +386,7 @@ See @ref{File Formats} for the file syntax.
 
 Statistics files are provided for vertices, edges, faces and polyhedra.
 They are formatted with one entity per line.  Each line has the data
-provided by options @option{-stat*} and described in 
+provided by options @option{-stat*} and described in
 @ref{Statistics Keys}.
 
 @itemize
@@ -414,7 +415,7 @@ at @url{http://neper.sourceforge.net/neper_t.html}.
 
 @enumerate
 @c Example_beg
-@item    Generate a polycrystal made of 100 grains, with identifier = 1. 
+@item    Generate a polycrystal made of 100 grains, with identifier = 1.
 @com{neper -T -n 100 -id 1}
 @item    Use an elongated domain and generate a polycrystal made of 100 grains, with identifier = 1.
 @com{neper -T -n 100 -id 1 -domain cube 3 1 0.33}
@@ -422,7 +423,7 @@ at @url{http://neper.sourceforge.net/neper_t.html}.
 @com{neper -T -n 100 -id 1 -scale 3 1 0.33}
 @item    Generate a polycrystal made of 100 columnar grains.
 @com{neper -T -n 100 -id 1 -morpho columnarz}
-@item    Generate a polycrystal made of approximately 5x5x5 truncated octahedra. 
+@item    Generate a polycrystal made of approximately 5x5x5 truncated octahedra.
 @com{neper -T -n 5 -morpho tocta -o tocta5}
 @item    Generate a polycrystal made of 100 grains in a cylindrical domain of height 2 and diameter 1.
 @com{neper -T -n 100 -id 1 -domain cylinder 2 1}

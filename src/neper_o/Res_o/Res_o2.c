@@ -99,8 +99,8 @@ WriteOri (struct IN In, struct ORI Ori, char *format, FILE * file)
     }
   }
 
-  // fev format
-  else if (strcmp (format, "fev") == 0)
+  // fepx format
+  else if (strcmp (format, "fepx") == 0)
   {
     fprintf (file, "grain-orientations\n%d\n", Ori.N);
     double* e = ol_e_alloc ();

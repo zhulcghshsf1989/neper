@@ -26,7 +26,6 @@
 #include "neut_scale.h"
 #include "neut_multim.h"
 #include "neut_nset.h"
-#include "neut_utils.h"
 #include "neut_povray.h"
 
 #endif /* NEUT_H */

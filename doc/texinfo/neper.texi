@@ -1,4 +1,4 @@
-\input texinfo.tex 
+\input texinfo.tex
 @afourpaper
 @c =========================================================================
 @c
@@ -49,7 +49,7 @@ Copyright @value{COPYRIGHT}
 
 @subtitle The documentation for Neper @value{NEPER_VERSION}
 @subtitle A 3D random polycrystal generator for the finite element method
-@subtitle 
+@subtitle
 @subtitle @today{}
 @c @subtitle Edition @value{NEPER_VERSION} @today{}
 
@@ -95,7 +95,7 @@ This is the @cite{Neper Reference Manual} for Neper
 @menu
 * Copying::           Copying
 * Introduction::      Introduction
-* Module -T::         The module to generate tessellations. 
+* Module -T::         The module to generate tessellations.
 * Module -M::         The module to mesh tessellations.
 * Module -O::         The module to generate crystal orientations.
 * Module -VS::        The module for visualization.
@@ -262,7 +262,7 @@ Result file: extension @file{\e\}.
 @include license.texi
 
 @c @node Function Index
-@c @appendix Function Index 
+@c @appendix Function Index
 @c @printindex fn
 
 @bye

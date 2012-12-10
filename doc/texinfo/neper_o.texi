@@ -8,17 +8,18 @@ provided according to different descriptors: Euler angles (Bonge, Kocks
 and Roe conventions), rotation matrix, rotation @w{axis /} angle,
 Rodrigues vector and quaternion.
 The input data is a tessellation @file{.tess} provided by @mT{}, but
-it can also be the data (@code{n}, @code{id}).  The output data in an
-orientation file @file{.ori}.
+it can also be the @w{data (@code{n}, @code{id})}.  The output data in
+an orientation file @file{.ori}, which can be written under several
+formats (see option @option{-format}).
 
 @sp 1
 Here is what a typical run of @mO{} looks like:
 
 @sp 1
 @c typical_start
-@verbatim 
+@verbatim
     $ neper -O -n 10 -id 1
-    
+
     ========================    N   e   p   e   r    =======================
     Info   : A 3D random polycrystal generator for the finite element method
     Info   : Version ...
@@ -33,7 +34,7 @@ Here is what a typical run of @mO{} looks like:
     Info   :     [o] Wrote file `n10-id1.ori'.
     Info   : Elapsed time: ... secs.
     ========================================================================
-    
+
 @end verbatim
 @c typical_end
 
@@ -61,21 +62,21 @@ any,none}
 Alternatively, orientations can be loaded from a file,
 @inp{-load,input_type file_name,
 Load an orientation file.  Provide the type of orientation descriptor (see
-option @option{-descriptor}) and the file name.  
+option @option{-descriptor}) and the file name.
 ,
 any any,none}
 
 @subsection Orientation Options
 
 @optsec{-crysym,char_string,
-Specify the crystal symmetry.  This is only used to reduce the domain
+Specify the crystal symmetry.  This is used to reduce the domain
   of definition of the orientation descriptors.,
 triclinic or cubic, triclinic}
 
 @subsection Output Options
 
 @opt{-o,file_name,
-Specify orientation output file name.,
+Specify the output file name.,
 any,none}
 
 @opt{-descriptor,char_string,
@@ -90,7 +91,7 @@ above-mentionned values, e}
 Specify the format of output file(s). The available formats are:
 the Neper-native @code{plain} (i.e.@: only the descriptors on
 successive lines)@comma{} the Zset/Z@'ebulon @code{geof} and the
-Fem-Evps @code{fev} (combine with commas).
+Fepx @code{fepx} (combine with commas).
 ,
 above-mentionned values,plain}
 

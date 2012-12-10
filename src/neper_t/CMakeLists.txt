@@ -74,7 +74,7 @@ add_library (neper_t
 set (EXTRA_LIBS ${EXTRA_LIBS} ut)
 set (EXTRA_LIBS ${EXTRA_LIBS} neut)
 set (EXTRA_LIBS ${EXTRA_LIBS} orilib)
-set (EXTRA_LIBS ${EXTRA_LIBS} neper_fm)
+set (EXTRA_LIBS ${EXTRA_LIBS} neper_m)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
