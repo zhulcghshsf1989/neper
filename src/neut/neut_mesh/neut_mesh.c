@@ -1781,6 +1781,7 @@ neut_mesh2d_mesh1d (struct NODES Nodes, struct MESH Mesh2D,
 	// ut_array_1d_int_fprintf (stdout, test, testqty, "%d");
 
 	elt1d = test[j];
+
 	// printf ("testing %d\n", elt1d);
 
 	neut_mesh_elt1delsets2d (*pMesh1D, elt1d, Mesh2D, elset2d, &elset2dqty);
@@ -3806,10 +3807,10 @@ void
 rcl2cl (double rcl, double vol, int PolyQty, char* elttype, double* pcl)
 {
   if (elttype == NULL || ! strcmp (elttype, "tet") || ! strcmp (elttype, "tri"))
-    (*pcl) = rcl * 0.5 / pow (vol / PolyQty, 3);
+    (*pcl) = rcl * 0.5 * pow (vol / PolyQty, 0.3333333333333333333333333333);
   else if (! strcmp (elttype, "hex") || ! strcmp (elttype, "quad"))
   {
-    (*pcl) = rcl * 0.5 / pow (vol / PolyQty, 3);
+    (*pcl) = rcl * 0.5 * pow (vol / PolyQty, 0.3333333333333333333333333333);
     (*pcl) *= .43084877208099956915;
   }
   
