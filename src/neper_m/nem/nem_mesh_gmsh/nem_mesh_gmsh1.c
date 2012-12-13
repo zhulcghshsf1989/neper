@@ -293,6 +293,12 @@ nem_mesh_3d_gmsh (struct GEO Geo, int poly, struct NODES Nodes,
       ut_file_close (file, "tmp.msh", "R");
     }
 
+    if ((*pM).EltQty == 0)
+    {
+      status = 1;
+      break;
+    }
+
     neut_mesh_meancl (*pN, *pM, &lmean);
 
     // printf ("mean = %f vs cl = %f (clmod = %f qty = %d cross = %d)\n", acl, cl, clmod, (*pM).EltQty, cross);

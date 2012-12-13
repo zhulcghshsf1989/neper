@@ -59,7 +59,7 @@ nem_meshing_3D_poly (struct IN In, double cl, struct MULTIM* pMultim,
   int a, status, iter, nb;
   double rnd;
   double *vola = NULL, *volb = NULL;
-  int totstatus = 0;
+  int totstatus;
   double acl;
   double rrmean, rrmin;
   char* tmpstring = ut_alloc_1d_char (1000);
@@ -92,6 +92,8 @@ nem_meshing_3D_poly (struct IN In, double cl, struct MULTIM* pMultim,
   neut_mesh_set_zero (&M);
   neut_nodes_set_zero (&N2);
   neut_mesh_set_zero (&M2);
+
+  totstatus = -1;
 
   for (a = 0; a < (*pMultim).algoqty; a++)
   {
@@ -141,16 +143,17 @@ nem_meshing_3D_poly (struct IN In, double cl, struct MULTIM* pMultim,
     else
       ut_math_eval (In.mesh3doptiexpr, var_qty, vars, vals, &((*pMultim).mO[id][a]));
 
-    if (a == 0 ||
-	((*pMultim).mO[id][a] > (*pMultim).mO[id][(*pMultim).Oalgo[id]]))
-    {
-      (*pMultim).Oalgo[id] = a;
-      neut_nodes_nodes (N, &N2);
-      neut_mesh_mesh (M, &M2);
-    }
-
     if (status == 0)
+    {
+      if (a == 0 || ((*pMultim).mO[id][a] > (*pMultim).mO[id][(*pMultim).Oalgo[id]]))
+      {
+	(*pMultim).Oalgo[id] = a;
+	neut_nodes_nodes (N, &N2);
+	neut_mesh_mesh (M, &M2);
+      }
+
       totstatus = 0;
+    }
 
     if (In.mesh3dreport == 1)
     {
@@ -175,9 +178,10 @@ nem_meshing_3D_poly (struct IN In, double cl, struct MULTIM* pMultim,
 
   if (totstatus != 0)
   {
-    ut_print_message (2, 2, "Meshing of poly %d failed\n", id);
-    ut_print_message (2, 2, "You should use (more) multimeshing.\n");
-    ut_print_message (2, 2, "If you do not find a solution, please report this like a bug.\n");
+    printf ("\n");
+    ut_print_message (2, 3, "Meshing of poly %d failed\n", id);
+    ut_print_message (2, 3, "You should use (more) multimeshing.\n");
+    ut_print_message (2, 3, "If you do not find a solution, please report this like a bug.\n");
     abort ();
   }
 

@@ -57,7 +57,7 @@ nem_meshing_prep (struct GEO Geo, struct NODES RNodes,
 
     if (edge_cpy != 0 || face_cpy != 0)
     {
-      ut_print_message (0, 3, "%d face%s (%d edge%s) cannot be remeshed (will be copied).\n",
+      ut_print_message (0, 3, "%d face%s (%d edge%s) cannot be meshed (will be copied).\n",
       face_cpy, (face_cpy > 1) ? "s": "", edge_cpy, (edge_cpy > 1) ? "s": "");
     }
   }
