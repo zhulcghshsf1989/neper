@@ -23,8 +23,9 @@ extern void neut_mesh_scotchmesh (struct MESH, int, SCOTCH_Mesh*);
 extern void neut_mesh_fscanf_geof (FILE *, struct NODES *, struct MESH *);
 extern void neut_elt_name_prop (char *, char *, char *, int *, int *);
 extern void neut_node_elts (struct MESH, int, int *, int *);
-extern void neut_nodes_commonelts (struct MESH, int *, int, int *, int *);
-extern void neut_elts_commonnodes (struct MESH, int *, int, int *, int *);
+extern void neut_nodes_commonelts (struct MESH, int*, int, int *, int *);
+extern void neut_mesh_elts_commonnodes (struct MESH, int*, int, int*, int*);
+extern void neut_mesh_elt_nodes_ori (struct MESH, int, int*, int*);
 extern void neut_nodes_allelts (struct MESH, int *, int, int *, int *);
 extern int neut_nodes_elt (struct MESH, int *, int, int *);
 extern int neut_mesh_eltelsetOLD (struct MESH, int, int *);
@@ -121,6 +122,7 @@ extern void neut_mesh_veredge (struct MESH, struct MESH, int***, int**);
 extern void neut_mesh_elt_lengths (struct MESH, struct NODES, int, double*, double*, double*);
 
 extern int neut_mesh_elt_neighelts (struct MESH, int, int*, int*);
+extern int neut_mesh_elt_elset_neighelts (struct MESH, int, int, int*, int*);
 extern void neut_mesh_elts_skinelts (struct MESH, int*, int, int**, int*);
 
 extern void neut_mesh_face_boundnodes (struct GEO, int, struct MESH, int**, int*);
@@ -176,6 +178,8 @@ extern void neut_mesh_quad_tri (struct NODES, struct MESH, struct MESH*);
 extern int neut_mesh_rmelset (struct MESH*, struct NODES, int);
 extern int neut_mesh_rmelt (struct MESH*, int);
 extern int neut_mesh_rmelts (struct MESH* pMesh, struct NODES Nodes, int* rmelt, int rmeltqty);
+
+extern void neut_mesh_orderelsets (struct MESH*);
 
 #endif /* UT_MESH0_H */
 
