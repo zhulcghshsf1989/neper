@@ -10,7 +10,7 @@
 
 #include"../../structIn_m.h"
 #include"ut.h"
-#include"neut.h"
+#include"neut_m.h"
 #include"orilib.h"
 #include"../../nem/nem.h"
 

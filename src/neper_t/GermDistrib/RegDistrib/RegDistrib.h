@@ -9,7 +9,7 @@
 
 #include"../../structIn_t.h"
 #include"ut.h"
-#include"neut.h"
+#include"neut_t.h"
 #include"orilib.h"
 
 #include"RegDistrib0.h"

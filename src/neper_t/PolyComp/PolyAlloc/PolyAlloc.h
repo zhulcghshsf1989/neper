@@ -6,6 +6,6 @@
 #include<stdlib.h>
 
 #include"ut.h"
-#include"neut.h"
+#include"neut_t.h"
 
 #include"PolyAlloc0.h"

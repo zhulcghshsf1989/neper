@@ -8,7 +8,7 @@
 #include<string.h>
 
 #include"ut.h"
-#include"neut.h"
+#include"neut_t.h"
 #include "neper_config.h"
 
 #include"net_geo_sort0.h"

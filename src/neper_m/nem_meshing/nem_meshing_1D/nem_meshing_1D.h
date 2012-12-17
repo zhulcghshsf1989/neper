@@ -9,7 +9,7 @@
 #include<unistd.h>
 
 #include"../../structIn_m.h"
-#include"neut.h"
+#include"neut_m.h"
 #include"ut.h"
 #include"orilib.h"
 

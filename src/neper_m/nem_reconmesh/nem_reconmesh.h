@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../structIn_m.h"
-#include "neut.h"
+#include "neut_m.h"
 #include "nem_reconmesh0.h"
 
 extern void nem_reconmesh_2d (struct NODES, struct MESH*, struct MESH*, struct GEO*);

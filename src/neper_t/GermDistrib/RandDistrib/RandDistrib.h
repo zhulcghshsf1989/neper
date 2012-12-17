@@ -11,6 +11,6 @@
 
 #include"../../structIn_t.h"
 #include"ut.h"
-#include"neut.h"
+#include"neut_t.h"
 
 #include"RandDistrib0.h"

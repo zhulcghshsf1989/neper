@@ -8,7 +8,7 @@
 #include<math.h>
 
 #include"ut.h"
-#include"neut.h"
+#include"neut_vs.h"
 #include "nevs_print_header/nevs_print_header0.h"
 #include "nevs_print_utils/nevs_print_utils0.h"
 #include "nevs_print_mesh/nevs_print_mesh0.h"

@@ -8,7 +8,7 @@
 #include<math.h>
 
 #include"ut.h"
-#include"neut.h"
+#include"neut_vs.h"
 // #include"../nefm/nefm.h"
 
 #include "nevs_processimage0.h"

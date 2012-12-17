@@ -8,7 +8,7 @@
 #include<gsl/gsl_rng.h>
 
 #include"../structIn_t.h"
-#include"neut.h"
+#include"neut_t.h"
 #include"orilib.h"
 
 #include"RandDistrib/RandDistrib0.h"

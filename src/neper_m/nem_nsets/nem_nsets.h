@@ -7,7 +7,7 @@
 #include<string.h>
 
 #include"ut.h"
-#include"neut.h"
+#include"neut_m.h"
 #include"../structIn_m.h"
 
 #include"nem_nsets0.h"

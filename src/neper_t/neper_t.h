@@ -7,7 +7,9 @@
 #include<math.h>
 
 #include"ut.h"
-#include"neut.h"
+// #include"neut_t.h"
+#include"neut_structs.h"
+
 #include"structIn_t.h"
 #include"net_init/net_init0.h"
 #include"DomainComp/DomainComp0.h"

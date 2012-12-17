@@ -11,7 +11,7 @@
 #include<math.h>
 
 #include"ut.h"
-#include"neut.h"
+#include"neut_m.h"
 #include"structIn_m.h"
 #include"neper_config.h"
 
