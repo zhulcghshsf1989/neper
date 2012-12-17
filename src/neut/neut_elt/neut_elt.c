@@ -233,7 +233,7 @@ neut_elt_dim_gtype_order (int dim, int gtype)
 }
 
 double
-neut_elt_3d_rr (double *p1, double *p2, double *p3, double *p4)
+neut_elt_rr_3d (double *p1, double *p2, double *p3, double *p4)
 {
   int i, j, k, l;		/* loop indices */
   double facenormal[4][3];	/* the normals of each face of the tet */
@@ -344,7 +344,7 @@ getZ (double *tetorg, double *tetdest, double *tetfapex, double *tettapex)
 /* returns the radius ratio for a triangle
  * rr = 16 * A^2 / (l1.l2.l3.(l1+l2+l3)) */
 double
-neut_elt_2d_rr (double *p1, double *p2, double *p3)
+neut_elt_rr_2d (double *p1, double *p2, double *p3)
 {
   double l1, l2, l3, area;
 

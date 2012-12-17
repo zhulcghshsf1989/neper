@@ -36,7 +36,7 @@ neut_poly_free (struct POLY* pPoly)
 }
 
 void
-neut_poly_boundingbox (struct POLY Poly, double* size)
+neut_poly_bbox (struct POLY Poly, double* size)
 {
   int i, j;
 

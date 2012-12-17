@@ -408,7 +408,7 @@ neut_geo_fscanf_domain (struct GEO* pGeo, FILE * file)
   {
     double** bbox = ut_alloc_2d (3, 2);
 
-    neut_geo_boundingbox (*pGeo, bbox);
+    neut_geo_bbox (*pGeo, bbox);
 
     (*pGeo).DomType = ut_alloc_1d_char (5);
     sprintf ((*pGeo).DomType, "cube");

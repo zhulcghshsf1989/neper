@@ -12,7 +12,7 @@
 #include "neut_vox.h"
 #include "neut_elt.h"
 #include "neut_mesh.h"
-#include "neut_mmesh.h"
+#include "neut_nodes.h"
 #include "neut_structs.h"
 #include "neut_debug.h"
 #include "neut_gmsh.h"

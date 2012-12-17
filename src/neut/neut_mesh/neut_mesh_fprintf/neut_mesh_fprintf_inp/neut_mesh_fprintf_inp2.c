@@ -2,7 +2,7 @@
 /* Copyright (C) 2003-2012, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-#include"neut_mesh_fprintf_inp.h"
+#include"neut_mesh_fprintf_inp_lcl.h"
 
 void
 neut_mesh_fprintf_inp_nsets (FILE* file, struct NSET NSet0D,

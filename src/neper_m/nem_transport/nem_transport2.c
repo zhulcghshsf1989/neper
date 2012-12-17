@@ -34,7 +34,7 @@ nem_transport_mesh3d_parelt (struct GEO Geo, struct NODES OldNodes,
   {
     // parent element = old element in which the new element centre falls.
     elset3d = NewMesh3D.EltElset[i];
-    neut_mesh_eltcentre (NewMesh3D, NewNodes, i, coo);
+    neut_mesh_elt_centre (NewMesh3D, NewNodes, i, coo);
     status = neut_mesh_elset_point_elt (OldMesh3D, OldNodes, elset3d,
 	coo, &(oldelt[i]));
 

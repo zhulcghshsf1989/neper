@@ -77,7 +77,7 @@ neut_tess_free (struct TESS* pTess)
 }
 
 void
-neut_tess_boundingbox (struct TESS Tess, double** size)
+neut_tess_bbox (struct TESS Tess, double** size)
 {
   int i, j, ver;
 
@@ -169,7 +169,7 @@ neut_tess_poly_true (struct TESS Tess, int nb)
   double *coo = ut_alloc_1d (3);
   double** size = ut_alloc_2d (3, 2);
 
-  neut_tess_boundingbox (Tess, size);
+  neut_tess_bbox (Tess, size);
 
   res = 1;
   for (i = 1; i <= Tess.PolyVerQty[nb]; i++)

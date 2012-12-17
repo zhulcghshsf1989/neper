@@ -139,7 +139,7 @@ abort ();
 }
 
 void
-neut_vox_boundingbox (struct VOX Vox, double** bbox)
+neut_vox_bbox (struct VOX Vox, double** bbox)
 {
   int i;
 

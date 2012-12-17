@@ -70,7 +70,7 @@ nem_reconmesh_2d (struct NODES Nodes, struct MESH *pMesh2D,
     for (j = 1; j <= (*pMesh2D).Elsets[i][0]; j++)
     {
       elt = (*pMesh2D).Elsets[i][j];
-      neut_mesh_elteq ((*pMesh2D), Nodes, elt, eqe);
+      neut_mesh_elt_eq ((*pMesh2D), Nodes, elt, eqe);
       neut_mesh_elt_area (Nodes, (*pMesh2D), elt, &area);
       ut_array_1d_scale (eqe, 4, area);
       ut_array_1d_add (eqe, eq, 4, eq);
@@ -119,7 +119,7 @@ nem_reconmesh_1d (struct NODES Nodes, struct MESH *pMesh1D,
     }
     neut_mesh_init_nodeelts (pMesh2D, Nodes.NodeQty);
     neut_mesh_init_eltelset (pMesh2D, NULL);
-    neut_mesh2d_mesh1d (Nodes, *pMesh2D, pMesh1D, &EdgeFaceNb,
+    neut_mesh2d_mesh1d (*pMesh2D, pMesh1D, &EdgeFaceNb,
 	&EdgeFaceQty, &EdgeQty, 1);
 
     (*pGeo).EdgeQty = EdgeQty;
@@ -190,8 +190,7 @@ nem_reconmesh_0d (struct NODES Nodes, struct MESH *pMesh0D,
     }
     neut_mesh_init_nodeelts (pMesh1D, Nodes.NodeQty);
     neut_mesh_init_eltelset (pMesh1D, NULL);
-    neut_mesh1d_mesh0d (Nodes, *pMesh1D, pMesh0D, &VerEdgeNb,
-	&VerEdgeQty, &VerQty, 1);
+    neut_mesh1d_mesh0d (*pMesh1D, pMesh0D, &VerEdgeNb, &VerEdgeQty, &VerQty, 1);
 
     (*pGeob).VerQty = VerQty;
     (*pGeob).VerEdgeQty = ut_alloc_1d_int ((*pGeob).VerQty + 1);
@@ -299,7 +298,7 @@ nem_reconmesh_finalizegeo (struct GEO* pGeo, struct NODES RNodes,
     for (j = 1; j <= RMesh2D.Elsets[i][0]; j++)
     {
       elt = RMesh2D.Elsets[i][j];
-      neut_mesh_elteq (RMesh2D, RNodes, elt, eqe);
+      neut_mesh_elt_eq (RMesh2D, RNodes, elt, eqe);
       neut_mesh_elt_area (RNodes, RMesh2D, elt, &area);
       ut_array_1d_scale (eqe, 4, area);
       ut_array_1d_add (eqe, eq, 4, eq);
@@ -337,7 +336,7 @@ nem_reconmesh_finalizegeo (struct GEO* pGeo, struct NODES RNodes,
 
   int k;
   int face, elt2d, elt3dqty, elt3d;
-  int* elts3d = ut_alloc_1d_int (2);
+  int* elts3d = NULL;
   double* eq = ut_alloc_1d (4);
   double* eltcentre = ut_alloc_1d (3);
   for (i = 1; i <= (*pGeo).PolyQty; i++)
@@ -348,7 +347,7 @@ nem_reconmesh_finalizegeo (struct GEO* pGeo, struct NODES RNodes,
     {
       face = (*pGeo).PolyFaceNb[i][j];
       elt2d = RMesh2D.Elsets[face][1];
-      neut_mesh_elt2delts3d (RMesh2D, elt2d, RMesh3D, elts3d, &elt3dqty);
+      neut_mesh_elt2d_elts3d (RMesh2D, elt2d, RMesh3D, &elts3d, &elt3dqty);
       elt3d = -1;
       for (k = 0; k < elt3dqty; k++)
       {
@@ -361,8 +360,8 @@ nem_reconmesh_finalizegeo (struct GEO* pGeo, struct NODES RNodes,
       if (elt3d == -1)
 	ut_error_reportbug ();
 
-      neut_mesh_elteq (RMesh2D, RNodes, elt2d, eq);
-      neut_mesh_eltcentre (RMesh3D, RNodes, elt3d, eltcentre);
+      neut_mesh_elt_eq (RMesh2D, RNodes, elt2d, eq);
+      neut_mesh_elt_centre (RMesh3D, RNodes, elt3d, eltcentre);
 
       /*
       printf ("\nface = %d FaceEq = ", face);

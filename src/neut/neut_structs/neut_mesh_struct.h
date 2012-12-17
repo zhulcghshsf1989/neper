@@ -19,6 +19,8 @@ struct MESH
                                 /* and their nbs */
 
   int* EltElset;
+
+  int NodeQty;
   int** NodeElts;
 
   double** EltCoo;              // Used in -MM.

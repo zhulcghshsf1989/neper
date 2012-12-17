@@ -88,14 +88,14 @@ nem_mesh_2d_gmsh (struct GEO Geo, int face, double *face_proj,
       status = 1;
     else
     {
-      neut_mesh_dispfromcl (*pN, *pM, cl, pacl);
+      neut_mesh_Osize (*pN, *pM, cl, pacl);
 
       // nodes: skin nodes (numbers refer to *pN)
       neut_mesh_init_nodeelts (pM, (*pN).NodeQty);
-      neut_mesh2d_mesh1d (*pN, *pM, &M2, &Elsets, &ElsetLs, &ElsetQty, 0);
+      neut_mesh2d_mesh1d (*pM, &M2, &Elsets, &ElsetLs, &ElsetQty, 0);
       neut_mesh_mergeelsets (&M2);
 
-      neut_mesh_face_skinmesh (Geo, face, Mesh1D, &Skin);
+      neut_mesh_face_boundmesh (Mesh1D, Geo, face, &Skin);
       
       double** coo = ut_alloc_2d (Nodes.NodeQty + 1, 3);
       // node = i;
@@ -105,7 +105,7 @@ nem_mesh_2d_gmsh (struct GEO Geo, int face, double *face_proj,
 	ut_space_projpoint_alongonto (Nodes.NodeCoo[i], face_proj, Geo.FaceEq[face]);
       }
 
-      match = neut_mesh_mesh_match (Nodes, Skin, *pN, M2);
+      match = neut_mesh_cmp (Nodes, Skin, *pN, M2);
 
       // node = Mesh1D.EltNodes[i][j];
       for (i = 1; i <= Nodes.NodeQty; i++)
@@ -127,7 +127,7 @@ nem_mesh_2d_gmsh (struct GEO Geo, int face, double *face_proj,
 
   for (i = 1; i <= (*pM).EltQty; i++)
   {
-    neut_mesh_eltnormal (*pM, *pN, i, n);
+    neut_mesh_elt_normal (*pM, *pN, i, n);
     if (ut_vector_scalprod (face_proj, n) < 0)
       ut_array_1d_int_switch ((*pM).EltNodes[i], 0, 2);
   }
@@ -173,7 +173,7 @@ nem_mesh_2d_gmsh_b (struct GEO Geo, int face,
 
 // writing boundary = "OD elements = *pNodes", then 1D elements
 
-  neut_mesh_face_skinmesh (Geo, face, Mesh1D, &Skin);
+  neut_mesh_face_boundmesh (Geo, face, Mesh1D, &Skin);
 
   file2 = ut_file_open ("tmp-surf.msh", "W");
   nem_writemeshGmsh (file2, *pNodes, Skin, Garbage, Garbage);
@@ -227,7 +227,7 @@ nem_mesh_3d_gmsh (struct GEO Geo, int poly, struct NODES Nodes,
 /*********************************************************************** 
  * writing 2D elements (w their nodes) in separate file */
 
-  neut_mesh_poly_skinmesh (Geo, poly, Mesh2D, &Skin);
+  neut_mesh_poly_boundmesh (Geo, poly, Mesh2D, &Skin);
 
   file2 = ut_file_open ("tmp-surf.msh", "W");
   neut_mesh_fprintf_gmsh (file2, "2", Nodes, Garbage, Garbage, Skin,
@@ -299,7 +299,7 @@ nem_mesh_3d_gmsh (struct GEO Geo, int poly, struct NODES Nodes,
       break;
     }
 
-    neut_mesh_meancl (*pN, *pM, &lmean);
+    neut_mesh_eltlength (*pN, *pM, &lmean);
 
     // printf ("mean = %f vs cl = %f (clmod = %f qty = %d cross = %d)\n", acl, cl, clmod, (*pM).EltQty, cross);
 
@@ -343,19 +343,19 @@ nem_mesh_3d_gmsh (struct GEO Geo, int poly, struct NODES Nodes,
       status = 1;
     else
     {
-      neut_mesh_dispfromcl (*pN, *pM, cl, pacl);
+      neut_mesh_Osize (*pN, *pM, cl, pacl);
 
       // nodes: skin nodes (numbers refer to *pN)
       neut_mesh_init_nodeelts (pM, (*pN).NodeQty);
 
       // useless here but neut_mesh3d_mesh2d requires the bbox for other
       // purposes...
-      neut_nodes_init_boundingbox (pN);
+      neut_nodes_init_bbox (pN);
 
       neut_mesh3d_mesh2d (*pN, *pM, &M2, &Elsets, &ElsetQty, 0);
       neut_mesh_mergeelsets (&M2);
 
-      match = neut_mesh_mesh_match (Nodes, Skin, *pN, M2);
+      match = neut_mesh_cmp (Nodes, Skin, *pN, M2);
 
       if (match == 1)
 	status = 0;

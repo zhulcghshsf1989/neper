@@ -396,7 +396,8 @@ nevs_print_scale (FILE* file, char* colscheme, char* minexpr, char* maxexpr, cha
   neut_mesh_set_zero (&M);
 
   M.Dimension = 2;
-  neut_mesh_set_elttype (&M, "tri");
+  M.EltType = ut_alloc_1d_char (4);
+  strcpy (M.EltType, "tri");
   M.EltOrder = 1;
 
   // adding bottom nodes

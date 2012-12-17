@@ -81,8 +81,8 @@ nem_mesh_3d_improve_stellar (struct NODES* pN, struct MESH* pM, int skinnodeqty)
   ut_array_1d_int_addval (node_nbs_inv + 1, (*pN).NodeQty, 1, node_nbs_inv + 1);
   node_nbs_inv[0] = node_nbs[0];
   
-  neut_nodes_renumber_switch (pN, node_nbs_inv);
-  neut_nodes_renumber_switch_mesh (pM, node_nbs_inv);
+  neut_nodes_switch (pN, node_nbs_inv);
+  neut_mesh_nodes_switch (pM, node_nbs_inv);
 
   /*
   printf ("AFTER\n");

@@ -44,7 +44,7 @@ nem_mesh_2d_gmsh_writenodes (struct GEO Geo, struct NODES Nodes,
 
   // searching set of nodes of the 0-D an 1-D meshes for this face 
 
-  neut_mesh_face_boundnodes (Geo, face, Mesh1D, &nodes, &nodeqty);
+  neut_mesh_face_boundnodes (Mesh1D, Geo, face, &nodes, &nodeqty);
 
   // printing face nodes
   for (i = 0; i < nodeqty; i++)

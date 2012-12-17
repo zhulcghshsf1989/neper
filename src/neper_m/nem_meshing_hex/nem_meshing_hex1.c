@@ -14,7 +14,7 @@ nem_geo_mesh_hex (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
   int* msize = ut_alloc_1d_int (3);
   double** dsize = ut_alloc_2d (3, 2);
 
-  neut_geo_boundingbox (Geo, dsize);
+  neut_geo_bbox (Geo, dsize);
 
   double cl;
   nem_meshing_3D_poly_cl (GeoPara, Geo, 1, &cl);
@@ -31,7 +31,7 @@ nem_geo_mesh_hex (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
   printf ("\n");
   ut_print_message (0, 2, "3D meshing ... ");
 
-  BuildMMesh3D (msize, In.morder, pNodes, pMesh3D, pNSet2D);
+  neut_mesh_quad (msize, In.morder, pNodes, pMesh3D, pNSet2D);
   neut_nodes_scale (pNodes, dsize[0][1], dsize[1][1], dsize[2][1]);
   neut_mesh_scale  (pMesh3D, dsize[0][1], dsize[1][1], dsize[2][1]);
 
@@ -93,7 +93,7 @@ nem_vox_mesh_hex (struct IN In, struct GEOPARA GeoPara, struct VOX Vox,
 
   neut_geo_set_zero (&Geo);
 
-  neut_vox_boundingbox (Vox, dsize);
+  neut_vox_bbox (Vox, dsize);
 
   double cl;
   nem_meshing_3D_poly_cl (GeoPara, Geo, 1, &cl);
@@ -108,7 +108,7 @@ nem_vox_mesh_hex (struct IN In, struct GEOPARA GeoPara, struct VOX Vox,
   printf ("\n");
   ut_print_message (0, 2, "3D meshing ... ");
 
-  BuildMMesh3D (msize, In.morder, pNodes, pMesh3D, pNSet2D);
+  neut_mesh_quad (msize, In.morder, pNodes, pMesh3D, pNSet2D);
   neut_nodes_scale (pNodes, dsize[0][1], dsize[1][1], dsize[2][1]);
   neut_mesh_scale  (pMesh3D, dsize[0][1], dsize[1][1], dsize[2][1]);
 
@@ -122,7 +122,7 @@ nem_vox_mesh_hex (struct IN In, struct GEOPARA GeoPara, struct VOX Vox,
       neut_vox_fscanf (in, &Vox);
       ut_file_close (in, In.tess, "r");
 
-      neut_vox_boundingbox (Vox, dsize);
+      neut_vox_bbox (Vox, dsize);
     }
     else
       abort ();

@@ -12,7 +12,7 @@ net_germ_randomize (struct IN In, struct GERMSET* pGermSet, struct POLY Domain, 
   double* r = ol_r_alloc ();
   double* bbox = ut_alloc_1d (7);
 
-  neut_poly_boundingbox (Domain, bbox);
+  neut_poly_bbox (Domain, bbox);
 
   if (In.randomize > 0)
   {

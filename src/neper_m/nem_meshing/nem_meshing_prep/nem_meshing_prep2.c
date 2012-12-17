@@ -28,7 +28,7 @@ nem_mesh2d_face_nproj (struct GEO Geo, struct NODES RNodes, struct MESH RMesh1D,
 
   nodeqty = 0;
   if (mesh_defined)
-    neut_mesh_face_boundnodes (Geo, face, RMesh1D, &nodes, &nodeqty);
+    neut_mesh_face_boundnodes (RMesh1D, Geo, face, &nodes, &nodeqty);
 
   coo = ut_alloc_2d (nodeqty, 3);
   
@@ -50,7 +50,7 @@ nem_mesh2d_face_nproj (struct GEO Geo, struct NODES RNodes, struct MESH RMesh1D,
     {
       for (i = 1; i <= RMesh2D.Elsets[face][0]; i++)
       {
-	neut_mesh_eltnormal (RMesh2D, RNodes, RMesh2D.Elsets[face][i], n);
+	neut_mesh_elt_normal (RMesh2D, RNodes, RMesh2D.Elsets[face][i], n);
 	if (ut_vector_scalprod (n, face_proj) < 0)
 	{
 	  status = 1;

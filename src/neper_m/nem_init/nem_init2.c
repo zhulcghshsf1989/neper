@@ -54,7 +54,7 @@ nem_init_mesh_geo_updating (struct GEO* pGeo, struct NODES
     for (j = 1; j <= RMesh2D.Elsets[i][0]; j++)
     {
       elt = RMesh2D.Elsets[i][j];
-      neut_mesh_elteq (RMesh2D, RNodes, elt, eqe);
+      neut_mesh_elt_eq (RMesh2D, RNodes, elt, eqe);
       ut_array_1d_add (eqe, eq, 4, eq);
     }
 

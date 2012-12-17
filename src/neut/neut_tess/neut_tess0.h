@@ -2,7 +2,7 @@
 /* Copyright (C) 2003-2012, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-extern void neut_tess_boundingbox (struct TESS, double**);
+extern void neut_tess_bbox (struct TESS, double**);
 extern void neut_tess_volume (struct TESS, double*);
 extern void neut_tess_domainface (struct TESS, int **);
 extern void neut_tess_domainfacever (struct TESS, int **);

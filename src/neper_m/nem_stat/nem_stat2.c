@@ -35,7 +35,7 @@ nem_stat_nodes (FILE* file, char* stn, struct NODES Nodes, struct MESH Mesh0D,
 	fprintf (file, "%.12f %.12f %.12f", coo[0], coo[1], coo[2]);
       else if (! strcmp (val[j], "dim"))
       {
-	dim = neut_nodes_eltdim (Mesh0D, Mesh1D, Mesh2D, Mesh3D, i);
+	dim = neut_mesh_node_dim (Mesh0D, Mesh1D, Mesh2D, Mesh3D, i);
 	fprintf (file, "%d", dim);
       }
 
@@ -65,7 +65,7 @@ nem_stat_elts (FILE* file, char* ste, struct NODES Nodes, struct MESH Mesh3D,
   for (i = 1; i <= Mesh3D.EltQty; i++)
     for (j = 0; j < valqty; j++)
     {
-      neut_mesh_eltcentre (Mesh3D, Nodes, i, coo);
+      neut_mesh_elt_centre (Mesh3D, Nodes, i, coo);
 
       if (! strcmp (val[j], "id"))
 	fprintf (file, "%d", i);
@@ -109,7 +109,7 @@ nem_stat_elts (FILE* file, char* ste, struct NODES Nodes, struct MESH Mesh3D,
       }
       else if (! strcmp (val[j], "rr"))
       {
-	neut_mesh_3d_elt_rr (Nodes, Mesh3D, i, &rr);
+	neut_mesh_elt_rr (Nodes, Mesh3D, i, &rr);
 	fprintf (file, "%.12f", rr);
       }
 
@@ -129,7 +129,7 @@ nem_stat_elsets (FILE* file, char* ste, struct NODES Nodes, struct MESH Mesh3D,
 	         struct GEOPARA GeoPara, struct GEO Geo)
 {
   int i, j, t, b;
-  double vol, rrmean, rrmin, rrmax, dispfromcl;
+  double vol, rrmean, rrmin, rrmax, Osize;
   double* coo = ut_alloc_1d (3);
   char** val = NULL;
   int valqty;
@@ -140,7 +140,7 @@ nem_stat_elsets (FILE* file, char* ste, struct NODES Nodes, struct MESH Mesh3D,
     for (j = 0; j < valqty; j++)
     {
       neut_mesh_elset_centre (Nodes, Mesh3D, i, coo);
-      neut_mesh_elset_3d_rr (Nodes, Mesh3D, i, &rrmean, &rrmin, &rrmax);
+      neut_mesh_elset_rr (Nodes, Mesh3D, i, &rrmean, &rrmin, &rrmax);
 
       if (Geo.PolyQty > 0)
       {
@@ -174,8 +174,8 @@ nem_stat_elsets (FILE* file, char* ste, struct NODES Nodes, struct MESH Mesh3D,
       {
 	if (GeoPara.cl > 0)
 	{
-	  neut_mesh_elset_dispfromcl (Nodes, Mesh3D, i, GeoPara.cl, &dispfromcl);
-	  fprintf (file, "%.12f", pow (dispfromcl, 3));
+	  neut_mesh_elset_Osize (Nodes, Mesh3D, i, GeoPara.cl, &Osize);
+	  fprintf (file, "%.12f", Osize);
 	}
 	else
 	  fprintf (file, "-1");
