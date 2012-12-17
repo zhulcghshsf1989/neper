@@ -9,7 +9,7 @@
 
 #include"PolyCalc0.h"
 
-#include"neut.h"
+#include"neut_t.h"
 #include"ut.h"
 
 extern void NewPolyhedron (int, int, struct GERMSET, struct POLYMOD *);

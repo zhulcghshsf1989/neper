@@ -9,7 +9,7 @@
 #include<stdlib.h>
 
 #include"ut.h"
-#include"neut.h"
+#include"neut_m.h"
 
 #include"nem_cleaning0.h"
 

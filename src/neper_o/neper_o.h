@@ -8,7 +8,7 @@
 
 #include"structIn_o.h"
 #include"ut.h"
-#include"neut.h"
+#include"neut_o.h"
 
 #include"InputData_o/InputData_o0.h"
 #include"CalcOri/CalcOri0.h"

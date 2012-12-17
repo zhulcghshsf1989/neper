@@ -13,7 +13,7 @@
 
 #include"structIn_m.h"
 #include"ut.h"
-#include"neut.h"
+#include"neut_m.h"
 #include"neper_config.h"
 
 #include"nem_input0.h"

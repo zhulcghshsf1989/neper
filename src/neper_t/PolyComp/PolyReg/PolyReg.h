@@ -7,7 +7,7 @@
 #include<math.h>
 
 #include"ut.h"
-#include"neut.h"
+#include"neut_t.h"
 
 #include"PolyReg0.h"
 

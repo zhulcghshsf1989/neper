@@ -12,7 +12,7 @@
 
 #include"../structIn_o.h"
 #include"ut.h"
-#include"neut.h"
+#include"neut_o.h"
 
 #include"InputData_o0.h"
 

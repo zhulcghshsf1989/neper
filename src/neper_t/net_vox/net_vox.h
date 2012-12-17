@@ -9,7 +9,7 @@
 #include<float.h>
 
 #include"ut.h"
-#include"neut.h"
+#include"neut_t.h"
 #include"../structIn_t.h"
 #include"net_vox0.h"
 

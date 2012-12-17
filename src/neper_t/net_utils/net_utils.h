@@ -8,7 +8,7 @@
 #include<string.h>
 
 #include"ut.h"
-#include"neut.h"
+#include"neut_t.h"
 
 #include"net_utils0.h"
 #include "../PolyComp/PolyAlloc/PolyAlloc0.h"

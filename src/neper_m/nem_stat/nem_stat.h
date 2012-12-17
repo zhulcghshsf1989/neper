@@ -9,7 +9,7 @@
 
 #include"../structIn_m.h"
 #include"ut.h"
-#include"neut.h"
+#include"neut_m.h"
 #include<gsl/gsl_sort_int.h>
 #include"../nem_writemesh/nem_writemesh0.h"
 

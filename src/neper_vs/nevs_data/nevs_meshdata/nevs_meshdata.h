@@ -8,7 +8,7 @@
 #include<math.h>
 
 #include"ut.h"
-#include"neut.h"
+#include"neut_vs.h"
 #include"orilib.h"
 
 #include"../nevs_data_utils/nevs_data_utils0.h"

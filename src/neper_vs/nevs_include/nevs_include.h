@@ -7,6 +7,6 @@
 #include<string.h>
 
 #include"ut.h"
-#include"neut.h"
+#include"neut_vs.h"
 
 #include "nevs_include0.h"

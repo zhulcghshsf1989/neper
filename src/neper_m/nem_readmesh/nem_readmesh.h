@@ -6,5 +6,5 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../structIn_m.h"
-#include "neut.h"
+#include "neut_m.h"
 #include "nem_readmesh0.h"

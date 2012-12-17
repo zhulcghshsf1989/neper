@@ -11,7 +11,7 @@
 
 #include"../../structIn_t.h"
 #include"ut.h"
-#include"neut.h"
+#include"neut_t.h"
 
 #include"DeleteEdge/DeleteEdge0.h"
 #include"MergeGeo0.h"

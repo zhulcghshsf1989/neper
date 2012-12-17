@@ -11,6 +11,6 @@
 #include"../../structIn_m.h"
 
 #include"ut.h"
-#include"neut.h"
+#include"neut_m.h"
 
 #include"nem_mesh_gmsh0.h"

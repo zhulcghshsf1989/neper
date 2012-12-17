@@ -7,7 +7,7 @@
 #include<string.h>
 
 #include"ut.h"
-#include"neut.h"
+#include"neut_vs.h"
 // #include"../nefm/nefm.h"
 #include"../../neper_m/nem_reconmesh/nem_reconmesh0.h"
 

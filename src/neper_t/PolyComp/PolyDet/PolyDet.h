@@ -6,7 +6,7 @@
 #include<stdlib.h>
 #include<math.h>
 
-#include"neut.h"
+#include"neut_t.h"
 
 #include"PolyDet0.h"
 #include"PolyCalc/PolyCalc0.h"

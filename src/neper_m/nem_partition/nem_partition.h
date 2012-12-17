@@ -12,7 +12,7 @@
 
 #include"../structIn_m.h"
 #include"ut.h"
-#include"neut.h"
+#include"neut_m.h"
 // #include<scotch.h>
 
 #include "nem_partition0.h"

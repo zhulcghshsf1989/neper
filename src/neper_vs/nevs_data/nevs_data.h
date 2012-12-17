@@ -8,7 +8,7 @@
 
 #include"ut.h"
 #include"orilib.h"
-#include"neut.h"
+#include"neut_vs.h"
 // #include"../../neper_m/nem_reconmesh/nem_reconmesh0.h"
 
 #include"nevs_data_utils/nevs_data_utils0.h"

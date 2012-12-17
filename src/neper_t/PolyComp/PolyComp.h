@@ -6,7 +6,7 @@
 #include<stdlib.h>
 #include<math.h>
 
-#include"neut.h"
+#include"neut_t.h"
 
 #include"../structIn_t.h"
 #include"PolyAlloc/PolyAlloc0.h"

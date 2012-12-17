@@ -9,7 +9,7 @@
 
 #include"../structIn_t.h"
 #include"ut.h"
-#include"neut.h"
+#include"neut_t.h"
 // #include"../Meshing0D/Meshing0D0.h"
 // #include"../Meshing1D/Meshing1D0.h"
 // #include"../Meshing2D/Meshing2D0.h"

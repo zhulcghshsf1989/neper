@@ -8,7 +8,7 @@
 #include<string.h>
 #include"../structIn_m.h"
 #include"ut.h"
-#include"neut.h"
+#include"neut_m.h"
 #include"../nem_reconmesh/nem_reconmesh0.h"
 #include"./nem_meshing/nem_meshing_3D/nem_meshing_3D0.h"
 

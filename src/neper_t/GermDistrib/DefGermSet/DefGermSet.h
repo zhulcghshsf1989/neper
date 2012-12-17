@@ -10,7 +10,7 @@
 #include<gsl/gsl_randist.h>
 
 #include"ut.h"
-#include"neut.h"
+#include"neut_t.h"
 
 #include"../../structIn_t.h"
 
