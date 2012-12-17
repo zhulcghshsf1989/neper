@@ -61,7 +61,7 @@ nevs_meshdata_init (struct NODES Nodes, struct MESH Mesh3D, struct MESHDATA* pMe
 
   if (Mesh3D.Dimension == 3)
   {
-    neut_mesh_volume (Nodes, Mesh3D, &vol, NULL, NULL);
+    neut_mesh_volume (Nodes, Mesh3D, &vol);
     vol /= (*pMeshData).elset3dqty;
   }
   else

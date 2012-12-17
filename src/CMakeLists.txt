@@ -4,7 +4,7 @@ project(neper C)
 set (NEPER_VERSION_MAJOR 2)
 set (NEPER_VERSION_MINOR 0)
 set (NEPER_VERSION_PATCH 0)
-set (NEPER_VERSION \"2.0.0-devel2-38\ \")
+set (NEPER_VERSION \"2.0.0-devel2-39\ \")
 set (NEPER_EMAIL \"neper-users@lists.sourceforge.net\")
 
 # should we use the optional libraries?
@@ -41,7 +41,7 @@ configure_file (
   "${PROJECT_BINARY_DIR}/neper_config.h"
 )
 
-add_definitions(-Wall -W -g -O3)
+add_definitions(-Wall -W -g -O3 -Werror)
 set (CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
 
 add_subdirectory(contrib/ut)

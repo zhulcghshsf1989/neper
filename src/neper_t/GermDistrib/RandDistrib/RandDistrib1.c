@@ -18,7 +18,7 @@ RandDistrib (struct IN In, struct GERMSET *pGermSet, struct POLY Domain)
 
   double* size = ut_alloc_1d (7);
 
-  neut_poly_boundingbox (Domain, size);
+  neut_poly_bbox (Domain, size);
 
   (*pGermSet).GermsCoo = ut_alloc_2d ((*pGermSet).N + 1, 4);
 

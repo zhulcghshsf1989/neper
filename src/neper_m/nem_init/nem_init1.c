@@ -23,7 +23,7 @@ nem_init_remesh (char* mesh, char* tess, struct GEO* pGeo, struct NODES* pRNodes
   neut_mesh_init_eltelset (pRMesh3D, NULL);
   neut_mesh_init_nodeelts (pRMesh3D, (*pRNodes).NodeQty);
 
-  neut_nodes_init_boundingbox (pRNodes);
+  neut_nodes_init_bbox (pRNodes);
 
   if (tess == NULL)
   {
@@ -87,7 +87,7 @@ nem_init_scaling (char* elttype, struct GEO* pGeo, struct VOX* pVox, struct NODE
       neut_vox_volume (*pVox, &vol);
     else
     {
-      neut_mesh_volume (*pRNodes, RMesh3D, &vol, NULL, NULL);
+      neut_mesh_volume (*pRNodes, RMesh3D, &vol);
       // Still necessary in Neper v2?
       // this is a poor workaround to avoid subsequent threshold problem
       // in the Meshing1D:  a segment of length 1 with cl 0.4999 would

@@ -18,8 +18,8 @@ nevs_print_mesh (FILE* file, struct PRINT Print,
   int* eltsinv = NULL;
   int elt_max;
   int* nodes = NULL;
-  int* elts2d = ut_alloc_1d_int (1000);
-  int* elts3d = ut_alloc_1d_int (1000);
+  int* elts2d = NULL;
+  int* elts3d = NULL;
   int elt3dqty;
   int* printelt2d = ut_alloc_1d_int (Mesh2D.EltQty + 1);
   int* printelt3d = ut_alloc_1d_int (Mesh3D.EltQty + 1);
@@ -172,7 +172,7 @@ nevs_print_mesh (FILE* file, struct PRINT Print,
 	}
 
     if (elt_qty > 0)
-      neut_mesh_elts_skinelts (Mesh3D, elts, elt_qty, &leftelts, &lefteltqty);
+	neut_mesh_elts_boundelts (Mesh3D, elts, elt_qty, &leftelts, &lefteltqty);
     else
       lefteltqty = 0;
 
@@ -221,8 +221,8 @@ nevs_print_mesh (FILE* file, struct PRINT Print,
 	for (k = 0; k < elt2dnodeqty; k++)
 	  nodes[k] = Mesh3D.EltNodes[elt3d][seq[j][k]];
 
-	neut_nodes_commonelts (Mesh2D, nodes, elt2dnodeqty, elts2d, &elt2dqty);
-	neut_nodes_commonelts (Mesh3D, nodes, elt2dnodeqty, elts3d, &elt3dqty);
+	neut_mesh_nodes_comelts (Mesh2D, nodes, elt2dnodeqty, &elts2d, &elt2dqty);
+	neut_mesh_nodes_comelts (Mesh3D, nodes, elt2dnodeqty, &elts3d, &elt3dqty);
 
 	int print;
 
@@ -297,7 +297,7 @@ nevs_print_mesh (FILE* file, struct PRINT Print,
       neut_nodes_addnode (&N, MeshData.coo[node_id][i], 0);
     }
 
-  neut_mesh_renumber (&M2D, nodes_old_new, NULL, NULL);
+  neut_mesh_switch (&M2D, nodes_old_new, NULL, NULL);
   neut_mesh_init_nodeelts (&M2D, Nodes.NodeQty);
 
   if (MeshData.col[elt3d_id] != NULL)
@@ -345,7 +345,7 @@ nevs_print_mesh (FILE* file, struct PRINT Print,
   
   int edge_qty = 0;
   int** edges = ut_alloc_1d_pint (1);
-  int* elts_tmp = ut_alloc_1d_int (1000);
+  int* elts_tmp = NULL;
   int eltqty;
   // Element edges
   if (M2D.EltQty > 0)
@@ -356,7 +356,7 @@ nevs_print_mesh (FILE* file, struct PRINT Print,
 	for (k = 0; k < 2; k++)
 	  tmp[k] = M2D.EltNodes[i][seq2[j][k]];
 
-	neut_nodes_commonelts (M2D, tmp, 2, elts_tmp, &eltqty);
+	neut_mesh_nodes_comelts (M2D, tmp, 2, &elts_tmp, &eltqty);
 	if (ut_array_1d_int_min (elts_tmp, eltqty) == i)
 	{
 	  edge_qty++;
@@ -441,8 +441,8 @@ nevs_print_mesh (FILE* file, struct PRINT Print,
 	  sprintf (texture, "elt1d%d", i);
 	}
 
-	neut_nodes_commonelts (Mesh3D, Mesh1D.EltNodes[i], 2,
-	                       elts3d, &elt3dqty);
+	neut_mesh_nodes_comelts (Mesh3D, Mesh1D.EltNodes[i], 2,
+	                       &elts3d, &elt3dqty);
 
 	int l, print = 0;
 	for (j = 0; j < elt3dqty; j++)
@@ -510,8 +510,8 @@ nevs_print_mesh (FILE* file, struct PRINT Print,
     
 	sprintf (texture, "elt0d%d", i);
 
-	neut_nodes_commonelts (Mesh3D, Mesh0D.EltNodes[i], 1,
-	                       elts3d, &elt3dqty);
+	neut_mesh_nodes_comelts (Mesh3D, Mesh0D.EltNodes[i], 1,
+	                       &elts3d, &elt3dqty);
 
 	int l, print = 0;
 	/*

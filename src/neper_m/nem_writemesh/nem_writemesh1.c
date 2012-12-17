@@ -12,7 +12,7 @@ nem_writemesh (struct IN In, struct GEO Geo,
 	   struct NSET NSet0D, struct NSET NSet1D,
 	   struct NSET NSet2D, struct PART Part)
 {
-  double voltot, volmin, volmax;
+  double voltot;
   FILE *file;
   char* expandnset = NULL;
   char* expandfaset = NULL;
@@ -46,7 +46,7 @@ nem_writemesh (struct IN In, struct GEO Geo,
   {
     ut_print_message (0, 3, "Node number: %8d\n", Nodes.NodeQty);
     ut_print_message (0, 3, "Elt  number: %8d\n", (*pMesh3D).EltQty);
-    neut_mesh_volume (Nodes, *pMesh3D, &voltot, &volmin, &volmax);
+    neut_mesh_volume (Nodes, *pMesh3D, &voltot);
     ut_print_message (0, 3, "Mesh volume: %8.3f\n", voltot);
   }
 
@@ -106,7 +106,7 @@ nem_writemesh (struct IN In, struct GEO Geo,
    || ut_string_inlist (In.format, ',', "surf")
    || ut_string_inlist (In.format, ',', "opt")
    || ut_string_inlist (In.format, ',', "bcs"))
-    neut_mesh_fprintf_fepx (In.format, In.body, Geo, Nodes, (*pMesh2D), (*pMesh3D),
+    neut_mesh_fprintf_fepx_name (In.format, In.body, Geo, Nodes, (*pMesh2D), (*pMesh3D),
 			    NSet0D, NSet1D, NSet2D, expandnset, expandfaset);
 
   /*

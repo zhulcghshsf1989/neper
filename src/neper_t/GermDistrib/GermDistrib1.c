@@ -12,7 +12,7 @@ GermDistrib (struct IN In, struct POLY Domain, struct GERMSET* pGermSet)
   (*pGermSet).Id = In.id;
   (*pGermSet).NDensity = (*pGermSet).N;
   (*pGermSet).Size = ut_alloc_1d (7);
-  neut_poly_boundingbox (Domain, (*pGermSet).Size);
+  neut_poly_bbox (Domain, (*pGermSet).Size);
 
   (*pGermSet).morpho = ut_alloc_1d_char (strlen (In.morpho) + 1);
   strcpy ((*pGermSet).morpho, In.morpho);

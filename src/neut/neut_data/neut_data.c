@@ -358,3 +358,106 @@ neut_meshdata_type_qty (char* type, int* pqty)
 
   return (*pqty >= 0) ? 0 : -1;
 }
+
+void
+neut_meshdata_mesh2slice (struct NODES Nodes, struct MESH Mesh, struct MESHDATA MeshData,
+		          struct NODES SNodes, struct MESH SMesh,
+	                  int* elt_newold, int** node_newold, double* node_fact,
+			  struct MESHDATA* pSMeshData)
+{
+  int i, j, k;
+  int qty;
+  int idmax;
+
+  (*pSMeshData).elset0dqty = 0;
+  (*pSMeshData).elset1dqty = 0;
+  (*pSMeshData).elset2dqty = 0;
+  (*pSMeshData).elset3dqty = 0;
+
+  (*pSMeshData).elt0dqty = 0;
+  (*pSMeshData).elt1dqty = 0;
+  (*pSMeshData).elt2dqty = SMesh.EltQty;
+  (*pSMeshData).elt3dqty = 0;
+  
+  (*pSMeshData).nodeqty  = SNodes.NodeQty;
+
+  neut_meshdata_idmax (&idmax);
+
+  Mesh  = Mesh;
+  SMesh = SMesh;
+  Nodes = Nodes;
+
+  int qty0;
+  int** id_newold = ut_alloc_2d_int (2, 2);
+  neut_meshdata_entity_id ("node2elt", &(id_newold[0][0]));
+  id_newold[0][1] = id_newold[0][0];
+  neut_meshdata_entity_id ("elt2d", &(id_newold[1][0]));
+  neut_meshdata_entity_id ("elt3d", &(id_newold[1][1]));
+
+  for (i = 0; i <= 1; i++)
+  {
+    if (MeshData.coldatatype[id_newold[i][1]] == NULL)
+      continue;
+
+    (*pSMeshData).coldatatype[id_newold[i][0]]
+      = ut_alloc_1d_char (strlen (MeshData.coldatatype[id_newold[i][1]]) + 1);
+    strcpy ((*pSMeshData).coldatatype[id_newold[i][0]], MeshData.coldatatype[id_newold[i][1]]);
+	    
+    neut_meshdata_id_qty   ((*pSMeshData), id_newold[i][0], &qty0);
+    neut_meshdata_type_qty (MeshData.coldatatype[id_newold[i][1]], &qty);
+
+    (*pSMeshData).coldata[id_newold[i][0]] = ut_alloc_2d (qty0 + 1, qty);
+
+    for (j = 1; j <= qty0; j++)
+    {
+      char* ent = ut_alloc_1d_char (100);
+      neut_meshdata_id_entity (id_newold[i][0], ent);
+
+      if (! strncmp (ent, "elt", 3))
+      {
+	for (k = 0; k < qty; k++)
+	  (*pSMeshData).coldata[id_newold[i][0]][j][k] =
+	    MeshData.coldata[id_newold[i][1]][elt_newold[j]][k];
+      }
+      else if (! strncmp (ent, "node", 4))
+	for (k = 0; k < qty; k++)
+	  (*pSMeshData).coldata[id_newold[i][0]][j][k] =
+		(1 - node_fact[j]) * MeshData.coldata[id_newold[i][1]][node_newold[j][0]][k]
+		 +   node_fact[j]    * MeshData.coldata[id_newold[i][1]][node_newold[j][1]][k];
+    }
+  
+    if (MeshData.scalemin[id_newold[i][1]] != NULL)
+    {
+      (*pSMeshData).scalemin[id_newold[i][0]]
+	= ut_alloc_1d_char (strlen (MeshData.scalemin[id_newold[i][1]]) + 1);
+      strcpy ((*pSMeshData).scalemin[id_newold[i][0]],
+		   MeshData.scalemin[id_newold[i][1]]);
+    }
+
+    if (MeshData.scalemax[id_newold[i][1]] != NULL)
+    {
+      (*pSMeshData).scalemax[id_newold[i][0]]
+	= ut_alloc_1d_char (strlen (MeshData.scalemax[id_newold[i][1]]) + 1);
+      strcpy ((*pSMeshData).scalemax[id_newold[i][0]],
+	           MeshData.scalemax[id_newold[i][1]]);
+    }
+
+    if (MeshData.scaleticks[id_newold[i][1]] != NULL)
+    {
+      (*pSMeshData).scaleticks[id_newold[i][0]]
+	= ut_alloc_1d_char (strlen (MeshData.scaleticks[id_newold[i][1]]) + 1);
+      strcpy ((*pSMeshData).scaleticks[id_newold[i][0]],
+	           MeshData.scaleticks[id_newold[i][1]]);
+    }
+
+    if (MeshData.colscheme[id_newold[i][1]] != NULL)
+    {
+      (*pSMeshData).colscheme[id_newold[i][0]]
+	= ut_alloc_1d_char (strlen (MeshData.colscheme[id_newold[i][1]]) + 1);
+      strcpy ((*pSMeshData).colscheme[id_newold[i][0]],
+	           MeshData.colscheme[id_newold[i][1]]);
+    }
+  }
+
+  return;
+}

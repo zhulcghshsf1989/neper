@@ -35,7 +35,7 @@ extern int neut_vox_expr_polys (struct VOX Vox, char* expr, int** ppoly, int* pp
 ///
 ///
 ///
-extern void neut_vox_boundingbox (struct VOX Vox, double** bbox);
+extern void neut_vox_bbox (struct VOX Vox, double** bbox);
 
 /// \brief Scale (= stretch) a VOX structure.
 ///

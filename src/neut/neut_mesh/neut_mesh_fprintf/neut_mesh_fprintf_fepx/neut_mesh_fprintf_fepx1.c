@@ -2,10 +2,10 @@
 /* Copyright (C) 2003-2012, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-#include"neut_mesh_fprintf_fepx.h"
+#include"neut_mesh_fprintf_fepx_lcl.h"
 
 void
-neut_mesh_fprintf_fepx (char* format, char* body, struct GEO Geo,
+neut_mesh_fprintf_fepx_name (char* format, char* body, struct GEO Geo,
 	      struct NODES Nodes, struct MESH Mesh2D, struct MESH Mesh3D,
 	      struct NSET NSet0D, struct NSET NSet1D, struct NSET NSet2D,
 	      char *nset, char* faset)

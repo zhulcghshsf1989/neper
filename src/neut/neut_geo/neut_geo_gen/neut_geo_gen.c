@@ -873,7 +873,7 @@ neut_geo_polys_skinfaces (struct GEO Geo, int* poly, int polyqty,
 }
 
 void
-neut_geo_boundingbox (struct GEO Geo, double** size)
+neut_geo_bbox (struct GEO Geo, double** size)
 {
   int i, j;
 
@@ -1701,4 +1701,28 @@ neut_geo_edge_fake (struct GEO Geo, int edge)
   }
 
   return status;
+}
+
+/* rsel2sel sets sel from rsel */
+void
+rsel2sel (double rsel, double vol, int PolyQty, double* psel)
+{
+  (*psel) = 0.5 * rsel * 0.5 / pow (PolyQty / vol, 0.3333333333333333333333333333);
+  
+  return;
+}
+
+/* rcl2cl sets cl from rcl */
+void
+rcl2cl (double rcl, double vol, int PolyQty, char* elttype, double* pcl)
+{
+  if (elttype == NULL || ! strcmp (elttype, "tet") || ! strcmp (elttype, "tri"))
+    (*pcl) = rcl * 0.5 * pow (vol / PolyQty, 0.3333333333333333333333333333);
+  else if (! strcmp (elttype, "hex") || ! strcmp (elttype, "quad"))
+  {
+    (*pcl) = rcl * 0.5 * pow (vol / PolyQty, 0.3333333333333333333333333333);
+    (*pcl) *= .43084877208099956915;
+  }
+  
+  return;
 }

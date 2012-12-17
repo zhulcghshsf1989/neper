@@ -85,10 +85,10 @@ nem_partitionNodes (struct IN In, SCOTCH_Mesh * pSCMesh, SCOTCH_Arch * pArch,
       */
 
       neut_nodes_renumber_switch (pNodes, node_nbs);
-      neut_nodes_renumber_switch_mesh (pMesh, node_nbs);
-      neut_nodes_renumber_switch_mesh (pMesh2D, node_nbs);
-      neut_nodes_renumber_switch_mesh (pMesh1D, node_nbs);
-      neut_nodes_renumber_switch_mesh (pMesh0D, node_nbs);
+      neut_mesh_nodes_switch (pMesh, node_nbs);
+      neut_mesh_nodes_switch (pMesh2D, node_nbs);
+      neut_mesh_nodes_switch (pMesh1D, node_nbs);
+      neut_mesh_nodes_switch (pMesh0D, node_nbs);
       ut_array_1d_int_sort ((*pPart).node_parts + 1, (*pNodes).NodeQty);
     }
 
@@ -142,7 +142,7 @@ nem_partitionElts (struct IN In, struct MESH *pMesh, struct PART *pPart)
 
   if (In.partrenumber)
     {
-      neut_mesh_renumber_switch (pMesh, elt_nbs);
+      neut_mesh_elts_switch (pMesh, elt_nbs);
       ut_array_1d_int_sort ((*pPart).elt_parts + 1, (*pMesh).EltQty);
     }
 

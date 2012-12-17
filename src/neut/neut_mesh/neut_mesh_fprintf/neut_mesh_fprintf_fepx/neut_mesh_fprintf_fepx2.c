@@ -2,7 +2,7 @@
 /* Copyright (C) 2003-2012, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-#include"neut_mesh_fprintf_fepx.h"
+#include"neut_mesh_fprintf_fepx_lcl.h"
 
 void
 neut_mesh_fprintf_fepx_parms (FILE* file, struct NODES Nodes, struct MESH Mesh)
@@ -101,7 +101,7 @@ neut_mesh_fprintf_fepx_skinelts (FILE * file, struct GEO Geo, struct MESH Mesh2D
 {
   double res;
   int i, j, k, l, eltnb, eltqty, elt3dqty;
-  int* elt3d = ut_alloc_1d_int (2);
+  int* elt3d = NULL;
   double *n  = ut_alloc_1d (3);
   double *n0 = ut_alloc_1d (3);
   int seqo1[3] = { 0, 1, 2 };
@@ -133,9 +133,9 @@ neut_mesh_fprintf_fepx_skinelts (FILE * file, struct GEO Geo, struct MESH Mesh2D
       for (k = 1; k <= Mesh2D.Elsets[Geo.DomTessFaceNb[i][j]][0]; k++)
       {
 	eltnb = Mesh2D.Elsets[Geo.DomTessFaceNb[i][j]][k];
-	neut_mesh_eltnormal (Mesh2D, Nodes, eltnb, n);
+	neut_mesh_elt_normal (Mesh2D, Nodes, eltnb, n);
 
-	neut_mesh_elt2delts3d (Mesh2D, eltnb, Mesh3D, elt3d, &elt3dqty);
+	neut_mesh_elt2d_elts3d (Mesh2D, eltnb, Mesh3D, &elt3d, &elt3dqty);
 
 	if (elt3dqty != 1)
 	{

@@ -3,7 +3,7 @@
 /* See the COPYING file in the top-level directory. */
 
 #ifdef HAVE_LIBSCOTCH
-#include"neut_mesh_fprintf_scotch.h"
+#include"neut_mesh_fprintf_scotch_lcl.h"
 
 void
 neut_mesh_fprintf_scotch (char* body, struct NODES Nodes, struct MESH Mesh)
@@ -30,6 +30,23 @@ neut_mesh_fprintf_scotch (char* body, struct NODES Nodes, struct MESH Mesh)
   ut_free_1d_char (scm);
   ut_free_1d_char (scg);
   
+  return;
+}
+
+void
+neut_nodes_fprintf_scotch (FILE * out, struct NODES Nodes)
+{
+  int i, j;
+
+  fprintf (out, "3 %d\n", Nodes.NodeQty);
+  for (i = 1; i <= Nodes.NodeQty; i++)
+  {
+    fprintf (out, "%d", i);
+    for (j = 0; j < 3; j++)
+      fprintf (out, "  %.12f", Nodes.NodeCoo[i][j]);
+    fprintf (out, "\n");
+  }
+
   return;
 }
 

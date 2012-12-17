@@ -26,6 +26,7 @@ nem_meshing_2D (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
   double rnd, rrmin, rrmax, rrmean, qmin, qmean, qmax, totqmean, totqmin;
   double totqmin0, qmin0; 
   double totqmax;
+  double acl;
   int a, status, qty;
   char** list = NULL;
   int* algohit = NULL;
@@ -39,7 +40,6 @@ nem_meshing_2D (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
   char* message = ut_alloc_1d_char (128);
   char* tmpstring = ut_alloc_1d_char (128);
   struct MESH Garbage;
-  double acl;
 
   neut_gmsh_rc ("bak");
 
@@ -151,12 +151,12 @@ nem_meshing_2D (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
 	}
 
 	if (status == 0)
-	  neut_mesh_2d_rr (N, M, &rrmean, &rrmin, &rrmax);
+	  neut_mesh_rr (N, M, &rrmean, &rrmin, &rrmax);
 	else 
 	  rrmean = rrmin = rrmax = 0;
 
 	qual_dis[a] = rrmin;
-	qual_size[a] = pow (acl, 3.);
+	qual_size[a] = acl;
 	
 	// sizefac = 1;
 
@@ -170,8 +170,8 @@ nem_meshing_2D (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
 	  qmin = qual[a];
 	  qmax = rrmax;
 	  qmean = rrmean;
-	  neut_nodes_nodes (N, &N2);
-	  neut_mesh_mesh (M, &M2);
+	  neut_nodes_memcpy (N, &N2);
+	  neut_mesh_memcpy (M, &M2);
 	}
 
 	if (status == 0)
@@ -189,8 +189,8 @@ nem_meshing_2D (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
       
       neut_nodes_free (&N);
       neut_mesh_free (&M);
-      neut_nodes_nodes (N2, &N);
-      neut_mesh_mesh (M2, &M);
+      neut_nodes_memcpy (N2, &N);
+      neut_mesh_memcpy (M2, &M);
       neut_nodes_free (&N2);
       neut_mesh_free (&M2);
 

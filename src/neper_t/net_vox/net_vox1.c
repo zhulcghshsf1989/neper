@@ -18,7 +18,7 @@ net_geo_vox (struct IN In, struct GEO Geo, VOX* pVox)
   (*pVox).format = ut_alloc_1d_char (10);
   strcpy ((*pVox).version, "binary16");
 
-  neut_geo_boundingbox (Geo, bbox);
+  neut_geo_bbox (Geo, bbox);
 
   (*pVox).PolyQty = Geo.PolyQty;
 
@@ -105,7 +105,7 @@ net_vox (struct IN In, struct POLY Domain, struct GERMSET GermSet, struct VOX* p
   }
   else
   {
-    neut_poly_boundingbox (Domain, bboxv);
+    neut_poly_bbox (Domain, bboxv);
     bbox[0][1] = bboxv[2];
     bbox[1][1] = bboxv[4];
     bbox[2][1] = bboxv[6];

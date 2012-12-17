@@ -13,7 +13,7 @@ CubeDistrib (struct POLY Domain, struct GERMSET *pGermSet)
   double* coo = ut_alloc_1d (4);
   double* bbox = ut_alloc_1d (7);
 
-  neut_poly_boundingbox (Domain, bbox);
+  neut_poly_bbox (Domain, bbox);
 
   /* IniGermsCoo initializes the variable: GermsCoo */
   (*pGermSet).GermsCoo = ut_alloc_2d ((*pGermSet).N1d * (*pGermSet).N1d
@@ -53,7 +53,7 @@ TruOctaDistrib (struct POLY Domain, struct GERMSET *pGermSet)
   double* r = ut_alloc_1d (4);
   double* bbox = ut_alloc_1d (7);
 
-  neut_poly_boundingbox (Domain, bbox);
+  neut_poly_bbox (Domain, bbox);
 
   /* IniGermsCoo initializes the variable: GermsCoo */
   (*pGermSet).GermsCoo = ut_alloc_1d_pdouble (1);

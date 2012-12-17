@@ -269,7 +269,7 @@ extern void neut_geo_centre (struct GEO Geo, double*);
 ///
 ///
 ///
-extern void neut_geo_boundingbox (struct GEO Geo, double**);
+extern void neut_geo_bbox (struct GEO Geo, double**);
 
 /// \brief Determine whether a point is within a polyhedron 
 ///
@@ -293,5 +293,9 @@ extern int neut_geo_expr_polytab (struct GEO Geo, char*, int*);
 extern int neut_geo_expr_facetab (struct GEO Geo, char*, int*);
 extern int neut_geo_face_interpolmesh (struct GEO Geo, int, struct NODES*, struct MESH*);
 extern int neut_geo_edge_selratio (struct GEO Geo, struct GEOPARA, int, double*);
+
+extern void rcl2cl (double, double, int, char*, double*);
+extern void rsel2sel (double, double, int, double*);
+
 
 #endif /* NEUT_GEO0_H */

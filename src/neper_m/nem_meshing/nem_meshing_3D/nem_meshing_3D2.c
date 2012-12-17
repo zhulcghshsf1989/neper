@@ -123,9 +123,9 @@ nem_meshing_3D_poly (struct IN In, double cl, struct MULTIM* pMultim,
 
     if (status == 0)
     {
-      neut_mesh_3d_rr2 (N, M, In.mesh3doptidisexpr, &((*pMultim).mOdis[id][a]));
-      neut_mesh_3d_rr (N, M, &rrmean, &rrmin, NULL);
-      (*pMultim).mOsize[id][a] = pow (acl, 3.);
+      neut_mesh_Odis (N, M, In.mesh3doptidisexpr, &((*pMultim).mOdis[id][a]));
+      neut_mesh_rr (N, M, &rrmean, &rrmin, NULL);
+      (*pMultim).mOsize[id][a] = acl;
     }
     else 
     {
@@ -148,8 +148,8 @@ nem_meshing_3D_poly (struct IN In, double cl, struct MULTIM* pMultim,
       if (a == 0 || ((*pMultim).mO[id][a] > (*pMultim).mO[id][(*pMultim).Oalgo[id]]))
       {
 	(*pMultim).Oalgo[id] = a;
-	neut_nodes_nodes (N, &N2);
-	neut_mesh_mesh (M, &M2);
+	neut_nodes_memcpy (N, &N2);
+	neut_mesh_memcpy (M, &M2);
       }
 
       totstatus = 0;
@@ -163,7 +163,7 @@ nem_meshing_3D_poly (struct IN In, double cl, struct MULTIM* pMultim,
 
       for (i = 1; i <= M.EltQty; i++)
       {
-	neut_mesh_3d_elt_rr (N, M, i, &rr);
+	neut_mesh_elt_rr (N, M, i, &rr);
 	neut_mesh_elt_lengths (M, N, i, &length, NULL, NULL);
 	fprintf (file, "%.5g %.5g\n", rr, length);
       }
@@ -185,8 +185,8 @@ nem_meshing_3D_poly (struct IN In, double cl, struct MULTIM* pMultim,
     abort ();
   }
 
-  neut_nodes_nodes (N2, &N);
-  neut_mesh_mesh (M2, &M);
+  neut_nodes_memcpy (N2, &N);
+  neut_mesh_memcpy (M2, &M);
 
   /* calculating the node numbers - some are already recorded ("2D"
    * nodes), the others are new.  We use the node positions. */

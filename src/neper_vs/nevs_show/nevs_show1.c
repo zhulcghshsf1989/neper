@@ -416,7 +416,7 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
 
       for (i = 1; i <= Mesh3D.EltQty; i++)
       {
-	neut_mesh_eltcentre (Mesh3D, Nodes, i, vals);
+	neut_mesh_elt_centre (Mesh3D, Nodes, i, vals);
 	neut_mesh_elt_volume (Nodes, Mesh3D, i, &(vals[3]));
 	vals[4] = (Geo.PolyQty > 0) ? Geo.PolyTrue[Mesh3D.EltElset[i]] : -1;
 	vals[5] = (Geo.PolyQty > 0) ? Geo.PolyBody[Mesh3D.EltElset[i]] : -1;
@@ -497,7 +497,7 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
 
       for (i = 1; i <= Mesh3D.EltQty; i++)
       {
-	neut_mesh_eltcentre (Mesh3D, Nodes, i, vals);
+	neut_mesh_elt_centre (Mesh3D, Nodes, i, vals);
 	neut_mesh_elt_volume (Nodes, Mesh3D, i, &(vals[3]));
 	vals[4] = (Geo.PolyQty > 0) ? Geo.PolyTrue[Mesh3D.EltElset[i]] : -1;
 	vals[5] = (Geo.PolyQty > 0) ? Geo.PolyBody[Mesh3D.EltElset[i]] : -1;
@@ -566,7 +566,7 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
       double *vals = ut_alloc_1d (var_qty);
       int status;
       double res;
-      int *elt1delts3d = ut_alloc_1d_int (1000);
+      int *elt1delts3d = NULL;
       int elt1delt3dqty;
 
       sprintf (vars[0], "cenx");
@@ -579,12 +579,12 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
 
       for (i = 1; i <= Mesh1D.EltQty; i++)
       {
-	neut_mesh_eltcentre (Mesh1D, Nodes, i, vals);
-	neut_mesh_eltlength (Nodes, Mesh1D, i, &(vals[3]));
+	neut_mesh_elt_centre (Mesh1D, Nodes, i, vals);
+	neut_mesh_elt_length (Nodes, Mesh1D, i, &(vals[3]));
 	vals[4] = i;
 
 	vals[5] = 0;
-	neut_mesh_elt1delts3d (Mesh1D, i, Mesh2D, Mesh3D, elt1delts3d,
+	neut_mesh_elt1d_elts3d (Mesh1D, i, Mesh2D, Mesh3D, &elt1delts3d,
 			       &elt1delt3dqty);
 	for (j = 0; j < elt1delt3dqty; j++)
 	  if ((*pPrint).showelt[elt1delts3d[j]] == 1)
@@ -685,7 +685,7 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
       double *vals = ut_alloc_1d (var_qty);
       int status;
       double res;
-      int *elt2delts3d = ut_alloc_1d_int (1000);
+      int *elt2delts3d = NULL;
       int elt2delt3dqty;
 
       sprintf (vars[0], "cenx");
@@ -697,12 +697,12 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
 
       for (i = 1; i <= Mesh2D.EltQty; i++)
       {
-	neut_mesh_eltcentre (Mesh2D, Nodes, i, vals);
-	neut_mesh_eltlength (Nodes, Mesh2D, i, &(vals[3]));
+	neut_mesh_elt_centre (Mesh2D, Nodes, i, vals);
+	neut_mesh_elt_length (Nodes, Mesh2D, i, &(vals[3]));
 	vals[4] = i;
 
 	vals[5] = 0;
-	neut_mesh_elt2delts3d (Mesh2D, i, Mesh3D, elt2delts3d,
+	neut_mesh_elt2d_elts3d (Mesh2D, i, Mesh3D, &elt2delts3d,
 			       &elt2delt3dqty);
 	for (j = 0; j < elt2delt3dqty; j++)
 	  if ((*pPrint).showelt[elt2delts3d[j]] == 1)
@@ -769,7 +769,7 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
       double *vals = ut_alloc_1d (var_qty);
       int status;
       double res;
-      int *elt0delts3d = ut_alloc_1d_int (1000);
+      int *elt0delts3d = NULL;
       int elt0delt3dqty;
 
       sprintf (vars[0], "cenx");
@@ -781,12 +781,12 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
 
       for (i = 1; i <= Mesh0D.EltQty; i++)
       {
-	neut_mesh_eltcentre (Mesh1D, Nodes, i, vals);
-	neut_mesh_eltlength (Nodes, Mesh1D, i, &(vals[3]));
+	neut_mesh_elt_centre (Mesh1D, Nodes, i, vals);
+	neut_mesh_elt_length (Nodes, Mesh1D, i, &(vals[3]));
 	vals[4] = i;
 
 	vals[5] = 0;
-	neut_mesh_elt0delts3d (Mesh0D, i, Mesh1D, Mesh2D, Mesh3D, elt0delts3d,
+	neut_mesh_elt0d_elts3d (Mesh0D, i, Mesh1D, Mesh2D, Mesh3D, &elt0delts3d,
 			       &elt0delt3dqty);
 	for (j = 0; j < elt0delt3dqty; j++)
 	  if ((*pPrint).showelt[elt0delts3d[j]] == 1)
@@ -895,7 +895,7 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
 	    break;
 	  }
 
-	vals[9] = neut_nodes_eltdim (Mesh0D, Mesh1D, Mesh2D, Mesh3D, i);
+	vals[9] = neut_mesh_node_dim (Mesh0D, Mesh1D, Mesh2D, Mesh3D, i);
 
 	int done = 0;
 	for (j = 0; j < var_qty; j++)
@@ -933,10 +933,11 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
 
   else if (strcmp (argv[(*pi)], "-showelt1din") == 0)
   {
-    int* nelts = ut_alloc_1d_int (1000);
+    int* nelts = NULL;
+    int neltqty;
     int* cnodes = ut_alloc_1d_int (20);
     int cnodeqty;
-    int* celts = ut_alloc_1d_int (20);
+    int* celts = NULL;
     int* nodepair = ut_alloc_1d_int (2);
     int celtqty;
 
@@ -945,9 +946,9 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
     for (i = 1; i <= Mesh3D.EltQty; i++)
       if ((*pPrint).showelt[i] == 1)
       {
-	neut_mesh_elt_neighelts (Mesh3D, i, nelts + 1, &(nelts[0])); 
+	neut_mesh_elt_neighelts (Mesh3D, i, &nelts, &neltqty); 
 
-	for (j = 1; j <= nelts[0]; j++)
+	for (j = 0; j < neltqty; j++)
 	  if ((*pPrint).showelt[nelts[j]] == 1)
 	    if (Mesh3D.EltElset[i] != Mesh3D.EltElset[nelts[j]])
 	    {
@@ -966,7 +967,7 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
 		for (l = k + 1; l < cnodeqty; l++)
 		{
 		  nodepair[1] = cnodes[l];
-		  neut_nodes_commonelts (Mesh3D, nodepair, 2, celts, &celtqty);
+		  neut_mesh_nodes_comelts (Mesh3D, nodepair, 2, &celts, &celtqty);
 		  for (m = 0; m < celtqty; m++)
 		    if ((*pPrint).showelt[celts[m]] == 0)
 		    {
@@ -994,9 +995,11 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
 		}
 	      }
 	    }
+
+	ut_free_1d_int (nelts);
+	nelts = NULL;
       }
 
-    ut_free_1d_int (nelts);
     ut_free_1d_int (cnodes);
     ut_free_1d_int (celts);
     ut_free_1d_int (nodepair);

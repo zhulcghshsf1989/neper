@@ -14,7 +14,7 @@ nem_mesh_pinching (struct GEO Geo, double** face_eq, struct MESH
   int polyedgeqty;
   int* polyedge = NULL;
   int* edgeface = NULL;
-  int* elts2d = ut_alloc_1d_int (10);
+  int* elts2d = NULL;
   int elt2dqty;
   double* n1 = ut_alloc_1d (3);
   double* n2 = ut_alloc_1d (3);
@@ -43,8 +43,8 @@ nem_mesh_pinching (struct GEO Geo, double** face_eq, struct MESH
       for (k = 1; k <= Mesh1D.Elsets[edge][0]; k++)
       {
 	elt1d = Mesh1D.Elsets[edge][k]; 
-	neut_nodes_elsets_commonelts (*pMesh2D,
-	    Mesh1D.EltNodes[elt1d], 2, edgeface, 2, elts2d, &elt2dqty);
+	neut_mesh_nodes_elsets_comelts (*pMesh2D,
+	    Mesh1D.EltNodes[elt1d], 2, edgeface, 2, &elts2d, &elt2dqty);
 	if (elt2dqty != 2)
 	  ut_error_reportbug ();
 
@@ -56,14 +56,14 @@ nem_mesh_pinching (struct GEO Geo, double** face_eq, struct MESH
 	  ut_array_1d_scale (elt1d_v, 3, -1);
 
 	// getting the elt normal, outgoing 
-	neut_mesh_eltnormal (*pMesh2D, Nodes, elts2d[0], n1);
+	neut_mesh_elt_normal (*pMesh2D, Nodes, elts2d[0], n1);
 	face = (*pMesh2D).EltElset[elts2d[0]];
 	pos = 1 + ut_array_1d_int_eltpos (Geo.PolyFaceNb[i] + 1,
 				  Geo.PolyFaceQty[i], face);
 	ut_array_1d_scale (n1, 3, (double) Geo.PolyFaceOri[i][pos]);
 
 	// getting the elt normal, outgoing 
-	neut_mesh_eltnormal (*pMesh2D, Nodes, elts2d[1], n2);
+	neut_mesh_elt_normal (*pMesh2D, Nodes, elts2d[1], n2);
 	face = (*pMesh2D).EltElset[elts2d[1]];
 	pos = 1 + ut_array_1d_int_eltpos (Geo.PolyFaceNb[i] + 1,
 				  Geo.PolyFaceQty[i], face);

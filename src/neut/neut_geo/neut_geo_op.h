@@ -80,7 +80,7 @@ extern void   neut_geo_init_facestuff_fromver (struct GEO* pGeo);
 ///
 ///
 ///
-extern void   neut_geo_init_boundingbox (struct GEO* pGeo);
+extern void   neut_geo_init_bbox (struct GEO* pGeo);
 
 /// \brief Initialize FaceDom
 ///

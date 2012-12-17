@@ -18,7 +18,7 @@ nevs_camera_init (struct GEO Geo, struct NODES Nodes,
 
   if (MeshData.coodata[node_id] != NULL)
   {
-    neut_nodes_nodes (Nodes, &Nodes2);
+    neut_nodes_memcpy (Nodes, &Nodes2);
 
     if (! strcmp (MeshData.coodatatype[node_id], "coo"))
       ut_array_2d_memcpy (Nodes2.NodeCoo + 1, Nodes.NodeQty, 3,
@@ -60,7 +60,7 @@ nevs_camera (char** argv, int* pi, struct GEO Geo, struct NODES Nodes,
 
   if (MeshData.coodata[node_id] != NULL)
   {
-    neut_nodes_nodes (Nodes, &Nodes2);
+    neut_nodes_memcpy (Nodes, &Nodes2);
     
     if (! strcmp (MeshData.coodatatype[node_id], "coo"))
       ut_array_2d_memcpy (Nodes2.NodeCoo + 1, Nodes.NodeQty, 3,

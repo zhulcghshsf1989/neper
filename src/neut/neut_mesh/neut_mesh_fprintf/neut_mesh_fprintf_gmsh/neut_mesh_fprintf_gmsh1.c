@@ -2,7 +2,7 @@
 /* Copyright (C) 2003-2012, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-#include"neut_mesh_fprintf_gmsh.h"
+#include"neut_mesh_fprintf_gmsh_lcl.h"
 
 void
 neut_mesh_fprintf_gmsh (FILE* file, char* dim, struct NODES Nodes,
@@ -148,42 +148,22 @@ neut_elts_fprintf_gmsh (FILE* file, struct MESH Mesh0D,
   return;
 }
 
-/*
 void
-neut_mesh_fprintf_gmsh_nsets (FILE* file, char* nset, int** NSets, char** NSetNames)
+neut_nodes_fprintf_gmsh (FILE* file, struct NODES Nodes)
 {
   int i, j;
-  char** name;
-  int qty;
 
-  ut_string_separate (nset, ',', &name, &qty);
-
-  for (i = 0; i < qty; i++)
-    for (j = 1; j <= 44; j++)
-      if (strcmp (name[i], NSetNames[j]) == 0)
-      {
-	neut_mesh_fprintf_gmsh_nset (file, NSetNames[j], NSets[j]);
-	break;
-      }
-  
-  ut_free_2d_char (name, qty);
+  fprintf (file, "$Nodes\n");
+  fprintf (file, "%d\n", Nodes.NodeQty);
+  for (i = 1; i <= Nodes.NodeQty; i++)
+  {
+    fprintf (file, "%d", i);
+    for (j = 0; j < 3; j++)
+      fprintf (file, " %.12f",
+	  (fabs (Nodes.NodeCoo[i][j]) < 1e-12) ? 0 : Nodes.NodeCoo[i][j]);
+    fprintf (file, "\n");
+  }
+  fprintf (file, "$EndNodes\n");
 
   return;
 }
-
-void
-neut_mesh_fprintf_gmsh_nset (FILE* file, char* name, int* nodeset)
-{
-  int i, col;
-
-  fprintf (file, "\n**nset %s\n", name);
-
-  col = 0;
-  for (i = 1; i <= nodeset[0]; i++)
-    ut_print_wnc_int (file, nodeset[i], &col, 72);
-
-  fprintf (file, "\n");
-
-  return;
-}
-*/

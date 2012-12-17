@@ -22,5 +22,9 @@ extern int neut_geodata_entity_id (char*, int*);
 extern int neut_geodata_id_entity (int, char*);
 extern int neut_geodata_id_qty (struct GEODATA, int, int*);
 
+extern void neut_meshdata_mesh2slice (struct NODES Nodes, struct MESH
+    Mesh, struct MESHDATA MeshData, struct NODES SNodes, struct MESH
+    SMesh, int* elt_newold, int** node_newold, double* node_fact, struct
+    MESHDATA* pSMeshData);
 
 #endif /* NEUT_DATA0_H */
