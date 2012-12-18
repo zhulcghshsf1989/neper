@@ -11,6 +11,6 @@ extern int neut_gmsh_elt_nb (char*, int, int, int*);
 extern int neut_gmsh_meshalgo2d_nb (char*, int*);
 extern int neut_gmsh_meshalgo3d_nb (char*, int*);
 extern int neut_gmsh_optialgo_nb (char*, int*);
-extern int neut_gmsh_sphere_geo_fprintf (FILE*, double, double);
+extern int neut_gmsh_sphere_tess_fprintf (FILE*, double, double);
 
 #endif /* NEUT_GMSH0_H */

@@ -11,7 +11,7 @@ struct ORI
   int N;
   int id;
 
-  /* input = tess file */
+  /* input = tesl file */
   int *rngid;
 
   int Random;

@@ -5,7 +5,7 @@
 #include"nem_transport.h"
 
 void
-nem_transport_mesh3d_parelt (struct GEO Geo, struct NODES OldNodes,
+nem_transport_mesh3d_parelt (struct TESS Tess, struct NODES OldNodes,
     struct MESH OldMesh2D, struct MESH OldMesh3D, struct NODES NewNodes,
     struct MESH NewMesh2D, struct MESH NewMesh3D, int* oldelt)
 {
@@ -17,7 +17,7 @@ nem_transport_mesh3d_parelt (struct GEO Geo, struct NODES OldNodes,
   int message_length;
   double* eq = ut_alloc_1d (4);
 
-  Geo.PolyQty = Geo.PolyQty;
+  Tess.PolyQty = Tess.PolyQty;
   OldMesh2D.EltQty = OldMesh2D.EltQty;
 
   neut_mesh_set_zero (&Facet);

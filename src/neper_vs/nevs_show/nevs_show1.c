@@ -6,7 +6,7 @@
 #include<unistd.h>
 
 void
-nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
+nevs_show (char **argv, int *pi, struct TESS Tess, struct NODES Nodes,
 	   struct MESH Mesh0D, struct MESH Mesh1D, struct MESH Mesh2D,
 	   struct MESH Mesh3D, struct PRINT *pPrint)
 {
@@ -34,11 +34,11 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
   else if (strcmp (argv[(*pi)], "-showpoly") == 0)
   {
     (*pi)++;
-    (*pPrint).showpoly = ut_realloc_1d_int ((*pPrint).showpoly, Geo.PolyQty + 1);
-    ut_array_1d_int_set ((*pPrint).showpoly + 1, Geo.PolyQty, 0);
+    (*pPrint).showpoly = ut_realloc_1d_int ((*pPrint).showpoly, Tess.PolyQty + 1);
+    ut_array_1d_int_set ((*pPrint).showpoly + 1, Tess.PolyQty, 0);
 
     if (strcmp (argv[(*pi)], "all") == 0)
-      ut_array_1d_int_set ((*pPrint).showpoly + 1, Geo.PolyQty, 1);
+      ut_array_1d_int_set ((*pPrint).showpoly + 1, Tess.PolyQty, 1);
 
     else if (argv[(*pi)][0] == '@')
     {
@@ -64,14 +64,14 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
       sprintf (vars[6], "id");
       sprintf (vars[7], "faceqty");
 
-      for (i = 1; i <= Geo.PolyQty; i++)
+      for (i = 1; i <= Tess.PolyQty; i++)
       {
-	ut_array_1d_memcpy (vals, 3, Geo.CenterCoo[i]);
-	neut_geo_poly_volume (Geo, i, &(vals[3]));
-	vals[4] = Geo.PolyTrue[i];
-	vals[5] = Geo.PolyBody[i];
+	ut_array_1d_memcpy (vals, 3, Tess.CenterCoo[i]);
+	neut_tess_poly_volume (Tess, i, &(vals[3]));
+	vals[4] = Tess.PolyTrue[i];
+	vals[5] = Tess.PolyBody[i];
 	vals[6] = i;
-	vals[7] = Geo.PolyFaceQty[i];
+	vals[7] = Tess.PolyFaceQty[i];
 
 #ifdef HAVE_LIBMATHEVAL
 	status = ut_math_eval (argv[(*pi)], var_qty, vars, vals, &res);
@@ -89,7 +89,7 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
     }
 
     (*pPrint).showpoly[0] = ut_array_1d_int_sum ((*pPrint).showpoly + 1,
-						 Geo.PolyQty);
+						 Tess.PolyQty);
 
     if ((*pPrint).showverinit == 0)
     {
@@ -98,7 +98,7 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
       sprintf (locargv[1], "poly_shown");
       int loci = 0;
 
-      nevs_show (locargv, &loci, Geo, Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, pPrint);
+      nevs_show (locargv, &loci, Tess, Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, pPrint);
 
       ut_free_2d_char (locargv, 2);
     }
@@ -110,7 +110,7 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
       sprintf (locargv[1], "poly_shown");
       int loci = 0;
 
-      nevs_show (locargv, &loci, Geo, Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, pPrint);
+      nevs_show (locargv, &loci, Tess, Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, pPrint);
 
       ut_free_2d_char (locargv, 2);
     }
@@ -131,12 +131,12 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
   else if (strcmp (argv[(*pi)], "-showface") == 0)
   {
     (*pi)++;
-    (*pPrint).showface = ut_realloc_1d_int ((*pPrint).showface, Geo.FaceQty + 1);
-    ut_array_1d_int_set ((*pPrint).showface + 1, Geo.FaceQty, 0);
+    (*pPrint).showface = ut_realloc_1d_int ((*pPrint).showface, Tess.FaceQty + 1);
+    ut_array_1d_int_set ((*pPrint).showface + 1, Tess.FaceQty, 0);
     (*pPrint).showface[0] = -1;
 
     if (strcmp (argv[(*pi)], "all") == 0)
-      ut_array_1d_int_set ((*pPrint).showface + 1, Geo.FaceQty, 1);
+      ut_array_1d_int_set ((*pPrint).showface + 1, Tess.FaceQty, 1);
 
     else if (argv[(*pi)][0] == '@')
     {
@@ -165,23 +165,23 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
       sprintf (vars[9], "edgeqty");
       sprintf (vars[10], "verqty");
 
-      for (i = 1; i <= Geo.FaceQty; i++)
+      for (i = 1; i <= Tess.FaceQty; i++)
       {
-	neut_geo_face_centre (Geo, i, vals);
-	neut_geo_face_area   (Geo, i, &(vals[3]));
-	vals[4] = neut_geo_face_polytruelevelmax (Geo, i);
-	vals[5] = neut_geo_face_polybodylevelmax (Geo, i);
+	neut_tess_face_centre (Tess, i, vals);
+	neut_tess_face_area   (Tess, i, &(vals[3]));
+	vals[4] = neut_tess_face_polytruelevelmax (Tess, i);
+	vals[5] = neut_tess_face_polybodylevelmax (Tess, i);
 	vals[6] = i;
 	vals[7] = 0;
 	for (j = 0; j < 2; j++)
-	  if (Geo.FacePoly[i][j] > 0 && (*pPrint).showpoly[Geo.FacePoly[i][j]] == 1)
+	  if (Tess.FacePoly[i][j] > 0 && (*pPrint).showpoly[Tess.FacePoly[i][j]] == 1)
 	  {
 	    vals[7] = 1;
 	    break;
 	  }
-	vals[8] = Geo.FaceFF[i];
-	vals[9] = Geo.FaceVerQty[i];
-	vals[10] = Geo.FaceVerQty[i];
+	vals[8] = Tess.FaceFF[i];
+	vals[9] = Tess.FaceVerQty[i];
+	vals[10] = Tess.FaceVerQty[i];
 
 #ifdef HAVE_LIBMATHEVAL
 	status = ut_math_eval (argv[(*pi)], var_qty, vars, vals, &res);
@@ -199,7 +199,7 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
     }
 
     (*pPrint).showface[0] = ut_array_1d_int_sum ((*pPrint).showface + 1,
-						 Geo.FaceQty);
+						 Tess.FaceQty);
   }
   
   else if (strcmp (argv[(*pi)], "-showedge") == 0)
@@ -207,12 +207,12 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
     (*pPrint).showedgeinit = 1;
 
     (*pi)++;
-    (*pPrint).showedge = ut_realloc_1d_int ((*pPrint).showedge, Geo.EdgeQty + 1);
-    ut_array_1d_int_set ((*pPrint).showedge + 1, Geo.EdgeQty, 0);
+    (*pPrint).showedge = ut_realloc_1d_int ((*pPrint).showedge, Tess.EdgeQty + 1);
+    ut_array_1d_int_set ((*pPrint).showedge + 1, Tess.EdgeQty, 0);
     (*pPrint).showedge[0] = -1;
 
     if (strcmp (argv[(*pi)], "all") == 0)
-      ut_array_1d_int_set ((*pPrint).showedge + 1, Geo.EdgeQty, 1);
+      ut_array_1d_int_set ((*pPrint).showedge + 1, Tess.EdgeQty, 1);
 
     else if (argv[(*pi)][0] == '@')
     {
@@ -242,15 +242,15 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
       sprintf (vars[8], "face_shown");
       sprintf (vars[9], "cyl");
 
-      for (i = 1; i <= Geo.EdgeQty; i++)
+      for (i = 1; i <= Tess.EdgeQty; i++)
       {
-	neut_geo_edge_centre (Geo, i, vals);
-	vals[3] = Geo.EdgeLength[i];
-	vals[4] = neut_geo_edge_polytruelevelmax (Geo, Geo.PolyTrue, i);
-	vals[5] = neut_geo_edge_polybodylevelmax (Geo, Geo.PolyBody, i);
+	neut_tess_edge_centre (Tess, i, vals);
+	vals[3] = Tess.EdgeLength[i];
+	vals[4] = neut_tess_edge_polytruelevelmax (Tess, Tess.PolyTrue, i);
+	vals[5] = neut_tess_edge_polybodylevelmax (Tess, Tess.PolyBody, i);
 	vals[6] = i;
 	vals[7] = 0;
-	neut_geo_edge_polys (Geo, i, &poly, &polyqty);
+	neut_tess_edge_polys (Tess, i, &poly, &polyqty);
 	for (j = 0; j < polyqty; j++)
 	  if (poly[j] > 0 && (*pPrint).showpoly[poly[j]] == 1)
 	  {
@@ -258,14 +258,14 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
 	    break;
 	  }
 	vals[8] = 0;
-	for (j = 1; j <= Geo.EdgeFaceQty[i]; j++)
-	  if ((*pPrint).showface[Geo.EdgeFaceNb[i][j - 1]] == 1)
+	for (j = 1; j <= Tess.EdgeFaceQty[i]; j++)
+	  if ((*pPrint).showface[Tess.EdgeFaceNb[i][j - 1]] == 1)
 	  {
 	    vals[8] = 1;
 	    break;
 	  }
 
-	vals[9] = neut_geo_edge_fake (Geo, i);
+	vals[9] = neut_tess_edge_fake (Tess, i);
 
 #ifdef HAVE_LIBMATHEVAL
 	status = ut_math_eval (argv[(*pi)], var_qty, vars, vals, &res);
@@ -284,7 +284,7 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
     }
 
     (*pPrint).showedge[0] = ut_array_1d_int_sum ((*pPrint).showedge + 1,
-						 Geo.EdgeQty);
+						 Tess.EdgeQty);
   }
 
   else if (strcmp (argv[(*pi)], "-showver") == 0)
@@ -292,12 +292,12 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
     (*pPrint).showverinit = 1;
 
     (*pi)++;
-    (*pPrint).showver = ut_realloc_1d_int ((*pPrint).showver, Geo.VerQty + 1);
-    ut_array_1d_int_set ((*pPrint).showver + 1, Geo.VerQty, 0);
+    (*pPrint).showver = ut_realloc_1d_int ((*pPrint).showver, Tess.VerQty + 1);
+    ut_array_1d_int_set ((*pPrint).showver + 1, Tess.VerQty, 0);
     (*pPrint).showver[0] = -1;
 
     if (strcmp (argv[(*pi)], "all") == 0)
-      ut_array_1d_int_set ((*pPrint).showver + 1, Geo.VerQty, 1);
+      ut_array_1d_int_set ((*pPrint).showver + 1, Tess.VerQty, 1);
 
     else if (argv[(*pi)][0] == '@')
     {
@@ -327,14 +327,14 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
       sprintf (vars[7], "face_shown");
       sprintf (vars[8], "edge_shown");
 
-      for (i = 1; i <= Geo.VerQty; i++)
+      for (i = 1; i <= Tess.VerQty; i++)
       {
-	ut_array_1d_memcpy (vals, 3, Geo.VerCoo[i]);
-	vals[3] = neut_geo_ver_polytruelevelmax (Geo, Geo.PolyTrue, i);
-	vals[4] = neut_geo_ver_polybodylevelmax (Geo, Geo.PolyBody, i);
+	ut_array_1d_memcpy (vals, 3, Tess.VerCoo[i]);
+	vals[3] = neut_tess_ver_polytruelevelmax (Tess, Tess.PolyTrue, i);
+	vals[4] = neut_tess_ver_polybodylevelmax (Tess, Tess.PolyBody, i);
 	vals[5] = i;
 	vals[6] = 0;
-	neut_geo_ver_polys (Geo, i, &poly, &polyqty);
+	neut_tess_ver_polys (Tess, i, &poly, &polyqty);
 	for (j = 0; j < polyqty; j++)
 	{
 	  if (poly[j] > 0 && (*pPrint).showpoly[poly[j]] == 1)
@@ -344,7 +344,7 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
 	  }
 	}
 	vals[7] = 0;
-	neut_geo_ver_faces (Geo, i, &face, &faceqty);
+	neut_tess_ver_faces (Tess, i, &face, &faceqty);
 	for (j = 0; j < faceqty; j++)
 	  if ((*pPrint).showface[face[j]] == 1)
 	  {
@@ -352,8 +352,8 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
 	    break;
 	  }
 	vals[8] = 0;
-	for (j = 0; j < Geo.VerEdgeQty[i]; j++)
-	  if ((*pPrint).showedge[Geo.VerEdgeNb[i][j]] == 1)
+	for (j = 0; j < Tess.VerEdgeQty[i]; j++)
+	  if ((*pPrint).showedge[Tess.VerEdgeNb[i][j]] == 1)
 	  {
 	    vals[8] = 1;
 	    break;
@@ -377,7 +377,7 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
     }
 
     (*pPrint).showver[0] = ut_array_1d_int_sum ((*pPrint).showver + 1,
-						 Geo.VerQty);
+						 Tess.VerQty);
   }
 
   // show elements -----------------------------------------------------
@@ -418,8 +418,8 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
       {
 	neut_mesh_elt_centre (Mesh3D, Nodes, i, vals);
 	neut_mesh_elt_volume (Nodes, Mesh3D, i, &(vals[3]));
-	vals[4] = (Geo.PolyQty > 0) ? Geo.PolyTrue[Mesh3D.EltElset[i]] : -1;
-	vals[5] = (Geo.PolyQty > 0) ? Geo.PolyBody[Mesh3D.EltElset[i]] : -1;
+	vals[4] = (Tess.PolyQty > 0) ? Tess.PolyTrue[Mesh3D.EltElset[i]] : -1;
+	vals[5] = (Tess.PolyQty > 0) ? Tess.PolyBody[Mesh3D.EltElset[i]] : -1;
 	vals[6] = i;
 	vals[7] = Mesh3D.EltElset[i];
 
@@ -499,8 +499,8 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
       {
 	neut_mesh_elt_centre (Mesh3D, Nodes, i, vals);
 	neut_mesh_elt_volume (Nodes, Mesh3D, i, &(vals[3]));
-	vals[4] = (Geo.PolyQty > 0) ? Geo.PolyTrue[Mesh3D.EltElset[i]] : -1;
-	vals[5] = (Geo.PolyQty > 0) ? Geo.PolyBody[Mesh3D.EltElset[i]] : -1;
+	vals[4] = (Tess.PolyQty > 0) ? Tess.PolyTrue[Mesh3D.EltElset[i]] : -1;
+	vals[5] = (Tess.PolyQty > 0) ? Tess.PolyBody[Mesh3D.EltElset[i]] : -1;
 	vals[6] = i;
 	vals[7] = Mesh3D.EltElset[i];
 
@@ -594,28 +594,28 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
 	  }
 
 	vals[6] = 0;
-	if (Geo.DomType != NULL && ! strcmp (Geo.DomType, "cylinder"))
+	if (Tess.DomType != NULL && ! strcmp (Tess.DomType, "cylinder"))
 	{
 	  int edge, domedge, domface1, domface2, face, poly1, poly2;
 	  edge = Mesh1D.EltElset[i];
 
-	  if (Geo.EdgeDom[edge][0] == 1)
+	  if (Tess.EdgeDom[edge][0] == 1)
 	  {
-	    domedge = Geo.EdgeDom[edge][1];
-	    domface1 = Geo.DomEdgeFaceNb[domedge][0];
-	    domface2 = Geo.DomEdgeFaceNb[domedge][1];
+	    domedge = Tess.EdgeDom[edge][1];
+	    domface1 = Tess.DomEdgeFaceNb[domedge][0];
+	    domface2 = Tess.DomEdgeFaceNb[domedge][1];
 	    
 	    poly1 = -1;
 	    poly2 = -1;
-	    for (j = 0; j < Geo.EdgeFaceQty[edge]; j++)
+	    for (j = 0; j < Tess.EdgeFaceQty[edge]; j++)
 	    {
-	      face = Geo.EdgeFaceNb[edge][j];
-	      if (Geo.FaceDom[face][0] == 2)
+	      face = Tess.EdgeFaceNb[edge][j];
+	      if (Tess.FaceDom[face][0] == 2)
 	      {
-		if (Geo.FaceDom[face][1] == domface1)
-		  poly1 = Geo.FacePoly[face][0];
-		if (Geo.FaceDom[face][1] == domface2)
-		  poly2 = Geo.FacePoly[face][0];
+		if (Tess.FaceDom[face][1] == domface1)
+		  poly1 = Tess.FacePoly[face][0];
+		if (Tess.FaceDom[face][1] == domface2)
+		  poly2 = Tess.FacePoly[face][0];
 	      }
 	    }
 
@@ -1052,8 +1052,8 @@ nevs_show (char **argv, int *pi, struct GEO Geo, struct NODES Nodes,
       {
 	neut_mesh_elset_centre (Nodes, Mesh3D, i, vals);
 	neut_mesh_elset_volume (Nodes, Mesh3D, i, &(vals[3]));
-	vals[4] = Geo.PolyTrue[i];
-	vals[5] = Geo.PolyBody[i];
+	vals[4] = Tess.PolyTrue[i];
+	vals[5] = Tess.PolyBody[i];
 	vals[6] = i;
 	vals[7] = Mesh3D.Elsets[i][0];
 

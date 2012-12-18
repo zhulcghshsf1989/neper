@@ -156,7 +156,7 @@ neut_gmsh_elt_nb (char* morpho, int dim, int order, int* pnb)
 }
 
 int
-neut_gmsh_sphere_geo_fprintf (FILE* file, double rad, double cl)
+neut_gmsh_sphere_tess_fprintf (FILE* file, double rad, double cl)
 {
   fprintf (file, "rad = %.12f;\n", rad);
   fprintf (file, "cl = %.12f;\n", cl);

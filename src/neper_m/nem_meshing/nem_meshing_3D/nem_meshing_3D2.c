@@ -5,11 +5,11 @@
 #include"nem_meshing_3D.h"
 
 int
-nem_meshing_3D_poly_cl (struct GEOPARA GeoPara, struct GEO Geo, int poly,
+nem_meshing_3D_poly_cl (struct TESSPARA TessPara, struct TESS Tess, int poly,
                 double* pcl)
 {
-  if (GeoPara.dboundcl < 0)
-    (*pcl)  = GeoPara.cl;
+  if (TessPara.dboundcl < 0)
+    (*pcl)  = TessPara.cl;
   else 
   {
     int var_qty = 2;
@@ -20,18 +20,18 @@ nem_meshing_3D_poly_cl (struct GEOPARA GeoPara, struct GEO Geo, int poly,
 
     sprintf (vars[0], "body");
     sprintf (vars[1], "true");
-    vals[0] = Geo.PolyBody[poly];
-    vals[1] = Geo.PolyTrue[poly];
+    vals[0] = Tess.PolyBody[poly];
+    vals[1] = Tess.PolyTrue[poly];
 
-    status = ut_math_eval (GeoPara.dbound, var_qty, vars, vals, &dbound);
+    status = ut_math_eval (TessPara.dbound, var_qty, vars, vals, &dbound);
 
     if (status == -1)
       abort ();
 
     if (dbound == 1)
-	(*pcl)  = GeoPara.dboundcl;
+	(*pcl)  = TessPara.dboundcl;
     else
-	(*pcl)  = GeoPara.cl;
+	(*pcl)  = TessPara.cl;
 
     ut_free_2d_char (vars, var_qty);
     ut_free_1d (vals);
@@ -43,7 +43,7 @@ nem_meshing_3D_poly_cl (struct GEOPARA GeoPara, struct GEO Geo, int poly,
 
 int
 nem_meshing_3D_poly (struct IN In, double cl, struct MULTIM* pMultim,
-		double allowed_t, double* pmax_elapsed_t, struct GEO Geo,
+		double allowed_t, double* pmax_elapsed_t, struct TESS Tess,
 		struct NODES *pNodes, struct MESH Mesh2D, 
 		struct MESH *pMesh3D, int id)
 {
@@ -65,22 +65,22 @@ nem_meshing_3D_poly (struct IN In, double cl, struct MULTIM* pMultim,
   char* tmpstring = ut_alloc_1d_char (1000);
 
   if ((*pMultim).mOdis == NULL)
-    (*pMultim).mOdis = ut_alloc_2d (Geo.PolyQty + 1, (*pMultim).algoqty);
+    (*pMultim).mOdis = ut_alloc_2d (Tess.PolyQty + 1, (*pMultim).algoqty);
   if ((*pMultim).mOsize == NULL)
-    (*pMultim).mOsize = ut_alloc_2d (Geo.PolyQty + 1, (*pMultim).algoqty);
+    (*pMultim).mOsize = ut_alloc_2d (Tess.PolyQty + 1, (*pMultim).algoqty);
   if ((*pMultim).mO == NULL)
-    (*pMultim).mO = ut_alloc_2d (Geo.PolyQty + 1, (*pMultim).algoqty);
+    (*pMultim).mO = ut_alloc_2d (Tess.PolyQty + 1, (*pMultim).algoqty);
   if ((*pMultim).Oalgo == NULL)
-    (*pMultim).Oalgo = ut_alloc_1d_int (Geo.PolyQty + 1);
+    (*pMultim).Oalgo = ut_alloc_1d_int (Tess.PolyQty + 1);
   if ((*pMultim).algohit == NULL)
     (*pMultim).algohit = ut_alloc_1d_int ((*pMultim).algoqty);
 
   if ((*pMultim).Odis == NULL)
-    (*pMultim).Odis = ut_alloc_1d (Geo.PolyQty + 1);
+    (*pMultim).Odis = ut_alloc_1d (Tess.PolyQty + 1);
   if ((*pMultim).Osize == NULL)
-    (*pMultim).Osize = ut_alloc_1d (Geo.PolyQty + 1);
+    (*pMultim).Osize = ut_alloc_1d (Tess.PolyQty + 1);
   if ((*pMultim).O == NULL)
-    (*pMultim).O = ut_alloc_1d (Geo.PolyQty + 1);
+    (*pMultim).O = ut_alloc_1d (Tess.PolyQty + 1);
 
   int var_qty = 2;
   char**  vars = ut_alloc_2d_char (var_qty, 10);
@@ -106,7 +106,7 @@ nem_meshing_3D_poly (struct IN In, double cl, struct MULTIM* pMultim,
     {
       rnd = iter * 1.e-5;
 
-      status = nem_mesh_3d_gmsh (Geo, id, *pNodes, Mesh2D, cl,
+      status = nem_mesh_3d_gmsh (Tess, id, *pNodes, Mesh2D, cl,
 	  In.mesh3dclconv, In.gmsh, (*pMultim).algos[a][0],
 	  (*pMultim).algos[a][1], rnd, allowed_t, &N, &M, &acl,
 	  &elapsed_t);
@@ -191,7 +191,7 @@ nem_meshing_3D_poly (struct IN In, double cl, struct MULTIM* pMultim,
   /* calculating the node numbers - some are already recorded ("2D"
    * nodes), the others are new.  We use the node positions. */
 
-  neut_mesh_elsets_nodes (Mesh2D, Geo.PolyFaceNb[id] + 1, Geo.PolyFaceQty[id], &skinnodes, &skinnodes_qty);
+  neut_mesh_elsets_nodes (Mesh2D, Tess.PolyFaceNb[id] + 1, Tess.PolyFaceQty[id], &skinnodes, &skinnodes_qty);
 
   node_nbs = ut_alloc_1d_int (N.NodeQty + 1);
 

@@ -14,7 +14,7 @@
 
 #include"nem_meshing_hex0.h"
 
-extern void nem_meshing_hexFGeo (struct GEO Geo, struct MESH* pMesh);
+extern void nem_meshing_hexFTess (struct TESS Tess, struct MESH* pMesh);
 extern void nem_meshing_hex_meshpoly (char*, struct VOX, struct MESH*, struct NODES*, struct NSET*);
 extern void nem_meshing_hex_cleaning (struct MESH* pMesh, struct NODES* pNodes, int*** pFoDNodes);
 extern void nem_meshing_hex_singnodedup (struct MESH* pMesh, struct NODES* pNodes, int*** pFoDNodes);

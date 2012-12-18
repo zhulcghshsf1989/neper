@@ -19,7 +19,7 @@
 #include"nem_input0.h"
 
 extern void nem_input_treatargs (int, char **, int, char **, struct IN *,
-			 struct GEOPARA *);
-extern void nem_input_options_default (struct IN *, struct GEOPARA *);
-extern void nem_input_options_set (struct IN *, struct GEOPARA *,
+			 struct TESSPARA *);
+extern void nem_input_options_default (struct IN *, struct TESSPARA *);
+extern void nem_input_options_set (struct IN *, struct TESSPARA *,
 			   int, char **);

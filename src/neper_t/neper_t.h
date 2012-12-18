@@ -16,14 +16,14 @@
 #include"GermDistrib/GermDistrib0.h"
 #include"PolyComp/PolyComp0.h"
 #include"Miscellaneous/Miscellaneous0.h"
-#include"Tess/Tess0.h"
+#include"Tesl/Tesl0.h"
 #include"net_centroid/net_centroid0.h"
-#include"net_geo_sort/net_geo_sort.h"
+#include"net_tess_sort/net_tess_sort.h"
 #include"net_vox/net_vox0.h"
 
 #include"InputData_t/InputData_t0.h"
 #include"neper_m/nem_input/nem_input0.h"
-#include"RegularizeGeo/RegularizeGeo0.h"
+#include"RegularizeTess/RegularizeTess0.h"
 #include"Res_t/Res_t0.h"
 
 #include"neper_t0.h"

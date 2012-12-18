@@ -5,7 +5,7 @@
 #include"nem_meshing_0D.h"
 
 void
-nem_meshing_0D (struct GEO Geo, struct GEOPARA GeoPara, struct NODES* pNodes, struct MESH* pMesh0D)
+nem_meshing_0D (struct TESS Tess, struct TESSPARA TessPara, struct NODES* pNodes, struct MESH* pMesh0D)
 {
   int i;
   struct NODES N;
@@ -19,21 +19,21 @@ nem_meshing_0D (struct GEO Geo, struct GEOPARA GeoPara, struct NODES* pNodes, st
   (*pMesh0D).EltType = ut_alloc_1d_char (5);
   sprintf ((*pMesh0D).EltType, "tri");
 
-  if (Geo.maxff > 0)
+  if (Tess.maxff > 0)
   {
-    if (1.01 * Geo.sel < GeoPara.cl / GeoPara.pcl)
+    if (1.01 * Tess.sel < TessPara.cl / TessPara.pcl)
       ut_print_messagewnc (1, 72, "Regularization was used with sel < cl / pl.  The mesh could be locally overrefined.");
-    if (Geo.dbound != NULL)
-      if (1.01 * Geo.dboundsel < GeoPara.dboundcl / GeoPara.dboundpcl)
+    if (Tess.dbound != NULL)
+      if (1.01 * Tess.dboundsel < TessPara.dboundcl / TessPara.dboundpcl)
 	ut_print_messagewnc (1, 72, "Regularization was used with dboundsel < dboundcl / dboundpl.  The mesh could be locally overrefined.");
   }
 
   ut_print_message (0, 2, "0D meshing ... ");
 
-  ut_print_progress (stdout, 0, Geo.VerQty, "%3.0f%%", message);
-  for (i = 1; i <= Geo.VerQty; i++)
+  ut_print_progress (stdout, 0, Tess.VerQty, "%3.0f%%", message);
+  for (i = 1; i <= Tess.VerQty; i++)
   {
-    VerMeshing (Geo, i, GeoPara, &N, &M);
+    VerMeshing (Tess, i, TessPara, &N, &M);
 
     /* renumbering mesh nodes / elts to match global nodes */
     M.EltNodes[1][0] = (*pNodes).NodeQty + 1;
@@ -43,7 +43,7 @@ nem_meshing_0D (struct GEO Geo, struct GEOPARA GeoPara, struct NODES* pNodes, st
     neut_mesh_addelt (pMesh0D, M.EltNodes[1]);
     neut_mesh_addelset (pMesh0D, M.Elsets[1] + 1, M.Elsets[1][0]);
 
-    ut_print_progress (stdout, i, Geo.VerQty, "%3.0f%%", message);
+    ut_print_progress (stdout, i, Tess.VerQty, "%3.0f%%", message);
   }
 
   neut_mesh_init_nodeelts (pMesh0D, (*pNodes).NodeQty);

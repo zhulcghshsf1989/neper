@@ -8,7 +8,7 @@
 #include "neper_config.h"
 #include "ut.h"
 
-#include "neut_geo.h"
+#include "neut_tess.h"
 #include "neut_vox.h"
 #include "neut_elt.h"
 #include "neut_mesh.h"
@@ -17,7 +17,7 @@
 #include "neut_debug.h"
 #include "neut_gmsh.h"
 #include "neut_germset.h"
-#include "neut_tess.h"
+#include "neut_tesl.h"
 #include "neut_poly.h"
 #include "neut_rand.h"
 #include "neut_part.h"

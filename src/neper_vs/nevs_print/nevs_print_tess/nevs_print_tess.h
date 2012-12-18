@@ -13,4 +13,4 @@
 #include "nevs_print_tess0.h"
 #include "../nevs_print.h"
 
-extern void nevs_print_tess_header (FILE*, struct GEODATA);
+extern void nevs_print_tess_header (FILE*, struct TESSDATA);

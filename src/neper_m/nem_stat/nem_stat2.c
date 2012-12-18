@@ -52,7 +52,7 @@ nem_stat_nodes (FILE* file, char* stn, struct NODES Nodes, struct MESH Mesh0D,
 
 void
 nem_stat_elts (FILE* file, char* ste, struct NODES Nodes, struct MESH Mesh3D, 
-	       struct GEO Geo)
+	       struct TESS Tess)
 {
   int i, j, t, b;
   double vol, length, rr;
@@ -79,8 +79,8 @@ nem_stat_elts (FILE* file, char* ste, struct NODES Nodes, struct MESH Mesh3D,
 	fprintf (file, "%.12f %.12f %.12f", coo[0], coo[1], coo[2]);
       else if (! strcmp (val[j], "true"))
       {
-	if (Geo.PolyQty > 0)
-	  t = Geo.PolyTrue[Mesh3D.EltElset[i]];
+	if (Tess.PolyQty > 0)
+	  t = Tess.PolyTrue[Mesh3D.EltElset[i]];
 	else
 	  t = 0;
 
@@ -88,8 +88,8 @@ nem_stat_elts (FILE* file, char* ste, struct NODES Nodes, struct MESH Mesh3D,
       }
       else if (! strcmp (val[j], "body"))
       {
-	if (Geo.PolyQty > 0)
-	  b = Geo.PolyBody[Mesh3D.EltElset[i]];
+	if (Tess.PolyQty > 0)
+	  b = Tess.PolyBody[Mesh3D.EltElset[i]];
 	else
 	  b = 0;
 
@@ -126,7 +126,7 @@ nem_stat_elts (FILE* file, char* ste, struct NODES Nodes, struct MESH Mesh3D,
 
 void
 nem_stat_elsets (FILE* file, char* ste, struct NODES Nodes, struct MESH Mesh3D, 
-	         struct GEOPARA GeoPara, struct GEO Geo)
+	         struct TESSPARA TessPara, struct TESS Tess)
 {
   int i, j, t, b;
   double vol, rrmean, rrmin, rrmax, Osize;
@@ -142,10 +142,10 @@ nem_stat_elsets (FILE* file, char* ste, struct NODES Nodes, struct MESH Mesh3D,
       neut_mesh_elset_centre (Nodes, Mesh3D, i, coo);
       neut_mesh_elset_rr (Nodes, Mesh3D, i, &rrmean, &rrmin, &rrmax);
 
-      if (Geo.PolyQty > 0)
+      if (Tess.PolyQty > 0)
       {
-	t = Geo.PolyTrue[i];
-	b = Geo.PolyBody[i];
+	t = Tess.PolyTrue[i];
+	b = Tess.PolyBody[i];
       }
       else
       {
@@ -172,9 +172,9 @@ nem_stat_elsets (FILE* file, char* ste, struct NODES Nodes, struct MESH Mesh3D,
       }
       else if (! strcmp (val[j], "Osize"))
       {
-	if (GeoPara.cl > 0)
+	if (TessPara.cl > 0)
 	{
-	  neut_mesh_elset_Osize (Nodes, Mesh3D, i, GeoPara.cl, &Osize);
+	  neut_mesh_elset_Osize (Nodes, Mesh3D, i, TessPara.cl, &Osize);
 	  fprintf (file, "%.12f", Osize);
 	}
 	else

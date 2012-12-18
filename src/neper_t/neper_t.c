@@ -10,18 +10,18 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   // Initializing variables --------------------------------------------
   
   struct IN In;
-  struct GEOPARA GeoPara;
+  struct TESSPARA TessPara;
   struct POLY Domain;
   struct GERMSET GermSet;
-  struct GEO Geo;
+  struct TESS Tess;
   struct VOX Vox;
   FILE* file = NULL;
   char* action = NULL;
 
-  neut_geo_set_zero     (&Geo);
+  neut_tess_set_zero     (&Tess);
   neut_vox_set_zero     (&Vox);
   net_in_set_zero       (&In);
-  nem_geopara_set_zero (&GeoPara);
+  nem_tesspara_set_zero (&TessPara);
   neut_germset_set_zero (&GermSet);
   neut_poly_set_zero    (&Domain);
 
@@ -32,7 +32,7 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   // Reading input data ------------------------------------------------
  
   ut_print_message (0, 1, "Reading input data ...\n");
-  InputData_t (&In, &GeoPara, &action, fargc, fargv, argc, argv);
+  InputData_t (&In, &TessPara, &action, fargc, fargv, argc, argv);
 
   if (ut_string_inlist (action, ',', "tessellate") == 1
    || ut_string_inlist (action, ',', "voxelize") == 1  )
@@ -63,8 +63,8 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
     {
       int i, iter;
       struct POLY* Poly = NULL;
-      struct TESS Tess;
-      neut_tess_set_zero (&Tess);
+      struct TESL Tesl;
+      neut_tesl_set_zero (&Tesl);
 
       char* message = ut_alloc_1d_char (1000);
       double rdistmax = -1;
@@ -103,9 +103,9 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
 
 	// Sticking polyhedra into a single tessellation
 	if (iter > 1)
-	  neut_tess_free (&Tess);
+	  neut_tesl_free (&Tesl);
 
-	Tessellation (GermSet, Poly, &Tess);
+	Tessellation (GermSet, Poly, &Tesl);
 
 	for (i = 1; i <= GermSet.N; i++)
 	  neut_poly_free (&(Poly[i]));
@@ -113,7 +113,7 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
 	Poly = NULL;
 
 	if (In.centroid == 1)
-	  status = net_centroid (In, Tess, &GermSet, &rdistmax);
+	  status = net_centroid (In, Tesl, &GermSet, &rdistmax);
 	else 
 	  status = 0;
 
@@ -127,19 +127,19 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
       
       printf ("\n");
       
-      neut_tess_geo (Tess, &Geo);
-      neut_geo_init_domain_poly (&Geo, Domain, In.domain);
+      neut_tesl_tess (Tesl, &Tess);
+      neut_tess_init_domain_poly (&Tess, Domain, In.domain);
 
-      neut_tess_free (&Tess);
+      neut_tesl_free (&Tesl);
       
       ut_free_1d_char (message);
     }
 
-    else if (! strcmp (In.input, "tess"))
+    else if (! strcmp (In.input, "tesl"))
     {
       ut_print_message (0, 1, "Importing tessellation ...\n");
       file = ut_file_open (In.load, "r");
-      neut_geo_fscanf_verbosity (file, &Geo, In.checktess);
+      neut_tess_fscanf_verbosity (file, &Tess, In.checktess);
       ut_file_close (file, In.load, "r");
 
       if (In.checktess)
@@ -149,17 +149,17 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
     if (In.sorttess_qty > 0)
     {
       ut_print_message (0, 1, "Sorting tessellation ...\n");
-      net_geo_sort (&Geo, In.sorttess[0], In.sorttess[1]);
+      net_tess_sort (&Tess, In.sorttess[0], In.sorttess[1]);
     }
   
-    if (GeoPara.maxff > 0)
+    if (TessPara.maxff > 0)
     {
-      net_init_reg (&Geo, &GeoPara);
-      RegularizeGeo (&Geo, GeoPara, In);
+      net_init_reg (&Tess, &TessPara);
+      RegularizeTess (&Tess, TessPara, In);
     }
 
     if (In.scale != NULL)
-      neut_geo_scale (&Geo, In.scale[0], In.scale[1], In.scale[2]);
+      neut_tess_scale (&Tess, In.scale[0], In.scale[1], In.scale[2]);
   
     // -------------------------------------------------------------------
     // Creating voxel data on tessellation (depending on input) ----------
@@ -168,7 +168,7 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
     if (ut_string_inlist (action, ',', "tess_voxelize") == 1)
     {
       ut_print_message (0, 1, "Voxelizing tessellation ... ");
-      net_geo_vox (In, Geo, &Vox);
+      net_tess_vox (In, Tess, &Vox);
     }
   }
 
@@ -211,13 +211,13 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   // Writing results ---------------------------------------------------
  
   ut_print_message (0, 1, "Writing results ...\n");
-  Res_t (In, Geo, Vox);
+  Res_t (In, Tess, Vox);
 
   // Cleaning memory ---------------------------------------------------
 
   net_in_free (In);
   neut_germset_free (GermSet);
-  neut_geo_free (&Geo);
+  neut_tess_free (&Tess);
   neut_vox_free (&Vox);
   neut_poly_free (&Domain);
 

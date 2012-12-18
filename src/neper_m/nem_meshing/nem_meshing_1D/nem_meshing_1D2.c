@@ -5,13 +5,13 @@
 #include"nem_meshing_1D.h"
 
 void
-EdgeMeshing (struct GEO Geo, int edge, double cl, double pl,
+EdgeMeshing (struct TESS Tess, int edge, double cl, double pl,
              struct NODES Nodes, struct NODES* pN, struct MESH* pM)
 {
   int i, j, node1, node2, ptqty;
-  double l = Geo.EdgeLength[edge];
-  double cl1 = Nodes.NodeCl[Geo.EdgeVerNb[edge][0]];
-  double cl2 = Nodes.NodeCl[Geo.EdgeVerNb[edge][1]];
+  double l = Tess.EdgeLength[edge];
+  double cl1 = Nodes.NodeCl[Tess.EdgeVerNb[edge][0]];
+  double cl2 = Nodes.NodeCl[Tess.EdgeVerNb[edge][1]];
 
   double* Coo = NULL;
   double* Cl = NULL;
@@ -45,8 +45,8 @@ EdgeMeshing (struct GEO Geo, int edge, double cl, double pl,
 
   neut_nodes_set_zero (pN);
 
-  node1 = Geo.EdgeVerNb[edge][0];
-  node2 = Geo.EdgeVerNb[edge][1];
+  node1 = Tess.EdgeVerNb[edge][0];
+  node2 = Tess.EdgeVerNb[edge][1];
 
   (*pN).NodeQty = 2 + ptqty;
   (*pN).NodeCoo = ut_alloc_2d (3 + ptqty, 3);

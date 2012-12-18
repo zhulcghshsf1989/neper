@@ -6,14 +6,14 @@
 
 void
 TreatArg_t (int fargc, char **fargv, int argc, char **argv,
-            struct IN* pIn, struct GEOPARA* pGeoPara)
+            struct IN* pIn, struct TESSPARA* pTessPara)
 {
-  SetDefaultOptions_t (pIn, pGeoPara);
+  SetDefaultOptions_t (pIn, pTessPara);
 
   /* Reading options */
 
-  SetOptions_t (pIn, pGeoPara, fargc, fargv);
-  SetOptions_t (pIn, pGeoPara, argc, argv);
+  SetOptions_t (pIn, pTessPara, fargc, fargv);
+  SetOptions_t (pIn, pTessPara, argc, argv);
 
   /* Testing options */
   if ((*pIn).input == NULL)

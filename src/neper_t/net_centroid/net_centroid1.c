@@ -5,19 +5,19 @@
 #include"net_centroid.h"
 
 int
-net_centroid (struct IN In, struct TESS Tess, struct GERMSET* pGermSet, double* prdistmax)
+net_centroid (struct IN In, struct TESL Tesl, struct GERMSET* pGermSet, double* prdistmax)
 {
   int status, i;
   double* c = ut_alloc_1d (3);
-  double dist, distmax, geovol, avrad;
-  struct GEO Geo;
+  double dist, distmax, tessvol, avrad;
+  struct TESS Tess;
 
-  neut_geo_set_zero (&Geo);
+  neut_tess_set_zero (&Tess);
 
-  neut_tess_geo (Tess, &Geo);
+  neut_tesl_tess (Tesl, &Tess);
 
-  neut_geo_volume (Geo, &geovol);
-  avrad = pow ((geovol / Geo.PolyQty) / (4/3 * M_PI), 0.33333333);
+  neut_tess_volume (Tess, &tessvol);
+  avrad = pow ((tessvol / Tess.PolyQty) / (4/3 * M_PI), 0.33333333);
 
   int id, cooqty = 0;
   int* coo = ut_alloc_1d_int (3);
@@ -63,9 +63,9 @@ net_centroid (struct IN In, struct TESS Tess, struct GERMSET* pGermSet, double* 
   }
 
   distmax = 0;
-  for (i = 1; i <= Geo.PolyQty; i++)
+  for (i = 1; i <= Tess.PolyQty; i++)
   {
-    neut_geo_poly_centroid (Geo, i, c);
+    neut_tess_poly_centroid (Tess, i, c);
     dist = ut_space_dist (c, (*pGermSet).GermsCoo[i] + 1);
     distmax = ut_num_max (dist, distmax);
 
@@ -78,7 +78,7 @@ net_centroid (struct IN In, struct TESS Tess, struct GERMSET* pGermSet, double* 
     }
   }
 
-  neut_geo_free (&Geo);
+  neut_tess_free (&Tess);
 
   ut_free_1d (c);
 

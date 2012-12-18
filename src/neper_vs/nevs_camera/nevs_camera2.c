@@ -5,14 +5,14 @@
 #include"nevs_camera.h"
   
 void
-nevs_camera_coo (char* expr, struct GEO Geo, struct NODES Nodes,
+nevs_camera_coo (char* expr, struct TESS Tess, struct NODES Nodes,
                  struct MESH Mesh, struct PRINT* pPrint, int id)
 {
   if (id < 1 || id > 3)
   {
-    nevs_camera_coo (expr, Geo, Nodes, Mesh, pPrint, 1);
-    nevs_camera_coo (expr, Geo, Nodes, Mesh, pPrint, 2);
-    nevs_camera_coo (expr, Geo, Nodes, Mesh, pPrint, 3);
+    nevs_camera_coo (expr, Tess, Nodes, Mesh, pPrint, 1);
+    nevs_camera_coo (expr, Tess, Nodes, Mesh, pPrint, 2);
+    nevs_camera_coo (expr, Tess, Nodes, Mesh, pPrint, 3);
 
     return;
   }
@@ -33,7 +33,7 @@ nevs_camera_coo (char* expr, struct GEO Geo, struct NODES Nodes,
     {
       if (Nodes.NodeQty > 0)
 	sprintf ((*pPrint).cameracooexpr[id], "meshcentre+v");
-      else if (Geo.PolyQty > 0)
+      else if (Tess.PolyQty > 0)
 	sprintf ((*pPrint).cameracooexpr[id], "tesscentre+v");
     }
     else
@@ -41,7 +41,7 @@ nevs_camera_coo (char* expr, struct GEO Geo, struct NODES Nodes,
   }
   else if (Nodes.NodeQty > 0)
     sprintf ((*pPrint).cameracooexpr[id], "meshcentre+v");
-  else if (Geo.PolyQty > 0)
+  else if (Tess.PolyQty > 0)
     sprintf ((*pPrint).cameracooexpr[id], "tesscentre+v");
 
   sprintf (vars[0], "cameralookat");
@@ -52,9 +52,9 @@ nevs_camera_coo (char* expr, struct GEO Geo, struct NODES Nodes,
   vals[0] = (*pPrint).cameralookat[id - 1];
   vals[1] = v[id - 1];
 
-  if (Geo.PolyQty > 0)
+  if (Tess.PolyQty > 0)
   {
-    neut_geo_centre (Geo, centre);
+    neut_tess_centre (Tess, centre);
     vals[2] = centre [id - 1];
   }
 
@@ -88,14 +88,14 @@ nevs_camera_coo (char* expr, struct GEO Geo, struct NODES Nodes,
 }
 
 void
-nevs_camera_lookat (char* expr, struct GEO Geo, struct NODES Nodes,
+nevs_camera_lookat (char* expr, struct TESS Tess, struct NODES Nodes,
                     struct MESH Mesh, struct PRINT* pPrint, int id)
 {
   if (id < 1 || id > 3)
   {
-    nevs_camera_lookat (expr, Geo, Nodes, Mesh, pPrint, 1);
-    nevs_camera_lookat (expr, Geo, Nodes, Mesh, pPrint, 2);
-    nevs_camera_lookat (expr, Geo, Nodes, Mesh, pPrint, 3);
+    nevs_camera_lookat (expr, Tess, Nodes, Mesh, pPrint, 1);
+    nevs_camera_lookat (expr, Tess, Nodes, Mesh, pPrint, 2);
+    nevs_camera_lookat (expr, Tess, Nodes, Mesh, pPrint, 3);
 
     return;
   }
@@ -114,7 +114,7 @@ nevs_camera_lookat (char* expr, struct GEO Geo, struct NODES Nodes,
     {
       if (Nodes.NodeQty > 0)
 	sprintf ((*pPrint).cameralookatexpr[id], "meshcentre");
-      else if (Geo.PolyQty > 0)
+      else if (Tess.PolyQty > 0)
 	sprintf ((*pPrint).cameralookatexpr[id], "tesscentre");
     }
     else
@@ -122,7 +122,7 @@ nevs_camera_lookat (char* expr, struct GEO Geo, struct NODES Nodes,
   }
   else if (Nodes.NodeQty > 0)
     sprintf ((*pPrint).cameralookatexpr[id], "meshcentre");
-  else if (Geo.PolyQty > 0)
+  else if (Tess.PolyQty > 0)
     sprintf ((*pPrint).cameralookatexpr[id], "tesscentre");
 
   sprintf (vars[0], "0");
@@ -133,9 +133,9 @@ nevs_camera_lookat (char* expr, struct GEO Geo, struct NODES Nodes,
   vals[0] = 0;
   vals[1] = 0;
 
-  if (Geo.PolyQty > 0)
+  if (Tess.PolyQty > 0)
   {
-    neut_geo_centre (Geo, centre);
+    neut_tess_centre (Tess, centre);
     vals[2] = centre [id - 1];
   }
 

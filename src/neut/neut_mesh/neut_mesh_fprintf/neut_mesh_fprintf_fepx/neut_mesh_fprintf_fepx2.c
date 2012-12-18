@@ -29,7 +29,7 @@ neut_mesh_fprintf_fepx_nodes (FILE * file, struct NODES Nodes)
 }
 
 void
-neut_mesh_fprintf_fepx_elts (FILE * file, struct GEO Geo,
+neut_mesh_fprintf_fepx_elts (FILE * file, struct TESS Tess,
                             struct NSET NSet2D, struct MESH Mesh)
 {
   int i, j, fod;
@@ -43,7 +43,7 @@ neut_mesh_fprintf_fepx_elts (FILE * file, struct GEO Geo,
       for (j = 0; j < 3; j++)
 	fprintf (file, " %d", Mesh.EltNodes[i][j] - 1);
 
-      fod = - ut_array_1d_int_min (Geo.FacePoly[Mesh.EltElset[i]], 2);
+      fod = - ut_array_1d_int_min (Tess.FacePoly[Mesh.EltElset[i]], 2);
 
       fprintf (file, " %s\n", NSet2D.names[fod]);
     }
@@ -61,7 +61,7 @@ neut_mesh_fprintf_fepx_elts (FILE * file, struct GEO Geo,
       fprintf (file, " %d", Mesh.EltNodes[i][2] - 1);
       fprintf (file, " %d", Mesh.EltNodes[i][5] - 1);
 
-      fod = - ut_array_1d_int_min (Geo.FacePoly[Mesh.EltElset[i]], 2);
+      fod = - ut_array_1d_int_min (Tess.FacePoly[Mesh.EltElset[i]], 2);
 
       fprintf (file, " %s\n", NSet2D.names[fod]);
     }
@@ -95,7 +95,7 @@ neut_mesh_fprintf_fepx_elts (FILE * file, struct GEO Geo,
 }
 
 void
-neut_mesh_fprintf_fepx_skinelts (FILE * file, struct GEO Geo, struct MESH Mesh2D,
+neut_mesh_fprintf_fepx_skinelts (FILE * file, struct TESS Tess, struct MESH Mesh2D,
 				struct MESH Mesh3D, struct NODES Nodes,
 				struct NSET NSet2D, char* surflist)
 {
@@ -113,26 +113,26 @@ neut_mesh_fprintf_fepx_skinelts (FILE * file, struct GEO Geo, struct MESH Mesh2D
 
   fprintf (file, "%d\n", qty);
 
-  for (i = 1; i <= Geo.DomFaceQty; i++)
+  for (i = 1; i <= Tess.DomFaceQty; i++)
   {
     if (ut_string_inlist (surflist, ',', NSet2D.names[i]) == 0)
       continue;
 
     // calculating number of elements
     eltqty = 0;
-    for (j = 1; j <= Geo.DomTessFaceQty[i]; j++)
-      eltqty += Mesh2D.Elsets[Geo.DomTessFaceNb[i][j]][0];
+    for (j = 1; j <= Tess.DomTessFaceQty[i]; j++)
+      eltqty += Mesh2D.Elsets[Tess.DomTessFaceNb[i][j]][0];
   
     fprintf (file, "%d\n", eltqty);
 
-    ut_array_1d_memcpy (n0, 3, Geo.DomFaceEq[i] + 1);
+    ut_array_1d_memcpy (n0, 3, Tess.DomFaceEq[i] + 1);
     ut_array_1d_scale (n0, 3, -1);
 
-    for (j = 1; j <= Geo.DomTessFaceQty[i]; j++)
+    for (j = 1; j <= Tess.DomTessFaceQty[i]; j++)
     {
-      for (k = 1; k <= Mesh2D.Elsets[Geo.DomTessFaceNb[i][j]][0]; k++)
+      for (k = 1; k <= Mesh2D.Elsets[Tess.DomTessFaceNb[i][j]][0]; k++)
       {
-	eltnb = Mesh2D.Elsets[Geo.DomTessFaceNb[i][j]][k];
+	eltnb = Mesh2D.Elsets[Tess.DomTessFaceNb[i][j]][k];
 	neut_mesh_elt_normal (Mesh2D, Nodes, eltnb, n);
 
 	neut_mesh_elt2d_elts3d (Mesh2D, eltnb, Mesh3D, &elt3d, &elt3dqty);

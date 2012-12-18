@@ -17,6 +17,6 @@
 
 #include"InputData_t0.h"
 
-extern void TreatArg_t (int, char**, int, char**, struct IN*, struct GEOPARA*);
-extern void SetDefaultOptions_t (struct IN*, struct GEOPARA*);
-extern void SetOptions_t (struct IN*, struct GEOPARA*, int, char**);
+extern void TreatArg_t (int, char**, int, char**, struct IN*, struct TESSPARA*);
+extern void SetDefaultOptions_t (struct IN*, struct TESSPARA*);
+extern void SetOptions_t (struct IN*, struct TESSPARA*, int, char**);

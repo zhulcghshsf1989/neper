@@ -5,13 +5,13 @@
 #include"InputData_t.h"
 
 void
-InputData_t (struct IN *pIn, struct GEOPARA* pGeoPara, char** paction, 
+InputData_t (struct IN *pIn, struct TESSPARA* pTessPara, char** paction, 
 	     int fargc, char **fargv, int argc, char **argv)
 {
   int tess_out, vox_out;
   int tessellate, voxelize, tess_voxelize;
 
-  TreatArg_t (fargc, fargv, argc, argv, pIn, pGeoPara);
+  TreatArg_t (fargc, fargv, argc, argv, pIn, pTessPara);
 
   tess_out = 0;
   vox_out  = 0;

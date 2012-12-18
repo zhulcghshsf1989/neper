@@ -18,6 +18,6 @@
 extern void nem_stat_nodes (FILE*, char*, struct NODES, struct MESH, struct MESH,
                 struct MESH, struct MESH);
 extern void nem_stat_elts  (FILE*, char*, struct NODES, struct MESH,
-                            struct GEO);
+                            struct TESS);
 extern void nem_stat_elsets (FILE*, char*, struct NODES, struct MESH,
-	         struct GEOPARA, struct GEO);
+	         struct TESSPARA, struct TESS);

@@ -14,7 +14,7 @@
 
 #include"net_stat0.h"
 
-extern void WriteStatGeoVer (FILE*, char*, struct GEO);
-extern void WriteStatGeoEdge (FILE*, char*, struct GEO);
-extern void WriteStatGeoFace (FILE*, char*, struct GEO);
-extern void WriteStatGeoPoly (FILE*, char*, struct GEO);
+extern void WriteStatTessVer (FILE*, char*, struct TESS);
+extern void WriteStatTessEdge (FILE*, char*, struct TESS);
+extern void WriteStatTessFace (FILE*, char*, struct TESS);
+extern void WriteStatTessPoly (FILE*, char*, struct TESS);

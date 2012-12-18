@@ -4,7 +4,7 @@
 
 #include"neut_vox_fscanf_lcl.h"
 
-/* Geometry exportation: head */
+/* Tessellation exportation: head */
 void
 neut_vox_fscanf_head (struct VOX* pVox, FILE * file)
 {
@@ -60,7 +60,7 @@ neut_vox_fscanf_head (struct VOX* pVox, FILE * file)
   return;
 }
 
-/* Geometry exportation: foot */
+/* Tessellation exportation: foot */
 void
 neut_vox_fscanf_foot (FILE * file)
 {
@@ -70,7 +70,7 @@ neut_vox_fscanf_foot (FILE * file)
   return;
 }
 
-/* Geometry exportation: vertex */
+/* Tessellation exportation: vertex */
 void
 neut_vox_fscanf_data (struct VOX* pVox, FILE * file)
 {

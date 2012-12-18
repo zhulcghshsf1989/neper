@@ -11,7 +11,7 @@ neper_vs (int fargc, char **fargv, int argc, char **argv)
   struct PRINT Print;
   
   // Tessellation
-  struct GEO      Geo;
+  struct TESS      Tess;
   
   // Mesh and data
   struct NODES    Nodes;
@@ -19,7 +19,7 @@ neper_vs (int fargc, char **fargv, int argc, char **argv)
   struct MESH     Mesh1D;
   struct MESH     Mesh2D;
   struct MESH     Mesh3D;
-  struct GEODATA  GeoData;
+  struct TESSDATA  TessData;
   struct MESHDATA MeshData;
   struct SCALE    Scale;
 
@@ -36,13 +36,13 @@ neper_vs (int fargc, char **fargv, int argc, char **argv)
 
   // init general stuff ---
   neut_print_set_default (&Print);
-  neut_geo_set_zero      (&Geo);
+  neut_tess_set_zero      (&Tess);
   neut_nodes_set_zero    (&Nodes);
   neut_mesh_set_zero     (&Mesh0D);
   neut_mesh_set_zero     (&Mesh1D);
   neut_mesh_set_zero     (&Mesh2D);
   neut_mesh_set_zero     (&Mesh3D);
-  neut_geodata_set_default  (&GeoData);
+  neut_tessdata_set_default  (&TessData);
   neut_meshdata_set_default (&MeshData);
   neut_scale_set_default (&Scale);
   // need to default Data and SData here; neut_data_set_default ();
@@ -59,14 +59,14 @@ neper_vs (int fargc, char **fargv, int argc, char **argv)
     if (strncmp (expargv[i], "-load", 5) == 0)
     {
       nevs_load (expargv, &i, &Nodes, &Mesh0D, &Mesh1D, &Mesh2D,
-	         &Mesh3D, &Geo);
+	         &Mesh3D, &Tess);
 
-      if (Geo.PolyQty > 0)
+      if (Tess.PolyQty > 0)
       {
-	GeoData.verqty  = Geo.VerQty;
-	GeoData.edgeqty = Geo.EdgeQty;
-	GeoData.faceqty = Geo.FaceQty;
-	GeoData.polyqty = Geo.PolyQty;
+	TessData.verqty  = Tess.VerQty;
+	TessData.edgeqty = Tess.EdgeQty;
+	TessData.faceqty = Tess.FaceQty;
+	TessData.polyqty = Tess.PolyQty;
       }
 
       if (Mesh3D.EltQty > 0)
@@ -85,12 +85,12 @@ neper_vs (int fargc, char **fargv, int argc, char **argv)
 
     // data loading and settings ---------------------------------------
     else if (strncmp (expargv[i], "-data", 5) == 0)
-      nevs_data (expargv, &i, Geo, Nodes, Mesh1D, Mesh3D, &GeoData,
+      nevs_data (expargv, &i, Tess, Nodes, Mesh1D, Mesh3D, &TessData,
 	         &MeshData);
 
     // show settings ---------------------------------------------------
     else if (strncmp (expargv[i], "-show", 5) == 0)
-      nevs_show (expargv, &i, Geo, Nodes, Mesh0D, Mesh1D, Mesh2D,
+      nevs_show (expargv, &i, Tess, Nodes, Mesh0D, Mesh1D, Mesh2D,
 		 Mesh3D, &Print);
 
     // slicing ---------------------------------------------------------
@@ -99,7 +99,7 @@ neper_vs (int fargc, char **fargv, int argc, char **argv)
 
     // camera settings -------------------------------------------------
     else if (strncmp (expargv[i], "-camera", 7) == 0)
-      nevs_camera (expargv, &i, Geo, Nodes, Mesh3D, MeshData, &Print);
+      nevs_camera (expargv, &i, Tess, Nodes, Mesh3D, MeshData, &Print);
     
     // image settings --------------------------------------------------
     else if (strncmp (expargv[i], "-image", 6) == 0)
@@ -116,7 +116,7 @@ neper_vs (int fargc, char **fargv, int argc, char **argv)
     // image printing --------------------------------------------------
     else if (strcmp (expargv[i], "-print") == 0)
     {
-      nevs_data_init (Geo, &GeoData, Nodes, Mesh3D, &MeshData);
+      nevs_data_init (Tess, &TessData, Nodes, Mesh3D, &MeshData);
       
       if (Print.slice != NULL)
 	nevs_slice_mesh (Nodes, Mesh3D, MeshData, Print.slice, 
@@ -126,11 +126,11 @@ neper_vs (int fargc, char **fargv, int argc, char **argv)
       for (j = 0; j < SQty; j++)
 	nevs_meshdata_init (SNodes[j], SMesh2D[j], &(SMeshData[j]));
 
-      nevs_show_init (Geo, Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, SQty, &Print);
+      nevs_show_init (Tess, Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, SQty, &Print);
 
-      nevs_camera_init (Geo, Nodes, Mesh3D, MeshData, &Print);
+      nevs_camera_init (Tess, Nodes, Mesh3D, MeshData, &Print);
 
-      nevs_print (expargv, &i, &Print, Geo, GeoData, Nodes, Mesh0D, Mesh1D,
+      nevs_print (expargv, &i, &Print, Tess, TessData, Nodes, Mesh0D, Mesh1D,
 		  Mesh2D, Mesh3D, MeshData, SQty, SNodes, SMesh2D, SMeshData);
     }
 
@@ -146,14 +146,14 @@ neper_vs (int fargc, char **fargv, int argc, char **argv)
   }
 
   neut_print_free (&Print);
-  neut_geo_free (&Geo);
+  neut_tess_free (&Tess);
   neut_nodes_free (&Nodes);
   neut_mesh_free (&Mesh0D);
   neut_mesh_free (&Mesh1D);
   neut_mesh_free (&Mesh2D);
   neut_mesh_free (&Mesh3D);
   neut_scale_free (&Scale);
-  neut_geodata_free (&GeoData);
+  neut_tessdata_free (&TessData);
   neut_meshdata_free (&MeshData);
 
   ut_free_2d_char (expargv, argc);

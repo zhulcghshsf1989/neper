@@ -4,5 +4,5 @@
 
 extern void DefGermSet (struct IN, struct GERMSET *);
 extern void GermSetSize (struct GERMSET *);
-extern void CreateTess (struct GERMSET, double *, struct TESS *);
+extern void CreateTesl (struct GERMSET, double *, struct TESL *);
 extern void net_n1d_morpho_n (int, char*, int*);

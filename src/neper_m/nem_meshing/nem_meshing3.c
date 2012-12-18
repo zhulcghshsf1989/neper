@@ -11,7 +11,7 @@
 // element.  Such elements can (do always?) lead to the volume being pinched
 // out.
 int
-nem_remesh_fixmesh2delset (struct GEO Geo, struct MESH Mesh1D,
+nem_remesh_fixmesh2delset (struct TESS Tess, struct MESH Mesh1D,
                            int face, struct MESH* pMesh2D)
 {
   int i, j, k, l, m, elt2d, nodeqty, edge, neighedge, elt2db;
@@ -41,9 +41,9 @@ nem_remesh_fixmesh2delset (struct GEO Geo, struct MESH Mesh1D,
   elt1dpair_qty = 0;
 
   // 1/ adding the adjacent elts of every edges
-  for (i = 1; i <= Geo.FaceVerQty[face]; i++)
+  for (i = 1; i <= Tess.FaceVerQty[face]; i++)
   {
-    edge = Geo.FaceEdgeNb[face][i];
+    edge = Tess.FaceEdgeNb[face][i];
     for (j = 1; j < Mesh1D.Elsets[edge][0]; j++)
     {
       elt1dpair = ut_realloc_2d_int_addline (elt1dpair, ++elt1dpair_qty, 2);
@@ -52,14 +52,14 @@ nem_remesh_fixmesh2delset (struct GEO Geo, struct MESH Mesh1D,
   }
 
   // 2/ case of 1-elt edges.  Adding pairs based on that elt.
-  for (i = 1; i <= Geo.FaceVerQty[face]; i++)
+  for (i = 1; i <= Tess.FaceVerQty[face]; i++)
   {
-    edge = Geo.FaceEdgeNb[face][i];
+    edge = Tess.FaceEdgeNb[face][i];
     if (Mesh1D.Elsets[edge][0] == 1)
       for (j = -1; j <= 1; j += 2)
       {
-	neighedge = Geo.FaceEdgeNb[face]
-	               [ut_num_rotpos (1, Geo.FaceVerQty[face], i, j)];
+	neighedge = Tess.FaceEdgeNb[face]
+	               [ut_num_rotpos (1, Tess.FaceVerQty[face], i, j)];
 
 	elt1dpair = ut_realloc_2d_int_addline (elt1dpair, ++elt1dpair_qty, 2);
 	elt1dpair[elt1dpair_qty - 1][0] = Mesh1D.Elsets[edge][1];

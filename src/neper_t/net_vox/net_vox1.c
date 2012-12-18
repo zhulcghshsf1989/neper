@@ -5,7 +5,7 @@
 #include"net_vox.h"
 
 void
-net_geo_vox (struct IN In, struct GEO Geo, VOX* pVox)
+net_tess_vox (struct IN In, struct TESS Tess, VOX* pVox)
 {
   int i, j, k, qty;
   int pid, prevpid;
@@ -18,9 +18,9 @@ net_geo_vox (struct IN In, struct GEO Geo, VOX* pVox)
   (*pVox).format = ut_alloc_1d_char (10);
   strcpy ((*pVox).version, "binary16");
 
-  neut_geo_bbox (Geo, bbox);
+  neut_tess_bbox (Tess, bbox);
 
-  (*pVox).PolyQty = Geo.PolyQty;
+  (*pVox).PolyQty = Tess.PolyQty;
 
   (*pVox).size = ut_alloc_1d_int (3);
   net_vox_init_size (In.voxsizetype, In.voxsize, In.voxsize3, bbox, pVox);
@@ -45,16 +45,16 @@ net_geo_vox (struct IN In, struct GEO Geo, VOX* pVox)
 
 	coo[0] = (*pVox).vsize[0] * ((double) i + 0.5);
 
-	if (neut_geo_point_inpoly (Geo, coo, prevpid) == 1)
+	if (neut_tess_point_inpoly (Tess, coo, prevpid) == 1)
 	  (*pVox).VoxPoly[i][j][k] = prevpid;
 	else
 	{
-	  for (pid = 1; pid <= Geo.PolyQty; pid++)
+	  for (pid = 1; pid <= Tess.PolyQty; pid++)
 	  {
 	    if (pid == prevpid)
 	      continue;
 
-	    if (neut_geo_point_inpoly (Geo, coo, pid) == 1)
+	    if (neut_tess_point_inpoly (Tess, coo, pid) == 1)
 	    {
 	      (*pVox).VoxPoly[i][j][k] = pid;
 	      prevpid = pid;

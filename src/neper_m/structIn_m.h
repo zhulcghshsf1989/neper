@@ -22,7 +22,7 @@ struct IN
 
   char* outdim;
 
-  char *format;			/* geo, msh, geof and/or fepx */
+  char *format;			/* tess, msh, geof and/or fepx */
   char* mesh2dalgo;		/* 2d algo: 1: iso, 2: aniso, 3: triangle */
   char* mesh3dalgo;		/* 3d algo: 1: iso, 2: aniso, 3: triangle */
   char* mesh3doptiexpr;

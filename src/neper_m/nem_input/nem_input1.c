@@ -5,11 +5,11 @@
 #include"nem_input.h"
 
 void
-nem_input (struct IN *pIn, struct GEOPARA *pGeoPara, int fargc, char
+nem_input (struct IN *pIn, struct TESSPARA *pTessPara, int fargc, char
     **fargv, int argc, char **argv)
 {
   ut_print_message (0, 2, "Reading arguments ...\n");
-  nem_input_treatargs (fargc, fargv, argc, argv, pIn, pGeoPara);
+  nem_input_treatargs (fargc, fargv, argc, argv, pIn, pTessPara);
 
   return;
 }
@@ -98,21 +98,21 @@ nem_in_free (struct IN In)
 }
 
 void
-nem_geopara_set_zero (struct GEOPARA* pGeoPara)
+nem_tesspara_set_zero (struct TESSPARA* pTessPara)
 {
-  (*pGeoPara).dbound = NULL;
-  (*pGeoPara).cl3 = NULL;
-  (*pGeoPara).rcl3 = NULL;
+  (*pTessPara).dbound = NULL;
+  (*pTessPara).cl3 = NULL;
+  (*pTessPara).rcl3 = NULL;
 
   return;
 }
 
 void
-nem_geopara_free (struct GEOPARA GeoPara)
+nem_tesspara_free (struct TESSPARA TessPara)
 {
-  ut_free_1d_char (GeoPara.dbound);
-  ut_free_1d (GeoPara.cl3);
-  ut_free_1d (GeoPara.rcl3);
+  ut_free_1d_char (TessPara.dbound);
+  ut_free_1d (TessPara.cl3);
+  ut_free_1d (TessPara.rcl3);
 
   return;
 }

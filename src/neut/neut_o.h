@@ -10,6 +10,6 @@
 
 #include "neut_structs.h"
 #include "neut_rand.h"
-#include "neut_geo.h"
+#include "neut_tess.h"
 
 #endif /* NEUT_0_H */

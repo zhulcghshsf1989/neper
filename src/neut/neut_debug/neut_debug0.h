@@ -12,9 +12,9 @@ extern void neut_debug_mesh (FILE*, struct MESH);
 extern void neut_debug_nset (FILE*, struct NSET);
 extern void neut_debug_fod (FILE*, int**);
 extern void neut_debug_fodnodes (FILE*, int**);
-extern void neut_debug_geo (FILE*, struct GEO);
+extern void neut_debug_tess (FILE*, struct TESS);
 extern void neut_debug_germset (FILE*, struct GERMSET);
-extern void neut_debug_geodata (FILE*, struct GEODATA);
+extern void neut_debug_tessdata (FILE*, struct TESSDATA);
 extern void neut_debug_poly (FILE*, struct POLY);
 extern void neut_debug_polymod (FILE*, struct POLYMOD);
 

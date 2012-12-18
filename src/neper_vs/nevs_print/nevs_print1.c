@@ -7,7 +7,7 @@
 void
 nevs_print (char** expargv, int* pi,
             struct PRINT* pPrint,
-            struct GEO Geo,   struct GEODATA GeoData,
+            struct TESS Tess,   struct TESSDATA TessData,
 	    struct NODES Nodes, struct MESH Mesh0D,
 	    struct MESH Mesh1D, struct MESH Mesh2D,
 	    struct MESH Mesh3D, struct MESHDATA MeshData,
@@ -34,7 +34,7 @@ nevs_print (char** expargv, int* pi,
   if ((*pPrint).showtess == 1)
   {
     ut_print_message (0, 2, "Printing tessellation ...\n");
-    nevs_print_tess (file, (*pPrint), Geo, GeoData);
+    nevs_print_tess (file, (*pPrint), Tess, TessData);
   }
 
   // mesh --------------------------------------------------------------
@@ -100,10 +100,10 @@ nevs_print (char** expargv, int* pi,
 	remove (filename2);
     }
   
-  neut_geodata_idmax (&idmax);
+  neut_tessdata_idmax (&idmax);
 
   for (i = 0; i <= idmax; i++)
-    if (GeoData.coldatatype[i] != NULL && ! strcmp (GeoData.coldatatype[i], "scal"))
+    if (TessData.coldatatype[i] != NULL && ! strcmp (TessData.coldatatype[i], "scal"))
     {
       neut_meshdata_id_entity (i, ent);
 
@@ -112,7 +112,7 @@ nevs_print (char** expargv, int* pi,
       sprintf (filename2, "%s-scale%s.pov", expargv[(*pi)], ent);
 
       file = ut_file_open (filename2, "w");
-      nevs_print_scale (file, GeoData.colscheme[i], GeoData.scalemin[i], GeoData.scalemax[i], GeoData.scaleticks[i]);
+      nevs_print_scale (file, TessData.colscheme[i], TessData.scalemin[i], TessData.scalemax[i], TessData.scaleticks[i]);
       ut_file_close (file, filename2, "w");
   
       if (ut_string_inlist ((*pPrint).format, ',', "png"))

@@ -9,7 +9,7 @@
 #include"nem_init.h"
 
 void
-nem_init_mesh_geo_updating (struct GEO* pGeo, struct NODES
+nem_init_mesh_tess_updating (struct TESS* pTess, struct NODES
     RNodes, struct MESH RMesh0D, struct MESH RMesh1D, struct MESH
     RMesh2D, struct MESH RMesh3D)
 {
@@ -18,18 +18,18 @@ nem_init_mesh_geo_updating (struct GEO* pGeo, struct NODES
   double* eq = ut_alloc_1d (4);
   double* eqe = ut_alloc_1d (4);
 
-  ut_print_message (0, 2, "Retrieving geometry properties ...\n");
+  ut_print_message (0, 2, "Retrieving tessellation properties ...\n");
 
-  // reinitializing geo properties from nodes / mesh
+  // reinitializing tess properties from nodes / mesh
   // ver coo
-  for (i = 1; i <= (*pGeo).VerQty; i++)
+  for (i = 1; i <= (*pTess).VerQty; i++)
   {
     node = RMesh0D.EltNodes[i][0];
-    ut_array_1d_memcpy ((*pGeo).VerCoo[i], 3, RNodes.NodeCoo[node]);
+    ut_array_1d_memcpy ((*pTess).VerCoo[i], 3, RNodes.NodeCoo[node]);
   }
   
   // edge length (sum over the elements to account for curvature)
-  for (i = 1; i <= (*pGeo).EdgeQty; i++)
+  for (i = 1; i <= (*pTess).EdgeQty; i++)
   {
     length = 0;
     for (j = 1; j <= RMesh1D.Elsets[i][0]; j++)
@@ -38,7 +38,7 @@ nem_init_mesh_geo_updating (struct GEO* pGeo, struct NODES
       length += ut_space_dist (RNodes.NodeCoo[RMesh1D.EltNodes[elt][0]],
                                RNodes.NodeCoo[RMesh1D.EltNodes[elt][1]]);
     }
-    (*pGeo).EdgeLength[i] = length;
+    (*pTess).EdgeLength[i] = length;
   }
   
   // face equations
@@ -46,9 +46,9 @@ nem_init_mesh_geo_updating (struct GEO* pGeo, struct NODES
   // the constant does not really matter because it does not change the
   // projection (which is done along the normal).
 
-  for (i = 1; i <= (*pGeo).FaceQty; i++)
+  for (i = 1; i <= (*pTess).FaceQty; i++)
   {
-    (*pGeo).FaceState[i] = 1;
+    (*pTess).FaceState[i] = 1;
 
     ut_array_1d_zero (eq, 4);
     for (j = 1; j <= RMesh2D.Elsets[i][0]; j++)
@@ -61,12 +61,12 @@ nem_init_mesh_geo_updating (struct GEO* pGeo, struct NODES
     norm = ut_vector_norm (eq + 1);
     ut_array_1d_scale (eq, 4, 1./norm);
 
-    ut_array_1d_memcpy ((*pGeo).FaceEq[i], 4, eq);
+    ut_array_1d_memcpy ((*pTess).FaceEq[i], 4, eq);
   }
 
   // poly centre: centre of mass of the elsets
-  for (i = 1; i <= (*pGeo).PolyQty; i++)
-    neut_mesh_elset_centre (RNodes, RMesh3D, i, (*pGeo).CenterCoo[i]);
+  for (i = 1; i <= (*pTess).PolyQty; i++)
+    neut_mesh_elset_centre (RNodes, RMesh3D, i, (*pTess).CenterCoo[i]);
 
   ut_free_1d (eqe);
   ut_free_1d (eq);

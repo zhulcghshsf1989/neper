@@ -13,8 +13,8 @@
 
 extern void neut_mesh_fprintf_fepx_parms (FILE *, struct NODES, struct MESH);
 extern void neut_mesh_fprintf_fepx_nodes (FILE *, struct NODES);
-extern void neut_mesh_fprintf_fepx_elts (FILE *, struct GEO, struct NSET, struct MESH);
-extern void neut_mesh_fprintf_fepx_skinelts (FILE*, struct GEO, struct MESH, struct MESH, struct NODES, struct NSET, char*);
+extern void neut_mesh_fprintf_fepx_elts (FILE *, struct TESS, struct NSET, struct MESH);
+extern void neut_mesh_fprintf_fepx_skinelts (FILE*, struct TESS, struct MESH, struct MESH, struct NODES, struct NSET, char*);
 extern void neut_mesh_fprintf_fepx_elsets (FILE*, struct MESH);
 extern void neut_mesh_fprintf_fepx_nsets (FILE*, struct NSET, struct NSET, struct NSET, char*);
 extern void neut_mesh_fprintf_fepx_nset (FILE*, char*, int, int*);

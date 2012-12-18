@@ -5,7 +5,7 @@
 #include"nem_meshing_1D.h"
 
 void
-nem_meshing_1D (struct GEO Geo, struct GEOPARA GeoPara,
+nem_meshing_1D (struct TESS Tess, struct TESSPARA TessPara,
            struct NODES RNodes, struct MESH RMesh1D,
 	   int* edge_op,
 	   struct NODES* pNodes, struct MESH* pMesh1D)
@@ -30,15 +30,15 @@ nem_meshing_1D (struct GEO Geo, struct GEOPARA GeoPara,
 
   ut_print_message (0, 2, "1D meshing ... ");
 
-  ut_print_progress (stdout, 0, Geo.EdgeQty, "%3.0f%%", message);
-  for (i = 1; i <= Geo.EdgeQty; i++)
+  ut_print_progress (stdout, 0, Tess.EdgeQty, "%3.0f%%", message);
+  for (i = 1; i <= Tess.EdgeQty; i++)
   {
     if (edge_op == NULL || edge_op[i] == 0)
     {
-      if (GeoPara.dboundcl < 0)
+      if (TessPara.dboundcl < 0)
       {
-	cl  = GeoPara.cl;
-	pcl  = GeoPara.pcl;
+	cl  = TessPara.cl;
+	pcl  = TessPara.pcl;
       }
       else 
       {
@@ -50,30 +50,30 @@ nem_meshing_1D (struct GEO Geo, struct GEOPARA GeoPara,
 
 	sprintf (vars[0], "body");
 	sprintf (vars[1], "true");
-	vals[0] = neut_geo_edge_polybodylevelmax (Geo, Geo.PolyBody, i);
-	vals[1] = neut_geo_edge_polytruelevelmax (Geo, Geo.PolyTrue, i);
+	vals[0] = neut_tess_edge_polybodylevelmax (Tess, Tess.PolyBody, i);
+	vals[1] = neut_tess_edge_polytruelevelmax (Tess, Tess.PolyTrue, i);
 
-	status = ut_math_eval (GeoPara.dbound, var_qty, vars, vals, &dbound);
+	status = ut_math_eval (TessPara.dbound, var_qty, vars, vals, &dbound);
 
 	if (status == -1)
 	  abort ();
 
 	if (dbound == 1)
 	{
-	  cl  = GeoPara.dboundcl;
-	  pcl = GeoPara.dboundpcl;
+	  cl  = TessPara.dboundcl;
+	  pcl = TessPara.dboundpcl;
 	}
 	else
 	{
-	  cl  = GeoPara.cl;
-	  pcl = GeoPara.pcl;
+	  cl  = TessPara.cl;
+	  pcl = TessPara.pcl;
 	}
 
 	ut_free_2d_char (vars, var_qty);
 	ut_free_1d (vals);
       }
 
-      EdgeMeshing (Geo, i, cl, pcl, *pNodes, &N, &M);
+      EdgeMeshing (Tess, i, cl, pcl, *pNodes, &N, &M);
     }
     else
       neut_mesh_elset_mesh (RNodes, RMesh1D, i, &N, &M);
@@ -99,7 +99,7 @@ nem_meshing_1D (struct GEO Geo, struct GEOPARA GeoPara,
 	node1 = RMesh1D.EltNodes[elt][0];
 	node2 = RMesh1D.EltNodes[elt][1];
 	l += ut_space_dist (RNodes.NodeCoo[node1], RNodes.NodeCoo[node2]);
-	rccoo[j] = l / Geo.EdgeLength[i];
+	rccoo[j] = l / Tess.EdgeLength[i];
       }
 
       if (fabs (rccoo[0]) > 1e-6)
@@ -115,10 +115,10 @@ nem_meshing_1D (struct GEO Geo, struct GEOPARA GeoPara,
       }
 
       // recording RNodes node curvilinear coos
-      ver1 = Geo.EdgeVerNb[i][0];
-      ver2 = Geo.EdgeVerNb[i][1];
+      ver1 = Tess.EdgeVerNb[i][0];
+      ver2 = Tess.EdgeVerNb[i][1];
 
-      length = ut_space_dist (Geo.VerCoo[ver1], Geo.VerCoo[ver2]);
+      length = ut_space_dist (Tess.VerCoo[ver1], Tess.VerCoo[ver2]);
 
       ccoo = ut_alloc_1d (N.NodeQty);
 
@@ -168,8 +168,8 @@ nem_meshing_1D (struct GEO Geo, struct GEOPARA GeoPara,
     // note: we check if the nodes are given in the sense of the edge,
     // or in the opposite sense.  Recording nodes accordingly...
 
-    node_nbs[1] = Geo.EdgeVerNb[i][0];
-    node_nbs[N.NodeQty] = Geo.EdgeVerNb[i][1];
+    node_nbs[1] = Tess.EdgeVerNb[i][0];
+    node_nbs[N.NodeQty] = Tess.EdgeVerNb[i][1];
     for (j = 2; j < N.NodeQty; j++)
       node_nbs[j] = (*pNodes).NodeQty + j - 1;
 
@@ -199,7 +199,7 @@ nem_meshing_1D (struct GEO Geo, struct GEOPARA GeoPara,
     
     neut_mesh_addelset (pMesh1D, M.Elsets[1] + 1, M.Elsets[1][0]);
 
-    ut_print_progress (stdout, i, Geo.EdgeQty, "%3.0f%%", message);
+    ut_print_progress (stdout, i, Tess.EdgeQty, "%3.0f%%", message);
 
     neut_mesh_free (&M);
     neut_nodes_free (&N);

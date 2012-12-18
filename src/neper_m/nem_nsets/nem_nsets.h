@@ -12,14 +12,14 @@
 
 #include"nem_nsets0.h"
 
-extern void nem_nsets_2d_geo (struct GEO, struct MESH, struct NSET*);
-extern void nem_nsets_1d_geo (struct GEO, struct MESH, struct NSET, struct NSET*);
-extern void nem_nsets_0d_geo (struct GEO, struct MESH, struct NSET, struct NSET*);
-extern void nem_nsets_2dbody_geo (struct GEO, struct NSET, struct NSET*);
-extern void nem_nsets_1dbody_geo (struct GEO, struct NSET, struct NSET*);
+extern void nem_nsets_2d_tess (struct TESS, struct MESH, struct NSET*);
+extern void nem_nsets_1d_tess (struct TESS, struct MESH, struct NSET, struct NSET*);
+extern void nem_nsets_0d_tess (struct TESS, struct MESH, struct NSET, struct NSET*);
+extern void nem_nsets_2dbody_tess (struct TESS, struct NSET, struct NSET*);
+extern void nem_nsets_1dbody_tess (struct TESS, struct NSET, struct NSET*);
 
-extern void nem_nsets_1d_geo_hex (struct GEO Geo, struct NSET NSet2D, struct NSET* pNSet1D);
-extern void nem_nsets_0d_geo_hex (struct GEO Geo, struct NSET NSet2D, struct NSET  NSet1D,
+extern void nem_nsets_1d_tess_hex (struct TESS Tess, struct NSET NSet2D, struct NSET* pNSet1D);
+extern void nem_nsets_0d_tess_hex (struct TESS Tess, struct NSET NSet2D, struct NSET  NSet1D,
                                   struct NSET* pNSet0D);
 
 extern void nem_nsets_1d_hex (struct NSET NSet2D, struct NSET* pNSet1D);

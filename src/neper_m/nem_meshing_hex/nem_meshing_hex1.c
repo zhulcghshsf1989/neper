@@ -5,7 +5,7 @@
 #include "nem_meshing_hex.h"
 
 void
-nem_geo_mesh_hex (struct IN In, struct GEOPARA GeoPara, struct GEO Geo, 
+nem_tess_mesh_hex (struct IN In, struct TESSPARA TessPara, struct TESS Tess, 
 		  struct NODES *pNodes, struct MESH* pMesh0D,
 		  struct MESH* pMesh1D, struct MESH* pMesh2D, 
 		  struct MESH *pMesh3D, struct NSET* pNSet2D)
@@ -14,10 +14,10 @@ nem_geo_mesh_hex (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
   int* msize = ut_alloc_1d_int (3);
   double** dsize = ut_alloc_2d (3, 2);
 
-  neut_geo_bbox (Geo, dsize);
+  neut_tess_bbox (Tess, dsize);
 
   double cl;
-  nem_meshing_3D_poly_cl (GeoPara, Geo, 1, &cl);
+  nem_meshing_3D_poly_cl (TessPara, Tess, 1, &cl);
 
   for (i = 0; i < 3; i++)
     msize[i] = (dsize[i][1] - dsize[i][0]) / cl;
@@ -38,7 +38,7 @@ nem_geo_mesh_hex (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
   /* Searching elsets ---------------------------------------------- */
 
   // ut_print_message (0, 2, "Searching elsets ... ");
-  nem_meshing_hexFGeo (Geo, pMesh3D);
+  nem_meshing_hexFTess (Tess, pMesh3D);
 
   neut_mesh_init_elsets (pMesh3D);
 
@@ -48,7 +48,7 @@ nem_geo_mesh_hex (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
   nem_reconmesh (In.outdim, pNodes, pMesh0D, pMesh1D, pMesh2D,
 		        pMesh3D, NULL);
 
-  int* meshpoly = ut_alloc_1d_int (Geo.PolyQty + 1);
+  int* meshpoly = ut_alloc_1d_int (Tess.PolyQty + 1);
 
   ut_free_2d_int ((*pMesh3D).NodeElts, (*pNodes).NodeQty + 1);
   neut_mesh_init_nodeelts (pMesh3D, (*pNodes).NodeQty);
@@ -56,8 +56,8 @@ nem_geo_mesh_hex (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
   if (In.meshpoly != NULL)
   {
     ut_print_message (0, 2, "Removing elsets other than `%s' ... \n", In.meshpoly);
-    neut_geo_expr_polytab (Geo, In.meshpoly, meshpoly);
-    for (i = 1; i <= Geo.PolyQty; i++)
+    neut_tess_expr_polytab (Tess, In.meshpoly, meshpoly);
+    for (i = 1; i <= Tess.PolyQty; i++)
       if (meshpoly[i] == 0)
 	neut_mesh_rmelset (pMesh3D, *pNodes, i);
   }
@@ -79,7 +79,7 @@ nem_geo_mesh_hex (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
 }
 
 void
-nem_vox_mesh_hex (struct IN In, struct GEOPARA GeoPara, struct VOX Vox,
+nem_vox_mesh_hex (struct IN In, struct TESSPARA TessPara, struct VOX Vox,
                   struct NODES* pNodes, struct MESH* pMesh0D, struct
 		  MESH* pMesh1D, struct MESH* pMesh2D, struct MESH* pMesh3D,
 		  struct NSET* pNSet2D)
@@ -89,14 +89,14 @@ nem_vox_mesh_hex (struct IN In, struct GEOPARA GeoPara, struct VOX Vox,
   int* msize = ut_alloc_1d_int (3);
   double* scale = ut_alloc_1d (3);
   double** dsize = ut_alloc_2d (3, 2);
-  struct GEO Geo;
+  struct TESS Tess;
 
-  neut_geo_set_zero (&Geo);
+  neut_tess_set_zero (&Tess);
 
   neut_vox_bbox (Vox, dsize);
 
   double cl;
-  nem_meshing_3D_poly_cl (GeoPara, Geo, 1, &cl);
+  nem_meshing_3D_poly_cl (TessPara, Tess, 1, &cl);
 
   for (i = 0; i < 3; i++)
     msize[i] = ut_num_max_int ((dsize[i][1] - dsize[i][0]) / cl, 1);
@@ -153,11 +153,11 @@ nem_vox_mesh_hex (struct IN In, struct GEOPARA GeoPara, struct VOX Vox,
   if (In.meshpoly != NULL)
     nem_meshing_hex_meshpoly (In.meshpoly, Vox, pMesh3D, pNodes, pNSet2D);
 
-  nem_reconmesh (In.outdim, pNodes, pMesh0D, pMesh1D, pMesh2D, pMesh3D, &Geo);
+  nem_reconmesh (In.outdim, pNodes, pMesh0D, pMesh1D, pMesh2D, pMesh3D, &Tess);
 
   ut_free_1d_int (msize);
   ut_free_1d (scale);
-  neut_geo_free (&Geo);
+  neut_tess_free (&Tess);
   neut_vox_free (&Vox2);
 
   return;

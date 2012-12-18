@@ -9,9 +9,9 @@
 #include "neut_m.h"
 #include "nem_reconmesh0.h"
 
-extern void nem_reconmesh_2d (struct NODES, struct MESH*, struct MESH*, struct GEO*);
-extern void nem_reconmesh_1d (struct NODES, struct MESH*, struct MESH*, struct GEO*);
-extern void nem_reconmesh_0d (struct NODES, struct MESH*, struct MESH*, struct GEO*);
+extern void nem_reconmesh_2d (struct NODES, struct MESH*, struct MESH*, struct TESS*);
+extern void nem_reconmesh_1d (struct NODES, struct MESH*, struct MESH*, struct TESS*);
+extern void nem_reconmesh_0d (struct NODES, struct MESH*, struct MESH*, struct TESS*);
 
-extern void nem_reconmesh_finalizegeo (struct GEO*, struct NODES,
+extern void nem_reconmesh_finalizetess (struct TESS*, struct NODES,
     struct MESH, struct MESH, struct MESH, struct MESH);

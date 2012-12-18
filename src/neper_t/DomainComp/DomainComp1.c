@@ -69,12 +69,12 @@ DomainComp (struct IN In, struct POLY *pDomain)
     int qty;
     double** eq = ut_alloc_2d (1000, 4);
     int id = ut_num_d2ri (In.domainparms[0]);
-    struct GEO Geo;
-    neut_geo_set_zero (&Geo);
+    struct TESS Tess;
+    neut_tess_set_zero (&Tess);
 
     FILE* file = ut_file_open (In.domainparms2, "r");
-    neut_geo_fscanf (file, &Geo);
-    net_domain_tesspoly_planes (Geo, id, &qty, eq);
+    neut_tess_fscanf (file, &Tess);
+    net_domain_tesspoly_planes (Tess, id, &qty, eq);
     net_domain_clip (pDomain, eq, qty);
 
     ut_file_close (file, In.domainparms2, "r");

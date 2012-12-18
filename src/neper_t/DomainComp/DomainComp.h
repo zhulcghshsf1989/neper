@@ -21,6 +21,6 @@
 
 extern void net_domain_cylinder_planes (double, double, int, double**);
 extern void net_domain_clip (struct POLY*, double**, int);
-extern void net_domain_tesspoly_planes (struct GEO, int, int*, double**);
+extern void net_domain_tesspoly_planes (struct TESS, int, int*, double**);
 
 #include"DomainComp0.h"

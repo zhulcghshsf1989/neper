@@ -5,7 +5,7 @@
 #include"nevs_print_tess.h"
 
 void
-nevs_print_tess (FILE* file, struct PRINT Print, struct GEO Geo, struct GEODATA GeoData)
+nevs_print_tess (FILE* file, struct PRINT Print, struct TESS Tess, struct TESSDATA TessData)
 {
   int i, j;
   double** coo = NULL;
@@ -25,18 +25,18 @@ nevs_print_tess (FILE* file, struct PRINT Print, struct GEO Geo, struct GEODATA 
   int ver_id  = 3;
 
   // Writing pov file --------------------------------------------------
-  // nevs_print_tess_header (file, GeoData);
+  // nevs_print_tess_header (file, TessData);
 
   // compressing poly to print
-  polylist = ut_alloc_1d_int (Geo.PolyQty + 1);
+  polylist = ut_alloc_1d_int (Tess.PolyQty + 1);
 
   if (Print.showpoly[0] > 0)
-    for (i = 1; i <= Geo.PolyQty; i++)
+    for (i = 1; i <= Tess.PolyQty; i++)
       if (Print.showpoly[i] == 1)
       {
-	neut_geo_poly_neighpoly (Geo, i, &neigh, &neighqty);
+	neut_tess_poly_neighpoly (Tess, i, &neigh, &neighqty);
 	
-	if (neighqty < Geo.PolyFaceQty[i])
+	if (neighqty < Tess.PolyFaceQty[i])
 	  polylist[++polylist[0]] = i;
 	else
 	{
@@ -54,18 +54,18 @@ nevs_print_tess (FILE* file, struct PRINT Print, struct GEO Geo, struct GEODATA 
 
   // from the polylist, determining the face list
   int polyfaceqty = 0;
-  polyfacelist = ut_alloc_2d_int (Geo.FaceQty + 1, 2);
+  polyfacelist = ut_alloc_2d_int (Tess.FaceQty + 1, 2);
 
-  for (i = 1; i <= Geo.FaceQty; i++)
+  for (i = 1; i <= Tess.FaceQty; i++)
   {
     show = 0;
     facepoly = 0;
     for (j = 0; j < 2; j++)
-      if (Geo.FacePoly[i][j] > 0 && ut_array_1d_int_eltpos
-		    (polylist + 1, polylist[0], Geo.FacePoly[i][j]) != -1)
+      if (Tess.FacePoly[i][j] > 0 && ut_array_1d_int_eltpos
+		    (polylist + 1, polylist[0], Tess.FacePoly[i][j]) != -1)
       {
 	show++;
-	facepoly = Geo.FacePoly[i][j];
+	facepoly = Tess.FacePoly[i][j];
       }
 
     if (show == 1)
@@ -76,21 +76,21 @@ nevs_print_tess (FILE* file, struct PRINT Print, struct GEO Geo, struct GEODATA 
     }
   }
 
-  verlist = ut_alloc_1d_int (Geo.EdgeQty + 1);
+  verlist = ut_alloc_1d_int (Tess.EdgeQty + 1);
   
-  for (i = 1; i <= Geo.VerQty; i++)
+  for (i = 1; i <= Tess.VerQty; i++)
     if (Print.showver[i] == 1)
       verlist[++verlist[0]] = i;
 
-  edgelist = ut_alloc_1d_int (Geo.EdgeQty + 1);
+  edgelist = ut_alloc_1d_int (Tess.EdgeQty + 1);
   
-  for (i = 1; i <= Geo.EdgeQty; i++)
+  for (i = 1; i <= Tess.EdgeQty; i++)
     if (Print.showedge[i] == 1)
       edgelist[++edgelist[0]] = i;
 
-  facelist = ut_alloc_1d_int (Geo.FaceQty + 1);
+  facelist = ut_alloc_1d_int (Tess.FaceQty + 1);
   
-  for (i = 1; i <= Geo.FaceQty; i++)
+  for (i = 1; i <= Tess.FaceQty; i++)
     if (Print.showface[i] == 1)
       facelist[++facelist[0]] = i;
 
@@ -110,25 +110,25 @@ nevs_print_tess (FILE* file, struct PRINT Print, struct GEO Geo, struct GEODATA 
     fprintf (file,
  "#declare grain%d =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f} }\n",
       poly,
-      GeoData.col[poly_id][poly][0] / 255., \
-      GeoData.col[poly_id][poly][1] / 255., \
-      GeoData.col[poly_id][poly][2] / 255.,
+      TessData.col[poly_id][poly][0] / 255., \
+      TessData.col[poly_id][poly][1] / 255., \
+      TessData.col[poly_id][poly][2] / 255.,
       ambient);
 
     sprintf (texture, "grain%d", poly);
 
     // vertex coordinates
-    coo = ut_alloc_2d (Geo.FaceVerQty[face], 3);
+    coo = ut_alloc_2d (Tess.FaceVerQty[face], 3);
 
-    for (j = 1; j <= Geo.FaceVerQty[face]; j++)
-      ut_array_1d_memcpy (coo[j - 1], 3, Geo.VerCoo[Geo.FaceVerNb[face][j]]);
+    for (j = 1; j <= Tess.FaceVerQty[face]; j++)
+      ut_array_1d_memcpy (coo[j - 1], 3, Tess.VerCoo[Tess.FaceVerNb[face][j]]);
 
     fprintf (file, "// poly face %d\n", face);
 
-    nevs_print_polygon (file, Geo.FaceVerQty[face], coo, texture, \
+    nevs_print_polygon (file, Tess.FaceVerQty[face], coo, texture, \
 			NULL, NULL, p2, NULL, NULL);
 
-    ut_free_2d (coo, Geo.FaceVerQty[face]);
+    ut_free_2d (coo, Tess.FaceVerQty[face]);
   }
 
   // Writing faces
@@ -139,31 +139,31 @@ nevs_print_tess (FILE* file, struct PRINT Print, struct GEO Geo, struct GEODATA 
     fprintf (file,
  "#declare face%d =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f} }\n",
       face,
-      GeoData.col[face_id][face][0] / 255., \
-      GeoData.col[face_id][face][1] / 255., \
-      GeoData.col[face_id][face][2] / 255., \
+      TessData.col[face_id][face][0] / 255., \
+      TessData.col[face_id][face][1] / 255., \
+      TessData.col[face_id][face][2] / 255., \
       ambient);
 
     sprintf (texture, "face%d", face);
 
     // vertex coordinates
-    coo = ut_alloc_2d (Geo.FaceVerQty[face], 3);
+    coo = ut_alloc_2d (Tess.FaceVerQty[face], 3);
 
-    for (j = 1; j <= Geo.FaceVerQty[face]; j++)
-      ut_array_1d_memcpy (coo[j - 1], 3, Geo.VerCoo[Geo.FaceVerNb[face][j]]);
+    for (j = 1; j <= Tess.FaceVerQty[face]; j++)
+      ut_array_1d_memcpy (coo[j - 1], 3, Tess.VerCoo[Tess.FaceVerNb[face][j]]);
 
     // interpolation point
-    if (Print.showfaceinter == 1 && Geo.FaceState[face] > 0)
+    if (Print.showfaceinter == 1 && Tess.FaceState[face] > 0)
     {
-      if (Geo.FacePt[face] == 0)
+      if (Tess.FacePt[face] == 0)
       {
 	ut_array_1d_set (p, 3, 0);
-	for (j = 0; j < Geo.FaceVerQty[face]; j++)
+	for (j = 0; j < Tess.FaceVerQty[face]; j++)
 	  ut_array_1d_add (p, coo[j], 3, p);
-	ut_array_1d_scale (p, 3, 1./Geo.FaceVerQty[face]);
+	ut_array_1d_scale (p, 3, 1./Tess.FaceVerQty[face]);
       }
-      else if (Geo.FacePt[face] > 0)
-	ut_array_1d_memcpy (p, 3, Geo.FacePtCoo[face]);
+      else if (Tess.FacePt[face] > 0)
+	ut_array_1d_memcpy (p, 3, Tess.FacePtCoo[face]);
 
       p2 = p;
     }
@@ -172,15 +172,15 @@ nevs_print_tess (FILE* file, struct PRINT Print, struct GEO Geo, struct GEODATA 
 
     fprintf (file, "// face %d\n", face);
 
-    nevs_print_polygon (file, Geo.FaceVerQty[face], coo, texture, \
+    nevs_print_polygon (file, Tess.FaceVerQty[face], coo, texture, \
 			NULL, NULL, p2, NULL, NULL);
 
-    if (Print.showfaceinter == 1 && Geo.FaceState[face] > 0)
-      for (j = 0; j < Geo.FaceVerQty[face]; j++)
-	if (j +1 != Geo.FacePt[face])
+    if (Print.showfaceinter == 1 && Tess.FaceState[face] > 0)
+      for (j = 0; j < Tess.FaceVerQty[face]; j++)
+	if (j +1 != Tess.FacePt[face])
 	  nevs_print_segment_wsph (file, p, coo[j], "faceinter_rad", "faceinter_texture");
 
-    ut_free_2d (coo, Geo.FaceVerQty[face]);
+    ut_free_2d (coo, Tess.FaceVerQty[face]);
   }
 
   ut_free_1d (p);
@@ -193,20 +193,20 @@ nevs_print_tess (FILE* file, struct PRINT Print, struct GEO Geo, struct GEODATA 
     fprintf (file,
  "#declare edge%d =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f} }\n",
       edge,
-      GeoData.col[edge_id][edge][0] / 255., \
-      GeoData.col[edge_id][edge][1] / 255., \
-      GeoData.col[edge_id][edge][2] / 255., \
+      TessData.col[edge_id][edge][0] / 255., \
+      TessData.col[edge_id][edge][1] / 255., \
+      TessData.col[edge_id][edge][2] / 255., \
       ambient);
     
     sprintf (texture, "edge%d", edge);
 
     coo = ut_alloc_2d (2, 3);
 
-    ut_array_1d_memcpy (coo[0], 3, Geo.VerCoo[Geo.EdgeVerNb[edge][0]]);
-    ut_array_1d_memcpy (coo[1], 3, Geo.VerCoo[Geo.EdgeVerNb[edge][1]]);
+    ut_array_1d_memcpy (coo[0], 3, Tess.VerCoo[Tess.EdgeVerNb[edge][0]]);
+    ut_array_1d_memcpy (coo[1], 3, Tess.VerCoo[Tess.EdgeVerNb[edge][1]]);
 
     char* string = ut_alloc_1d_char (100);
-    sprintf (string, "%.12f", GeoData.rad[edge_id][edge]);
+    sprintf (string, "%.12f", TessData.rad[edge_id][edge]);
     nevs_print_segment_wsph (file, coo[0], coo[1],
 			  string, texture);
     ut_free_1d_char (string);
@@ -222,16 +222,16 @@ nevs_print_tess (FILE* file, struct PRINT Print, struct GEO Geo, struct GEODATA 
     fprintf (file,
  "#declare ver%d =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f} }\n",
       ver,
-      GeoData.col[ver_id][ver][0] / 255., \
-      GeoData.col[ver_id][ver][1] / 255., \
-      GeoData.col[ver_id][ver][2] / 255., \
+      TessData.col[ver_id][ver][0] / 255., \
+      TessData.col[ver_id][ver][1] / 255., \
+      TessData.col[ver_id][ver][2] / 255., \
       ambient);
     
     sprintf (texture, "ver%d", ver);
 
     char* string = ut_alloc_1d_char (100);
-    sprintf (string, "%.12f", GeoData.rad[ver_id][ver]);
-    nevs_print_sphere (file,  Geo.VerCoo[ver], string, texture);
+    sprintf (string, "%.12f", TessData.rad[ver_id][ver]);
+    nevs_print_sphere (file,  Tess.VerCoo[ver], string, texture);
     ut_free_1d_char (string);
   }
 

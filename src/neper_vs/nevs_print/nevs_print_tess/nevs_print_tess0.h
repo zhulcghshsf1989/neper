@@ -2,4 +2,4 @@
 /* Copyright (C) 2003-2012, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-extern void nevs_print_tess (FILE*, struct PRINT, struct GEO, struct GEODATA);
+extern void nevs_print_tess (FILE*, struct PRINT, struct TESS, struct TESSDATA);

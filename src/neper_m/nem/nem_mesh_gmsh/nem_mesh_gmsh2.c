@@ -33,7 +33,7 @@ nem_mesh_gmsh_options (FILE * file, int algo2d, int algo3d, int opti,
 
 
 void
-nem_mesh_2d_gmsh_writenodes (struct GEO Geo, struct NODES Nodes,
+nem_mesh_2d_gmsh_writenodes (struct TESS Tess, struct NODES Nodes,
 			      struct MESH Mesh1D, int face, double *face_proj,
 			      FILE * file)
 {
@@ -44,7 +44,7 @@ nem_mesh_2d_gmsh_writenodes (struct GEO Geo, struct NODES Nodes,
 
   // searching set of nodes of the 0-D an 1-D meshes for this face 
 
-  neut_mesh_face_boundnodes (Mesh1D, Geo, face, &nodes, &nodeqty);
+  neut_mesh_face_boundnodes (Mesh1D, Tess, face, &nodes, &nodeqty);
 
   // printing face nodes
   for (i = 0; i < nodeqty; i++)
@@ -53,8 +53,8 @@ nem_mesh_2d_gmsh_writenodes (struct GEO Geo, struct NODES Nodes,
     ut_array_1d_memcpy (coo, 3, Nodes.NodeCoo[node]);
 
     // if modified face, projecting the node into its initial plane
-    if (Geo.FaceState[face] > 0)
-      ut_space_projpoint_alongonto (coo, face_proj, Geo.FaceEq[face]);
+    if (Tess.FaceState[face] > 0)
+      ut_space_projpoint_alongonto (coo, face_proj, Tess.FaceEq[face]);
 
     fprintf (file, "Point(%d) = {%.12f, %.12f, %.12f, %.12f};\n",
 	     node, coo[0], coo[1], coo[2], Nodes.NodeCl[node]);
@@ -67,14 +67,14 @@ nem_mesh_2d_gmsh_writenodes (struct GEO Geo, struct NODES Nodes,
 }
 
 void
-nem_mesh_2d_gmsh_write1dmesh (struct GEO Geo, struct MESH Mesh1D, int face,
+nem_mesh_2d_gmsh_write1dmesh (struct TESS Tess, struct MESH Mesh1D, int face,
 			       FILE * file)
 {
   int i, j, elt, edge;
 
-  for (i = 1; i <= Geo.FaceVerQty[face]; i++)
+  for (i = 1; i <= Tess.FaceVerQty[face]; i++)
   {
-    edge = Geo.FaceEdgeNb[face][i];
+    edge = Tess.FaceEdgeNb[face][i];
 
     /* writing elts */
     for (j = 1; j <= Mesh1D.Elsets[edge][0]; j++)

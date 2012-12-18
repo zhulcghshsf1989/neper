@@ -14,5 +14,5 @@
 
 #include"nem_meshing_0D0.h"
 
-extern void VerMeshing (struct GEO, int, struct GEOPARA,
+extern void VerMeshing (struct TESS, int, struct TESSPARA,
                         struct NODES*, struct MESH*);

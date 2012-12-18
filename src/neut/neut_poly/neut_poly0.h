@@ -4,8 +4,8 @@
 
 extern void neut_poly_bbox (struct POLY, double*);
 extern int neut_poly_point_in (struct POLY, double*);
+extern void neut_poly_tesl (struct POLY, struct TESL*);
 extern void neut_poly_tess (struct POLY, struct TESS*);
-extern void neut_poly_geo (struct POLY, struct GEO*);
 extern void neut_poly_free (struct POLY*);
 extern void neut_poly_set_zero (struct POLY*);
 

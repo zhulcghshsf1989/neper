@@ -7,7 +7,7 @@
 
 void
 nevs_show_init (
-	   struct GEO  Geo   , struct NODES Nodes, struct MESH Mesh0D,
+	   struct TESS  Tess   , struct NODES Nodes, struct MESH Mesh0D,
 	   struct MESH Mesh1D, struct MESH Mesh2D, struct MESH  Mesh3D,
 	   int SQty, struct PRINT *pPrint)
 {
@@ -34,7 +34,7 @@ nevs_show_init (
       (*pPrint).showtess = 0;
   }
 
-  if (Geo.PolyQty > 0 && (*pPrint).showtess == -1)
+  if (Tess.PolyQty > 0 && (*pPrint).showtess == -1)
     (*pPrint).showtess = 1;
 
   if ((*pPrint).showmesh == 1)
@@ -86,45 +86,45 @@ nevs_show_init (
   {
     if ((*pPrint).showpoly[0] == -1)
     {
-      (*pPrint).showpoly = ut_realloc_1d_int ((*pPrint).showpoly, Geo.PolyQty + 1);
-      (*pPrint).showpoly[0] = Geo.PolyQty;
-      ut_array_1d_int_set ((*pPrint).showpoly + 1, Geo.PolyQty, 1);
+      (*pPrint).showpoly = ut_realloc_1d_int ((*pPrint).showpoly, Tess.PolyQty + 1);
+      (*pPrint).showpoly[0] = Tess.PolyQty;
+      ut_array_1d_int_set ((*pPrint).showpoly + 1, Tess.PolyQty, 1);
     }
     
     if ((*pPrint).showface[0] == -1)
     {
-      (*pPrint).showface = ut_realloc_1d_int ((*pPrint).showface, Geo.FaceQty + 1);
+      (*pPrint).showface = ut_realloc_1d_int ((*pPrint).showface, Tess.FaceQty + 1);
       (*pPrint).showface[0] = 0;
-      ut_array_1d_int_set ((*pPrint).showface + 1, Geo.FaceQty, 0);
+      ut_array_1d_int_set ((*pPrint).showface + 1, Tess.FaceQty, 0);
     }
     
     if ((*pPrint).showedge[0] == -1)
     {
-      (*pPrint).showedge = ut_realloc_1d_int ((*pPrint).showedge, Geo.EdgeQty + 1);
-      (*pPrint).showedge[0] = Geo.EdgeQty;
-      ut_array_1d_int_set ((*pPrint).showedge + 1, Geo.EdgeQty, 1);
+      (*pPrint).showedge = ut_realloc_1d_int ((*pPrint).showedge, Tess.EdgeQty + 1);
+      (*pPrint).showedge[0] = Tess.EdgeQty;
+      ut_array_1d_int_set ((*pPrint).showedge + 1, Tess.EdgeQty, 1);
     }
     
     if ((*pPrint).showver[0] == -1)
     {
-      (*pPrint).showver = ut_realloc_1d_int ((*pPrint).showver, Geo.VerQty + 1);
-      (*pPrint).showver[0] = Geo.VerQty;
-      ut_array_1d_int_set ((*pPrint).showver + 1, Geo.VerQty, 1);
+      (*pPrint).showver = ut_realloc_1d_int ((*pPrint).showver, Tess.VerQty + 1);
+      (*pPrint).showver[0] = Tess.VerQty;
+      ut_array_1d_int_set ((*pPrint).showver + 1, Tess.VerQty, 1);
     }
   }
 
   /*
   (*pPrint).showver =
-    ut_realloc_1d_int ((*pPrint).showver, Geo.VerQty + 1);
+    ut_realloc_1d_int ((*pPrint).showver, Tess.VerQty + 1);
 
   (*pPrint).showedge =
-    ut_realloc_1d_int ((*pPrint).showedge, Geo.EdgeQty + 1);
+    ut_realloc_1d_int ((*pPrint).showedge, Tess.EdgeQty + 1);
 
   (*pPrint).showface =
-    ut_realloc_1d_int ((*pPrint).showface, Geo.FaceQty + 1);
+    ut_realloc_1d_int ((*pPrint).showface, Tess.FaceQty + 1);
 
   (*pPrint).showpoly =
-    ut_realloc_1d_int ((*pPrint).showpoly, Geo.PolyQty + 1);
+    ut_realloc_1d_int ((*pPrint).showpoly, Tess.PolyQty + 1);
 
   (*pPrint).shownode =
     ut_realloc_1d_int ((*pPrint).shownode, Nodes.NodeQty + 1);
@@ -147,16 +147,16 @@ nevs_show_init (
     ut_array_1d_int_set ((*pPrint).showelt + 1, Mesh3D.EltQty, 1);
     (*pPrint).showelt[0] = Mesh3D.EltQty;
   }
-  else if (Geo.PolyQty > 0 && (*pPrint).showpoly[0] == -1)
+  else if (Tess.PolyQty > 0 && (*pPrint).showpoly[0] == -1)
   {
-    ut_array_1d_int_set ((*pPrint).showpoly + 1, Geo.PolyQty, 1);
-    (*pPrint).showpoly[0] = Geo.PolyQty;
-    ut_array_1d_int_set ((*pPrint).showface + 1, Geo.FaceQty, 0);
+    ut_array_1d_int_set ((*pPrint).showpoly + 1, Tess.PolyQty, 1);
+    (*pPrint).showpoly[0] = Tess.PolyQty;
+    ut_array_1d_int_set ((*pPrint).showface + 1, Tess.FaceQty, 0);
     (*pPrint).showface[0] = 0;
-    ut_array_1d_int_set ((*pPrint).showedge + 1, Geo.EdgeQty, 1);
-    (*pPrint).showedge[0] = Geo.EdgeQty;
-    ut_array_1d_int_set ((*pPrint).showver + 1, Geo.VerQty, 1);
-    (*pPrint).showver[0] =  Geo.VerQty;
+    ut_array_1d_int_set ((*pPrint).showedge + 1, Tess.EdgeQty, 1);
+    (*pPrint).showedge[0] = Tess.EdgeQty;
+    ut_array_1d_int_set ((*pPrint).showver + 1, Tess.VerQty, 1);
+    (*pPrint).showver[0] =  Tess.VerQty;
   }
   */
 

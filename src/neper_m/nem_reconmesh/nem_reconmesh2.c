@@ -6,7 +6,7 @@
 
 void
 nem_reconmesh_2d (struct NODES Nodes, struct MESH *pMesh2D,
-              struct MESH *pMesh3D, struct GEO* pGeo)
+              struct MESH *pMesh3D, struct TESS* pTess)
 {
   int i, FaceQty;
   int** FacePoly = NULL;
@@ -32,18 +32,18 @@ nem_reconmesh_2d (struct NODES Nodes, struct MESH *pMesh2D,
     neut_mesh_init_eltelset (pMesh3D, NULL);
     neut_mesh3d_mesh2d (Nodes, *pMesh3D, pMesh2D, &FacePoly, &FaceQty, 1);
 
-    (*pGeo).FaceQty = FaceQty;
-    (*pGeo).FacePoly = ut_alloc_2d_int ((*pGeo).FaceQty + 1, 2); 
-    for (i = 1; i <= (*pGeo).FaceQty; i++)
-      ut_array_1d_int_memcpy ((*pGeo).FacePoly[i], 2, FacePoly[i - 1]);
+    (*pTess).FaceQty = FaceQty;
+    (*pTess).FacePoly = ut_alloc_2d_int ((*pTess).FaceQty + 1, 2); 
+    for (i = 1; i <= (*pTess).FaceQty; i++)
+      ut_array_1d_int_memcpy ((*pTess).FacePoly[i], 2, FacePoly[i - 1]);
   }
   else
   {
-    (*pGeo).FaceQty = (*pMesh2D).ElsetQty;
-    neut_mesh_facepoly (Nodes, *pMesh2D, *pMesh3D, &((*pGeo).FacePoly));
+    (*pTess).FaceQty = (*pMesh2D).ElsetQty;
+    neut_mesh_facepoly (Nodes, *pMesh2D, *pMesh3D, &((*pTess).FacePoly));
   }
 
-  neut_geo_init_polystuff_fromfacepoly (pGeo);
+  neut_tess_init_polystuff_fromfacepoly (pTess);
 
   if ((*pMesh2D).NodeElts == NULL)
     neut_mesh_init_nodeelts (pMesh2D, Nodes.NodeQty);
@@ -56,15 +56,15 @@ nem_reconmesh_2d (struct NODES Nodes, struct MESH *pMesh2D,
   double* eq  = ut_alloc_1d (4);
   double* eqe = ut_alloc_1d (4);
 
-  if ((*pGeo).FaceState == NULL)
-    (*pGeo).FaceState = ut_alloc_1d_int ((*pGeo).FaceQty + 1);
+  if ((*pTess).FaceState == NULL)
+    (*pTess).FaceState = ut_alloc_1d_int ((*pTess).FaceQty + 1);
     
-  ut_array_1d_int_set ((*pGeo).FaceState + 1, (*pGeo).FaceQty, 1);
+  ut_array_1d_int_set ((*pTess).FaceState + 1, (*pTess).FaceQty, 1);
 
-  if ((*pGeo).FaceEq == NULL)
-    (*pGeo).FaceEq = ut_alloc_2d ((*pGeo).FaceQty + 1, 4);
+  if ((*pTess).FaceEq == NULL)
+    (*pTess).FaceEq = ut_alloc_2d ((*pTess).FaceQty + 1, 4);
 
-  for (i = 1; i <= (*pGeo).FaceQty; i++)
+  for (i = 1; i <= (*pTess).FaceQty; i++)
   {
     ut_array_1d_zero (eq, 4);
     for (j = 1; j <= (*pMesh2D).Elsets[i][0]; j++)
@@ -79,20 +79,20 @@ nem_reconmesh_2d (struct NODES Nodes, struct MESH *pMesh2D,
     norm = ut_vector_norm (eq + 1);
     ut_array_1d_scale (eq, 4, 1./norm);
 
-    ut_array_1d_memcpy ((*pGeo).FaceEq[i], 4, eq);
+    ut_array_1d_memcpy ((*pTess).FaceEq[i], 4, eq);
   }
 
   ut_free_1d (eq);
   ut_free_1d (eqe);
 
-  ut_free_2d_int (FacePoly, (*pGeo).FaceQty);
+  ut_free_2d_int (FacePoly, (*pTess).FaceQty);
 
   return;
 }
 
 void
 nem_reconmesh_1d (struct NODES Nodes, struct MESH *pMesh1D,
-              struct MESH *pMesh2D, struct GEO* pGeo)
+              struct MESH *pMesh2D, struct TESS* pTess)
 {
   int i, EdgeQty;
   int*  EdgeFaceQty = NULL;
@@ -122,52 +122,52 @@ nem_reconmesh_1d (struct NODES Nodes, struct MESH *pMesh1D,
     neut_mesh2d_mesh1d (*pMesh2D, pMesh1D, &EdgeFaceNb,
 	&EdgeFaceQty, &EdgeQty, 1);
 
-    (*pGeo).EdgeQty = EdgeQty;
-    (*pGeo).EdgeFaceQty = ut_alloc_1d_int ((*pGeo).EdgeQty + 1); 
-    ut_array_1d_int_memcpy ((*pGeo).EdgeFaceQty + 1, (*pGeo).EdgeQty,
+    (*pTess).EdgeQty = EdgeQty;
+    (*pTess).EdgeFaceQty = ut_alloc_1d_int ((*pTess).EdgeQty + 1); 
+    ut_array_1d_int_memcpy ((*pTess).EdgeFaceQty + 1, (*pTess).EdgeQty,
 	EdgeFaceQty);
-    (*pGeo).EdgeFaceNb = ut_alloc_1d_pint ((*pGeo).EdgeQty + 1); 
-    (*pGeo).EdgeFaceNb[0] = ut_alloc_1d_int (1);
-    for (i = 1; i <= (*pGeo).EdgeQty; i++)
+    (*pTess).EdgeFaceNb = ut_alloc_1d_pint ((*pTess).EdgeQty + 1); 
+    (*pTess).EdgeFaceNb[0] = ut_alloc_1d_int (1);
+    for (i = 1; i <= (*pTess).EdgeQty; i++)
     {
-      (*pGeo).EdgeFaceNb[i] = ut_alloc_1d_int ((*pGeo).EdgeFaceQty[i]);
-      ut_array_1d_int_memcpy ((*pGeo).EdgeFaceNb[i], (*pGeo).EdgeFaceQty[i], EdgeFaceNb[i - 1]);
+      (*pTess).EdgeFaceNb[i] = ut_alloc_1d_int ((*pTess).EdgeFaceQty[i]);
+      ut_array_1d_int_memcpy ((*pTess).EdgeFaceNb[i], (*pTess).EdgeFaceQty[i], EdgeFaceNb[i - 1]);
     }
   }
   else
   {
-    (*pGeo).EdgeQty = (*pMesh1D).ElsetQty;
-    neut_mesh_edgeface (*pMesh1D, *pMesh2D, &((*pGeo).EdgeFaceNb), &((*pGeo).EdgeFaceQty));
+    (*pTess).EdgeQty = (*pMesh1D).ElsetQty;
+    neut_mesh_edgeface (*pMesh1D, *pMesh2D, &((*pTess).EdgeFaceNb), &((*pTess).EdgeFaceQty));
   }
 
-  (*pGeo).EdgeState = ut_alloc_1d_int ((*pGeo).EdgeQty + 1);
-  (*pGeo).EdgeDel   = ut_alloc_1d_int ((*pGeo).EdgeQty + 1);
+  (*pTess).EdgeState = ut_alloc_1d_int ((*pTess).EdgeQty + 1);
+  (*pTess).EdgeDel   = ut_alloc_1d_int ((*pTess).EdgeQty + 1);
 
   if ((*pMesh1D).NodeElts == NULL)
     neut_mesh_init_nodeelts (pMesh1D, Nodes.NodeQty);
   
-  neut_geo_init_facestuff_fromedge (pGeo);
+  neut_tess_init_facestuff_fromedge (pTess);
 
   ut_free_1d_int (EdgeFaceQty);
-  ut_free_2d_int (EdgeFaceNb,(*pGeo).EdgeQty);
+  ut_free_2d_int (EdgeFaceNb,(*pTess).EdgeQty);
 
   return;
 }
 
 void
 nem_reconmesh_0d (struct NODES Nodes, struct MESH *pMesh0D,
-              struct MESH *pMesh1D, struct GEO* pGeo)
+              struct MESH *pMesh1D, struct TESS* pTess)
 {
   int i, VerQty;
   int** VerEdgeNb = NULL;
   int*  VerEdgeQty = NULL;
-  struct GEO Geob;
-  struct GEO* pGeob = &Geob;
+  struct TESS Tessb;
+  struct TESS* pTessb = &Tessb;
 
-  neut_geo_set_zero (pGeob);
+  neut_tess_set_zero (pTessb);
 
-  if (pGeo != NULL)
-    pGeob = pGeo;
+  if (pTess != NULL)
+    pTessb = pTess;
 
   // check for the right dimensions
   if ((*pMesh1D).Dimension != 1)
@@ -192,60 +192,60 @@ nem_reconmesh_0d (struct NODES Nodes, struct MESH *pMesh0D,
     neut_mesh_init_eltelset (pMesh1D, NULL);
     neut_mesh1d_mesh0d (*pMesh1D, pMesh0D, &VerEdgeNb, &VerEdgeQty, &VerQty, 1);
 
-    (*pGeob).VerQty = VerQty;
-    (*pGeob).VerEdgeQty = ut_alloc_1d_int ((*pGeob).VerQty + 1);
-    ut_array_1d_int_memcpy ((*pGeob).VerEdgeQty + 1, (*pGeob).VerQty,
+    (*pTessb).VerQty = VerQty;
+    (*pTessb).VerEdgeQty = ut_alloc_1d_int ((*pTessb).VerQty + 1);
+    ut_array_1d_int_memcpy ((*pTessb).VerEdgeQty + 1, (*pTessb).VerQty,
 	VerEdgeQty);
-    (*pGeob).VerEdgeNb = ut_alloc_1d_pint ((*pGeob).VerQty + 1);
-    (*pGeob).VerEdgeNb[0] = ut_alloc_1d_int (1);
-    for (i = 1; i <= (*pGeob).VerQty; i++)
+    (*pTessb).VerEdgeNb = ut_alloc_1d_pint ((*pTessb).VerQty + 1);
+    (*pTessb).VerEdgeNb[0] = ut_alloc_1d_int (1);
+    for (i = 1; i <= (*pTessb).VerQty; i++)
     {
-      (*pGeob).VerEdgeNb[i] = ut_alloc_1d_int ((*pGeob).VerEdgeQty[i]);
-      ut_array_1d_int_memcpy ((*pGeob).VerEdgeNb[i], (*pGeob).VerEdgeQty[i], VerEdgeNb[i - 1]);
+      (*pTessb).VerEdgeNb[i] = ut_alloc_1d_int ((*pTessb).VerEdgeQty[i]);
+      ut_array_1d_int_memcpy ((*pTessb).VerEdgeNb[i], (*pTessb).VerEdgeQty[i], VerEdgeNb[i - 1]);
     }
   }
   else
   {
-    (*pGeob).VerQty = (*pMesh0D).ElsetQty;
-    neut_mesh_veredge (*pMesh0D, *pMesh1D, &((*pGeob).VerEdgeNb), &((*pGeob).VerEdgeQty));
+    (*pTessb).VerQty = (*pMesh0D).ElsetQty;
+    neut_mesh_veredge (*pMesh0D, *pMesh1D, &((*pTessb).VerEdgeNb), &((*pTessb).VerEdgeQty));
   }
 
   // Filling out VerCoo
-  (*pGeob).VerCoo = ut_alloc_2d ((*pGeob).VerQty + 1, 3);
-  for (i = 1; i <= (*pGeob).VerQty; i++)
-    ut_array_1d_memcpy ((*pGeob).VerCoo[i], 3, Nodes.NodeCoo[(*pMesh0D).EltNodes[i][0]]);
+  (*pTessb).VerCoo = ut_alloc_2d ((*pTessb).VerQty + 1, 3);
+  for (i = 1; i <= (*pTessb).VerQty; i++)
+    ut_array_1d_memcpy ((*pTessb).VerCoo[i], 3, Nodes.NodeCoo[(*pMesh0D).EltNodes[i][0]]);
 
-  if (pGeo != NULL)
+  if (pTess != NULL)
   {
     // Filling out VerState
-    (*pGeob).VerState = ut_alloc_1d_int ((*pGeob).VerQty + 1);
+    (*pTessb).VerState = ut_alloc_1d_int ((*pTessb).VerQty + 1);
 
-    neut_geo_init_edgestuff_fromver (pGeob);
+    neut_tess_init_edgestuff_fromver (pTessb);
 
     // aligning edge definition with mesh elset
     int elt, node1;
     double dist1, dist2;
-    for (i = 1; i <= (*pGeob).EdgeQty; i++)
+    for (i = 1; i <= (*pTessb).EdgeQty; i++)
     {
       elt = (*pMesh1D).Elsets[i][1];
       node1 = (*pMesh1D).EltNodes[elt][0];
       dist1 = ut_space_dist (Nodes.NodeCoo[node1],
-			    (*pGeob).VerCoo[(*pGeob).EdgeVerNb[i][0]]);
+			    (*pTessb).VerCoo[(*pTessb).EdgeVerNb[i][0]]);
       dist2 = ut_space_dist (Nodes.NodeCoo[node1],
-			    (*pGeob).VerCoo[(*pGeob).EdgeVerNb[i][1]]);
+			    (*pTessb).VerCoo[(*pTessb).EdgeVerNb[i][1]]);
 
       if (dist1 > dist2)
-	ut_array_1d_int_reverseelts ((*pGeob).EdgeVerNb[i], 2);
+	ut_array_1d_int_reverseelts ((*pTessb).EdgeVerNb[i], 2);
     }
 
-    neut_geo_init_facestuff_fromver (pGeob);
+    neut_tess_init_facestuff_fromver (pTessb);
   }
 
-  if (pGeo == NULL)
-    neut_geo_free (pGeob);
+  if (pTess == NULL)
+    neut_tess_free (pTessb);
   
-  if (pGeo != NULL)
-    ut_free_2d_int (VerEdgeNb, (*pGeo).VerQty);
+  if (pTess != NULL)
+    ut_free_2d_int (VerEdgeNb, (*pTess).VerQty);
 
   ut_free_1d_int (VerEdgeQty);
 
@@ -253,7 +253,7 @@ nem_reconmesh_0d (struct NODES Nodes, struct MESH *pMesh0D,
 }
 
 void
-nem_reconmesh_finalizegeo (struct GEO* pGeo, struct NODES RNodes,
+nem_reconmesh_finalizetess (struct TESS* pTess, struct NODES RNodes,
     struct MESH RMesh0D, struct MESH RMesh1D, struct MESH RMesh2D,
     struct MESH RMesh3D)
 {
@@ -263,15 +263,15 @@ nem_reconmesh_finalizegeo (struct GEO* pGeo, struct NODES RNodes,
   // double* eq = ut_alloc_1d (4);
   // double* eqe = ut_alloc_1d (4);
 
-  // (re)initializing geo properties from nodes / mesh ver coo
-  for (i = 1; i <= (*pGeo).VerQty; i++)
+  // (re)initializing tess properties from nodes / mesh ver coo
+  for (i = 1; i <= (*pTess).VerQty; i++)
   {
     node = RMesh0D.EltNodes[i][0];
-    ut_array_1d_memcpy ((*pGeo).VerCoo[i], 3, RNodes.NodeCoo[node]);
+    ut_array_1d_memcpy ((*pTess).VerCoo[i], 3, RNodes.NodeCoo[node]);
   }
   
   // edge length (sum over the elements to account for curvature)
-  for (i = 1; i <= (*pGeo).EdgeQty; i++)
+  for (i = 1; i <= (*pTess).EdgeQty; i++)
   {
     length = 0;
     for (j = 1; j <= RMesh1D.Elsets[i][0]; j++)
@@ -280,19 +280,19 @@ nem_reconmesh_finalizegeo (struct GEO* pGeo, struct NODES RNodes,
       length += ut_space_dist (RNodes.NodeCoo[RMesh1D.EltNodes[elt][0]],
                                RNodes.NodeCoo[RMesh1D.EltNodes[elt][1]]);
     }
-    (*pGeo).EdgeLength[i] = length;
+    (*pTess).EdgeLength[i] = length;
   }
   
   // face equations: the elt normals are (weighted) averaged, so as the
   // constant for the equation. 
 
   /*
-  if ((*pGeo).FaceState == NULL)
-    (*pGeo).FaceState = ut_alloc_1d_int ((*pGeo).FaceQty + 1);
-  if ((*pGeo).FaceEq == NULL)
-    (*pGeo).FaceEq = ut_alloc_2d ((*pGeo).FaceQty + 1, 4);
+  if ((*pTess).FaceState == NULL)
+    (*pTess).FaceState = ut_alloc_1d_int ((*pTess).FaceQty + 1);
+  if ((*pTess).FaceEq == NULL)
+    (*pTess).FaceEq = ut_alloc_2d ((*pTess).FaceQty + 1, 4);
 
-  for (i = 1; i <= (*pGeo).FaceQty; i++)
+  for (i = 1; i <= (*pTess).FaceQty; i++)
   {
     ut_array_1d_zero (eq, 4);
     for (j = 1; j <= RMesh2D.Elsets[i][0]; j++)
@@ -307,31 +307,31 @@ nem_reconmesh_finalizegeo (struct GEO* pGeo, struct NODES RNodes,
     norm = ut_vector_norm (eq + 1);
     ut_array_1d_scale (eq, 4, 1./norm);
 
-    ut_array_1d_memcpy ((*pGeo).FaceEq[i], 4, eq);
+    ut_array_1d_memcpy ((*pTess).FaceEq[i], 4, eq);
 
     // checking the face normal against the orientations of the edges
     // (see TestFace)
-    if (TestFace (*pGeo, i) != 0)
+    if (TestFace (*pTess, i) != 0)
     {
       printf ("face normal against the orientations of the edges\n");
       printf ("did not work\n");
       abort ();
-      ut_array_1d_scale ((*pGeo).FaceEq[i], 4, -1);
+      ut_array_1d_scale ((*pTess).FaceEq[i], 4, -1);
     }
   }
   */
 
   // poly centre: centre of mass of the elsets
-  if ((*pGeo).CenterCoo == NULL)
-    (*pGeo).CenterCoo = ut_alloc_2d ((*pGeo).PolyQty + 1, 3);
-  for (i = 1; i <= (*pGeo).PolyQty; i++)
-    neut_mesh_elset_centre (RNodes, RMesh3D, i, (*pGeo).CenterCoo[i]);
+  if ((*pTess).CenterCoo == NULL)
+    (*pTess).CenterCoo = ut_alloc_2d ((*pTess).PolyQty + 1, 3);
+  for (i = 1; i <= (*pTess).PolyQty; i++)
+    neut_mesh_elset_centre (RNodes, RMesh3D, i, (*pTess).CenterCoo[i]);
 
   // poly face ori
-  if ((*pGeo).PolyFaceOri == NULL)
+  if ((*pTess).PolyFaceOri == NULL)
   {
-    (*pGeo).PolyFaceOri = ut_alloc_1d_pint ((*pGeo).PolyQty + 1);
-    (*pGeo).PolyFaceOri[0] = ut_alloc_1d_int (1);
+    (*pTess).PolyFaceOri = ut_alloc_1d_pint ((*pTess).PolyQty + 1);
+    (*pTess).PolyFaceOri[0] = ut_alloc_1d_int (1);
   }
 
   int k;
@@ -339,13 +339,13 @@ nem_reconmesh_finalizegeo (struct GEO* pGeo, struct NODES RNodes,
   int* elts3d = NULL;
   double* eq = ut_alloc_1d (4);
   double* eltcentre = ut_alloc_1d (3);
-  for (i = 1; i <= (*pGeo).PolyQty; i++)
+  for (i = 1; i <= (*pTess).PolyQty; i++)
   {
     // printf ("\npoly = %d ----------\n", i);
-    (*pGeo).PolyFaceOri[i] = ut_alloc_1d_int ((*pGeo).PolyFaceQty[i] + 1);
-    for (j = 1; j <= (*pGeo).PolyFaceQty[i]; j++)
+    (*pTess).PolyFaceOri[i] = ut_alloc_1d_int ((*pTess).PolyFaceQty[i] + 1);
+    for (j = 1; j <= (*pTess).PolyFaceQty[i]; j++)
     {
-      face = (*pGeo).PolyFaceNb[i][j];
+      face = (*pTess).PolyFaceNb[i][j];
       elt2d = RMesh2D.Elsets[face][1];
       neut_mesh_elt2d_elts3d (RMesh2D, elt2d, RMesh3D, &elts3d, &elt3dqty);
       elt3d = -1;
@@ -365,24 +365,24 @@ nem_reconmesh_finalizegeo (struct GEO* pGeo, struct NODES RNodes,
 
       /*
       printf ("\nface = %d FaceEq = ", face);
-      ut_array_1d_fprintf (stdout, (*pGeo).FaceEq[face], 4, "%f");
+      ut_array_1d_fprintf (stdout, (*pTess).FaceEq[face], 4, "%f");
       printf ("elt2d = %d    eq = ", elt2d);
       ut_array_1d_fprintf (stdout, eq, 4, "%f");
       printf ("eltcentre = ");
       ut_array_1d_fprintf (stdout, eltcentre, 3, "%f");
       printf ("planeside = %d\n", ut_space_planeside (eq, eltcentre - 1));
       */
-      (*pGeo).PolyFaceOri[i][j] = -ut_space_planeside (eq, eltcentre - 1);
-      if (ut_vector_scalprod ((*pGeo).FaceEq[face] + 1, eq + 1) < 0)
-	(*pGeo).PolyFaceOri[i][j] *= -1;
-      // printf (" --> faceori = %d\n", (*pGeo).PolyFaceOri[i][j]);
+      (*pTess).PolyFaceOri[i][j] = -ut_space_planeside (eq, eltcentre - 1);
+      if (ut_vector_scalprod ((*pTess).FaceEq[face] + 1, eq + 1) < 0)
+	(*pTess).PolyFaceOri[i][j] *= -1;
+      // printf (" --> faceori = %d\n", (*pTess).PolyFaceOri[i][j]);
     }
   }
   ut_free_1d (eq);
   ut_free_1d (eltcentre);
   ut_free_1d_int (elts3d);
 
-  // if (strcmp (RMesh3D.EltType, "tri") == 0 && (*pGeo).PolyTrue == NULL)
+  // if (strcmp (RMesh3D.EltType, "tri") == 0 && (*pTess).PolyTrue == NULL)
 
   // ut_free_1d (eqe);
   // ut_free_1d (eq);

@@ -5,7 +5,7 @@
 #include"nem_meshing_2D.h"
 
 void
-nem_meshing_2D (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
+nem_meshing_2D (struct IN In, struct TESSPARA TessPara, struct TESS Tess,
            double** face_proj, int* face_op, struct NODES RNodes,
 	   struct MESH RMesh2D, struct MESH Mesh1D,
 	   struct NODES *pNodes, struct MESH *pMesh2D)
@@ -100,17 +100,17 @@ nem_meshing_2D (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
   ut_print_message (0, 2, "2D meshing ... ");
 
   // Meshing faces in turn ---------------------------------------------
-  int* meshface = ut_alloc_1d_int (Geo.FaceQty + 1);
-  ut_array_1d_int_set (meshface + 1, Geo.FaceQty, 1);
-  meshface[0] = Geo.FaceQty;
+  int* meshface = ut_alloc_1d_int (Tess.FaceQty + 1);
+  ut_array_1d_int_set (meshface + 1, Tess.FaceQty, 1);
+  meshface[0] = Tess.FaceQty;
 
   if (In.meshface != NULL)
-    neut_geo_expr_facetab (Geo, In.meshface, meshface);
+    neut_tess_expr_facetab (Tess, In.meshface, meshface);
   
-  ut_print_progress (stdout, 0, Geo.FaceQty, "%3.0f%%", message);
+  ut_print_progress (stdout, 0, Tess.FaceQty, "%3.0f%%", message);
 
   int fixed_face = 0;
-  for (i = 1; i <= Geo.FaceQty; i++)
+  for (i = 1; i <= Tess.FaceQty; i++)
   {
     if (meshface[i] == 0)
     {
@@ -138,8 +138,8 @@ nem_meshing_2D (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
 	{
 	  rnd = (iter + 1) * 1.e-5; // mandatory
 
-	  status = nem_mesh_2d_gmsh (Geo, i, face_proj[i], *pNodes,
-	      Mesh1D, GeoPara.cl, In.gmsh, algos[a][0], rnd, allowed_t,
+	  status = nem_mesh_2d_gmsh (Tess, i, face_proj[i], *pNodes,
+	      Mesh1D, TessPara.cl, In.gmsh, algos[a][0], rnd, allowed_t,
 	      &N, &M, &acl, &elapsed_t);
 
 	  if (status == 0) // success
@@ -200,9 +200,9 @@ nem_meshing_2D (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
       totqmax  =  ut_num_min (totqmax, qmax);
       totqmean = (totqmean * (i - 1) + qmean) / i;
 
-      if (Geo.FaceState[i] > 0 && RNodes.NodeQty == 0)
+      if (Tess.FaceState[i] > 0 && RNodes.NodeQty == 0)
       {
-	neut_geo_face_interpolmesh (Geo, i, &Nint, &Mint);
+	neut_tess_face_interpolmesh (Tess, i, &Nint, &Mint);
 	neut_nodes_proj_alongontomesh (&N, face_proj[i], Nint, Mint, 1);
 	neut_nodes_free (&Nint);
 	neut_mesh_free (&Mint);
@@ -219,8 +219,8 @@ nem_meshing_2D (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
      * out in N without a priori assumption, by using the coordinates
      */
 
-    neut_mesh_elsets_nodes (Mesh1D, Geo.FaceEdgeNb[i] + 1,
-			    Geo.FaceVerQty[i], &skinnodes, &skinnodes_qty);
+    neut_mesh_elsets_nodes (Mesh1D, Tess.FaceEdgeNb[i] + 1,
+			    Tess.FaceVerQty[i], &skinnodes, &skinnodes_qty);
 
     node_nbs = ut_alloc_1d_int (N.NodeQty + 1);
 
@@ -335,7 +335,7 @@ nem_meshing_2D (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
 
     ut_free_1d_int (pct);
 
-    ut_print_progress (stdout, i, Geo.FaceQty, format, message);
+    ut_print_progress (stdout, i, Tess.FaceQty, format, message);
   }
 
   ut_free_1d_int (meshface);
@@ -351,7 +351,7 @@ nem_meshing_2D (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
   neut_gmsh_rc ("unbak");
   remove ("debugp.pos");
   remove ("debugr.pos");
-  remove ("tmp.geo");
+  remove ("tmp.tess");
   remove ("tmp.msh");
 
   ut_free_2d_char (algo, algoqty);

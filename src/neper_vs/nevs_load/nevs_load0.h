@@ -2,4 +2,4 @@
 /* Copyright (C) 2003-2012, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-extern void nevs_load (char**, int*, struct NODES*, struct MESH*, struct MESH*, struct MESH*, struct MESH*, struct GEO*);
+extern void nevs_load (char**, int*, struct NODES*, struct MESH*, struct MESH*, struct MESH*, struct MESH*, struct TESS*);

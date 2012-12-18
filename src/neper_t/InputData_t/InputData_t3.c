@@ -6,7 +6,7 @@
 
 /* SetDefaultOptions set the options to their default values */
 void
-SetDefaultOptions_t (struct IN *pIn, struct GEOPARA* pGeoPara)
+SetDefaultOptions_t (struct IN *pIn, struct TESSPARA* pTessPara)
 {
   (*pIn).morpho = ut_alloc_1d_char (10);
   sprintf ((*pIn).morpho, "poisson");
@@ -67,21 +67,21 @@ SetDefaultOptions_t (struct IN *pIn, struct GEOPARA* pGeoPara)
 
   (*pIn).mloop = 2;
   (*pIn).maxedgedelqty = INT_MAX;
-  (*pGeoPara).maxff = 0;
+  (*pTessPara).maxff = 0;
 
-  (*pGeoPara).seltype = 1; // 0: sel, 1: rsel
-  (*pGeoPara).sel = -1;
-  (*pGeoPara).rsel = 1;
-  (*pGeoPara).dboundseltype = 1; // 0: sel, 1: rsel
-  (*pGeoPara).dboundsel = -1;
-  (*pGeoPara).dboundrsel = 1;
-  (*pGeoPara).dbound = NULL;
+  (*pTessPara).seltype = 1; // 0: sel, 1: rsel
+  (*pTessPara).sel = -1;
+  (*pTessPara).rsel = 1;
+  (*pTessPara).dboundseltype = 1; // 0: sel, 1: rsel
+  (*pTessPara).dboundsel = -1;
+  (*pTessPara).dboundrsel = 1;
+  (*pTessPara).dbound = NULL;
   
   return;
 }
 
 void
-SetOptions_t (struct IN *pIn, struct GEOPARA* pGeoPara, int argc, char **argv)
+SetOptions_t (struct IN *pIn, struct TESSPARA* pTessPara, int argc, char **argv)
 {
   int i, ArgQty, Res;
   char **ArgList = ut_alloc_2d_char (101, 101);
@@ -275,28 +275,28 @@ SetOptions_t (struct IN *pIn, struct GEOPARA* pGeoPara, int argc, char **argv)
 /*---------------------------------------------------------------------- 
 * regularization options */
     else if (strcmp (Arg, "-maxff") == 0 && i < argc - 1)
-      (*pGeoPara).maxff = ut_arg_nextasreal (argv, &i, Arg, 0, 180);
+      (*pTessPara).maxff = ut_arg_nextasreal (argv, &i, Arg, 0, 180);
     else if (strcmp (Arg, "-sel") == 0 && i < argc - 1)
     {
-      (*pGeoPara).seltype = 0;
-      (*pGeoPara).sel = ut_arg_nextasreal (argv, &i, Arg, 0, DBL_MAX);
+      (*pTessPara).seltype = 0;
+      (*pTessPara).sel = ut_arg_nextasreal (argv, &i, Arg, 0, DBL_MAX);
     }
     else if (strcmp (Arg, "-rsel") == 0 && i < argc - 1)
     {
-      (*pGeoPara).seltype = 1;
-      (*pGeoPara).rsel = ut_arg_nextasreal (argv, &i, Arg, 0, DBL_MAX);
+      (*pTessPara).seltype = 1;
+      (*pTessPara).rsel = ut_arg_nextasreal (argv, &i, Arg, 0, DBL_MAX);
     }
     else if (strcmp (Arg, "-dbound") == 0 && i < argc - 1)
-      (*pGeoPara).dbound = ut_arg_nextaschar (argv, &i, Arg);
+      (*pTessPara).dbound = ut_arg_nextaschar (argv, &i, Arg);
     else if (strcmp (Arg, "-dboundsel") == 0 && i < argc - 1)
     {
-      (*pGeoPara).dboundseltype = 0;
-      (*pGeoPara).dboundsel = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
+      (*pTessPara).dboundseltype = 0;
+      (*pTessPara).dboundsel = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
     }
     else if (strcmp (Arg, "-dboundrsel") == 0 && i < argc - 1)
     {
-      (*pGeoPara).dboundseltype = 1;
-      (*pGeoPara).dboundrsel = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
+      (*pTessPara).dboundseltype = 1;
+      (*pTessPara).dboundrsel = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
     }
     else if (strcmp (Arg, "-mloop") == 0 && i < argc - 1)
       (*pIn).mloop = ut_arg_nextasint (argv, &i, Arg, 0, INT_MAX);

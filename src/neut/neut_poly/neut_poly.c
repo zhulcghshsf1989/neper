@@ -84,13 +84,13 @@ neut_poly_point_in (struct POLY Poly, double* coo)
 }
 
 void
-neut_poly_tess (struct POLY Poly, struct TESS* pTess)
+neut_poly_tesl (struct POLY Poly, struct TESL* pTess)
 {
   struct GERMSET GermSet; 
   struct POLY* PolyArray = (struct POLY*) calloc (2, sizeof (struct POLY));
   PolyArray[1] = Poly;
 
-  neut_tess_set_zero (pTess);
+  neut_tesl_set_zero (pTess);
 
   neut_germset_set_zero (&GermSet);
 
@@ -118,17 +118,17 @@ neut_poly_tess (struct POLY Poly, struct TESS* pTess)
 }
 
 void
-neut_poly_geo (struct POLY Poly, struct GEO* pGeo)
+neut_poly_tess (struct POLY Poly, struct TESS* pTess)
 {
-  neut_geo_set_zero (pGeo);
+  neut_tess_set_zero (pTess);
 
-  struct TESS Tess;
-  neut_tess_set_zero (&Tess);
+  struct TESL Tess;
+  neut_tesl_set_zero (&Tess);
 
-  neut_poly_tess (Poly, &Tess);
-  neut_tess_geo (Tess, pGeo);
+  neut_poly_tesl (Poly, &Tess);
+  neut_tesl_tess (Tess, pTess);
 
-  neut_tess_free (&Tess);
+  neut_tesl_free (&Tess);
 
   return;
 }

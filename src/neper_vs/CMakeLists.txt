@@ -20,7 +20,7 @@ add_library (neper_vs
 ./nevs_processimage/nevs_processimage1.c
 ./nevs_load/nevs_load1.c
 ./nevs_data/nevs_data1.c
-./nevs_data/nevs_geodata/nevs_geodata1.c
+./nevs_data/nevs_tessdata/nevs_tessdata1.c
 ./nevs_data/nevs_meshdata/nevs_meshdata2.c
 ./nevs_data/nevs_meshdata/nevs_meshdata1.c
 ./nevs_data/nevs_data_utils/nevs_data_utils1.c

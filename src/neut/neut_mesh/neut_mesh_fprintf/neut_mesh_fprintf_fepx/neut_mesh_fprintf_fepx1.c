@@ -5,7 +5,7 @@
 #include"neut_mesh_fprintf_fepx_lcl.h"
 
 void
-neut_mesh_fprintf_fepx_name (char* format, char* body, struct GEO Geo,
+neut_mesh_fprintf_fepx_name (char* format, char* body, struct TESS Tess,
 	      struct NODES Nodes, struct MESH Mesh2D, struct MESH Mesh3D,
 	      struct NSET NSet0D, struct NSET NSet1D, struct NSET NSet2D,
 	      char *nset, char* faset)
@@ -45,7 +45,7 @@ neut_mesh_fprintf_fepx_name (char* format, char* body, struct GEO Geo,
   if (printall || printmesh)
   {
     file = ut_file_open (mesh, "w");
-    neut_mesh_fprintf_fepx_elts (file, Geo, NSet2D, Mesh3D);
+    neut_mesh_fprintf_fepx_elts (file, Tess, NSet2D, Mesh3D);
     fprintf (file, "  1.0   1.0   1.0\n");
     neut_mesh_fprintf_fepx_nodes (file, Nodes);
     ut_file_close (file, mesh, "w");
@@ -57,7 +57,7 @@ neut_mesh_fprintf_fepx_name (char* format, char* body, struct GEO Geo,
     char* fasetexpand = NULL;
     neut_nset_expand (NSet0D, NSet1D, NSet2D, faset, &fasetexpand);
     file = ut_file_open (surf, "w");
-    neut_mesh_fprintf_fepx_skinelts (file, Geo, Mesh2D, Mesh3D, Nodes,
+    neut_mesh_fprintf_fepx_skinelts (file, Tess, Mesh2D, Mesh3D, Nodes,
 	NSet2D, fasetexpand);
     ut_file_close (file, surf, "w");
     ut_free_1d_char (fasetexpand);

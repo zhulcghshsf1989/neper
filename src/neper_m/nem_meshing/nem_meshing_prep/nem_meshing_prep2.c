@@ -5,7 +5,7 @@
 #include"nem_meshing_prep.h"
 
 int
-nem_mesh2d_face_nproj (struct GEO Geo, struct NODES RNodes, struct MESH RMesh1D,
+nem_mesh2d_face_nproj (struct TESS Tess, struct NODES RNodes, struct MESH RMesh1D,
 			struct MESH RMesh2D, int face, double* face_proj)
 {
   int i;
@@ -24,11 +24,11 @@ nem_mesh2d_face_nproj (struct GEO Geo, struct NODES RNodes, struct MESH RMesh1D,
   // Fixing self-intersecting faces ------------------------------------
   srand48 (face);
 
-  ut_array_1d_memcpy (face_proj, 3, Geo.FaceEq[face] + 1);
+  ut_array_1d_memcpy (face_proj, 3, Tess.FaceEq[face] + 1);
 
   nodeqty = 0;
   if (mesh_defined)
-    neut_mesh_face_boundnodes (RMesh1D, Geo, face, &nodes, &nodeqty);
+    neut_mesh_face_boundnodes (RMesh1D, Tess, face, &nodes, &nodeqty);
 
   coo = ut_alloc_2d (nodeqty, 3);
   
@@ -41,7 +41,7 @@ nem_mesh2d_face_nproj (struct GEO Geo, struct NODES RNodes, struct MESH RMesh1D,
     for (i = 0; i < nodeqty; i++)
     {
       ut_array_1d_memcpy (coo[i], 3, RNodes.NodeCoo[nodes[i]]);
-      ut_space_projpoint_alongonto (coo[i], face_proj, Geo.FaceEq[face]);
+      ut_space_projpoint_alongonto (coo[i], face_proj, Tess.FaceEq[face]);
     }
 
     status = ut_space_contour_intersect (coo, nodeqty);
@@ -66,7 +66,7 @@ nem_mesh2d_face_nproj (struct GEO Geo, struct NODES RNodes, struct MESH RMesh1D,
     {
       ol_nb_r (drand48 (), drand48 (), r);
       ol_rtheta_g (r, 10, g);
-      ol_g_vect_vect (g, Geo.FaceEq[face] + 1, face_proj);
+      ol_g_vect_vect (g, Tess.FaceEq[face] + 1, face_proj);
     }
 
     if (status != 0 && iter == 1)

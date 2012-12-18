@@ -12,9 +12,9 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
 
   // Variable declaration ###
   struct IN In;
-  struct GEO Geo;
+  struct TESS Tess;
   struct VOX Vox;
-  struct GEOPARA GeoPara;
+  struct TESSPARA TessPara;
   struct NODES Nodes, RNodes;
   struct MESH Mesh0D, Mesh1D, Mesh2D, Mesh3D;
   struct MESH RMesh0D, RMesh1D, RMesh2D, RMesh3D;
@@ -22,8 +22,8 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   struct NSET NSet0D, NSet1D, NSet2D;
 
   nem_in_set_zero    (&In);
-  nem_geopara_set_zero (&GeoPara);
-  neut_geo_set_zero   (&Geo);
+  nem_tesspara_set_zero (&TessPara);
+  neut_tess_set_zero   (&Tess);
   neut_vox_set_zero   (&Vox);
   neut_nodes_set_zero (&Nodes);
   neut_mesh_set_zero  (&Mesh0D);
@@ -45,7 +45,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
 
   // Reading input data ###
   ut_print_message (0, 1, "Reading input data ...\n");
-  nem_input (&In, &GeoPara, fargc, fargv, argc, argv);
+  nem_input (&In, &TessPara, fargc, fargv, argc, argv);
 
   // ###################################################################
   // ### LOADING INPUT DATA ############################################
@@ -54,7 +54,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   if (In.tess != NULL)
   {
     ut_print_message (0, 1, "Loading tessellation ...\n");
-    neut_geo_name_fscanf (In.tess, &Geo);
+    neut_tess_name_fscanf (In.tess, &Tess);
   }
   
   // Loading voxel data ###
@@ -73,11 +73,11 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
 
     ut_print_message (0, 1, "Loading %s data ...\n",
 	                    (In.remesh) ? "remeshing" : "transport");
-    nem_init_remesh (mesh, tess, &Geo, &RNodes, &RMesh0D, &RMesh1D, &RMesh2D, &RMesh3D);
+    nem_init_remesh (mesh, tess, &Tess, &RNodes, &RMesh0D, &RMesh1D, &RMesh2D, &RMesh3D);
   }
 
   // Scaling input data if necessary (use of cl3/rcl3) ###
-  nem_init_scaling (In.elttype, &Geo, &Vox, &RNodes, RMesh0D, RMesh1D, RMesh2D, RMesh3D, &GeoPara);
+  nem_init_scaling (In.elttype, &Tess, &Vox, &RNodes, RMesh0D, RMesh1D, RMesh2D, RMesh3D, &TessPara);
 
   // ###################################################################
   // ### COMPUTING OUTPUT MESH #########################################
@@ -89,7 +89,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
     if (! strcmp (In.elttype, "tet"))
     {
       if (In.tess != NULL || In.remesh)
-	nem_meshing (In, GeoPara, Geo, RNodes, RMesh1D, RMesh2D, &Nodes,
+	nem_meshing (In, TessPara, Tess, RNodes, RMesh1D, RMesh2D, &Nodes,
 	             &Mesh0D, &Mesh1D, &Mesh2D, &Mesh3D);
       else if (In.vox != NULL)
       {
@@ -101,16 +101,16 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
     else if (! strcmp (In.elttype, "hex"))
     {
       if (In.tess != NULL)
-	nem_geo_mesh_hex (In, GeoPara, Geo, &Nodes, &Mesh0D, &Mesh1D,
+	nem_tess_mesh_hex (In, TessPara, Tess, &Nodes, &Mesh0D, &Mesh1D,
 	    &Mesh2D, &Mesh3D, &NSet2D);
       else if (In.vox != NULL)
-	nem_vox_mesh_hex (In, GeoPara, Vox, &Nodes, &Mesh0D, &Mesh1D,
+	nem_vox_mesh_hex (In, TessPara, Vox, &Nodes, &Mesh0D, &Mesh1D,
 	    &Mesh2D, &Mesh3D, &NSet2D);
     }
   }
 
   // Inverse scaling of input / mesh if necessary (use of cl3/rcl3) ###
-  nem_post_scaling (GeoPara, &Geo, &Vox, &Nodes);
+  nem_post_scaling (TessPara, &Tess, &Vox, &Nodes);
 
   // Loading mesh (mutually exclusive with the 2 previous ones) ###
   if (In.loadmesh != NULL)
@@ -136,11 +136,11 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   if ((ut_string_inlist (In.outdim, ',', "2") && Mesh2D.EltQty == 0)
    || (ut_string_inlist (In.outdim, ',', "1") && Mesh1D.EltQty == 0)
    || (ut_string_inlist (In.outdim, ',', "0") && Mesh0D.EltQty == 0)
-   || (Geo.PolyQty == 0 && strlen (In.nset) > 0))
+   || (Tess.PolyQty == 0 && strlen (In.nset) > 0))
   {
     ut_print_message (0, 1, "Reconstructing mesh ...\n");
     nem_reconmesh (In.outdim, &Nodes, &Mesh0D, &Mesh1D, &Mesh2D,
-	       &Mesh3D, &Geo);
+	       &Mesh3D, &Tess);
   }
 
   // managing mesh order ###
@@ -166,7 +166,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   if (strlen (In.nset) > 0 && Mesh3D.EltQty > 0)
   {
     ut_print_message (0, 2, "Searching nsets ...\n");
-    nem_nsets (In, Geo, Mesh0D, Mesh1D, Mesh2D, &NSet0D, &NSet1D, &NSet2D);
+    nem_nsets (In, Tess, Mesh0D, Mesh1D, Mesh2D, &NSet0D, &NSet1D, &NSet2D);
   }
 
   // ###################################################################
@@ -175,7 +175,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   if (In.mesh || In.remesh || In.loadmesh != NULL)
   {
     ut_print_message (0, 1, "Writing mesh results ...\n");
-    nem_writemesh (In, Geo, Nodes, &Mesh0D, &Mesh1D, &Mesh2D, &Mesh3D, NSet0D, NSet1D, NSet2D, Part);
+    nem_writemesh (In, Tess, Nodes, &Mesh0D, &Mesh1D, &Mesh2D, &Mesh3D, NSet0D, NSet1D, NSet2D, Part);
   }
 
   // ###################################################################
@@ -184,7 +184,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   if (In.remap > 0)
   {
     ut_print_message (0, 1, "Mesh data transport ...\n");
-    nem_transport (In, Geo, RNodes, RMesh2D, RMesh3D, &Nodes, &Mesh2D, &Mesh3D);
+    nem_transport (In, Tess, RNodes, RMesh2D, RMesh3D, &Nodes, &Mesh2D, &Mesh3D);
   }
 
   // ###################################################################
@@ -193,10 +193,10 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   if (In.stn != NULL || In.ste != NULL || In.stelset != NULL)
   {
     ut_print_message (0, 1, "Writing mesh statistics ...\n");
-    if (Geo.PolyTrue == NULL)
-      neut_geo_init_polytrue (&Geo);
+    if (Tess.PolyTrue == NULL)
+      neut_tess_init_polytrue (&Tess);
 
-    nem_stat (Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, In, GeoPara, Geo);
+    nem_stat (Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, In, TessPara, Tess);
   }
 
   // ###################################################################
@@ -211,9 +211,9 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   neut_nset_free (&NSet1D);
   neut_nset_free (&NSet0D);
   neut_part_free (Part);
-  neut_geo_free  (&Geo);
+  neut_tess_free  (&Tess);
   nem_in_free (In);
-  nem_geopara_free (GeoPara);
+  nem_tesspara_free (TessPara);
   neut_nodes_free (&RNodes);
   neut_mesh_free  (&RMesh0D);
   neut_mesh_free  (&RMesh1D);

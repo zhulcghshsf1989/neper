@@ -44,16 +44,16 @@ net_domain_cylinder_planes (double h, double rad, int qty, double** eq)
 }
 
 void
-net_domain_tesspoly_planes (struct GEO Geo, int id, int* pqty, double** eq)
+net_domain_tesspoly_planes (struct TESS Tess, int id, int* pqty, double** eq)
 {
   int i, face;
 
-  (*pqty) = Geo.PolyFaceQty[id]; 
-  for (i = 1; i <= Geo.PolyFaceQty[id]; i++)
+  (*pqty) = Tess.PolyFaceQty[id]; 
+  for (i = 1; i <= Tess.PolyFaceQty[id]; i++)
   {
-    face = Geo.PolyFaceNb[id][i];
-    ut_array_1d_memcpy (eq[i - 1], 4, Geo.FaceEq[face]);
-    if (Geo.PolyFaceOri[id][i] == -1)
+    face = Tess.PolyFaceNb[id][i];
+    ut_array_1d_memcpy (eq[i - 1], 4, Tess.FaceEq[face]);
+    if (Tess.PolyFaceOri[id][i] == -1)
       ut_array_1d_scale (eq[i - 1], 4, -1);
   }
 

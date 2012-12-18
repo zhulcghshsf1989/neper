@@ -21,4 +21,4 @@
 
 #include"nem_transport0.h"
 
-extern void nem_transport_mesh3d_parelt (struct GEO, struct NODES, struct MESH, struct MESH, struct NODES, struct MESH, struct MESH, int*);
+extern void nem_transport_mesh3d_parelt (struct TESS, struct NODES, struct MESH, struct MESH, struct NODES, struct MESH, struct MESH, int*);

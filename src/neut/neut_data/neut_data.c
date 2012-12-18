@@ -5,67 +5,67 @@
 #include "neut_data.h"
 
 void
-neut_geodata_set_default (struct GEODATA* pGeoData)
+neut_tessdata_set_default (struct TESSDATA* pTessData)
 {
   int idmax;
 
-  neut_geodata_idmax (&idmax);
+  neut_tessdata_idmax (&idmax);
 
-  (*pGeoData).verqty  = 0;
-  (*pGeoData).edgeqty = 0;
-  (*pGeoData).faceqty = 0;
-  (*pGeoData).polyqty = 0;
+  (*pTessData).verqty  = 0;
+  (*pTessData).edgeqty = 0;
+  (*pTessData).faceqty = 0;
+  (*pTessData).polyqty = 0;
 
-  (*pGeoData).coldata     = ut_alloc_1d_ppdouble (idmax + 1);
-  (*pGeoData).coldatatype = ut_alloc_1d_pchar    (idmax + 1);
-  (*pGeoData).colscheme   = ut_alloc_1d_pchar    (idmax + 1);
-  (*pGeoData).col         = ut_alloc_1d_ppint    (idmax + 1);
+  (*pTessData).coldata     = ut_alloc_1d_ppdouble (idmax + 1);
+  (*pTessData).coldatatype = ut_alloc_1d_pchar    (idmax + 1);
+  (*pTessData).colscheme   = ut_alloc_1d_pchar    (idmax + 1);
+  (*pTessData).col         = ut_alloc_1d_ppint    (idmax + 1);
 
-  (*pGeoData).raddata     = ut_alloc_1d_ppdouble (idmax + 1);
-  (*pGeoData).raddatatype = ut_alloc_1d_pchar    (idmax + 1);
-  (*pGeoData).rad         = ut_alloc_1d_pdouble  (idmax + 1);
+  (*pTessData).raddata     = ut_alloc_1d_ppdouble (idmax + 1);
+  (*pTessData).raddatatype = ut_alloc_1d_pchar    (idmax + 1);
+  (*pTessData).rad         = ut_alloc_1d_pdouble  (idmax + 1);
   
-  (*pGeoData).scalemin    = ut_alloc_1d_pchar    (idmax + 1);
-  (*pGeoData).scalemax    = ut_alloc_1d_pchar    (idmax + 1);
-  (*pGeoData).scaleticks  = ut_alloc_1d_pchar    (idmax + 1);
+  (*pTessData).scalemin    = ut_alloc_1d_pchar    (idmax + 1);
+  (*pTessData).scalemax    = ut_alloc_1d_pchar    (idmax + 1);
+  (*pTessData).scaleticks  = ut_alloc_1d_pchar    (idmax + 1);
 
   return;
 }
 
 void
-neut_geodata_free (struct GEODATA* pGeoData)
+neut_tessdata_free (struct TESSDATA* pTessData)
 {
   int i, idmax, qty;
 
-  neut_geodata_idmax (&idmax);
+  neut_tessdata_idmax (&idmax);
 
   for (i = 0; i <= idmax; i++)
   {
-    neut_geodata_id_qty (*pGeoData, i, &qty);
-    ut_free_2d ((*pGeoData).coldata[i], qty);
-    ut_free_2d ((*pGeoData).raddata[i], qty);
-    ut_free_2d_int ((*pGeoData).col[i], qty);
+    neut_tessdata_id_qty (*pTessData, i, &qty);
+    ut_free_2d ((*pTessData).coldata[i], qty);
+    ut_free_2d ((*pTessData).raddata[i], qty);
+    ut_free_2d_int ((*pTessData).col[i], qty);
   }
-  ut_free_1d_ppdouble ((*pGeoData).coldata);
-  ut_free_1d_ppdouble ((*pGeoData).raddata);
-  ut_free_1d_ppint    ((*pGeoData).col);
+  ut_free_1d_ppdouble ((*pTessData).coldata);
+  ut_free_1d_ppdouble ((*pTessData).raddata);
+  ut_free_1d_ppint    ((*pTessData).col);
 
-  ut_free_2d ((*pGeoData).rad, idmax + 1);
+  ut_free_2d ((*pTessData).rad, idmax + 1);
 
-  ut_free_2d_char ((*pGeoData).coldatatype, idmax + 1);
-  ut_free_2d_char ((*pGeoData).colscheme, idmax + 1);
+  ut_free_2d_char ((*pTessData).coldatatype, idmax + 1);
+  ut_free_2d_char ((*pTessData).colscheme, idmax + 1);
 
-  ut_free_2d_char ((*pGeoData).raddatatype, idmax + 1);
+  ut_free_2d_char ((*pTessData).raddatatype, idmax + 1);
   
-  ut_free_2d_char ((*pGeoData).scalemin, idmax + 1);
-  ut_free_2d_char ((*pGeoData).scalemax, idmax + 1);
-  ut_free_2d_char ((*pGeoData).scaleticks, idmax + 1);
+  ut_free_2d_char ((*pTessData).scalemin, idmax + 1);
+  ut_free_2d_char ((*pTessData).scalemax, idmax + 1);
+  ut_free_2d_char ((*pTessData).scaleticks, idmax + 1);
 
   return;
 }
 
 int
-neut_geodata_entity_id (char* entity, int* pid)
+neut_tessdata_entity_id (char* entity, int* pid)
 {
   (*pid) = -1;
 
@@ -82,7 +82,7 @@ neut_geodata_entity_id (char* entity, int* pid)
 }
 
 int
-neut_geodata_id_entity (int id, char* entity)
+neut_tessdata_id_entity (int id, char* entity)
 {
   entity[0] = '\0';
 
@@ -99,27 +99,27 @@ neut_geodata_id_entity (int id, char* entity)
 }
 
 int
-neut_geodata_entity_qty (struct GEODATA GeoData, char* entity, int* pqty)
+neut_tessdata_entity_qty (struct TESSDATA TessData, char* entity, int* pqty)
 {
   int id;
 
-  neut_geodata_entity_id (entity, &id);
-  return neut_geodata_id_qty (GeoData, id, pqty);
+  neut_tessdata_entity_id (entity, &id);
+  return neut_tessdata_id_qty (TessData, id, pqty);
 }
 
 int
-neut_geodata_id_qty (struct GEODATA GeoData, int id, int* pqty)
+neut_tessdata_id_qty (struct TESSDATA TessData, int id, int* pqty)
 {
   (*pqty) = -1;
 
   if (id == 0)
-    (*pqty) = GeoData.polyqty;
+    (*pqty) = TessData.polyqty;
   else if (id == 1)
-    (*pqty) = GeoData.faceqty;
+    (*pqty) = TessData.faceqty;
   else if (id == 2)
-    (*pqty) = GeoData.edgeqty;
+    (*pqty) = TessData.edgeqty;
   else if (id == 3)
-    (*pqty) = GeoData.verqty;
+    (*pqty) = TessData.verqty;
 
   return ((*pqty) >= 0) ? 0 : -1;
 }
@@ -285,7 +285,7 @@ neut_meshdata_idmax (int* pidmax)
 }
 
 int
-neut_geodata_idmax (int* pidmax)
+neut_tessdata_idmax (int* pidmax)
 {
   (*pidmax) = 3;
 

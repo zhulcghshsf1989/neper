@@ -5,7 +5,7 @@
 #include"nem_mesh_gmsh.h"
 
 int
-nem_mesh_2d_gmsh (struct GEO Geo, int face, double *face_proj,
+nem_mesh_2d_gmsh (struct TESS Tess, int face, double *face_proj,
 		   struct NODES Nodes, struct MESH Mesh1D,
 		   double cl, char *gmsh, char *algo, double rnd,
 		   double allowed_t,
@@ -32,13 +32,13 @@ nem_mesh_2d_gmsh (struct GEO Geo, int face, double *face_proj,
   neut_mesh_set_zero (&M2);
   neut_mesh_set_zero (&Skin);
 
-  file = ut_file_open ("tmp.geo", "W");
+  file = ut_file_open ("tmp.tess", "W");
 
 /*********************************************************************** 
  * general options */
 
   fprintf (file, "// face %d.\n", face);
-  fprintf (file, "// face state = %d\n", Geo.FaceState[face]);
+  fprintf (file, "// face state = %d\n", Tess.FaceState[face]);
   if (neut_gmsh_meshalgo2d_nb (algo, &nb) != 0)
   {
     printf ("\n");
@@ -51,22 +51,22 @@ nem_mesh_2d_gmsh (struct GEO Geo, int face, double *face_proj,
 /*********************************************************************** 
  * writing nodes then 1D elements */
 
-  nem_mesh_2d_gmsh_writenodes (Geo, Nodes, Mesh1D, face, face_proj, file);
-  nem_mesh_2d_gmsh_write1dmesh (Geo, Mesh1D, face, file);
+  nem_mesh_2d_gmsh_writenodes (Tess, Nodes, Mesh1D, face, face_proj, file);
+  nem_mesh_2d_gmsh_write1dmesh (Tess, Mesh1D, face, file);
 
 /*********************************************************************** 
  * writing face */
 
-  nem_mesh_2d_gmsh_writeface (Geo, Mesh1D, face, cl, file);
+  nem_mesh_2d_gmsh_writeface (Tess, Mesh1D, face, cl, file);
 
-  ut_file_close (file, "tmp.geo", "W");
+  ut_file_close (file, "tmp.tess", "W");
 
 /*********************************************************************** 
  * meshing */
 
   gettimeofday (&beg_time, &zone);
   char *Args = ut_alloc_1d_char (1000);
-  sprintf (Args, "%s -2 -v 0 tmp.geo > /dev/null 2> /dev/null", gmsh);
+  sprintf (Args, "%s -2 -v 0 tmp.tess > /dev/null 2> /dev/null", gmsh);
   ut_sys_runwtime (gmsh, Args, allowed_t);
   gettimeofday (&end_time, &zone);
   (*pelapsed_t) = ut_time_subtract (&beg_time, &end_time);
@@ -95,14 +95,14 @@ nem_mesh_2d_gmsh (struct GEO Geo, int face, double *face_proj,
       neut_mesh2d_mesh1d (*pM, &M2, &Elsets, &ElsetLs, &ElsetQty, 0);
       neut_mesh_mergeelsets (&M2);
 
-      neut_mesh_face_boundmesh (Mesh1D, Geo, face, &Skin);
+      neut_mesh_face_boundmesh (Mesh1D, Tess, face, &Skin);
       
       double** coo = ut_alloc_2d (Nodes.NodeQty + 1, 3);
       // node = i;
       for (i = 1; i <= Nodes.NodeQty; i++)
       {
 	ut_array_1d_memcpy (coo[i], 3, Nodes.NodeCoo[i]);
-	ut_space_projpoint_alongonto (Nodes.NodeCoo[i], face_proj, Geo.FaceEq[face]);
+	ut_space_projpoint_alongonto (Nodes.NodeCoo[i], face_proj, Tess.FaceEq[face]);
       }
 
       match = neut_mesh_cmp (Nodes, Skin, *pN, M2);
@@ -135,7 +135,7 @@ nem_mesh_2d_gmsh (struct GEO Geo, int face, double *face_proj,
   if (status == 0)
   {
     // commenting these two lines will break multimeshing
-    remove ("tmp.geo"); 
+    remove ("tmp.tess"); 
     remove ("tmp.msh");
   }
 
@@ -149,7 +149,7 @@ nem_mesh_2d_gmsh (struct GEO Geo, int face, double *face_proj,
 /* This code would be for the case where a 2D meshing from a 1D mesh was
  * possible with Gmsh, which happens not to be the case
 int
-nem_mesh_2d_gmsh_b (struct GEO Geo, int face,
+nem_mesh_2d_gmsh_b (struct TESS Tess, int face,
 		     struct NODES *pNodes, struct MESH Mesh1D,
 		     char *gmsh, char *algo, double rnd,
 		     double allowed_t,
@@ -173,7 +173,7 @@ nem_mesh_2d_gmsh_b (struct GEO Geo, int face,
 
 // writing boundary = "OD elements = *pNodes", then 1D elements
 
-  neut_mesh_face_boundmesh (Geo, face, Mesh1D, &Skin);
+  neut_mesh_face_boundmesh (Tess, face, Mesh1D, &Skin);
 
   file2 = ut_file_open ("tmp-surf.msh", "W");
   nem_writemeshGmsh (file2, *pNodes, Skin, Garbage, Garbage);
@@ -181,15 +181,15 @@ nem_mesh_2d_gmsh_b (struct GEO Geo, int face,
 
 // writing face
 
-  file = ut_file_open ("tmp.geo", "W");
+  file = ut_file_open ("tmp.tess", "W");
   neut_gmsh_meshalgo2d_nb (algo, &nb);
   nem_mesh_gmsh_options (file, nb, 4, 1, rnd);
   nem_mesh_2d_gmsh_writeface_b (-1, file);
-  ut_file_close (file, "tmp.geo", "W");
+  ut_file_close (file, "tmp.tess", "W");
 */
 
 int
-nem_mesh_3d_gmsh (struct GEO Geo, int poly, struct NODES Nodes,
+nem_mesh_3d_gmsh (struct TESS Tess, int poly, struct NODES Nodes,
 		   struct MESH Mesh2D, double cl, double clconv,
                    char *gmsh, char
 		   *algo, char *opti, double rnd, double allowed_t,
@@ -227,7 +227,7 @@ nem_mesh_3d_gmsh (struct GEO Geo, int poly, struct NODES Nodes,
 /*********************************************************************** 
  * writing 2D elements (w their nodes) in separate file */
 
-  neut_mesh_poly_boundmesh (Geo, poly, Mesh2D, &Skin);
+  neut_mesh_poly_boundmesh (Tess, poly, Mesh2D, &Skin);
 
   file2 = ut_file_open ("tmp-surf.msh", "W");
   neut_mesh_fprintf_gmsh (file2, "2", Nodes, Garbage, Garbage, Skin,
@@ -245,7 +245,7 @@ nem_mesh_3d_gmsh (struct GEO Geo, int poly, struct NODES Nodes,
   {
     // writing master file - general options + poly
 
-    file = ut_file_open ("tmp.geo", "W");
+    file = ut_file_open ("tmp.tess", "W");
     fprintf (file, "// Poly %d\n", poly);
     if (neut_gmsh_meshalgo3d_nb (algo, &nb) != 0)
     {
@@ -264,13 +264,13 @@ nem_mesh_3d_gmsh (struct GEO Geo, int poly, struct NODES Nodes,
 
     nem_mesh_gmsh_options (file, 1, nb, optinb, rnd);
     nem_mesh_3d_gmsh_writepoly (clmod, file);
-    ut_file_close (file, "tmp.geo", "W");
+    ut_file_close (file, "tmp.tess", "W");
 
     // meshing
     gettimeofday (&beg_time, &zone);
     Args = ut_alloc_1d_char (1000);
     sprintf (Args,
-	     "%s -3 -v 0 -order 1 tmp.geo -o tmp.msh > /dev/null 2> /dev/null",
+	     "%s -3 -v 0 -order 1 tmp.tess -o tmp.msh > /dev/null 2> /dev/null",
 	     gmsh);
     ut_sys_runwtime (gmsh, Args, allowed_t);
     gettimeofday (&end_time, &zone);
@@ -368,7 +368,7 @@ nem_mesh_3d_gmsh (struct GEO Geo, int poly, struct NODES Nodes,
 
   if (status == 0)
   {
-    remove ("tmp.geo");
+    remove ("tmp.tess");
     remove ("tmp-surf.msh");
     remove ("tmp.msh");
   }

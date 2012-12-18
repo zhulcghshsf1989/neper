@@ -5,8 +5,8 @@
 #include"nevs_data.h"
 
 void
-nevs_data (char** argv, int* pi, struct GEO Geo, struct NODES Nodes, struct MESH Mesh1D,
-           struct MESH Mesh, struct GEODATA* pGeoData, struct MESHDATA* pMeshData)
+nevs_data (char** argv, int* pi, struct TESS Tess, struct NODES Nodes, struct MESH Mesh1D,
+           struct MESH Mesh, struct TESSDATA* pTessData, struct MESHDATA* pMeshData)
 {
   char* entity = ut_alloc_1d_char (100);
   char* type   = ut_alloc_1d_char (100);
@@ -17,7 +17,7 @@ nevs_data (char** argv, int* pi, struct GEO Geo, struct NODES Nodes, struct MESH
    || strcmp (entity, "edge") == 0
    || strcmp (entity, "face") == 0
    || strcmp (entity, "ver" ) == 0)
-    nevs_geodata_fscanf (Geo, entity, type, argv[++(*pi)], pGeoData);
+    nevs_tessdata_fscanf (Tess, entity, type, argv[++(*pi)], pTessData);
 
   else if (
       strncmp (entity, "elt"  , 3) == 0
@@ -35,12 +35,12 @@ nevs_data (char** argv, int* pi, struct GEO Geo, struct NODES Nodes, struct MESH
 }
 
 void
-nevs_data_init (struct GEO Geo, struct GEODATA* pGeoData,
+nevs_data_init (struct TESS Tess, struct TESSDATA* pTessData,
                 struct NODES Nodes, struct MESH Mesh3D,
                 struct MESHDATA* pMeshData)
 {
-  if ((*pGeoData).polyqty > 0)
-    nevs_geodata_init (Geo, pGeoData);
+  if ((*pTessData).polyqty > 0)
+    nevs_tessdata_init (Tess, pTessData);
   
   if ((*pMeshData).elt3dqty > 0)
     nevs_meshdata_init (Nodes, Mesh3D, pMeshData);

@@ -21,4 +21,4 @@
 #include"nem_meshing_3D0.h"
 
 extern int nem_meshing_3D_poly (struct IN, double, struct MULTIM*, double,
-  double*, struct GEO, struct NODES*, struct MESH, struct MESH*, int);
+  double*, struct TESS, struct NODES*, struct MESH, struct MESH*, int);

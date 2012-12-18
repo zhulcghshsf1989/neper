@@ -14,9 +14,9 @@ CalcOri (struct IN In, struct ORI *pOri)
   double n1, n2, n3;
   int idmax;
   double** q = NULL;
-  struct GEO Geo;
+  struct TESS Tess;
 
-  neut_geo_set_zero (&Geo);
+  neut_tess_set_zero (&Tess);
 
   if ((*pOri).N == 0)
   {
@@ -66,7 +66,7 @@ CalcOri (struct IN In, struct ORI *pOri)
     ut_array_1d_memcpy ((*pOri).q[i], 4, q[(*pOri).rngid[i]]);
 
   ut_free_2d (q, idmax + 1);
-  neut_geo_free (&Geo);
+  neut_tess_free (&Tess);
 
   return;
 }

@@ -5,7 +5,7 @@
 #include"nem_meshing_3D.h"
 
 void
-nem_meshing_3D (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
+nem_meshing_3D (struct IN In, struct TESSPARA TessPara, struct TESS Tess,
 	   struct NODES *pNodes, struct MESH Mesh2D, struct MESH *pMesh3D)
 {
   int i;
@@ -50,28 +50,28 @@ nem_meshing_3D (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
 
   double cl;
 
-  int* meshpoly = ut_alloc_1d_int (Geo.PolyQty + 1);
-  ut_array_1d_int_set (meshpoly + 1, Geo.PolyQty, 1);
-  meshpoly[0] = Geo.PolyQty;
+  int* meshpoly = ut_alloc_1d_int (Tess.PolyQty + 1);
+  ut_array_1d_int_set (meshpoly + 1, Tess.PolyQty, 1);
+  meshpoly[0] = Tess.PolyQty;
 
   if (In.meshpoly != NULL)
-    neut_geo_expr_polytab (Geo, In.meshpoly, meshpoly);
+    neut_tess_expr_polytab (Tess, In.meshpoly, meshpoly);
   
-  ut_print_progress (stdout, 0, Geo.PolyQty, "%3.0f%%", message);
+  ut_print_progress (stdout, 0, Tess.PolyQty, "%3.0f%%", message);
 
-  for (i = 1; i <= Geo.PolyQty; i++)
+  for (i = 1; i <= Tess.PolyQty; i++)
   {
     if (meshpoly[i] == 0)
       continue;
 
     // Setting parameter (cl) ------------------------------------------
     
-    nem_meshing_3D_poly_cl (GeoPara, Geo, i, &cl);
+    nem_meshing_3D_poly_cl (TessPara, Tess, i, &cl);
 
     // Meshing poly ----------------------------------------------------
     
     nem_meshing_3D_poly (In, cl, &Multim, allowed_t,
-	  &max_elapsed_t, Geo, pNodes, Mesh2D, pMesh3D, i);
+	  &max_elapsed_t, Tess, pNodes, Mesh2D, pMesh3D, i);
 
     // Printing message ------------------------------------------------
 
@@ -91,7 +91,7 @@ nem_meshing_3D (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
 
     ut_free_1d_int (pct);
 
-    ut_print_progress (stdout, i, Geo.PolyQty, format, message);
+    ut_print_progress (stdout, i, Tess.PolyQty, format, message);
 
     if (In.mesh3dreport == 1)
     {
@@ -122,12 +122,12 @@ nem_meshing_3D (struct IN In, struct GEOPARA GeoPara, struct GEO Geo,
   ut_free_1d_int (meshpoly);
 
   neut_mesh_init_nodeelts (pMesh3D, (*pNodes).NodeQty);
-  neut_multim_free (&Multim, Geo.PolyQty);
+  neut_multim_free (&Multim, Tess.PolyQty);
 
   neut_gmsh_rc ("unbak");
   remove ("debugp.pos");
   remove ("debugr.pos");
-  remove ("tmp.geo");
+  remove ("tmp.tess");
   remove ("tmp.msh");
 
   ut_free_1d_char (format);

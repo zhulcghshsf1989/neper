@@ -438,7 +438,7 @@ neut_mesh_elset_mesh (struct NODES Nodes, struct MESH Mesh,
 }
 
 void
-neut_mesh_face_boundmesh (struct MESH Mesh1D, struct GEO Geo, int face, struct MESH* pBMesh)
+neut_mesh_face_boundmesh (struct MESH Mesh1D, struct TESS Tess, int face, struct MESH* pBMesh)
 {
   int e, i, j, edge, elt;
   int* nodes = ut_alloc_1d_int (3);
@@ -456,10 +456,10 @@ neut_mesh_face_boundmesh (struct MESH Mesh1D, struct GEO Geo, int face, struct M
   (*pBMesh).EltType = ut_alloc_1d_char (strlen (Mesh1D.EltType) + 1);
   strcpy ((*pBMesh).EltType, Mesh1D.EltType);
 
-  for (e = 1; e <= Geo.FaceVerQty[face]; e++)
+  for (e = 1; e <= Tess.FaceVerQty[face]; e++)
   {
-    edge = Geo.FaceEdgeNb[face][e];
-    ori = (Geo.FaceEdgeOri[face][e] == 1) ? 0 : 1;
+    edge = Tess.FaceEdgeNb[face][e];
+    ori = (Tess.FaceEdgeOri[face][e] == 1) ? 0 : 1;
 
     for (i = 1; i <= Mesh1D.Elsets[edge][0]; i++)
     {
@@ -491,15 +491,15 @@ neut_mesh_face_boundmesh (struct MESH Mesh1D, struct GEO Geo, int face, struct M
 }
 
 void
-neut_mesh_face_boundnodes (struct MESH Mesh1D, struct GEO Geo, int face, int** pnodes, int* pnodeqty)
+neut_mesh_face_boundnodes (struct MESH Mesh1D, struct TESS Tess, int face, int** pnodes, int* pnodeqty)
 {
   int i, j, edge, elt;
   // note: only the 1st-order nodes are recorded
   
   (*pnodeqty) = 0;
-  for (i = 1; i <= Geo.FaceVerQty[face]; i++)
+  for (i = 1; i <= Tess.FaceVerQty[face]; i++)
   {
-    edge = Geo.FaceEdgeNb[face][i];
+    edge = Tess.FaceEdgeNb[face][i];
     (*pnodeqty) += Mesh1D.Elsets[edge][0];
   }
 
@@ -507,11 +507,11 @@ neut_mesh_face_boundnodes (struct MESH Mesh1D, struct GEO Geo, int face, int** p
 
   (*pnodeqty) = 0;
   // for every edge
-  for (i = 1; i <= Geo.FaceVerQty[face]; i++)
+  for (i = 1; i <= Tess.FaceVerQty[face]; i++)
   {
-    edge = Geo.FaceEdgeNb[face][i];
+    edge = Tess.FaceEdgeNb[face][i];
 
-    if (Geo.FaceEdgeOri[face][i] == 1)
+    if (Tess.FaceEdgeOri[face][i] == 1)
       for (j = 1; j <= Mesh1D.Elsets[edge][0]; j++)
       {
 	elt = Mesh1D.Elsets[edge][j];
@@ -529,7 +529,7 @@ neut_mesh_face_boundnodes (struct MESH Mesh1D, struct GEO Geo, int face, int** p
 }
 
 void
-neut_mesh_poly_boundmesh (struct GEO Geo, int poly, struct MESH Mesh2D,
+neut_mesh_poly_boundmesh (struct TESS Tess, int poly, struct MESH Mesh2D,
     struct MESH* pBMesh)
 {
   int f, i, j, face, elt;
@@ -550,10 +550,10 @@ neut_mesh_poly_boundmesh (struct GEO Geo, int poly, struct MESH Mesh2D,
   (*pBMesh).EltType = ut_alloc_1d_char (strlen (Mesh2D.EltType) + 1);
   strcpy ((*pBMesh).EltType, Mesh2D.EltType);
 
-  for (f = 1; f <= Geo.PolyFaceQty[poly]; f++)
+  for (f = 1; f <= Tess.PolyFaceQty[poly]; f++)
   {
-    face = Geo.PolyFaceNb[poly][f];
-    ori = (Geo.PolyFaceOri[poly][f] == 1) ? 0 : 1;
+    face = Tess.PolyFaceNb[poly][f];
+    ori = (Tess.PolyFaceOri[poly][f] == 1) ? 0 : 1;
 
     for (i = 1; i <= Mesh2D.Elsets[face][0]; i++)
     {

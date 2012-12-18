@@ -49,8 +49,8 @@ struct IN
   int sorttess_qty;
   char** sorttess;
 
-  int printpointpoly;		/* 0: no, 1: input=points, 2: input=tess file */
-  char *point;			/* point or tess file name */
+  int printpointpoly;		/* 0: no, 1: input=points, 2: input=tesl file */
+  char *point;			/* point or tesl file name */
   char *polyid;			/* polyid file name */
 
   int centroid;

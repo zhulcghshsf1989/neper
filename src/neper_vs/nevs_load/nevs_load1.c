@@ -8,7 +8,7 @@ void
 nevs_load (char** argv, int* pi, struct NODES *pNodes,
 	   struct MESH *pMesh0D, struct MESH *pMesh1D,
 	   struct MESH *pMesh2D, struct MESH *pMesh3D,
-	   struct GEO *pGeo)
+	   struct TESS *pTess)
 {
   FILE* file = NULL;
   
@@ -17,7 +17,7 @@ nevs_load (char** argv, int* pi, struct NODES *pNodes,
   {
     ut_print_message (0, 1, "Loading tessellation ...\n");
     file = ut_file_open (argv[++(*pi)], "r");
-    neut_geo_fscanf (file, pGeo);
+    neut_tess_fscanf (file, pTess);
     ut_file_close (file, argv[(*pi)], "r");
   }
 
@@ -31,9 +31,9 @@ nevs_load (char** argv, int* pi, struct NODES *pNodes,
 
     ut_print_message (0, 1, "Reconstructing mesh ...\n");
 
-    // WORKAROUND for the case of elttype="quad" for which Geo is not
+    // WORKAROUND for the case of elttype="quad" for which Tess is not
     // reconstructed properly.
-    nem_reconmesh ("3,2,1,0", pNodes, pMesh0D, pMesh1D, pMesh2D, pMesh3D, pGeo);
+    nem_reconmesh ("3,2,1,0", pNodes, pMesh0D, pMesh1D, pMesh2D, pMesh3D, pTess);
   }
 
   else

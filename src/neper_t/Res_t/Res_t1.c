@@ -5,16 +5,16 @@
 #include "Res_t.h"
 
 extern void
-Res_t (struct IN In, struct GEO Geo, struct VOX Vox)
+Res_t (struct IN In, struct TESS Tess, struct VOX Vox)
 {
   FILE* file = NULL;
   
   if (ut_string_inlist (In.format, ',', "tess"))
   {
-    if (Geo.PolyQty != 0)
+    if (Tess.PolyQty != 0)
     {
       file = ut_file_open (In.tess, "w");
-      neut_geo_fprintf (file, Geo);
+      neut_tess_fprintf (file, Tess);
       ut_file_close (file, In.tess, "w");
     }
     else
@@ -23,10 +23,10 @@ Res_t (struct IN In, struct GEO Geo, struct VOX Vox)
 
   if (ut_string_inlist (In.format, ',', "geo")) // geo file
   {
-    if (Geo.PolyQty != 0)
+    if (Tess.PolyQty != 0)
     {
       file = ut_file_open (In.geo, "w");
-      neut_geo_fprintf_gmsh (file, Geo);
+      neut_tess_fprintf_gmsh (file, Tess);
       ut_file_close (file, In.geo, "w");
     }
     else
@@ -35,10 +35,10 @@ Res_t (struct IN In, struct GEO Geo, struct VOX Vox)
 
   if (ut_string_inlist (In.format, ',', "ply")) // gmsh ply file
   {
-    if (Geo.PolyQty != 0)
+    if (Tess.PolyQty != 0)
     {
       file = ut_file_open (In.ply, "w");
-      neut_geo_fprintf_ply (file, Geo);
+      neut_tess_fprintf_ply (file, Tess);
       ut_file_close (file, In.ply, "w");
     }
     else
@@ -47,14 +47,14 @@ Res_t (struct IN In, struct GEO Geo, struct VOX Vox)
 
   if (ut_string_inlist (In.format, ',', "3dec")) // gmsh ply file
   {
-    if (Geo.PolyQty != 0)
+    if (Tess.PolyQty != 0)
     {
       file = ut_file_open (In.dec, "w");
-      neut_geo_fprintf_dec (file, Geo);
+      neut_tess_fprintf_dec (file, Tess);
       ut_file_close (file, In.dec, "w");
     }
     else
-      ut_print_message (1, 0, "Geo is void; cannot export; skipping\n");
+      ut_print_message (1, 0, "Tess is void; cannot export; skipping\n");
   }
 
   if (ut_string_inlist (In.format, ',', "vox")) // vox file
@@ -70,14 +70,14 @@ Res_t (struct IN In, struct GEO Geo, struct VOX Vox)
   }
 
   if (In.printpointpoly)
-    PrintPointPoly (In, Geo);
+    PrintPointPoly (In, Tess);
 
-  net_stat (In, Geo);
+  net_stat (In, Tess);
 
   if (ut_string_inlist (In.format, ',', "debug"))
   {
     file = ut_file_open (In.debug, "w");
-    neut_debug_geo (file, Geo);
+    neut_debug_tess (file, Tess);
     ut_file_close (file, In.debug, "w");
   }
 

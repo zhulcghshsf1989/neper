@@ -5,7 +5,7 @@
 #include "net_stat.h"
 
 void
-WriteStatGeoVer (FILE* file, char* format, struct GEO Geo)
+WriteStatTessVer (FILE* file, char* format, struct TESS Tess)
 {
   int i, j, t, b;
   char** val = NULL;
@@ -14,11 +14,11 @@ WriteStatGeoVer (FILE* file, char* format, struct GEO Geo)
 
   ut_string_separate (format, ',', &val, &valqty);
 
-  for (i = 1; i <= Geo.VerQty; i++)
+  for (i = 1; i <= Tess.VerQty; i++)
   {
-    ut_array_1d_memcpy (coo, 3, Geo.VerCoo[i]);
+    ut_array_1d_memcpy (coo, 3, Tess.VerCoo[i]);
     for (j = 0; j < 3; j++)
-      coo[j] = (fabs (Geo.VerCoo[i][j]) < 1e-12) ? 0 : Geo.VerCoo[i][j];
+      coo[j] = (fabs (Tess.VerCoo[i][j]) < 1e-12) ? 0 : Tess.VerCoo[i][j];
 
     for (j = 0; j < valqty; j++)
     {
@@ -26,12 +26,12 @@ WriteStatGeoVer (FILE* file, char* format, struct GEO Geo)
 	fprintf (file, "%d", i);
       else if (! strcmp (val[j], "true"))
       {
-	t = neut_geo_ver_true (Geo, Geo.PolyTrue, i);
+	t = neut_tess_ver_true (Tess, Tess.PolyTrue, i);
 	fprintf (file, "%d", t);
       }
       else if (! strcmp (val[j], "body"))
       {
-	b = neut_geo_ver_polybodylevelmax (Geo, Geo.PolyBody, i);
+	b = neut_tess_ver_polybodylevelmax (Tess, Tess.PolyBody, i);
 	fprintf (file, "%d", b);
       }
       else if (! strcmp (val[j], "x"))
@@ -57,7 +57,7 @@ WriteStatGeoVer (FILE* file, char* format, struct GEO Geo)
 }
 
 void
-WriteStatGeoEdge (FILE* file, char* format, struct GEO Geo)
+WriteStatTessEdge (FILE* file, char* format, struct TESS Tess)
 {
   int i, j;
   int t, b;
@@ -66,25 +66,25 @@ WriteStatGeoEdge (FILE* file, char* format, struct GEO Geo)
 
   ut_string_separate (format, ',', &val, &valqty);
 
-  for (i = 1; i <= Geo.EdgeQty; i++)
+  for (i = 1; i <= Tess.EdgeQty; i++)
     for (j = 0; j < valqty; j++)
     {
       if (! strcmp (val[j], "id"))
 	fprintf (file, "%d", i);
       else if (! strcmp (val[j], "true"))
       {
-	t = neut_geo_edge_true (Geo, Geo.PolyTrue, i);
+	t = neut_tess_edge_true (Tess, Tess.PolyTrue, i);
 	fprintf (file, "%d", t);
       }
       else if (! strcmp (val[j], "body"))
       {
-	b = neut_geo_edge_polybodylevelmax (Geo, Geo.PolyBody, i);
+	b = neut_tess_edge_polybodylevelmax (Tess, Tess.PolyBody, i);
 	fprintf (file, "%d", b);
       }
       else if (! strcmp (val[j], "state"))
-	fprintf (file, "%d", Geo.EdgeState[i]);
+	fprintf (file, "%d", Tess.EdgeState[i]);
       else if (! strcmp (val[j], "length"))
-	fprintf (file, "%.12lf", Geo.EdgeLength[i]);
+	fprintf (file, "%.12lf", Tess.EdgeLength[i]);
 
       if (j < valqty - 1)
 	fprintf (file, " ");
@@ -98,7 +98,7 @@ WriteStatGeoEdge (FILE* file, char* format, struct GEO Geo)
 }
 
 void
-WriteStatGeoFace (FILE* file, char* format, struct GEO Geo)
+WriteStatTessFace (FILE* file, char* format, struct TESS Tess)
 {
   int i, j, t, b;
   double area;
@@ -107,32 +107,32 @@ WriteStatGeoFace (FILE* file, char* format, struct GEO Geo)
 
   ut_string_separate (format, ',', &val, &valqty);
 
-  for (i = 1; i <= Geo.FaceQty; i++)
+  for (i = 1; i <= Tess.FaceQty; i++)
     for (j = 0; j < valqty; j++)
     {
       if (! strcmp (val[j], "id"))
 	fprintf (file, "%d", i);
       else if (! strcmp (val[j], "true"))
       {
-	t = neut_geo_face_true (Geo, Geo.PolyTrue, i);
+	t = neut_tess_face_true (Tess, Tess.PolyTrue, i);
 	fprintf (file, "%d", t);
       }
       else if (! strcmp (val[j], "body"))
       {
-	b = neut_geo_face_polybodylevelmax (Geo, i);
+	b = neut_tess_face_polybodylevelmax (Tess, i);
 	fprintf (file, "%d", b);
       }
       else if (! strcmp (val[j], "area"))
       {
-	neut_geo_face_area (Geo, i, &area);
+	neut_tess_face_area (Tess, i, &area);
 	fprintf (file, "%.12f", area);
       }
       else if (! strcmp (val[j], "state"))
-	fprintf (file, "%d", Geo.FaceState[i]);
+	fprintf (file, "%d", Tess.FaceState[i]);
       else if (! strcmp (val[j], "vernb"))
-	fprintf (file, "%d", Geo.FaceVerQty[i]);
+	fprintf (file, "%d", Tess.FaceVerQty[i]);
       else if (! strcmp (val[j], "ff"))
-	fprintf (file, "%.12f", Geo.FaceFF[i]);
+	fprintf (file, "%.12f", Tess.FaceFF[i]);
 
       if (j < valqty - 1)
 	fprintf (file, " ");
@@ -146,7 +146,7 @@ WriteStatGeoFace (FILE* file, char* format, struct GEO Geo)
 }
 
 void
-WriteStatGeoPoly (FILE* file, char* format, struct GEO Geo)
+WriteStatTessPoly (FILE* file, char* format, struct TESS Tess)
 {
   int i, j, k, l, s, face, neighpoly;
   double vol, area;
@@ -156,57 +156,57 @@ WriteStatGeoPoly (FILE* file, char* format, struct GEO Geo)
 
   ut_string_separate (format, ',', &val, &valqty);
 
-  for (i = 1; i <= Geo.PolyQty; i++)
+  for (i = 1; i <= Tess.PolyQty; i++)
     for (j = 0; j < valqty; j++)
     {
       if (! strcmp (val[j], "id"))
 	fprintf (file, "%d", i);
       else if (! strcmp (val[j], "x"))
-	fprintf (file, "%.12f", Geo.CenterCoo[i][0]);
+	fprintf (file, "%.12f", Tess.CenterCoo[i][0]);
       else if (! strcmp (val[j], "y"))
-	fprintf (file, "%.12f", Geo.CenterCoo[i][1]);
+	fprintf (file, "%.12f", Tess.CenterCoo[i][1]);
       else if (! strcmp (val[j], "z"))
-	fprintf (file, "%.12f", Geo.CenterCoo[i][2]);
+	fprintf (file, "%.12f", Tess.CenterCoo[i][2]);
       else if (! strcmp (val[j], "p"))
-	fprintf (file, "%.12f %.12f %.12f", Geo.CenterCoo[i][0],
-		       Geo.CenterCoo[i][1], Geo.CenterCoo[i][2]);
+	fprintf (file, "%.12f %.12f %.12f", Tess.CenterCoo[i][0],
+		       Tess.CenterCoo[i][1], Tess.CenterCoo[i][2]);
       else if (! strcmp (val[j], "xc"))
       {
 	double* c = ut_alloc_1d (3);
-	neut_geo_poly_centroid (Geo, i, c);
+	neut_tess_poly_centroid (Tess, i, c);
 	fprintf (file, "%.12f", c[0]);
 	ut_free_1d (c);
       }
       else if (! strcmp (val[j], "yc"))
       {
 	double* c = ut_alloc_1d (3);
-	neut_geo_poly_centroid (Geo, i, c);
+	neut_tess_poly_centroid (Tess, i, c);
 	fprintf (file, "%.12f", c[1]);
 	ut_free_1d (c);
       }
       else if (! strcmp (val[j], "zc"))
       {
 	double* c = ut_alloc_1d (3);
-	neut_geo_poly_centroid (Geo, i, c);
+	neut_tess_poly_centroid (Tess, i, c);
 	fprintf (file, "%.12f", c[2]);
 	ut_free_1d (c);
       }
       else if (! strcmp (val[j], "pc"))
       {
 	double* c = ut_alloc_1d (3);
-	neut_geo_poly_centroid (Geo, i, c);
+	neut_tess_poly_centroid (Tess, i, c);
 	fprintf (file, "%.12f %.12f %.12f", c[0], c[1], c[2]);
 	ut_free_1d (c);
       }
       else if (! strcmp (val[j], "true"))
-	fprintf (file, "%d", Geo.PolyTrue[i]);
+	fprintf (file, "%d", Tess.PolyTrue[i]);
       else if (! strcmp (val[j], "body"))
-	fprintf (file, "%d", Geo.PolyBody[i]);
+	fprintf (file, "%d", Tess.PolyBody[i]);
       else if (! strcmp (val[j], "state"))
       {
 	s = 0;
-	for (k = 1; k <= Geo.PolyFaceQty[i]; k++)
-	  if (Geo.FaceState[Geo.PolyFaceNb[i][k]] != 0)
+	for (k = 1; k <= Tess.PolyFaceQty[i]; k++)
+	  if (Tess.FaceState[Tess.PolyFaceNb[i][k]] != 0)
 	  {
 	    s = 1;
 	    break;
@@ -215,14 +215,14 @@ WriteStatGeoPoly (FILE* file, char* format, struct GEO Geo)
       }
       else if (! strcmp (val[j], "vol"))
       {
-	neut_geo_poly_volume (Geo, i, &vol);
+	neut_tess_poly_volume (Tess, i, &vol);
 	fprintf (file, "%.12f", vol);
       }
       else if (! strcmp (val[j], "vernb"))
       {
 	int* list = NULL;
 	int verqty;
-	neut_geo_poly_vers  (Geo, i, &list, &verqty);
+	neut_tess_poly_vers  (Tess, i, &list, &verqty);
 	fprintf (file, "%d", verqty);
 	ut_free_1d_int (list);
       }
@@ -230,7 +230,7 @@ WriteStatGeoPoly (FILE* file, char* format, struct GEO Geo)
       {
 	int* list = NULL;
 	int verqty;
-	neut_geo_poly_vers  (Geo, i, &list, &verqty);
+	neut_tess_poly_vers  (Tess, i, &list, &verqty);
 	for (k = 0; k < verqty; k++)
 	  fprintf (file, "%d%s", list[k], (k < verqty - 1) ? " " : "");
 	ut_free_1d_int (list);
@@ -239,7 +239,7 @@ WriteStatGeoPoly (FILE* file, char* format, struct GEO Geo)
       {
 	int* list = NULL;
 	int edgeqty;
-	neut_geo_poly_edges (Geo, i, &list, &edgeqty);
+	neut_tess_poly_edges (Tess, i, &list, &edgeqty);
 	fprintf (file, "%d", edgeqty);
 	ut_free_1d_int (list);
       }
@@ -247,50 +247,50 @@ WriteStatGeoPoly (FILE* file, char* format, struct GEO Geo)
       {
 	int* list = NULL;
 	int edgeqty;
-	neut_geo_poly_edges (Geo, i, &list, &edgeqty);
+	neut_tess_poly_edges (Tess, i, &list, &edgeqty);
 	for (k = 0; k < edgeqty; k++)
 	  fprintf (file, "%d%s", list[k], (k < edgeqty - 1) ? " " : "");
 	ut_free_1d_int (list);
       }
       else if (! strcmp (val[j], "facenb"))
-	fprintf (file, "%d", Geo.PolyFaceQty[i]);
+	fprintf (file, "%d", Tess.PolyFaceQty[i]);
       else if (! strcmp (val[j], "facelist"))
       {
-	for (k = 1; k <= Geo.PolyFaceQty[i]; k++)
-	  fprintf (file, "%d%s", Geo.PolyFaceNb[i][k], (k < Geo.PolyFaceQty[i]) ? " " : "");
+	for (k = 1; k <= Tess.PolyFaceQty[i]; k++)
+	  fprintf (file, "%d%s", Tess.PolyFaceNb[i][k], (k < Tess.PolyFaceQty[i]) ? " " : "");
       }
       else if (! strcmp (val[j], "npolylist"))
       {
-	for (k = 1; k <= Geo.PolyFaceQty[i]; k++)
+	for (k = 1; k <= Tess.PolyFaceQty[i]; k++)
 	{
-	  face = Geo.PolyFaceNb[i][k]; 
-	  neighpoly = (Geo.FacePoly[face][0] != i) ?
-		       Geo.FacePoly[face][0] : Geo.FacePoly[face][1];
+	  face = Tess.PolyFaceNb[i][k]; 
+	  neighpoly = (Tess.FacePoly[face][0] != i) ?
+		       Tess.FacePoly[face][0] : Tess.FacePoly[face][1];
 	  fprintf (file, "%d%s", neighpoly,
-	      (k < Geo.PolyFaceQty[i]) ? " " : "");
+	      (k < Tess.PolyFaceQty[i]) ? " " : "");
 	}
       }
       else if (! strcmp (val[j], "facearealist"))
       {
-	for (k = 1; k <= Geo.PolyFaceQty[i]; k++)
+	for (k = 1; k <= Tess.PolyFaceQty[i]; k++)
 	{
-	  face = Geo.PolyFaceNb[i][k];
-	  neut_geo_face_area (Geo, face, &area);
+	  face = Tess.PolyFaceNb[i][k];
+	  neut_tess_face_area (Tess, face, &area);
 	  fprintf (file, "%.12f%s", area,
-	      (k < Geo.PolyFaceQty[i]) ? " " : "");
+	      (k < Tess.PolyFaceQty[i]) ? " " : "");
 	}
       }
       else if (! strcmp (val[j], "faceeqlist"))
       {
-	for (k = 1; k <= Geo.PolyFaceQty[i]; k++)
+	for (k = 1; k <= Tess.PolyFaceQty[i]; k++)
 	{
-	  face = Geo.PolyFaceNb[i][k];
-	  ut_array_1d_memcpy (eq, 4, Geo.FaceEq[face]);
-	  if (Geo.PolyFaceOri[i][k] == -1)
+	  face = Tess.PolyFaceNb[i][k];
+	  ut_array_1d_memcpy (eq, 4, Tess.FaceEq[face]);
+	  if (Tess.PolyFaceOri[i][k] == -1)
 	    ut_array_1d_scale (eq, 4, -1);
 	  for (l = 0; l < 4; l++)
 	    fprintf (file, "%.12f%s", eq[l],
-		! (l == 3 && k == Geo.PolyFaceQty[i]) ? " " : "");
+		! (l == 3 && k == Tess.PolyFaceQty[i]) ? " " : "");
 	}
       }
 

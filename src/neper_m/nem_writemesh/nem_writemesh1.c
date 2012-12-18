@@ -5,7 +5,7 @@
 #include"nem_writemesh.h"
 
 void
-nem_writemesh (struct IN In, struct GEO Geo, 
+nem_writemesh (struct IN In, struct TESS Tess, 
            struct NODES Nodes,
 	   struct MESH* pMesh0D, struct MESH* pMesh1D,
 	   struct MESH* pMesh2D, struct MESH* pMesh3D,
@@ -106,7 +106,7 @@ nem_writemesh (struct IN In, struct GEO Geo,
    || ut_string_inlist (In.format, ',', "surf")
    || ut_string_inlist (In.format, ',', "opt")
    || ut_string_inlist (In.format, ',', "bcs"))
-    neut_mesh_fprintf_fepx_name (In.format, In.body, Geo, Nodes, (*pMesh2D), (*pMesh3D),
+    neut_mesh_fprintf_fepx_name (In.format, In.body, Tess, Nodes, (*pMesh2D), (*pMesh3D),
 			    NSet0D, NSet1D, NSet2D, expandnset, expandfaset);
 
   /*

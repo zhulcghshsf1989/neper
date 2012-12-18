@@ -601,9 +601,9 @@ neut_mesh_elt_boundmesh (struct MESH Mesh, int elt, struct MESH* pBMesh)
 // Generates the 2D mesh corresponding to a 3D mesh.
 // It also retuns the FaceQty value and the FacePoly array, which hold
 // the number of 2D elsets and their relations to the 3D elsets.  The
-// terms `FaceQty' and `FacePoly' are used in reference to the Geo
+// terms `FaceQty' and `FacePoly' are used in reference to the Tess
 // structure, and closely match them, except that FacePoly is indexed O
-// (vs 1 in the Geo structure)
+// (vs 1 in the Tess structure)
 void
 neut_mesh3d_mesh2d (struct NODES Nodes, struct MESH Mesh3D,
 		    struct MESH *pMesh2D, int ***pFacePoly,
@@ -642,9 +642,9 @@ neut_mesh3d_mesh2d (struct NODES Nodes, struct MESH Mesh3D,
   // for every 3D elt, for every of its facets, we look for all
   // its parent 3d elts (can be 1 or 2).
   // If it is 1, the facet is a 2D elt of a skin face - we record its
-  // 3D elsets (Geo germs). 
+  // 3D elsets (Tess germs). 
   // If it is 2 and the 3D elt elsets are different, the facet is an
-  // "internal" 2D elt - we record the 3D elsets (Geo germs).
+  // "internal" 2D elt - we record the 3D elsets (Tess germs).
   // In both cases, we check if this face exists (based on the germs);
   // if not, we add it (new elset).  Then, we add the element to the
   // elset.
@@ -727,9 +727,9 @@ neut_mesh3d_mesh2d (struct NODES Nodes, struct MESH Mesh3D,
 // Generates the 1D mesh corresponding to a 2D mesh.  It also retuns the
 // EdgeQty value and the EdgeFaceQty and EdgeFaceNb arrays, which hold
 // the number of 1D elsets and their relations to the 2D elsets.  These
-// terms are used in reference to the Geo structure, and closely match
+// terms are used in reference to the Tess structure, and closely match
 // them, except that EdgeFaceQty andEdgeFaceNb are indexed O (vs 1 in
-// the Geo structure)
+// the Tess structure)
 void
 neut_mesh2d_mesh1d (struct MESH Mesh2D,
 		    struct MESH *pMesh1D, int ***pEdgeFaceNb,
@@ -907,9 +907,9 @@ neut_mesh2d_mesh1d (struct MESH Mesh2D,
 // Generates the 0D mesh corresponding to a 1D mesh.  It also retuns the
 // VerQty value and the VerEdgeQty and VerEdgeNb arrays, which hold the
 // number of 0D elsets and their relations to the 1D elsets.  These
-// terms are used in reference to the Geo structure, and closely match
+// terms are used in reference to the Tess structure, and closely match
 // them, except that VerEdgeQty and VerEdgeNb are indexed O (vs 1 in the
-// Geo structure)
+// Tess structure)
 void
 neut_mesh1d_mesh0d (struct MESH Mesh1D,
 		    struct MESH *pMesh0D, int ***pVerEdgeNb,

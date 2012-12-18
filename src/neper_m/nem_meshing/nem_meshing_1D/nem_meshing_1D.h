@@ -15,7 +15,7 @@
 
 #include"nem_meshing_1D0.h"
 
-extern void EdgeMeshing (struct GEO, int, double, double, struct
+extern void EdgeMeshing (struct TESS, int, double, double, struct
     NODES, struct NODES*, struct MESH*);
 extern double NextCoo (double, double, double);
 extern void nem_mesh_1d_unitsegment (double cl1, double cl2, double clt, double pl,

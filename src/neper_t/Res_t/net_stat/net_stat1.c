@@ -5,7 +5,7 @@
 #include "net_stat.h"
 
 void
-net_stat (struct IN In, struct GEO Geo)
+net_stat (struct IN In, struct TESS Tess)
 {
   FILE* file = NULL;
   char* name = NULL;
@@ -15,7 +15,7 @@ net_stat (struct IN In, struct GEO Geo)
     name = ut_string_addextension (In.body, "stver");
 
     file = ut_file_open (name, "w");
-    WriteStatGeoVer (file, In.stv, Geo);
+    WriteStatTessVer (file, In.stv, Tess);
     ut_file_close (file, name, "w");
     ut_free_1d_char (name);
   }
@@ -25,7 +25,7 @@ net_stat (struct IN In, struct GEO Geo)
     name = ut_string_addextension (In.body, "stedge");
 
     file = ut_file_open (name, "w");
-    WriteStatGeoEdge (file, In.ste, Geo);
+    WriteStatTessEdge (file, In.ste, Tess);
     ut_file_close (file, name, "w");
     ut_free_1d_char (name);
   }
@@ -35,7 +35,7 @@ net_stat (struct IN In, struct GEO Geo)
     name = ut_string_addextension (In.body, "stface");
 
     file = ut_file_open (name, "w");
-    WriteStatGeoFace (file, In.stf, Geo);
+    WriteStatTessFace (file, In.stf, Tess);
     ut_file_close (file, name, "w");
     ut_free_1d_char (name);
   }
@@ -45,7 +45,7 @@ net_stat (struct IN In, struct GEO Geo)
     name = ut_string_addextension (In.body, "stpoly");
 
     file = ut_file_open (name, "w");
-    WriteStatGeoPoly (file, In.stp, Geo);
+    WriteStatTessPoly (file, In.stp, Tess);
     ut_file_close (file, name, "w");
     ut_free_1d_char (name);
   }

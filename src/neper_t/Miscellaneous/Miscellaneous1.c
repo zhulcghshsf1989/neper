@@ -5,14 +5,14 @@
 #include"Miscellaneous.h"
 
 void
-CreateTess (struct GERMSET GermSet, double *Size, struct TESS *pTess)
+CreateTesl (struct GERMSET GermSet, double *Size, struct TESL *pTesl)
 {
   struct POLY Domain;
   struct POLY* Poly = NULL;
 
   CubeDomain (Size, &Domain);
   PolyComp (Domain, GermSet, &Poly, 0);
-  Tessellation (GermSet, Poly, pTess);
+  Tessellation (GermSet, Poly, pTesl);
 
   return;
 }

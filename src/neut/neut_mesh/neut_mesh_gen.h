@@ -5,7 +5,7 @@
 #ifndef UT_MESH_GEN_H
 #define UT_MESH_GEN_H
 
-#include"../neut_structs/neut_geo_struct.h"
+#include"../neut_structs/neut_tess_struct.h"
 #include"../neut_structs/neut_mesh_struct.h"
 #include"../neut_structs/neut_nodes_struct.h"
 
@@ -58,25 +58,25 @@ extern int neut_mesh_elset_point_closestelt (struct MESH Mesh, struct
 extern int neut_mesh_point_proj_alongonto (double* Coo, double* n, struct
     NODES N, struct MESH M, int elset);
 
-/// \brief Get the mesh of the boundary of a GEO face. 
+/// \brief Get the mesh of the boundary of a TESS face. 
 ///
 /// 
 ///
-extern void neut_mesh_face_boundmesh (struct MESH Mesh1D, struct GEO Geo, int face,
+extern void neut_mesh_face_boundmesh (struct MESH Mesh1D, struct TESS Tess, int face,
     struct MESH* pBMesh);
 
-/// \brief Get the nodes of the boundary of a Geo face.
+/// \brief Get the nodes of the boundary of a Tess face.
 ///
 /// 
 ///
-extern void neut_mesh_face_boundnodes (struct MESH Mesh1D, struct GEO
-    Geo, int face, int** pnodes, int* pnodeqty);
+extern void neut_mesh_face_boundnodes (struct MESH Mesh1D, struct TESS
+    Tess, int face, int** pnodes, int* pnodeqty);
 
-/// \brief Get the mesh of the boundary of a GEO poly. 
+/// \brief Get the mesh of the boundary of a TESS poly. 
 ///
 /// 
 ///
-extern void neut_mesh_poly_boundmesh (struct GEO Geo, int poly, struct
+extern void neut_mesh_poly_boundmesh (struct TESS Tess, int poly, struct
     MESH Mesh2D, struct MESH* pBMesh);
 
 /// \brief Create a 2D mesh from a slice of a 3D mesh.

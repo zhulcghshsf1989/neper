@@ -39,8 +39,8 @@ extern void neut_mesh_fprintf_geof (FILE* file, struct NODES Nodes,
 ///
 ///
 ///
-extern void neut_mesh_fprintf_fepx_name (char* format, char* body, struct GEO
-    Geo, struct NODES Nodes, struct MESH Mesh2D, struct MESH Mesh3D,
+extern void neut_mesh_fprintf_fepx_name (char* format, char* body, struct TESS
+    Tess, struct NODES Nodes, struct MESH Mesh2D, struct MESH Mesh3D,
     struct NSET NSet0D, struct NSET NSet1D, struct NSET NSet2D, char
     *nset, char* faset);
 

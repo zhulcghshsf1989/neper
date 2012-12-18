@@ -5,7 +5,7 @@
 #include"nevs_camera.h"
 
 void
-nevs_camera_init (struct GEO Geo, struct NODES Nodes,
+nevs_camera_init (struct TESS Tess, struct NODES Nodes,
 		  struct MESH Mesh, struct MESHDATA MeshData,
 		  struct PRINT* pPrint)
 {
@@ -33,13 +33,13 @@ nevs_camera_init (struct GEO Geo, struct NODES Nodes,
   else
     Nodes2 = Nodes;
 
-  nevs_camera_coo ((*pPrint).cameracooexpr[1], Geo, Nodes2, Mesh, pPrint, 1);
-  nevs_camera_coo ((*pPrint).cameracooexpr[2], Geo, Nodes2, Mesh, pPrint, 2);
-  nevs_camera_coo ((*pPrint).cameracooexpr[3], Geo, Nodes2, Mesh, pPrint, 3);
+  nevs_camera_coo ((*pPrint).cameracooexpr[1], Tess, Nodes2, Mesh, pPrint, 1);
+  nevs_camera_coo ((*pPrint).cameracooexpr[2], Tess, Nodes2, Mesh, pPrint, 2);
+  nevs_camera_coo ((*pPrint).cameracooexpr[3], Tess, Nodes2, Mesh, pPrint, 3);
 
-  nevs_camera_lookat ((*pPrint).cameralookatexpr[1], Geo, Nodes2, Mesh, pPrint, 1);
-  nevs_camera_lookat ((*pPrint).cameralookatexpr[2], Geo, Nodes2, Mesh, pPrint, 2);
-  nevs_camera_lookat ((*pPrint).cameralookatexpr[3], Geo, Nodes2, Mesh, pPrint, 3);
+  nevs_camera_lookat ((*pPrint).cameralookatexpr[1], Tess, Nodes2, Mesh, pPrint, 1);
+  nevs_camera_lookat ((*pPrint).cameralookatexpr[2], Tess, Nodes2, Mesh, pPrint, 2);
+  nevs_camera_lookat ((*pPrint).cameralookatexpr[3], Tess, Nodes2, Mesh, pPrint, 3);
   
   if (MeshData.coodata[node_id] != NULL)
     neut_nodes_free (&Nodes2);
@@ -48,7 +48,7 @@ nevs_camera_init (struct GEO Geo, struct NODES Nodes,
 }
 
 void
-nevs_camera (char** argv, int* pi, struct GEO Geo, struct NODES Nodes,
+nevs_camera (char** argv, int* pi, struct TESS Tess, struct NODES Nodes,
              struct MESH Mesh, struct MESHDATA MeshData, struct PRINT* pPrint)
 {
   int node_id;
@@ -76,37 +76,37 @@ nevs_camera (char** argv, int* pi, struct GEO Geo, struct NODES Nodes,
     Nodes2 = Nodes;
 
   if (strcmp (argv[*pi], "-cameracoox") == 0)
-    nevs_camera_coo (argv[++(*pi)], Geo, Nodes2, Mesh, pPrint, 1);
+    nevs_camera_coo (argv[++(*pi)], Tess, Nodes2, Mesh, pPrint, 1);
 
   else if (strcmp (argv[*pi], "-cameracooy") == 0)
-    nevs_camera_coo (argv[++(*pi)], Geo, Nodes2, Mesh, pPrint, 2);
+    nevs_camera_coo (argv[++(*pi)], Tess, Nodes2, Mesh, pPrint, 2);
 
   else if (strcmp (argv[*pi], "-cameracooz") == 0)
-    nevs_camera_coo (argv[++(*pi)], Geo, Nodes2, Mesh, pPrint, 3);
+    nevs_camera_coo (argv[++(*pi)], Tess, Nodes2, Mesh, pPrint, 3);
 
   else if (strcmp (argv[*pi], "-cameracoo") == 0)
   {
     (*pi)++;
-    nevs_camera_coo (argv[*pi], Geo, Nodes2, Mesh, pPrint, 1);
-    nevs_camera_coo (argv[*pi], Geo, Nodes2, Mesh, pPrint, 2);
-    nevs_camera_coo (argv[*pi], Geo, Nodes2, Mesh, pPrint, 3);
+    nevs_camera_coo (argv[*pi], Tess, Nodes2, Mesh, pPrint, 1);
+    nevs_camera_coo (argv[*pi], Tess, Nodes2, Mesh, pPrint, 2);
+    nevs_camera_coo (argv[*pi], Tess, Nodes2, Mesh, pPrint, 3);
   }
 
   else if (strcmp (argv[*pi], "-cameralookatx") == 0)
-    nevs_camera_lookat (argv[++(*pi)], Geo, Nodes2, Mesh, pPrint, 1);
+    nevs_camera_lookat (argv[++(*pi)], Tess, Nodes2, Mesh, pPrint, 1);
 
   else if (strcmp (argv[*pi], "-cameralookaty") == 0)
-    nevs_camera_lookat (argv[++(*pi)], Geo, Nodes2, Mesh, pPrint, 2);
+    nevs_camera_lookat (argv[++(*pi)], Tess, Nodes2, Mesh, pPrint, 2);
 
   else if (strcmp (argv[*pi], "-cameralookatz") == 0)
-    nevs_camera_lookat (argv[++(*pi)], Geo, Nodes2, Mesh, pPrint, 3);
+    nevs_camera_lookat (argv[++(*pi)], Tess, Nodes2, Mesh, pPrint, 3);
 
   else if (strcmp (argv[*pi], "-cameralookat") == 0)
   {
     (*pi)++;
-    nevs_camera_lookat (argv[*pi], Geo, Nodes2, Mesh, pPrint, 1);
-    nevs_camera_lookat (argv[*pi], Geo, Nodes2, Mesh, pPrint, 2);
-    nevs_camera_lookat (argv[*pi], Geo, Nodes2, Mesh, pPrint, 3);
+    nevs_camera_lookat (argv[*pi], Tess, Nodes2, Mesh, pPrint, 1);
+    nevs_camera_lookat (argv[*pi], Tess, Nodes2, Mesh, pPrint, 2);
+    nevs_camera_lookat (argv[*pi], Tess, Nodes2, Mesh, pPrint, 3);
   }
 
   else if (strcmp (argv[*pi], "-cameraangle") == 0)

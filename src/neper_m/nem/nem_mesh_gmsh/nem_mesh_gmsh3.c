@@ -6,18 +6,18 @@
 
 
 void
-nem_mesh_2d_gmsh_writeface (struct GEO Geo, struct MESH Mesh1D, int
+nem_mesh_2d_gmsh_writeface (struct TESS Tess, struct MESH Mesh1D, int
 			     face, double cl, FILE * file)
 {
   int i, j, EdgeQty, edge, ori;
 
-  EdgeQty = Geo.FaceVerQty[face];
+  EdgeQty = Tess.FaceVerQty[face];
   fprintf (file, "Line Loop(%d) = {", face);
 
   for (i = 1; i <= EdgeQty; i++)
   {
-    ori = Geo.FaceEdgeOri[face][i];
-    edge = Geo.FaceEdgeNb[face][i];
+    ori = Tess.FaceEdgeOri[face][i];
+    edge = Tess.FaceEdgeNb[face][i];
 
     if (ori == 1)
       for (j = 1; j <= Mesh1D.Elsets[edge][0]; j++)

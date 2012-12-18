@@ -5,7 +5,7 @@
 #include"nem_meshing.h"
 
 void
-nem_mesh_pinching (struct GEO Geo, double** face_eq, struct MESH
+nem_mesh_pinching (struct TESS Tess, double** face_eq, struct MESH
     Mesh1D, struct NODES Nodes, struct MESH* pMesh2D)
 {
   int i, j, k;
@@ -26,15 +26,15 @@ nem_mesh_pinching (struct GEO Geo, double** face_eq, struct MESH
   ut_print_message (0, 2, "Checking 2D mesh for pinching out ...\n");
 
   // for every polyhedron, checking if it is pinched out somewhere.
-  for (i = 1; i <= Geo.PolyQty; i++)
+  for (i = 1; i <= Tess.PolyQty; i++)
   {
-    neut_geo_poly_edges (Geo, i, &polyedge, &polyedgeqty);
+    neut_tess_poly_edges (Tess, i, &polyedge, &polyedgeqty);
 
     // for every edge, looking for its elements in its two faces.
     for (j = 0; j < polyedgeqty; j++)
     {
       edge = polyedge[j];
-      neut_geo_poly_edge_faces (Geo, i, edge, &edgeface);
+      neut_tess_poly_edge_faces (Tess, i, edge, &edgeface);
       // determining a signed axis for the edge
       ut_vector_vectprod (face_eq[edgeface[0]], face_eq[edgeface[1]], n1);
       ut_vector_uvect (n1, edge_v);
@@ -58,16 +58,16 @@ nem_mesh_pinching (struct GEO Geo, double** face_eq, struct MESH
 	// getting the elt normal, outgoing 
 	neut_mesh_elt_normal (*pMesh2D, Nodes, elts2d[0], n1);
 	face = (*pMesh2D).EltElset[elts2d[0]];
-	pos = 1 + ut_array_1d_int_eltpos (Geo.PolyFaceNb[i] + 1,
-				  Geo.PolyFaceQty[i], face);
-	ut_array_1d_scale (n1, 3, (double) Geo.PolyFaceOri[i][pos]);
+	pos = 1 + ut_array_1d_int_eltpos (Tess.PolyFaceNb[i] + 1,
+				  Tess.PolyFaceQty[i], face);
+	ut_array_1d_scale (n1, 3, (double) Tess.PolyFaceOri[i][pos]);
 
 	// getting the elt normal, outgoing 
 	neut_mesh_elt_normal (*pMesh2D, Nodes, elts2d[1], n2);
 	face = (*pMesh2D).EltElset[elts2d[1]];
-	pos = 1 + ut_array_1d_int_eltpos (Geo.PolyFaceNb[i] + 1,
-				  Geo.PolyFaceQty[i], face);
-	ut_array_1d_scale (n2, 3, (double) Geo.PolyFaceOri[i][pos]);
+	pos = 1 + ut_array_1d_int_eltpos (Tess.PolyFaceNb[i] + 1,
+				  Tess.PolyFaceQty[i], face);
+	ut_array_1d_scale (n2, 3, (double) Tess.PolyFaceOri[i][pos]);
 
 	ut_vector_vectprod (n1, n2, n1vn2);
 	n1n2angle = ut_vector_angle (n1, n2);
@@ -87,8 +87,8 @@ nem_mesh_pinching (struct GEO Geo, double** face_eq, struct MESH
 	    ut_array_1d_fprintf (stdout, elt1d_v, 3, "%f");
 	    printf ("n1n2angle = %f\n", n1n2angle);
 	    toredo = 1;
-	    nem_remesh_fixmesh2delset (Geo, Mesh1D, edgeface[0], pMesh2D);
-	    nem_remesh_fixmesh2delset (Geo, Mesh1D, edgeface[1], pMesh2D);
+	    nem_remesh_fixmesh2delset (Tess, Mesh1D, edgeface[0], pMesh2D);
+	    nem_remesh_fixmesh2delset (Tess, Mesh1D, edgeface[1], pMesh2D);
 	    // k--;
 	    continue;
 	  }

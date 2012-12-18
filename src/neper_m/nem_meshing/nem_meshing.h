@@ -21,8 +21,8 @@
 #include"nem_meshing0.h"
 
 extern void
-nem_mesh_pinching (struct GEO Geo, double** face_eq, struct MESH
+nem_mesh_pinching (struct TESS Tess, double** face_eq, struct MESH
     Mesh1D, struct NODES Nodes, struct MESH* pMesh2D);
 extern int
-nem_remesh_fixmesh2delset (struct GEO Geo, struct MESH Mesh1D,
+nem_remesh_fixmesh2delset (struct TESS Tess, struct MESH Mesh1D,
                            int face, struct MESH* pMesh2D);

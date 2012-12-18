@@ -5,23 +5,23 @@
 #include"net_init.h"
 
 void
-net_init_reg (struct GEO* pGeo, struct GEOPARA* pGeoPara)
+net_init_reg (struct TESS* pTess, struct TESSPARA* pTessPara)
 {
   double vol;
 
   /* Calculation of sel */
   // seltype == 0: nothing to do
-  if ((*pGeoPara).seltype == 1)
+  if ((*pTessPara).seltype == 1)
   {
-    neut_geo_volume (*pGeo, &vol);
-    rsel2sel ((*pGeoPara).rsel, vol, (*pGeo).PolyQty, &((*pGeoPara).sel));
+    neut_tess_volume (*pTess, &vol);
+    rsel2sel ((*pTessPara).rsel, vol, (*pTess).PolyQty, &((*pTessPara).sel));
   }
   
   // Calculation of sel_skin
-  if ((*pGeoPara).dbound != NULL && (*pGeoPara).dboundseltype == 1)
+  if ((*pTessPara).dbound != NULL && (*pTessPara).dboundseltype == 1)
   {
-    neut_geo_volume (*pGeo, &vol);
-    rsel2sel ((*pGeoPara).dboundrsel, vol, (*pGeo).PolyQty, &((*pGeoPara).dboundsel));
+    neut_tess_volume (*pTess, &vol);
+    rsel2sel ((*pTessPara).dboundrsel, vol, (*pTess).PolyQty, &((*pTessPara).dboundsel));
   }
 
   return;

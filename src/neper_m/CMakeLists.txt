@@ -32,7 +32,7 @@ add_library (neper_m
 ./nem_input/nem_input2.c
 ./nem_input/nem_input3.c
 ./nem/nem_mesh_stellar/nem_mesh_stellar1.c
-./nem/nem_geo/nem_geo1.c
+./nem/nem_tess/nem_tess1.c
 ./nem/nem_mesh_gmsh/nem_mesh_gmsh3.c
 ./nem/nem_mesh_gmsh/nem_mesh_gmsh2.c
 ./nem/nem_mesh_gmsh/nem_mesh_gmsh1.c

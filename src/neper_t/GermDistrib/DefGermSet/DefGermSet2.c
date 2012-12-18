@@ -13,9 +13,9 @@ GermSetSize (struct GERMSET *pGermSet)
   int **DFaceVer;
   double* s = (*pGermSet).Size;
   struct GERMSET GermSet;
-  struct TESS Tess;
+  struct TESL Tesl;
 
-  neut_tess_set_zero (&Tess);
+  neut_tesl_set_zero (&Tesl);
   neut_germset_set_zero (&GermSet);
   GermSet.morpho = ut_alloc_1d_char (8);
   sprintf (GermSet.morpho, "poisson");
@@ -45,10 +45,10 @@ GermSetSize (struct GERMSET *pGermSet)
   }
 
   /* Building tessellation to calculate the neighbourhood zone. */
-  CreateTess (GermSet, (*pGermSet).Size, &Tess);
+  CreateTesl (GermSet, (*pGermSet).Size, &Tesl);
 
-  DFaceVer = ut_alloc_2d_int (7, Tess.VerQty + 1);
-  neut_tess_domainfacever (Tess, DFaceVer);
+  DFaceVer = ut_alloc_2d_int (7, Tesl.VerQty + 1);
+  neut_tesl_domainfacever (Tesl, DFaceVer);
 
   (*pGermSet).nSize = ut_alloc_1d (7);
 
@@ -63,12 +63,12 @@ GermSetSize (struct GERMSET *pGermSet)
 
       for (k = 0; k <= 3; k++)
       {
-	poly = Tess.VerGerm[ver][k];
+	poly = Tesl.VerGerm[ver][k];
 
 	if (poly >= 1)
 	{
 	  tmp[j] =
-	    ut_space_dist (Tess.VerCoo[ver], Tess.CenterCoo[poly]);
+	    ut_space_dist (Tesl.VerCoo[ver], Tesl.CenterCoo[poly]);
 	  break;
 	}
       }

@@ -125,337 +125,337 @@ neut_debug_fodnodes (FILE* file, int** FoDNodes)
 
 
 void
-neut_debug_geo (FILE* file, struct GEO Geo)
+neut_debug_tess (FILE* file, struct TESS Tess)
 {
   int i;
 
-  fprintf (file, "====== Beginning of Geo ==================================\n");
-  if (Geo.version != NULL)
-    fprintf (file, "version = %s\n", Geo.version);
+  fprintf (file, "====== Beginning of Tess ==================================\n");
+  if (Tess.version != NULL)
+    fprintf (file, "version = %s\n", Tess.version);
   else
     fprintf (file, "version = NULL\n");
 
-  fprintf (file, "N = %d\n", Geo.N);
-  fprintf (file, "Id = %d\n", Geo.Id);
+  fprintf (file, "N = %d\n", Tess.N);
+  fprintf (file, "Id = %d\n", Tess.Id);
 
-  if (Geo.morpho != NULL)
-    fprintf (file, "morpho = %s\n", Geo.morpho);
+  if (Tess.morpho != NULL)
+    fprintf (file, "morpho = %s\n", Tess.morpho);
   else
     fprintf (file, "morpho = NULL\n");
 
-  fprintf (file, "Type = %s\n", Geo.Type);
+  fprintf (file, "Type = %s\n", Tess.Type);
 
-  fprintf (file, "VerQty = %d\n", Geo.VerQty);
-  fprintf (file, "EdgeQty = %d\n", Geo.EdgeQty);
-  fprintf (file, "FaceQty = %d\n", Geo.FaceQty);
-  fprintf (file, "PolyQty = %d\n", Geo.PolyQty);
+  fprintf (file, "VerQty = %d\n", Tess.VerQty);
+  fprintf (file, "EdgeQty = %d\n", Tess.EdgeQty);
+  fprintf (file, "FaceQty = %d\n", Tess.FaceQty);
+  fprintf (file, "PolyQty = %d\n", Tess.PolyQty);
 
   fprintf (file, "== Vertices =================\n");
   fprintf (file, "[id] VerCoo =\n");
-  if (Geo.VerCoo == NULL)
+  if (Tess.VerCoo == NULL)
     fprintf (file, "is NULL\n");
   else
-    for (i = 1; i <= Geo.VerQty; i++)
+    for (i = 1; i <= Tess.VerQty; i++)
     {
       fprintf (file, "%d ", i);
-      ut_array_1d_fprintf (file, Geo.VerCoo[i], 3, "%f");
+      ut_array_1d_fprintf (file, Tess.VerCoo[i], 3, "%f");
     }
 
   fprintf (file, "[id] VerEdgeQty then VerEdgeNb =\n");
-  if (Geo.VerEdgeQty == NULL || Geo.VerEdgeNb == NULL)
+  if (Tess.VerEdgeQty == NULL || Tess.VerEdgeNb == NULL)
     fprintf (file, "one is NULL\n");
   else 
-    for (i = 1; i <= Geo.VerQty; i++)
+    for (i = 1; i <= Tess.VerQty; i++)
     {
-      fprintf (file, "%d %d ", i, Geo.VerEdgeQty[i]);
-      ut_array_1d_int_fprintf (file, Geo.VerEdgeNb[i], Geo.VerEdgeQty[i], "%d");
+      fprintf (file, "%d %d ", i, Tess.VerEdgeQty[i]);
+      ut_array_1d_int_fprintf (file, Tess.VerEdgeNb[i], Tess.VerEdgeQty[i], "%d");
     }
 
   fprintf (file, "[id] VerDom =\n");
-  if (Geo.VerDom == NULL)
+  if (Tess.VerDom == NULL)
     fprintf (file, "is NULL\n");
   else
-    for (i = 1; i <= Geo.VerQty; i++)
+    for (i = 1; i <= Tess.VerQty; i++)
     {
       fprintf (file, "%d ", i);
-      ut_array_1d_int_fprintf (file, Geo.VerDom[i], 2, "%d");
+      ut_array_1d_int_fprintf (file, Tess.VerDom[i], 2, "%d");
     }
   
   fprintf (file, "[id] VerState =\n");
-  if (Geo.VerState == NULL)
+  if (Tess.VerState == NULL)
     fprintf (file, "is NULL\n");
   else
-  for (i = 1; i <= Geo.VerQty; i++)
-    fprintf (file, "%d %d\n", i, Geo.VerState[i]);
+  for (i = 1; i <= Tess.VerQty; i++)
+    fprintf (file, "%d %d\n", i, Tess.VerState[i]);
 
   fprintf (file, "== Edges =================\n");
 
   fprintf (file, "[id] EdgeVerNb =\n");
-  if (Geo.EdgeVerNb == NULL)
+  if (Tess.EdgeVerNb == NULL)
     fprintf (file, "is NULL\n");
   else
-    for (i = 1; i <= Geo.EdgeQty; i++)
-      fprintf (file, "%d %d %d\n", i, Geo.EdgeVerNb[i][0], Geo.EdgeVerNb[i][1]);
+    for (i = 1; i <= Tess.EdgeQty; i++)
+      fprintf (file, "%d %d %d\n", i, Tess.EdgeVerNb[i][0], Tess.EdgeVerNb[i][1]);
 
   fprintf (file, "[id] EdgeFaceQty then EdgeFaceNb =\n");
-  if (Geo.EdgeFaceQty == NULL || Geo.EdgeFaceNb == NULL)
+  if (Tess.EdgeFaceQty == NULL || Tess.EdgeFaceNb == NULL)
     fprintf (file, "is NULL\n");
   else
-    for (i = 1; i <= Geo.EdgeQty; i++)
+    for (i = 1; i <= Tess.EdgeQty; i++)
     {
-      fprintf (file, "%d %d ", i, Geo.EdgeFaceQty[i]);
-      ut_array_1d_int_fprintf (file, Geo.EdgeFaceNb[i], Geo.EdgeFaceQty[i], "%d");
+      fprintf (file, "%d %d ", i, Tess.EdgeFaceQty[i]);
+      ut_array_1d_int_fprintf (file, Tess.EdgeFaceNb[i], Tess.EdgeFaceQty[i], "%d");
     }
 
   fprintf (file, "[id] EdgeLength =\n");
-  if (Geo.EdgeLength == NULL)
+  if (Tess.EdgeLength == NULL)
     fprintf (file, "is NULL\n");
   else
-    for (i = 1; i <= Geo.EdgeQty; i++)
-      fprintf (file, "%d %f\n", i, Geo.EdgeLength[i]);
+    for (i = 1; i <= Tess.EdgeQty; i++)
+      fprintf (file, "%d %f\n", i, Tess.EdgeLength[i]);
 
   fprintf (file, "[id] EdgeState =\n");
-  if (Geo.EdgeState == NULL)
+  if (Tess.EdgeState == NULL)
     fprintf (file, "is NULL\n");
   else
-    for (i = 1; i <= Geo.EdgeQty; i++)
-      fprintf (file, "%d %d\n", i, Geo.EdgeState[i]);
+    for (i = 1; i <= Tess.EdgeQty; i++)
+      fprintf (file, "%d %d\n", i, Tess.EdgeState[i]);
 
   fprintf (file, "[id] EdgeDel =\n");
-  if (Geo.EdgeDel == NULL)
+  if (Tess.EdgeDel == NULL)
     fprintf (file, "is NULL\n");
   else
-    for (i = 1; i <= Geo.EdgeQty; i++)
-      fprintf (file, "%d %d\n", i, Geo.EdgeDel[i]);
+    for (i = 1; i <= Tess.EdgeQty; i++)
+      fprintf (file, "%d %d\n", i, Tess.EdgeDel[i]);
 
   fprintf (file, "[id] EdgeDom =\n");
-  if (Geo.EdgeDom == NULL)
+  if (Tess.EdgeDom == NULL)
     fprintf (file, "is NULL\n");
   else
-    for (i = 1; i <= Geo.EdgeQty; i++)
+    for (i = 1; i <= Tess.EdgeQty; i++)
     {
       fprintf (file, "%d ", i);
-      ut_array_1d_int_fprintf (file, Geo.EdgeDom[i], 2, "%d");
+      ut_array_1d_int_fprintf (file, Tess.EdgeDom[i], 2, "%d");
     }
 
   fprintf (file, "== Faces =================\n");
 
   fprintf (file, "[id] FacePoly =\n");
-  if (Geo.FacePoly == NULL)
+  if (Tess.FacePoly == NULL)
     fprintf (file, "is NULL\n");
   else
-    for (i = 1; i <= Geo.FaceQty; i++)
-      fprintf (file, "%d %d %d\n", i, Geo.FacePoly[i][0], Geo.FacePoly[i][1]);
+    for (i = 1; i <= Tess.FaceQty; i++)
+      fprintf (file, "%d %d %d\n", i, Tess.FacePoly[i][0], Tess.FacePoly[i][1]);
 
   fprintf (file, "[id] FaceVerQty then FaceVerNb =\n");
-  if (Geo.FaceVerQty == NULL || Geo.FaceVerNb == NULL)
+  if (Tess.FaceVerQty == NULL || Tess.FaceVerNb == NULL)
     fprintf (file, "one is NULL\n");
   else
-    for (i = 1; i <= Geo.FaceQty; i++)
+    for (i = 1; i <= Tess.FaceQty; i++)
     {
-      fprintf (file, "%d %d ", i, Geo.FaceVerQty[i]);
-      ut_array_1d_int_fprintf (file, Geo.FaceVerNb[i] + 1, Geo.FaceVerQty[i], "%d");
+      fprintf (file, "%d %d ", i, Tess.FaceVerQty[i]);
+      ut_array_1d_int_fprintf (file, Tess.FaceVerNb[i] + 1, Tess.FaceVerQty[i], "%d");
     }
 
   fprintf (file, "[id] FaceEdgeQty then FaceEdgeNb =\n");
-  if (Geo.FaceVerQty == NULL || Geo.FaceEdgeNb == NULL)
+  if (Tess.FaceVerQty == NULL || Tess.FaceEdgeNb == NULL)
     fprintf (file, "one is NULL\n");
   else
-    for (i = 1; i <= Geo.FaceQty; i++)
+    for (i = 1; i <= Tess.FaceQty; i++)
     {
-      fprintf (file, "%d %d ", i, Geo.FaceVerQty[i]);
-      ut_array_1d_int_fprintf (file, Geo.FaceEdgeNb[i] + 1, Geo.FaceVerQty[i], "%d");
+      fprintf (file, "%d %d ", i, Tess.FaceVerQty[i]);
+      ut_array_1d_int_fprintf (file, Tess.FaceEdgeNb[i] + 1, Tess.FaceVerQty[i], "%d");
     }
 
   fprintf (file, "[id] FaceEdgeQty then Ori =\n");
-  if (Geo.FaceVerQty == NULL || Geo.FaceEdgeOri == NULL)
+  if (Tess.FaceVerQty == NULL || Tess.FaceEdgeOri == NULL)
     fprintf (file, "one is NULL\n");
   else
-    for (i = 1; i <= Geo.FaceQty; i++)
+    for (i = 1; i <= Tess.FaceQty; i++)
     {
-      fprintf (file, "%d %d ", i, Geo.FaceVerQty[i]);
-      ut_array_1d_int_fprintf (file, Geo.FaceEdgeOri[i] + 1, Geo.FaceVerQty[i], "%d");
+      fprintf (file, "%d %d ", i, Tess.FaceVerQty[i]);
+      ut_array_1d_int_fprintf (file, Tess.FaceEdgeOri[i] + 1, Tess.FaceVerQty[i], "%d");
     }
 
   fprintf (file, "[id] FaceEq =\n");
-  if (Geo.FaceEq == NULL)
+  if (Tess.FaceEq == NULL)
     fprintf (file, "is NULL\n");
   else
-  for (i = 1; i <= Geo.FaceQty; i++)
-    ut_array_1d_fprintf (file, Geo.FaceEq[i], 4, "%f");
+  for (i = 1; i <= Tess.FaceQty; i++)
+    ut_array_1d_fprintf (file, Tess.FaceEq[i], 4, "%f");
 
   fprintf (file, "[id] FaceState =\n");
-  if (Geo.FaceState == NULL)
+  if (Tess.FaceState == NULL)
     fprintf (file, "is NULL\n");
   else
-    for (i = 1; i <= Geo.FaceQty; i++)
-      fprintf (file, "%d %d\n", i, Geo.FaceState[i]);
+    for (i = 1; i <= Tess.FaceQty; i++)
+      fprintf (file, "%d %d\n", i, Tess.FaceState[i]);
 
   fprintf (file, "[id] FacePt =\n");
-  if (Geo.FacePt == NULL)
+  if (Tess.FacePt == NULL)
     fprintf (file, "is NULL\n");
   else
-    for (i = 1; i <= Geo.FaceQty; i++)
-      fprintf (file, "%d %d\n", i, Geo.FacePt[i]);
+    for (i = 1; i <= Tess.FaceQty; i++)
+      fprintf (file, "%d %d\n", i, Tess.FacePt[i]);
 
   fprintf (file, "[id] FacePtCoo =\n");
-  if (Geo.FacePtCoo == NULL)
+  if (Tess.FacePtCoo == NULL)
     fprintf (file, "is NULL\n");
   else
-    for (i = 1; i <= Geo.FaceQty; i++)
+    for (i = 1; i <= Tess.FaceQty; i++)
     {
       fprintf (file, "%d ", i);
-      ut_array_1d_fprintf (file, Geo.FacePtCoo[i], 3, "%f");
+      ut_array_1d_fprintf (file, Tess.FacePtCoo[i], 3, "%f");
     }
 
   fprintf (file, "[id] FaceFF =\n");
-  if (Geo.FaceFF == NULL)
+  if (Tess.FaceFF == NULL)
     fprintf (file, "is NULL\n");
   else
-    for (i = 1; i <= Geo.FaceQty; i++)
-      fprintf (file, "%d %f\n", i, Geo.FaceFF[i]);
+    for (i = 1; i <= Tess.FaceQty; i++)
+      fprintf (file, "%d %f\n", i, Tess.FaceFF[i]);
 
   fprintf (file, "[id] FaceDom =\n");
-  if (Geo.FaceDom == NULL)
+  if (Tess.FaceDom == NULL)
     fprintf (file, "is NULL\n");
   else
-    for (i = 1; i <= Geo.FaceQty; i++)
+    for (i = 1; i <= Tess.FaceQty; i++)
     {
       fprintf (file, "%d ", i);
-      ut_array_1d_int_fprintf (file, Geo.FaceDom[i], 2, "%d");
+      ut_array_1d_int_fprintf (file, Tess.FaceDom[i], 2, "%d");
     }
 
   fprintf (file, "== Polys =================\n");
 
   fprintf (file, "[id] CenterCoo =\n");
-  if (Geo.CenterCoo == NULL)
+  if (Tess.CenterCoo == NULL)
     fprintf (file, "is NULL\n");
   else
-    for (i = 1; i <= Geo.PolyQty; i++)
+    for (i = 1; i <= Tess.PolyQty; i++)
     {
       fprintf (file, "%d ", i);
-      ut_array_1d_fprintf (file, Geo.CenterCoo[i], 3, "%f");
+      ut_array_1d_fprintf (file, Tess.CenterCoo[i], 3, "%f");
     }
 
   fprintf (file, "[id] PolyFaceQty then PolyFaceNb =\n");
-  if (Geo.PolyFaceQty == NULL || Geo.PolyFaceNb == NULL)
+  if (Tess.PolyFaceQty == NULL || Tess.PolyFaceNb == NULL)
     fprintf (file, "is NULL\n");
   else
-    for (i = 1; i <= Geo.PolyQty; i++)
+    for (i = 1; i <= Tess.PolyQty; i++)
     {
-      fprintf (file, "%d %d\n", i, Geo.PolyFaceQty[i]);
-      ut_array_1d_int_fprintf (file, Geo.PolyFaceNb[i] + 1, Geo.PolyFaceQty[i], "%d");
+      fprintf (file, "%d %d\n", i, Tess.PolyFaceQty[i]);
+      ut_array_1d_int_fprintf (file, Tess.PolyFaceNb[i] + 1, Tess.PolyFaceQty[i], "%d");
     }
 
   fprintf (file, "[id] PolyFaceQty then PolyFaceOri =\n");
-  if (Geo.PolyFaceQty == NULL || Geo.PolyFaceOri == NULL)
+  if (Tess.PolyFaceQty == NULL || Tess.PolyFaceOri == NULL)
     fprintf (file, "is NULL\n");
   else
-    for (i = 1; i <= Geo.PolyQty; i++)
+    for (i = 1; i <= Tess.PolyQty; i++)
     {
-      fprintf (file, "%d %d\n", i, Geo.PolyFaceQty[i]);
-      ut_array_1d_int_fprintf (file, Geo.PolyFaceOri[i] + 1, Geo.PolyFaceQty[i], "%d");
+      fprintf (file, "%d %d\n", i, Tess.PolyFaceQty[i]);
+      ut_array_1d_int_fprintf (file, Tess.PolyFaceOri[i] + 1, Tess.PolyFaceQty[i], "%d");
     }
 
   fprintf (file, "[id] PolyTrue =\n");
-  if (Geo.PolyTrue == NULL)
+  if (Tess.PolyTrue == NULL)
     fprintf (file, "is NULL\n");
   else
-    for (i = 1; i <= Geo.PolyQty; i++)
+    for (i = 1; i <= Tess.PolyQty; i++)
     {
-      fprintf (file, "%d %d\n", i, Geo.PolyTrue[i]);
+      fprintf (file, "%d %d\n", i, Tess.PolyTrue[i]);
     }
 
   fprintf (file, "[id] PolyBody =\n");
-  if (Geo.PolyBody == NULL)
+  if (Tess.PolyBody == NULL)
     fprintf (file, "is NULL\n");
   else
-    for (i = 1; i <= Geo.PolyQty; i++)
+    for (i = 1; i <= Tess.PolyQty; i++)
     {
-      fprintf (file, "%d %d\n", i, Geo.PolyBody[i]);
+      fprintf (file, "%d %d\n", i, Tess.PolyBody[i]);
     }
 
   fprintf (file, "== Domain =================\n");
 
   // Domain
-  if (Geo.DomType != NULL)
-    fprintf (file, "DomType = %s\n", Geo.DomType);
+  if (Tess.DomType != NULL)
+    fprintf (file, "DomType = %s\n", Tess.DomType);
 
   // Domain ver
-  fprintf (file, "DomVerQty = %d\n", Geo.DomVerQty);
+  fprintf (file, "DomVerQty = %d\n", Tess.DomVerQty);
   fflush (file);
 
   fprintf (file, "[id] DomVerEdgeQty then DomVerEdgeNb\n");
-  for (i = 1; i <= Geo.DomVerQty; i++)
+  for (i = 1; i <= Tess.DomVerQty; i++)
   {
-    fprintf (file, "%d %d ", i, Geo.DomVerEdgeQty[i]);
-    ut_array_1d_int_fprintf (file, Geo.DomVerEdgeNb[i], Geo.DomVerEdgeQty[i], "%d");
+    fprintf (file, "%d %d ", i, Tess.DomVerEdgeQty[i]);
+    ut_array_1d_int_fprintf (file, Tess.DomVerEdgeNb[i], Tess.DomVerEdgeQty[i], "%d");
   }
 
   fprintf (file, "[id] DomTessVerNb\n");
-  for (i = 1; i <= Geo.DomVerQty; i++)
-    fprintf (file, "%d %d\n", i, Geo.DomTessVerNb[i]);
+  for (i = 1; i <= Tess.DomVerQty; i++)
+    fprintf (file, "%d %d\n", i, Tess.DomTessVerNb[i]);
 
   // Domain edge
-  fprintf (file, "DomEdgeQty = %d\n", Geo.DomEdgeQty);
+  fprintf (file, "DomEdgeQty = %d\n", Tess.DomEdgeQty);
   fflush (file);
 
   fprintf (file, "[id] DomEdgeVerNb\n");
-  for (i = 1; i <= Geo.DomEdgeQty; i++)
+  for (i = 1; i <= Tess.DomEdgeQty; i++)
   {
     fprintf (file, "%d ", i);
-    ut_array_1d_int_fprintf (file, Geo.DomEdgeVerNb[i], 2, "%d");
+    ut_array_1d_int_fprintf (file, Tess.DomEdgeVerNb[i], 2, "%d");
   }
 
   fprintf (file, "[id] DomEdgeFaceNb\n");
-  for (i = 1; i <= Geo.DomEdgeQty; i++)
+  for (i = 1; i <= Tess.DomEdgeQty; i++)
   {
     fprintf (file, "%d ", i);
-    ut_array_1d_int_fprintf (file, Geo.DomEdgeFaceNb[i], 2, "%d");
+    ut_array_1d_int_fprintf (file, Tess.DomEdgeFaceNb[i], 2, "%d");
   }
 
   fprintf (file, "[id] DomTessEdgeQty then DomTessEdgeNb\n");
-  for (i = 1; i <= Geo.DomEdgeQty; i++)
+  for (i = 1; i <= Tess.DomEdgeQty; i++)
   {
-    fprintf (file, "%d %d ", i, Geo.DomTessEdgeQty[i]);
-    ut_array_1d_int_fprintf (file, Geo.DomTessEdgeNb[i] + 1, Geo.DomTessEdgeQty[i], "%d");
+    fprintf (file, "%d %d ", i, Tess.DomTessEdgeQty[i]);
+    ut_array_1d_int_fprintf (file, Tess.DomTessEdgeNb[i] + 1, Tess.DomTessEdgeQty[i], "%d");
   }
 
   // Domain face
-  fprintf (file, "DomFaceQty = %d\n", Geo.DomFaceQty);
+  fprintf (file, "DomFaceQty = %d\n", Tess.DomFaceQty);
   fflush (file);
 
   fprintf (file, "DomFaceEq =\n");
-  if (Geo.DomFaceEq != NULL)
-    for (i = 1; i <= Geo.DomFaceQty; i++)
-      ut_array_1d_fprintf (file, Geo.DomFaceEq[i], 4, "%f");
+  if (Tess.DomFaceEq != NULL)
+    for (i = 1; i <= Tess.DomFaceQty; i++)
+      ut_array_1d_fprintf (file, Tess.DomFaceEq[i], 4, "%f");
   else
     printf ("is NULL\n");
   fflush (file);
 
   fprintf (file, "[id] DomFaceVerQty then DomFaceVerNb =\n");
-  if (Geo.DomFaceVerQty != NULL && Geo.DomFaceVerNb != NULL)
-    for (i = 1; i <= Geo.DomFaceQty; i++)
+  if (Tess.DomFaceVerQty != NULL && Tess.DomFaceVerNb != NULL)
+    for (i = 1; i <= Tess.DomFaceQty; i++)
     {
-      fprintf (file, "%d %d ", i, Geo.DomFaceVerQty[i]);
-      ut_array_1d_int_fprintf (file, Geo.DomFaceVerNb[i] + 1, Geo.DomFaceVerQty[i], "%d");
+      fprintf (file, "%d %d ", i, Tess.DomFaceVerQty[i]);
+      ut_array_1d_int_fprintf (file, Tess.DomFaceVerNb[i] + 1, Tess.DomFaceVerQty[i], "%d");
     }
   else
     printf ("is NULL\n");
   fflush (file);
 
   fprintf (file, "[id] DomTessFaceQty then DomTessFaceNb =\n");
-  if (Geo.DomTessFaceQty != NULL)
-    for (i = 1; i <= Geo.DomFaceQty; i++)
+  if (Tess.DomTessFaceQty != NULL)
+    for (i = 1; i <= Tess.DomFaceQty; i++)
     {
-      printf ("%d %d ", i, Geo.DomTessFaceQty[i]);
-      ut_array_1d_int_fprintf (file, Geo.DomTessFaceNb[i] + 1, Geo.DomTessFaceQty[i], "%d");
+      printf ("%d %d ", i, Tess.DomTessFaceQty[i]);
+      ut_array_1d_int_fprintf (file, Tess.DomTessFaceNb[i] + 1, Tess.DomTessFaceQty[i], "%d");
     }
   else
     printf ("is NULL\n");
   fflush (file);
 
-  fprintf (file, "====== End of Geo ========================================\n");
+  fprintf (file, "====== End of Tess ========================================\n");
   fflush (file);
 
   return;
@@ -484,228 +484,228 @@ neut_debug_germset (FILE* file, struct GERMSET GermSet)
 
 /*
 void
-neut_debug_geodata (FILE* file, struct GEODATA GeoData)
+neut_debug_tessdata (FILE* file, struct TESSDATA TessData)
 {
   int i;
 
   // Poly stuff
-  fprintf (file, "polydataqty = %d\n", GeoData.polydataqty);
+  fprintf (file, "polydataqty = %d\n", TessData.polydataqty);
     
-  if (GeoData.polydatatype != NULL)
+  if (TessData.polydatatype != NULL)
   {
     fprintf (file, "polydatatype =\n");
-    for (i = 0; i < GeoData.polydataqty; i++)
-      fprintf (file, "%d: %s\n", i, GeoData.polydatatype[i]);
+    for (i = 0; i < TessData.polydataqty; i++)
+      fprintf (file, "%d: %s\n", i, TessData.polydatatype[i]);
   }
   else
     fprintf (file, "polydatatype = NULL\n");
     
-  if (GeoData.polydatasize != NULL)
+  if (TessData.polydatasize != NULL)
   {
     fprintf (file, "polydatasize =\n");
-    for (i = 0; i < GeoData.polydataqty; i++)
-      fprintf (file, "%d: %d %d\n", i, GeoData.polydatasize[i][0], GeoData.polydatasize[i][1]);
+    for (i = 0; i < TessData.polydataqty; i++)
+      fprintf (file, "%d: %d %d\n", i, TessData.polydatasize[i][0], TessData.polydatasize[i][1]);
   }
   else
     fprintf (file, "polydatasize = NULL\n");
 
-  if (GeoData.polydata != NULL)
+  if (TessData.polydata != NULL)
   {
-    for (i = 0; i < GeoData.polydataqty; i++)
+    for (i = 0; i < TessData.polydataqty; i++)
     {
       fprintf (file, "polydata =\n");
       fprintf (file, "%d:\n", i);
-      ut_array_2d_fprintf (file, GeoData.polydata[i] + 1,
-			   GeoData.polydatasize[i][0], GeoData.polydatasize[i][1], "%f");
+      ut_array_2d_fprintf (file, TessData.polydata[i] + 1,
+			   TessData.polydatasize[i][0], TessData.polydatasize[i][1], "%f");
     }
   }
   else
     fprintf (file, "polydata = NULL\n");
 
-  if (GeoData.polycol != NULL)
+  if (TessData.polycol != NULL)
   {
     fprintf (file, "polycol =\n");
-    ut_array_2d_int_fprintf (file, GeoData.polycol + 1,
-                             GeoData.polyqty, 3, "%d");
+    ut_array_2d_int_fprintf (file, TessData.polycol + 1,
+                             TessData.polyqty, 3, "%d");
   }
   else
     fprintf (file, "polycol = NULL\n");
  
-  if (GeoData.polycolourscheme != NULL)
-    fprintf (file, "polycolourscheme = %s\n", GeoData.polycolourscheme);
+  if (TessData.polycolourscheme != NULL)
+    fprintf (file, "polycolourscheme = %s\n", TessData.polycolourscheme);
   else
     fprintf (file, "polycolourscheme = NULL\n");
   
   // Face stuff
-  fprintf (file, "facedataqty = %d\n", GeoData.facedataqty);
+  fprintf (file, "facedataqty = %d\n", TessData.facedataqty);
     
-  if (GeoData.facedatatype != NULL)
+  if (TessData.facedatatype != NULL)
   {
     fprintf (file, "facedatatype =\n");
-    for (i = 0; i < GeoData.facedataqty; i++)
-      fprintf (file, "%d: %s\n", i, GeoData.facedatatype[i]);
+    for (i = 0; i < TessData.facedataqty; i++)
+      fprintf (file, "%d: %s\n", i, TessData.facedatatype[i]);
   }
   else
     fprintf (file, "facedatatype = NULL\n");
     
-  if (GeoData.facedatasize != NULL)
+  if (TessData.facedatasize != NULL)
   {
     fprintf (file, "facedatasize =\n");
-    for (i = 0; i < GeoData.facedataqty; i++)
-      fprintf (file, "%d: %d %d\n", i, GeoData.facedatasize[i][0], GeoData.facedatasize[i][1]);
+    for (i = 0; i < TessData.facedataqty; i++)
+      fprintf (file, "%d: %d %d\n", i, TessData.facedatasize[i][0], TessData.facedatasize[i][1]);
   }
   else
     fprintf (file, "facedatasize = NULL\n");
 
-  if (GeoData.facedata != NULL)
+  if (TessData.facedata != NULL)
   {
-    for (i = 0; i < GeoData.facedataqty; i++)
+    for (i = 0; i < TessData.facedataqty; i++)
     {
       fprintf (file, "facedata =\n");
       fprintf (file, "%d:\n", i);
-      ut_array_2d_fprintf (file, GeoData.facedata[i] + 1,
-			   GeoData.facedatasize[i][0], GeoData.facedatasize[i][1], "%f");
+      ut_array_2d_fprintf (file, TessData.facedata[i] + 1,
+			   TessData.facedatasize[i][0], TessData.facedatasize[i][1], "%f");
     }
   }
   else
     fprintf (file, "facedata = NULL\n");
   
-  if (GeoData.facewidth != NULL)
+  if (TessData.facewidth != NULL)
   {
     fprintf (file, "facewidth =\n");
-    ut_array_1d_fprintf (file, GeoData.facewidth + 1,
-			 GeoData.faceqty, "%f");
+    ut_array_1d_fprintf (file, TessData.facewidth + 1,
+			 TessData.faceqty, "%f");
   }
   else
     fprintf (file, "facewidth = NULL\n");
 
-  if (GeoData.facecol != NULL)
+  if (TessData.facecol != NULL)
   {
     fprintf (file, "facecol =\n");
-    ut_array_2d_int_fprintf (file, GeoData.facecol + 1,
-                             GeoData.faceqty, 3, "%d");
+    ut_array_2d_int_fprintf (file, TessData.facecol + 1,
+                             TessData.faceqty, 3, "%d");
   }
   else
     fprintf (file, "facecol = NULL\n");
  
-  if (GeoData.facecolourscheme != NULL)
-    fprintf (file, "facecolourscheme = %s\n", GeoData.facecolourscheme);
+  if (TessData.facecolourscheme != NULL)
+    fprintf (file, "facecolourscheme = %s\n", TessData.facecolourscheme);
   else
     fprintf (file, "facecolourscheme = NULL\n");
   
   // Edge stuff
-  fprintf (file, "edgedataqty = %d\n", GeoData.edgedataqty);
+  fprintf (file, "edgedataqty = %d\n", TessData.edgedataqty);
     
-  if (GeoData.edgedatatype != NULL)
+  if (TessData.edgedatatype != NULL)
   {
     fprintf (file, "edgedatatype =\n");
-    for (i = 0; i < GeoData.edgedataqty; i++)
-      fprintf (file, "%d: %s\n", i, GeoData.edgedatatype[i]);
+    for (i = 0; i < TessData.edgedataqty; i++)
+      fprintf (file, "%d: %s\n", i, TessData.edgedatatype[i]);
   }
   else
     fprintf (file, "edgedatatype = NULL\n");
     
-  if (GeoData.edgedatasize != NULL)
+  if (TessData.edgedatasize != NULL)
   {
     fprintf (file, "edgedatasize =\n");
-    for (i = 0; i < GeoData.edgedataqty; i++)
-      fprintf (file, "%d: %d %d\n", i, GeoData.edgedatasize[i][0], GeoData.edgedatasize[i][1]);
+    for (i = 0; i < TessData.edgedataqty; i++)
+      fprintf (file, "%d: %d %d\n", i, TessData.edgedatasize[i][0], TessData.edgedatasize[i][1]);
   }
   else
     fprintf (file, "edgedatasize = NULL\n");
 
-  if (GeoData.edgedata != NULL)
+  if (TessData.edgedata != NULL)
   {
-    for (i = 0; i < GeoData.edgedataqty; i++)
+    for (i = 0; i < TessData.edgedataqty; i++)
     {
       fprintf (file, "edgedata =\n");
       fprintf (file, "%d:\n", i);
-      ut_array_2d_fprintf (file, GeoData.edgedata[i] + 1,
-			   GeoData.edgedatasize[i][0], GeoData.edgedatasize[i][1], "%f");
+      ut_array_2d_fprintf (file, TessData.edgedata[i] + 1,
+			   TessData.edgedatasize[i][0], TessData.edgedatasize[i][1], "%f");
     }
   }
   else
     fprintf (file, "edgedata = NULL\n");
   
-  if (GeoData.edgerad != NULL)
+  if (TessData.edgerad != NULL)
   {
     fprintf (file, "edgerad =\n");
-    ut_array_1d_fprintf (file, GeoData.edgerad + 1,
-			 GeoData.edgeqty, "%f");
+    ut_array_1d_fprintf (file, TessData.edgerad + 1,
+			 TessData.edgeqty, "%f");
   }
   else
     fprintf (file, "edgerad = NULL\n");
  
 
-  if (GeoData.edgecol != NULL)
+  if (TessData.edgecol != NULL)
   {
     fprintf (file, "edgecol =\n");
-    ut_array_2d_int_fprintf (file, GeoData.edgecol + 1,
-                             GeoData.edgeqty, 3, "%d");
+    ut_array_2d_int_fprintf (file, TessData.edgecol + 1,
+                             TessData.edgeqty, 3, "%d");
   }
   else
     fprintf (file, "edgecol = NULL\n");
  
-  if (GeoData.edgecolourscheme != NULL)
-    fprintf (file, "edgecolourscheme = %s\n", GeoData.edgecolourscheme);
+  if (TessData.edgecolourscheme != NULL)
+    fprintf (file, "edgecolourscheme = %s\n", TessData.edgecolourscheme);
   else
     fprintf (file, "edgecolourscheme = NULL\n");
   
   // Ver stuff
-  fprintf (file, "verdataqty = %d\n", GeoData.edgedataqty);
+  fprintf (file, "verdataqty = %d\n", TessData.edgedataqty);
     
-  if (GeoData.verdatatype != NULL)
+  if (TessData.verdatatype != NULL)
   {
     fprintf (file, "verdatatype =\n");
-    for (i = 0; i < GeoData.verdataqty; i++)
-      fprintf (file, "%d: %s\n", i, GeoData.verdatatype[i]);
+    for (i = 0; i < TessData.verdataqty; i++)
+      fprintf (file, "%d: %s\n", i, TessData.verdatatype[i]);
   }
   else
     fprintf (file, "verdatatype = NULL\n");
     
-  if (GeoData.verdatasize != NULL)
+  if (TessData.verdatasize != NULL)
   {
     fprintf (file, "verdatasize =\n");
-    for (i = 0; i < GeoData.verdataqty; i++)
-      fprintf (file, "%d: %d %d\n", i, GeoData.verdatasize[i][0], GeoData.edgedatasize[i][1]);
+    for (i = 0; i < TessData.verdataqty; i++)
+      fprintf (file, "%d: %d %d\n", i, TessData.verdatasize[i][0], TessData.edgedatasize[i][1]);
   }
   else
     fprintf (file, "verdatasize = NULL\n");
 
-  if (GeoData.verdata != NULL)
+  if (TessData.verdata != NULL)
   {
-    for (i = 0; i < GeoData.verdataqty; i++)
+    for (i = 0; i < TessData.verdataqty; i++)
     {
       fprintf (file, "verdata =\n");
       fprintf (file, "%d:\n", i);
-      ut_array_2d_fprintf (file, GeoData.verdata[i] + 1,
-			   GeoData.verdatasize[i][0], GeoData.edgedatasize[i][1], "%f");
+      ut_array_2d_fprintf (file, TessData.verdata[i] + 1,
+			   TessData.verdatasize[i][0], TessData.edgedatasize[i][1], "%f");
     }
   }
   else
     fprintf (file, "verdata = NULL\n");
   
-  if (GeoData.verrad != NULL)
+  if (TessData.verrad != NULL)
   {
     fprintf (file, "verrad =\n");
-    ut_array_1d_fprintf (file, GeoData.verrad + 1,
-			 GeoData.verqty, "%f");
+    ut_array_1d_fprintf (file, TessData.verrad + 1,
+			 TessData.verqty, "%f");
   }
   else
     fprintf (file, "verrad = NULL\n");
  
 
-  if (GeoData.vercol != NULL)
+  if (TessData.vercol != NULL)
   {
     fprintf (file, "vercol =\n");
-    ut_array_2d_int_fprintf (file, GeoData.vercol + 1,
-                             GeoData.verqty, 3, "%d");
+    ut_array_2d_int_fprintf (file, TessData.vercol + 1,
+                             TessData.verqty, 3, "%d");
   }
   else
     fprintf (file, "vercol = NULL\n");
  
-  if (GeoData.vercolourscheme != NULL)
-    fprintf (file, "vercolourscheme = %s\n", GeoData.edgecolourscheme);
+  if (TessData.vercolourscheme != NULL)
+    fprintf (file, "vercolourscheme = %s\n", TessData.edgecolourscheme);
   else
     fprintf (file, "vercolourscheme = NULL\n");
   

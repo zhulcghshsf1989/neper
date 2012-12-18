@@ -11,15 +11,15 @@ neo_init_ori (FILE* file, struct ORI* pOri)
   char* type = ut_alloc_1d_char (100);
   int n; // is -n in -T but ndensity in -MM
   int id;
-  struct GEO Geo;
+  struct TESS Tess;
 
-  neut_geo_set_zero (&Geo);
+  neut_tess_set_zero (&Tess);
 
-  neut_geo_fscanf_head (&Geo, file);
+  neut_tess_fscanf_head (&Tess, file);
 
-  n = Geo.N;
-  id = Geo.Id;
-  strcpy (type, Geo.morpho);
+  n = Tess.N;
+  id = Tess.Id;
+  strcpy (type, Tess.morpho);
 
   if (strcmp  (type, "poisson"    ) == 0
    || strcmp  (type, "equiaxed"   ) == 0
@@ -42,15 +42,15 @@ neo_init_ori (FILE* file, struct ORI* pOri)
   (*pOri).id = id;
   (*pOri).rngid = ut_alloc_1d_int ((*pOri).N + 1);
 
-  if (! Geo.PolyId)
+  if (! Tess.PolyId)
     for (i = 1; i <= (*pOri).N; i++)
       (*pOri).rngid[i] = i;
   else 
-    ut_array_1d_int_memcpy ((*pOri).rngid + 1, (*pOri).N, Geo.PolyId + 1);
+    ut_array_1d_int_memcpy ((*pOri).rngid + 1, (*pOri).N, Tess.PolyId + 1);
     
   ut_free_1d_char (type);
 
-  neut_geo_free (&Geo);
+  neut_tess_free (&Tess);
 
   return 0;
 }

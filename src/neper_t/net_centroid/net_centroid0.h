@@ -7,4 +7,4 @@
 ///
 ///
 ///
-extern int net_centroid (struct IN In, struct TESS Tess, struct GERMSET* pGermSet, double* prdistmax);
+extern int net_centroid (struct IN In, struct TESL Tesl, struct GERMSET* pGermSet, double* prdistmax);

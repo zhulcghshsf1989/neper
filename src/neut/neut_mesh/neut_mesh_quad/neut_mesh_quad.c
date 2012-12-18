@@ -77,7 +77,7 @@ neut_mesh_quad (int *size, int order, struct NODES *pNodes, struct MESH
 
   (*pNodes).NodeCoo = ut_alloc_2d ((*pNodes).NodeQty + 1, 3);
 
-  /* Geometry --- */
+  /* Tessellation --- */
   nid = 0;
 
   /* 1st-Order nodes */

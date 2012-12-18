@@ -4,7 +4,7 @@
 
 #include"nem_transport.h"
 void
-nem_transport (struct IN In, struct GEO Geo, struct NODES RNodes, struct
+nem_transport (struct IN In, struct TESS Tess, struct NODES RNodes, struct
     MESH RMesh2D, struct MESH RMesh3D, struct NODES* pNodes, struct
     MESH* pMesh2D, struct MESH* pMesh3D)
 {
@@ -16,7 +16,7 @@ nem_transport (struct IN In, struct GEO Geo, struct NODES RNodes, struct
 
   ut_print_message (0, 2, "nem_transporting element data ...\n");
   
-  nem_transport_mesh3d_parelt (Geo, RNodes, RMesh2D, RMesh3D, *pNodes, *pMesh2D, *pMesh3D, oldelt);
+  nem_transport_mesh3d_parelt (Tess, RNodes, RMesh2D, RMesh3D, *pNodes, *pMesh2D, *pMesh3D, oldelt);
 
   for (i = 0; i < In.remap; i++)
   {

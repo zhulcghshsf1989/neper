@@ -7,36 +7,36 @@
 void
 nem_reconmesh (char* dim, struct NODES* pNodes, struct MESH *pMesh0D,
 	  struct MESH *pMesh1D, struct MESH *pMesh2D, struct MESH *pMesh3D,
-	  struct GEO* pGeo)
+	  struct TESS* pTess)
 {
-  struct GEO Geob;
-  struct GEO* pGeob = &Geob;
+  struct TESS Tessb;
+  struct TESS* pTessb = &Tessb;
 
   int recon_dim;
-  // Disabling geo reconstruction is pGeo == NULL
-  int reconst_geo // = (pGeo == NULL) ? 0 : 1;
-    = (! strcmp ((*pMesh3D).EltType, "quad") || pGeo == NULL) ? 0 : 1;
+  // Disabling tess reconstruction is pTess == NULL
+  int reconst_tess // = (pTess == NULL) ? 0 : 1;
+    = (! strcmp ((*pMesh3D).EltType, "quad") || pTess == NULL) ? 0 : 1;
 
-  // if pGeo is NULL, working with pGeob. 
-  if (! reconst_geo)
-    neut_geo_set_zero (pGeob);
+  // if pTess is NULL, working with pTessb. 
+  if (! reconst_tess)
+    neut_tess_set_zero (pTessb);
   else
-    pGeob = pGeo;
+    pTessb = pTess;
 
-  if (! reconst_geo || (*pGeob).DomType == NULL || strlen ((*pGeob).DomType) == 0)
+  if (! reconst_tess || (*pTessb).DomType == NULL || strlen ((*pTessb).DomType) == 0)
   {
-    (*pGeob).DomType = ut_alloc_1d_char (10);
-    sprintf ((*pGeob).DomType, "unknown");
+    (*pTessb).DomType = ut_alloc_1d_char (10);
+    sprintf ((*pTessb).DomType, "unknown");
   }
 
-  (*pGeob).version = ut_alloc_1d_char (10);
-  strcpy ((*pGeob).version, "1.10");
-  (*pGeob).N = (*pMesh3D).ElsetQty;
-  (*pGeob).Type = ut_alloc_1d_char (10);
-  strcpy ((*pGeob).Type, "standard");
-  (*pGeob).Id   = 0;
-  (*pGeob).morpho = ut_alloc_1d_char (10);
-  strcpy ((*pGeob).morpho, "unknown");
+  (*pTessb).version = ut_alloc_1d_char (10);
+  strcpy ((*pTessb).version, "1.10");
+  (*pTessb).N = (*pMesh3D).ElsetQty;
+  (*pTessb).Type = ut_alloc_1d_char (10);
+  strcpy ((*pTessb).Type, "standard");
+  (*pTessb).Id   = 0;
+  (*pTessb).morpho = ut_alloc_1d_char (10);
+  strcpy ((*pTessb).morpho, "unknown");
 
   neut_nodes_init_bbox (pNodes);
 
@@ -52,49 +52,49 @@ nem_reconmesh (char* dim, struct NODES* pNodes, struct MESH *pMesh0D,
     neut_mesh_init_nodeelts (pMesh3D, (*pNodes).NodeQty);
 
   if (recon_dim <= 2)
-    nem_reconmesh_2d (*pNodes, pMesh2D, pMesh3D, pGeob);
+    nem_reconmesh_2d (*pNodes, pMesh2D, pMesh3D, pTessb);
 
   if (recon_dim <= 1)
-    nem_reconmesh_1d (*pNodes, pMesh1D, pMesh2D, pGeob);
+    nem_reconmesh_1d (*pNodes, pMesh1D, pMesh2D, pTessb);
 
   if (recon_dim <= 0)
   {
-    if (reconst_geo)
-      nem_reconmesh_0d (*pNodes, pMesh0D, pMesh1D, pGeob);
+    if (reconst_tess)
+      nem_reconmesh_0d (*pNodes, pMesh0D, pMesh1D, pTessb);
     else
       nem_reconmesh_0d (*pNodes, pMesh0D, pMesh1D, NULL);
   }
 
-  ut_array_1d_int_set ((*pGeob).FaceState + 1, (*pGeob).FaceQty, 1);
-  ut_array_1d_int_set ((*pGeob).VerState + 1, (*pGeob).VerQty, 1);
+  ut_array_1d_int_set ((*pTessb).FaceState + 1, (*pTessb).FaceQty, 1);
+  ut_array_1d_int_set ((*pTessb).VerState + 1, (*pTessb).VerQty, 1);
 
   if (ut_string_inlist (dim, ',', "3") && ut_string_inlist (dim, ',', "2")
    && ut_string_inlist (dim, ',', "1") && ut_string_inlist (dim, ',', "0"))
   {
-  if (reconst_geo)
+  if (reconst_tess)
   {
-    nem_reconmesh_finalizegeo (pGeob, *pNodes, *pMesh0D, *pMesh1D, *pMesh2D,
+    nem_reconmesh_finalizetess (pTessb, *pNodes, *pMesh0D, *pMesh1D, *pMesh2D,
       *pMesh3D);
 
     // If the domain is not defined, initializing it.
-    if ((*pGeob).DomFaceQty == 0)
-      neut_geo_init_domain (pGeob);
+    if ((*pTessb).DomFaceQty == 0)
+      neut_tess_init_domain (pTessb);
 
-    if ((*pGeo).PolyTrue == NULL)
-      neut_geo_init_polytrue (pGeob);
+    if ((*pTess).PolyTrue == NULL)
+      neut_tess_init_polytrue (pTessb);
 
-    if ((*pGeo).PolyBody == NULL)
-      neut_geo_init_polybody (pGeob);
+    if ((*pTess).PolyBody == NULL)
+      neut_tess_init_polybody (pTessb);
   }
   else
-    neut_geo_free (pGeob);
+    neut_tess_free (pTessb);
   }
 
   /*
-  neut_debug_geo (stdout, *pGeo);
+  neut_debug_tess (stdout, *pTess);
   
   FILE* file = ut_file_open ("dd.tess", "w");
-  neut_geo_fprintf (file, *pGeo);
+  neut_tess_fprintf (file, *pTess);
   ut_file_close (file, "dd.tess", "w");
   */
 
@@ -108,7 +108,7 @@ nem_reconmesh (char* dim, struct NODES* pNodes, struct MESH *pMesh0D,
     neut_mesh_free (pMesh0D);
 
   /*
-  if (pGeo != NULL && neut_geo_test (*pGeo) != 0)
+  if (pTess != NULL && neut_tess_test (*pTess) != 0)
   {
     ut_print_message (2, 0, "nem_reconmesh: tess is not valid!\n");
     ut_error_reportbug ();

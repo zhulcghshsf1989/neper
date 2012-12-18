@@ -18,5 +18,5 @@
 
 #include"nem_meshing_prep0.h"
 
-extern int nem_mesh2d_face_nproj (struct GEO,
+extern int nem_mesh2d_face_nproj (struct TESS,
     struct NODES, struct MESH, struct MESH, int, double*);

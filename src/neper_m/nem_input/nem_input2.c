@@ -6,14 +6,14 @@
 
 void
 nem_input_treatargs (int fargc, char **fargv, int argc, char **argv,
-		     struct IN *pIn, struct GEOPARA *pGeoPara)
+		     struct IN *pIn, struct TESSPARA *pTessPara)
 {
   /* Setting default options */
-  nem_input_options_default (pIn, pGeoPara);
+  nem_input_options_default (pIn, pTessPara);
 
   /* Reading options. */
-  nem_input_options_set (pIn, pGeoPara, fargc, fargv);
-  nem_input_options_set (pIn, pGeoPara, argc, argv);
+  nem_input_options_set (pIn, pTessPara, fargc, fargv);
+  nem_input_options_set (pIn, pTessPara, argc, argv);
 
   (*pIn).mesh = 0;
   if (((*pIn).tess != NULL || (*pIn).vox != NULL)
