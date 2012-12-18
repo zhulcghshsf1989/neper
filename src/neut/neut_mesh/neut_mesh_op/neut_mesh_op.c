@@ -249,22 +249,131 @@ neut_mesh_init_eltelset (struct MESH *pMesh, int *elset_nbs)
 void
 neut_mesh_init_elsets (struct MESH *pMesh)
 {
-  int i, elset;
-  
+  int i, j, k, elt, neltqty, node;
+  int* elts = NULL;
+  int* nelts = NULL;
+
+  neut_mesh_init_nodeelts (pMesh, 0);
+
   (*pMesh).ElsetQty  = 0;
   for (i = 1; i <= (*pMesh).EltQty; i++)
     (*pMesh).ElsetQty = ut_num_max ((*pMesh).EltElset[i], (*pMesh).ElsetQty);
 
-  // Init Elsets from EltElset
   (*pMesh).Elsets = ut_alloc_2d_int ((*pMesh).ElsetQty + 1, 1);
   for (i = 1; i <= (*pMesh).EltQty; i++)
+    neut_mesh_elset_addelt (pMesh, (*pMesh).EltElset[i], i);
+
+  // In case of 1D elements, ordering elements in the elsets, as well as
+  // the nodes in the elements.
+  if ((*pMesh).Dimension == 1)
   {
-    elset = (*pMesh).EltElset[i];
-    (*pMesh).Elsets[elset][0]++;
-    (*pMesh).Elsets[elset]
-      = ut_realloc_1d_int ((*pMesh).Elsets[elset], (*pMesh).Elsets[elset][0] + 1);
-    (*pMesh).Elsets[elset][(*pMesh).Elsets[elset][0]] = i;
+    for (i = 1; i <= (*pMesh).ElsetQty; i++)
+    {
+      // nothing to do (don't remove this)
+      if ((*pMesh).Elsets[i][0] <= 1)
+	continue;
+
+      elts = ut_alloc_1d_int ((*pMesh).Elsets[i][0] + 1);
+      elts[0] = -1;
+
+      // Looking for an element that is at the extremity of the elset
+      for (j = 1; j <= (*pMesh).Elsets[i][0]; j++)
+      {
+	elt = (*pMesh).Elsets[i][j];
+	neut_mesh_elt_neighelts (*pMesh, elt, &nelts, &neltqty);
+
+	// neltqty > 2 means that the element is at the extremity of the
+	// edge since it must have more than 1 neighbour on one end.
+	// neltqty == 1 means that the element is at the extremity of
+	// the edge and that the edge is not conected to another one
+	// (maybe a Mesh1D with only 1 edge?)
+	if (neltqty != 2)
+	{
+	  elts[1] = elt;
+	  break;
+	}
+      }
+
+      // an exception is when the 1D mesh is reconstructed from a 2D mesh
+      // with a single elset (e.g. a mesh of a face). In this case, the
+      // 1D elset is a loop, which must be handled in a slightly different way.
+      int loopelset = 0;
+      if (elts[1] == 0)
+      {
+	loopelset = 1;
+	elts[1] = (*pMesh).Elsets[i][1];
+      }
+
+      if (loopelset == 0)
+      {
+	// Ordering the nodes of the first element - the first node must
+	// be at the extremity of the elset
+	node = (*pMesh).EltNodes[elts[1]][0];
+	if ((*pMesh).NodeElts[node][0] == 2) // means not at the extremity
+	  neut_mesh_elt_reversenodes (pMesh, elts[1]);
+	else
+	{
+	  // nothing to do, but checking that the other node does have 2
+	  // elements
+	  node = (*pMesh).EltNodes[elts[1]][1];
+	  if ((*pMesh).NodeElts[node][0] != 2)
+	    ut_error_reportbug ();
+	}
+      }
+
+      for (j = 2; j <= (*pMesh).Elsets[i][0]; j++)
+      {
+	neut_mesh_elt_neighelts (*pMesh, elts[j - 1], &nelts, &neltqty);
+
+	// for an open elset (general case), the neighbour must belong to
+	// the same elset and be different from the already registered
+	// element (j - 2).
+	if (loopelset == 0)
+	{
+	  for (k = 0; k < neltqty; k++)
+	    if (((*pMesh).EltElset[nelts[k]] == i)
+		  && (nelts[k] != elts[j - 2]))
+	    {
+	      elts[j] = nelts[k];
+	      break;
+	    }
+	}
+	// for a loop elset, the neighbour must share the second node of
+	// the previous element.
+	else
+	{
+	  for (k = 0; k < neltqty; k++)
+	  {
+	    if (ut_array_1d_int_eltpos ((*pMesh).EltNodes[nelts[k]], 2,
+		  (*pMesh).EltNodes[elts[j - 1]][1]) != -1)
+	    {
+	      elts[j] = nelts[k];
+	      break;
+	    }
+	  }
+	}
+
+	if (elts[j] == 0)
+	  ut_error_reportbug ();
+
+	// reversing elt nodes if necessary
+	if ((*pMesh).EltNodes[elts[j]][0] != (*pMesh).EltNodes[elts[j - 1]][1])
+	{
+	  neut_mesh_elt_reversenodes (pMesh, elts[j]);
+	  if ((*pMesh).EltNodes[elts[j]][0]
+	   != (*pMesh).EltNodes[elts[j - 1]][1])
+	    ut_error_reportbug ();
+	}
+      }
+
+      // recording new element sequence
+      ut_array_1d_int_memcpy ((*pMesh).Elsets[i] + 1, (*pMesh).Elsets[i][0], elts + 1);
+
+      ut_free_1d_int (elts);
+    }
   }
+
+  ut_free_1d_int (nelts);
 
   return;
 }
@@ -656,91 +765,103 @@ neut_mesh_cmp (struct NODES N1, struct MESH M1, struct NODES N2, struct MESH M2)
   return res;
 }
 
+// Turn a quad mesh into a tri mesh by  element subdivision
 void
 neut_mesh_quad_tri (struct NODES Nodes, struct MESH Mesh, struct MESH* pTMesh)
 {
   int i, j, k, elt;
-  
+  int** nodepos = NULL;
+  int eltnodeqty = -1;
+  int triqty = -1;
+  // `triqty' is the number of tet/tri elements for an hex/quad element.
+
   if (strcmp (Mesh.EltType, "quad") != 0)
     ut_error_reportbug ();
 
-  if (Mesh.Dimension != 3)
-    ut_error_reportbug ();
-
   // Vertices of the tets describing the cube elt
-  int** nodepos = ut_alloc_2d_int (6, 4);
+  if (Mesh.Dimension == 3)
+  {
+    triqty = 6;
+    eltnodeqty = 4;
+    nodepos = ut_alloc_2d_int (triqty, eltnodeqty);
 
-  nodepos[0][0] = 0;
-  nodepos[0][1] = 1;
-  nodepos[0][2] = 2;
-  nodepos[0][3] = 6;
+    nodepos[0][0] = 0;
+    nodepos[0][1] = 1;
+    nodepos[0][2] = 2;
+    nodepos[0][3] = 6;
 
-  nodepos[1][0] = 0;
-  nodepos[1][1] = 3;
-  nodepos[1][2] = 2;
-  nodepos[1][3] = 6;
+    nodepos[1][0] = 0;
+    nodepos[1][1] = 3;
+    nodepos[1][2] = 2;
+    nodepos[1][3] = 6;
 
-  nodepos[2][0] = 0;
-  nodepos[2][1] = 6;
-  nodepos[2][2] = 3;
-  nodepos[2][3] = 7;
+    nodepos[2][0] = 0;
+    nodepos[2][1] = 6;
+    nodepos[2][2] = 3;
+    nodepos[2][3] = 7;
 
-  nodepos[3][0] = 0;
-  nodepos[3][1] = 6;
-  nodepos[3][2] = 4;
-  nodepos[3][3] = 7;
+    nodepos[3][0] = 0;
+    nodepos[3][1] = 6;
+    nodepos[3][2] = 4;
+    nodepos[3][3] = 7;
 
-  nodepos[4][0] = 0;
-  nodepos[4][1] = 4;
-  nodepos[4][2] = 5;
-  nodepos[4][3] = 6;
+    nodepos[4][0] = 0;
+    nodepos[4][1] = 4;
+    nodepos[4][2] = 5;
+    nodepos[4][3] = 6;
 
-  nodepos[5][0] = 0;
-  nodepos[5][1] = 5;
-  nodepos[5][2] = 1;
-  nodepos[5][3] = 6;
+    nodepos[5][0] = 0;
+    nodepos[5][1] = 5;
+    nodepos[5][2] = 1;
+    nodepos[5][3] = 6;
+  }
+  else if (Mesh.Dimension == 2)
+  {
+    triqty = 2;
+    eltnodeqty = 3;
+    nodepos = ut_alloc_2d_int (triqty, eltnodeqty);
+
+    nodepos[0][0] = 0;
+    nodepos[0][1] = 1;
+    nodepos[0][2] = 2;
+
+    nodepos[1][0] = 0;
+    nodepos[1][1] = 2;
+    nodepos[1][2] = 3;
+  }
+  else
+    ut_error_reportbug ();
 
   // General data
   (*pTMesh).EltType = ut_alloc_1d_char (4);
   strcpy ((*pTMesh).EltType, "tri");
-  (*pTMesh).Dimension = 3;
+  (*pTMesh).Dimension = Mesh.Dimension;
   (*pTMesh).EltOrder = 1;
-  
+
   (*pTMesh).EltQty = 0;
-  (*pTMesh).EltNodes = ut_alloc_2d_int (Mesh.EltQty * 6 + 1, 3);
+  (*pTMesh).EltNodes = ut_alloc_2d_int (Mesh.EltQty * triqty + 1, eltnodeqty);
 
   // Elt data
   if (Mesh.EltElset != NULL)
-    (*pTMesh).EltElset = ut_alloc_1d_int (Mesh.EltQty * 6 + 1);
+    (*pTMesh).EltElset = ut_alloc_1d_int (Mesh.EltQty * triqty + 1);
 
   for (i = 1; i <= Mesh.EltQty; i++)
-    for (j = 0; j < 6; j++)
+    for (j = 0; j < triqty; j++)
     {
       elt = ++((*pTMesh).EltQty);
 
-      for (k = 0; k < 4; k++)
+      for (k = 0; k < eltnodeqty; k++)
 	(*pTMesh).EltNodes[elt][k] = Mesh.EltNodes[i][nodepos[j][k]];
 
       if (Mesh.EltElset != NULL)
 	(*pTMesh).EltElset[elt] = Mesh.EltElset[i];
     }
 
-  // Elsets
-  (*pTMesh).ElsetQty = Mesh.ElsetQty;
-  (*pTMesh).Elsets = ut_alloc_2d_int ((*pTMesh).ElsetQty + 1, 1);
-  for (i = 1; i <= (*pTMesh).ElsetQty; i++)
-  {
-    (*pTMesh).Elsets[i][0] = 6 * Mesh.Elsets[i][0];
+  neut_mesh_init_elsets (pTMesh);
 
-    for (j = 1; j <= Mesh.Elsets[i][0]; j++)
-      for (k = 0; k < 6; k++)
-	(*pTMesh).Elsets[i][++((*pTMesh).Elsets[i][0])] = Mesh.Elsets[i][j];
-  }
-
-  // NodeElts
   neut_mesh_init_nodeelts (pTMesh, Nodes.NodeQty);
 
-  ut_free_2d_int (nodepos, 6);
+  ut_free_2d_int (nodepos, triqty);
 
   return;
 }
@@ -1061,43 +1182,52 @@ neut_mesh_elset_addelt (struct MESH *pMesh, int elset_nb, int elt)
   return;
 }
 
-void
-neut_mesh_elt_reversenodes (struct MESH *pMesh, int elt)
-{
-  // implemented for 2D only.  The 1st and 2nd order nodes are to be
-  // considered separetely for reversing.
-  
-  if ((*pMesh).Dimension != 2)
-    abort ();
 
-  if (! strcmp ((*pMesh).EltType, "tri"))
+void
+neut_mesh_elt_reversenodes (struct MESH *pMesh, int eltnb)
+{
+  // implemented for 1D and 2D only.
+
+  // For 2D, the 1st and 2nd order nodes are to be considered separetely
+  // for reversing.
+  if ((*pMesh).Dimension == 1)
   {
-    if ((*pMesh).EltOrder == 1)
-      ut_array_1d_int_reverseelts ((*pMesh).EltNodes[elt] + 1, 2);
-    else if ((*pMesh).EltOrder == 2)
+    ut_array_1d_int_reverseelts ((*pMesh).EltNodes[eltnb], 2);
+  }
+  else if ((*pMesh).Dimension == 2)
+  {
+    if (! strcmp ((*pMesh).EltType, "tri"))
     {
-      ut_array_1d_int_reverseelts ((*pMesh).EltNodes[elt] + 1, 2);
-      ut_array_1d_int_reverseelts ((*pMesh).EltNodes[elt] + 3, 3);
+      if ((*pMesh).EltOrder == 1)
+	ut_array_1d_int_reverseelts ((*pMesh).EltNodes[eltnb] + 1, 2);
+      else if ((*pMesh).EltOrder == 2)
+      {
+	ut_array_1d_int_reverseelts ((*pMesh).EltNodes[eltnb] + 1, 2);
+	ut_array_1d_int_reverseelts ((*pMesh).EltNodes[eltnb] + 3, 3);
+      }
+      else
+	abort ();
+    }
+    else if (! strcmp ((*pMesh).EltType, "quad"))
+    {
+      if ((*pMesh).EltOrder == 1)
+	ut_array_1d_int_reverseelts ((*pMesh).EltNodes[eltnb] + 1, 3);
+      else if ((*pMesh).EltOrder == 2)
+      {
+	ut_array_1d_int_reverseelts ((*pMesh).EltNodes[eltnb] + 1, 3);
+	ut_array_1d_int_reverseelts ((*pMesh).EltNodes[eltnb] + 4, 4);
+      }
+      else
+	abort ();
     }
     else
-      abort ();
+      ut_error_reportbug ();
   }
-  else if (! strcmp ((*pMesh).EltType, "quad"))
-  {
-    if ((*pMesh).EltOrder == 1)
-      ut_array_1d_int_reverseelts ((*pMesh).EltNodes[elt] + 1, 3);
-    else if ((*pMesh).EltOrder == 2)
-    {
-      ut_array_1d_int_reverseelts ((*pMesh).EltNodes[elt] + 1, 3);
-      ut_array_1d_int_reverseelts ((*pMesh).EltNodes[elt] + 4, 4);
-    }
-    else
-      abort ();
-  }
+  else
+    abort ();
 
   return;
 }
-
 void
 neut_mesh_elts_switch_pair (struct MESH *pMesh, int n1, int n2)
 {

@@ -171,7 +171,7 @@ extern void neut_mesh_veredge (struct MESH Mesh0D, struct MESH Mesh1D,
 ///
 /// This function works for 1D, 2D and 3D input meshes.
 ///
-extern void neut_mesh_elt_boundmesh (struct MESH Mesh, int elt, struct MESH *pBMesh);
+extern void neut_mesh_elt_boundmesh (struct NODES Nodes, struct MESH Mesh, int elt, struct MESH *pBMesh);
 
 /// \brief Get a 2D mesh from a 3D mesh. 
 ///

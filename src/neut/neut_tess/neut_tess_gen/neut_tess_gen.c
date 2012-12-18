@@ -249,7 +249,7 @@ neut_tess_poly_face_ori (struct TESS Tess, int poly, int face, int* pfaceori)
   pos = 1 + ut_array_1d_int_eltpos (Tess.PolyFaceNb[poly] + 1,
 				    Tess.PolyFaceQty[poly], face);
   if (pos == 0)
-    (*pfaceori) = -1;
+    (*pfaceori) = 0;
   else
     (*pfaceori) = Tess.PolyFaceOri[poly][pos];
 

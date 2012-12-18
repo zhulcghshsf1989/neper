@@ -83,6 +83,7 @@ nem_vox_mesh_hex (struct IN In, struct TESSPARA TessPara, struct VOX Vox,
                   struct NODES* pNodes, struct MESH* pMesh0D, struct
 		  MESH* pMesh1D, struct MESH* pMesh2D, struct MESH* pMesh3D,
 		  struct NSET* pNSet2D)
+
 {
   int i, j, k, elt;
   struct VOX Vox2;
@@ -153,7 +154,8 @@ nem_vox_mesh_hex (struct IN In, struct TESSPARA TessPara, struct VOX Vox,
   if (In.meshpoly != NULL)
     nem_meshing_hex_meshpoly (In.meshpoly, Vox, pMesh3D, pNodes, pNSet2D);
 
-  nem_reconmesh (In.outdim, pNodes, pMesh0D, pMesh1D, pMesh2D, pMesh3D, &Tess);
+  nem_reconmesh (In.outdim, pNodes, pMesh0D, pMesh1D, pMesh2D, pMesh3D,
+      NULL);
 
   ut_free_1d_int (msize);
   ut_free_1d (scale);

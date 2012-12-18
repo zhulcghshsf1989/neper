@@ -22,6 +22,9 @@ extern void nem_nsets_1d_tess_hex (struct TESS Tess, struct NSET NSet2D, struct 
 extern void nem_nsets_0d_tess_hex (struct TESS Tess, struct NSET NSet2D, struct NSET  NSet1D,
                                   struct NSET* pNSet0D);
 
+extern void nem_nsets_1d_names (struct TESS Tess, int id, struct NSET NSet2D, struct NSET* pNSet1D);
+extern void nem_nsets_0d_names (struct TESS Tess, int id, struct NSET NSet2D, struct NSET* pNSet0D);
+
 extern void nem_nsets_1d_hex (struct NSET NSet2D, struct NSET* pNSet1D);
 extern void nem_nsets_0d_hex (struct NSET NSet1D, struct NSET* pNSet0D);
 extern void nem_nsets_2dbody_hex (struct NSET NSet1D, struct NSET* pNSet2D);

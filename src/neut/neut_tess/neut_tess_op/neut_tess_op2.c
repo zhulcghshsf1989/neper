@@ -113,12 +113,12 @@ neut_tess_init_domain_facelabel (struct TESS* pTess)
       (*pTess).DomFaceLabel = ut_alloc_2d_char (7, 3);
 
       double** n = ut_alloc_2d (6, 3);
-      n[0][0] =  1;
-      n[1][0] = -1;
-      n[2][1] =  1;
-      n[3][1] = -1;
-      n[4][2] =  1;
-      n[5][2] = -1;
+      n[0][0] = -1;
+      n[1][0] =  1;
+      n[2][1] = -1;
+      n[3][1] =  1;
+      n[4][2] = -1;
+      n[5][2] =  1;
       char** label = ut_alloc_2d_char (6, 3);
       strcpy (label[0], "x0");
       strcpy (label[1], "x1");
@@ -132,7 +132,7 @@ neut_tess_init_domain_facelabel (struct TESS* pTess)
       for (i = 1; i <= 6; i++)
       {
 	for (j = 0; j < 6; j++)
-	  dist[j] = ut_space_dist (n[j], (*pTess).DomFaceEq[i] + 1);
+	  dist[j] = ut_vector_angle (n[j], (*pTess).DomFaceEq[i] + 1);
 
 	id = ut_array_1d_min_index (dist, 6);
 	strcpy ((*pTess).DomFaceLabel[i], label[id]);
@@ -145,8 +145,9 @@ neut_tess_init_domain_facelabel (struct TESS* pTess)
 
     else
     {
-
-
+      (*pTess).DomFaceLabel = ut_alloc_2d_char ((*pTess).DomFaceQty + 1, 10);
+      for (i = 1; i <= (*pTess).DomFaceQty; i++)
+	sprintf ((*pTess).DomFaceLabel[i], "f%d\n", i);
     }
   }
 

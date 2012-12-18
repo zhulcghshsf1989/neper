@@ -148,7 +148,7 @@ neut_tess_free (struct TESS* pTess)
 }
 
 
-/* Deformation of the tessellation.
+/* Deformation of the geoellation.
  */
 void
 neut_tess_scale (struct TESS *pTess, double vx, double vy, double vz)
@@ -658,7 +658,7 @@ neut_tess_init_polybody (struct TESS* pTess)
 void
 neut_tess_init_domain (struct TESS* pTess)
 {
-  int i, j, k, ver, domver, domedge, face;
+  int i, j, k, ver, domver, domedge, face, poly, faceori;
   int*  domface_edgeqty = NULL;
   int** domface_edges   = NULL;
   int*  domedge_verqty = NULL;
@@ -675,7 +675,10 @@ neut_tess_init_domain (struct TESS* pTess)
   for (i = 1; i <= (*pTess).DomFaceQty; i++)
   {
     face = (*pTess).DomTessFaceNb[i][1];
+    poly = ut_array_1d_int_max ((*pTess).FacePoly[face], 2);
+    neut_tess_poly_face_ori (*pTess, poly, face, &faceori);
     ut_array_1d_memcpy ((*pTess).DomFaceEq[i], 4, (*pTess).FaceEq[face]);
+    ut_array_1d_scale ((*pTess).DomFaceEq[i], 4, faceori);
   }
 
   // Init DomEdgeQty, DomEdgeFaceNb, DomTessEdgeQty, DomTessEdgeNb.

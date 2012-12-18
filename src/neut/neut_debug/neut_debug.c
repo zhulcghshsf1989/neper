@@ -37,6 +37,7 @@ neut_debug_mesh (FILE* file, struct MESH Mesh)
   fprintf (file, "Mesh:\n");
   fprintf (file, "Dimension = %d\n", Mesh.Dimension);
   fprintf (file, "EltOrder = %d\n", Mesh.EltOrder);
+  fprintf (file, "EltType = %s\n", Mesh.EltType);
   fprintf (file, "EltQty = %d\n", Mesh.EltQty);
   if (Mesh.EltQty > 0)
   {
@@ -44,7 +45,8 @@ neut_debug_mesh (FILE* file, struct MESH Mesh)
     ut_array_2d_int_fprintf (file, Mesh.EltNodes + 1, Mesh.EltQty, eltnodeqty, "%d");
     if (Mesh.EltElset != NULL)
       fprintf (file, "EltElset = \n");
-    ut_array_1d_int_fprintf (file, Mesh.EltElset + 1, Mesh.EltQty, "%d\n");
+    for (i = 1; i <= Mesh.EltQty; i++)
+      fprintf (stdout, "%d\n", Mesh.EltElset[i]);
     fprintf (file, "ElsetQty = %d\n", Mesh.ElsetQty);
     fprintf (file, "Elsets = (quantity then ids of elements)\n");
     for (i = 1; i <= Mesh.ElsetQty; i++)

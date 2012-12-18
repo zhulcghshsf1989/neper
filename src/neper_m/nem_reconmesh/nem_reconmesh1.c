@@ -14,14 +14,13 @@ nem_reconmesh (char* dim, struct NODES* pNodes, struct MESH *pMesh0D,
 
   int recon_dim;
   // Disabling tess reconstruction is pTess == NULL
-  int reconst_tess // = (pTess == NULL) ? 0 : 1;
-    = (! strcmp ((*pMesh3D).EltType, "quad") || pTess == NULL) ? 0 : 1;
+  int reconst_tess = (pTess == NULL) ? 0 : 1;
+    // = (! strcmp ((*pMesh3D).EltType, "quad") || pTess == NULL) ? 0 : 1;
 
-  // if pTess is NULL, working with pTessb. 
-  if (! reconst_tess)
-    neut_tess_set_zero (pTessb);
-  else
+  if (reconst_tess == 1)
     pTessb = pTess;
+  else
+    neut_tess_set_zero (pTessb);
 
   if (! reconst_tess || (*pTessb).DomType == NULL || strlen ((*pTessb).DomType) == 0)
   {

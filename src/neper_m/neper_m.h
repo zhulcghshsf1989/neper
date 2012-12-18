@@ -17,6 +17,7 @@
 
 #include"nem_input/nem_input0.h"
 #include"nem_init/nem_init0.h"
+#include"nem_vox_recontopo/nem_vox_recontopo0.h"
 #include"nem_meshing/nem_meshing0.h"
 #include"nem_meshing_hex/nem_meshing_hex0.h"
 #include"nem_cleaning/nem_cleaning0.h"

@@ -14,6 +14,7 @@ add_library (neper_m
 ./nem_stat/nem_stat1.c
 ./nem_stat/nem_stat2.c
 ./nem_readmesh/nem_readmesh1.c
+./nem_vox_recontopo/nem_vox_recontopo1.c
 ./nem_meshing/nem_meshing1.c
 ./nem_meshing/nem_meshing2.c
 ./nem_meshing/nem_meshing3.c
@@ -50,6 +51,7 @@ add_library (neper_m
 ./nem_writemesh/nem_writemesh1.c
 ./nem_nsets/nem_nsets1.c
 ./nem_nsets/nem_nsets2.c
+./nem_nsets/nem_nsets3.c
 ./nem_meshing_hex/nem_meshing_hex1.c
 ./nem_meshing_hex/nem_meshing_hex2.c
 ./neper_m.c

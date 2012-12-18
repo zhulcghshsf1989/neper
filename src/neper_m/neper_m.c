@@ -83,20 +83,20 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   // ### COMPUTING OUTPUT MESH #########################################
 
   // Meshing ###
+  if (In.mesh && Vox.PolyQty > 0 && ! strcmp (In.elttype, "tet"))
+  {
+    ut_print_message (0, 1, "Reconstructing topology ...\n");
+    nem_vox_recontopo (Vox, &Tess, &RNodes, &RMesh1D, &RMesh2D, &NSet2D);
+  }
+
+  // Meshing ###
   if (In.mesh || In.remesh)
   {
     ut_print_message (0, 1, "Meshing ...");
     if (! strcmp (In.elttype, "tet"))
     {
-      if (In.tess != NULL || In.remesh)
-	nem_meshing (In, TessPara, Tess, RNodes, RMesh1D, RMesh2D, &Nodes,
-	             &Mesh0D, &Mesh1D, &Mesh2D, &Mesh3D);
-      else if (In.vox != NULL)
-      {
-	printf ("\n");
-	ut_print_message (2, 2, "Voxel data cannot be meshed into tets.\n");
-	abort ();
-      }
+      nem_meshing (In, TessPara, Tess, RNodes, RMesh1D, RMesh2D, &Nodes,
+		   &Mesh0D, &Mesh1D, &Mesh2D, &Mesh3D);
     }
     else if (! strcmp (In.elttype, "hex"))
     {

@@ -2,14 +2,13 @@
 @chapter Tessellation Meshing: neper -M
 
 @MM{} is the module for meshing tessellations and voxel data.  It is
-possible to generate a mesh into tetrahedral elements (for
-tessellations) or a non-conforming mesh into regular hexahedral
-elements.  Meshing into tetrahedral elements is carried out so that
-the elements have sizes as close as possible to a desired
-target value, and show high quality, that is, equilateral shapes.  The
-input file is a tessellation file (@file{.tess})
-or a voxel file (@file{.vox}), as provided by @mT{}.
-The output mesh can be written in several formats.
+possible to generate a mesh into tetrahedral elements or a
+(non-conforming) mesh into regular hexahedral elements.  Meshing into
+tetrahedral elements is carried out so that the elements have sizes as
+close as possible to a desired target value, and show high quality, that
+is, equilateral shapes.  The input file is a tessellation file
+(@file{.tess}) or a voxel file (@file{.vox}), as provided by @mT{}.  The
+output mesh can be written in several formats.
 
 Several options are available for specifying the desired mesh properties.
 The target element size of the mesh can be specified through the

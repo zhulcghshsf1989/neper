@@ -43,11 +43,8 @@ nem_nsets_1d_tess (struct TESS Tess, struct MESH Mesh1D, struct NSET NSet2D, str
 
   for (i = 1; i <= Tess.DomEdgeQty; i++)
   {
-    int* face = Tess.DomEdgeFaceNb[i];
-    int length = strlen (NSet2D.names[face[0]]) + strlen (NSet2D.names[face[1]]) + 1;
-    (*pNSet1D).names[i] = ut_alloc_1d_char (length);
-    sprintf ((*pNSet1D).names[i], "%s%s", NSet2D.names[face[0]], NSet2D.names[face[1]]);
-    
+    nem_nsets_1d_names (Tess, i, NSet2D, pNSet1D);
+
     neut_mesh_elsets_nodes (Mesh1D, Tess.DomTessEdgeNb[i] + 1, Tess.DomTessEdgeQty[i],
 			    &((*pNSet1D).nodes[i]), &((*pNSet1D).nodeqty[i]));
   }
@@ -58,7 +55,7 @@ nem_nsets_1d_tess (struct TESS Tess, struct MESH Mesh1D, struct NSET NSet2D, str
 void
 nem_nsets_0d_tess (struct TESS Tess, struct MESH Mesh0D, struct NSET NSet2D, struct NSET* pNSet0D)
 {
-  int i, j;
+  int i;
 
   // Vertices
   (*pNSet0D).qty = Tess.DomVerQty;
@@ -68,23 +65,7 @@ nem_nsets_0d_tess (struct TESS Tess, struct MESH Mesh0D, struct NSET NSet2D, str
 
   for (i = 1; i <= Tess.DomVerQty; i++)
   {
-    int qty;
-    int* face = NULL;
-    neut_tess_domver_domface (Tess, i, &face, &qty);
-    ut_array_1d_int_sort (face, qty);
-
-    int length = strlen (NSet2D.names[face[0]]) + 1;
-    (*pNSet0D).names[i] = ut_alloc_1d_char (length);
-    strcpy ((*pNSet0D).names[i], NSet2D.names[face[0]]);
-
-    for (j = 1; j < qty; j++)
-    {
-      length += strlen (NSet2D.names[face[j]]);
-      (*pNSet0D).names[i] = ut_realloc_1d_char ((*pNSet0D).names[i], length);
-      (*pNSet0D).names[i] = strcat ((*pNSet0D).names[i], NSet2D.names[face[j]]);
-    }
-
-    ut_free_1d_int (face);
+    nem_nsets_0d_names (Tess, i, NSet2D, pNSet0D);
     
     neut_mesh_elset_nodes (Mesh0D, Tess.DomTessVerNb[i],
 			   &((*pNSet0D).nodes[i]), &((*pNSet0D).nodeqty[i]));
@@ -172,7 +153,7 @@ nem_nsets_1dbody_tess (struct TESS Tess, struct NSET NSet0D, struct NSET* pNSet1
 void
 nem_nsets_1d_tess_hex (struct TESS Tess, struct NSET NSet2D, struct NSET* pNSet1D)
 {
-  int i, f1, f2;
+  int i;
 
   (*pNSet1D).qty     = Tess.DomEdgeQty;
   (*pNSet1D).names   = ut_alloc_1d_pchar ((*pNSet1D).qty + 1);
@@ -180,13 +161,9 @@ nem_nsets_1d_tess_hex (struct TESS Tess, struct NSET NSet2D, struct NSET* pNSet1
   (*pNSet1D).nodes   = ut_alloc_1d_pint  ((*pNSet1D).qty + 1);
 
   for (i = 1; i <= Tess.DomEdgeQty; i++)
-  {
-    f1 = Tess.DomEdgeFaceNb[i][0];
-    f2 = Tess.DomEdgeFaceNb[i][1];
-
-    neut_nsets_inter (NSet2D, f1, f2, &((*pNSet1D).names[i]),
-		      &((*pNSet1D).nodes[i]), &((*pNSet1D).nodeqty[i]));
-  }
+    neut_nsets_inter (NSet2D, Tess.DomEdgeFaceNb[i][0], Tess.DomEdgeFaceNb[i][1],
+		      &((*pNSet1D).names[i]), &((*pNSet1D).nodes[i]),
+		      &((*pNSet1D).nodeqty[i]));
 
   return;
 }
@@ -195,10 +172,7 @@ void
 nem_nsets_0d_tess_hex (struct TESS Tess, struct NSET NSet2D, struct NSET NSet1D,
                       struct NSET* pNSet0D)
 {
-  int i, j, e1, e2;
-  char** fnames  = NULL;
-  int*   domface = NULL;
-  int domfaceqty;
+  int i;
 
   (*pNSet0D).qty     = Tess.DomVerQty;
   (*pNSet0D).names   = ut_alloc_1d_pchar ((*pNSet0D).qty + 1);
@@ -207,25 +181,10 @@ nem_nsets_0d_tess_hex (struct TESS Tess, struct NSET NSet2D, struct NSET NSet1D,
 
   for (i = 1; i <= Tess.DomVerQty; i++)
   {
-    e1 = Tess.DomVerEdgeNb[i][0];
-    e2 = Tess.DomVerEdgeNb[i][1];
+    nem_nsets_0d_names (Tess, i, NSet2D, pNSet0D);
 
-    neut_nsets_inter (NSet1D, e1, e2, NULL,
-		      &((*pNSet0D).nodes[i]), &((*pNSet0D).nodeqty[i]));
-    neut_tess_domver_domface (Tess, i, &domface, &domfaceqty);
-
-    fnames = ut_alloc_1d_pchar (domfaceqty);
-    for (j = 0; j < domfaceqty; j++) 
-    {
-      fnames[j] = ut_alloc_1d_char (strlen (NSet2D.names[domface[j]]) + 1);
-      strcpy (fnames[j], NSet2D.names[domface[j]]);
-    }
-    (*pNSet0D).names[i] = ut_string_array_paste_cmp (fnames, domfaceqty);
-
-    ut_free_1d_int  (domface);
-    domface = NULL;
-    ut_free_2d_char (fnames, domfaceqty);
-    fnames = NULL;
+    neut_nsets_inter (NSet1D, Tess.DomVerEdgeNb[i][0], Tess.DomVerEdgeNb[i][1],
+	              NULL, &((*pNSet0D).nodes[i]), &((*pNSet0D).nodeqty[i]));
   }
 
   return;
