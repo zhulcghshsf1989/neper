@@ -289,3 +289,8 @@ neut_nodes_switch (struct NODES *pNodes, int* node_nbs)
   return;
 }
 
+double
+neut_nodes_dist_pair (struct NODES Nodes, int n1, int n2)
+{
+  return ut_space_dist (Nodes.NodeCoo[n1], Nodes.NodeCoo[n2]);
+}

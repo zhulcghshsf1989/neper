@@ -40,6 +40,7 @@ nem_input_options_default (struct IN *pIn, struct GEOPARA *pGeoPara)
   (*pIn).remesh = 0;
 
   (*pIn).singnodedup = 0;
+  (*pIn).dupnodemerge = -1;
   
   /* Options for the meshing ------------------------------- */
   (*pGeoPara).cltype = 1; // O: cl, 1: rcl, 2: cl3, 3: rcl3 
@@ -145,6 +146,7 @@ nem_input_options_set (struct IN *pIn, struct GEOPARA *pGeoPara,
   sprintf (ArgList[++ArgQty], "-mesh3doptidisexpr");
 
   sprintf (ArgList[++ArgQty], "-singnodedup");
+  sprintf (ArgList[++ArgQty], "-dupnodemerge");
   
   // development options
   sprintf (ArgList[++ArgQty], "-meshface");
@@ -343,6 +345,8 @@ nem_input_options_set (struct IN *pIn, struct GEOPARA *pGeoPara,
       }
       else if (strcmp (Arg, "-singnodedup") == 0 && i < argc - 1)
 	(*pIn).singnodedup = ut_arg_nextasint (argv, &i, Arg, 0, 1);
+      else if (strcmp (Arg, "-dupnodemerge") == 0 && i < argc - 1)
+	(*pIn).dupnodemerge = ut_arg_nextasreal (argv, &i, Arg, 0, DBL_MAX);
       
       // development options 
       else if (strcmp (Arg, "-mesh3dreport") == 0 && i < argc - 1)

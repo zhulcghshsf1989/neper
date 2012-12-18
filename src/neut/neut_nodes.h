@@ -83,4 +83,10 @@ extern void neut_nodes_bbox (struct NODES Nodes, double *bbox);
 ///
 extern int neut_nodes_point_closestnode (struct NODES Nodes, double* coo, int* pnode);
 
+/// \brief Get the distance between two nodes.
+///
+///
+///
+extern double neut_nodes_dist_pair (struct NODES Nodes, int n1, int n2);
+
 #endif

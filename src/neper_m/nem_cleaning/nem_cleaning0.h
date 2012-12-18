@@ -4,3 +4,7 @@
 
 extern void
 nem_singnodedup (struct MESH* pMesh, struct NODES* pNodes, int*** pFoDNodes);
+
+extern void nem_dupnodemerge (struct NODES* pNodes, struct MESH* pMesh0D, struct MESH* pMesh1D,
+		  struct MESH* pMesh2D, struct MESH* pMesh3D, double
+		  eps);

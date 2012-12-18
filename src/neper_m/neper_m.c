@@ -125,6 +125,13 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
     nem_singnodedup (&Mesh3D, &Nodes, NULL);
   }
 
+  if (In.dupnodemerge > 0)
+  {
+    ut_print_message (0, 1, "Merging duplicated nodes ... ");
+    nem_dupnodemerge (&Nodes, &Mesh0D, &Mesh1D, &Mesh2D, &Mesh3D,
+	In.dupnodemerge);
+  }
+
   // Reconstructing mesh if necessary (2D, 1D, 0D from 3D) ###
   if ((ut_string_inlist (In.outdim, ',', "2") && Mesh2D.EltQty == 0)
    || (ut_string_inlist (In.outdim, ',', "1") && Mesh1D.EltQty == 0)

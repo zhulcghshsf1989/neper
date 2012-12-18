@@ -37,6 +37,7 @@ struct IN
   double mesh3dclconv;
 
   int singnodedup;
+  double dupnodemerge;
 
   char *nset;		/* list of nsets (sep by ',') if nset = 0 */
   char* faset;          /* surfs to print */

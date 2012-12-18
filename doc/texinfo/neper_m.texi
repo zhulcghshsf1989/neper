@@ -75,10 +75,10 @@ mesh containing poor-quality elements (options starting by
 @option{-remesh}).  The variables defined on the old mesh can be
 transported on the new mesh (options starting by @option{-transport}).
 
-Mesh cleaning options enable to remove isolated elements or to duplicate
-nodes subjected to singularity behaviour (options @option{-clean} and
-@option{-singnodedup}). This is especially useful for meshing of voxel
-data into hexahedral elements.
+Mesh cleaning options enable to remove isolated elements or duplicate
+nodes, or to duplicate nodes subjected to singularity behaviour (options
+@option{-clean}, @option{-dupnodemerge} and @option{-singnodedup}). This
+is especially useful for meshing of voxel data into hexahedral elements.
 
 Mesh partitioning capabilities enable to divide the mesh nodes and
 elements into several sets while minimizing the interfaces between
@@ -396,6 +396,13 @@ are not connected to the main skeleton are removed.
 ,
 0 to 2,0}
 
+@optsec{-dupnodemerge,real,
+Merge duplicate nodes. Provide as argument the distance between nodes
+below which two nodes are merged. Note that Neper does not generate
+meshes with duplicate nodes@comma{} except using option @option{-singnodedup}.
+,
+0,any>0}
+
 @optsec{-singnodedup,logical,
 Duplicate nodes which are the subject of singularity.  Such a node
 belongs to several elements which share only a node or an
@@ -407,6 +414,7 @@ particular location shared by two bodies@comma{} but not enabling heat
 flux to operate at that location (since the surface is zero).
 When this option is enabled@comma{}
 such a node is duplicated@comma{} so that each body has its own node.
+Option @option{-dupnodemerge} enables to merge back duplicate nodes.
 ,
 0 or 1,0}
 

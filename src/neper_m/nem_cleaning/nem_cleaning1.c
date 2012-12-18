@@ -143,3 +143,46 @@ nem_singnodedup (struct MESH* pMesh, struct NODES* pNodes, int*** pFoDNodes)
   
   return;
 }
+
+void
+nem_dupnodemerge (struct NODES* pNodes, struct MESH* pMesh0D, struct MESH* pMesh1D,
+		  struct MESH* pMesh2D, struct MESH* pMesh3D, double eps)
+{
+  int i, j, qty;
+
+  int* old_new = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
+
+  for (i = 1; i <= (*pNodes).NodeQty; i++)
+    old_new[i] = i;
+
+  char* message = ut_alloc_1d_char (1000);
+  ut_print_progress (stdout, 0, 1, "%3.0f%%", message);
+
+  int testqty = 0;
+  int tottestqty = ((*pNodes).NodeQty * ((*pNodes).NodeQty - 1)) / 2;
+
+  qty = 0;
+  for (i = 1; i < (*pNodes).NodeQty; i++)
+  {
+    for (j = i + 1; j <= (*pNodes).NodeQty; j++)
+      if (neut_nodes_dist_pair (*pNodes, i, j) < eps)
+      {
+	old_new[j] = old_new[i];
+	qty++;
+      }
+
+    testqty += (*pNodes).NodeQty - i;
+
+    ut_print_progress (stdout, testqty, tottestqty, "%3.0f%%", message);
+  }
+
+  ut_print_message (0, 3, "%d %s removed.\n", qty, (qty <= 1) ? "node" : "nodes");
+
+  neut_mesh_switch (pMesh0D, old_new, NULL, NULL);
+  neut_mesh_switch (pMesh1D, old_new, NULL, NULL);
+  neut_mesh_switch (pMesh2D, old_new, NULL, NULL);
+  neut_mesh_switch (pMesh3D, old_new, NULL, NULL);
+  (*pNodes).NodeQty -= qty;
+
+  return;
+}
