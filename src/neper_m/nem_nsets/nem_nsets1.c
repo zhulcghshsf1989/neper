@@ -9,7 +9,7 @@ nem_nsets (struct IN In, struct TESS Tess, struct MESH Mesh0D, struct MESH Mesh1
            struct MESH Mesh2D, struct NSET* pNSet0D, struct NSET* pNSet1D,
 	   struct NSET* pNSet2D)
 {
-  if (In.nset == NULL || strlen (In.nset) == 0)
+  if (In.nset == NULL || strlen (In.nset) == 0 || ! strcmp (In.nset, "none"))
     return;
 
   if (! strcmp (In.elttype, "tet"))

@@ -486,7 +486,8 @@ Specify the node sets to provide@comma{} among:
 domain faces@comma{} edges and vertices@comma{}
 and @code{facebodies} and @code{edgebodies} for all face and edge
 bodies. To get all of them@comma{} provide @code{all}.
-To get the nset corresponding to individual entities@comma{}
+To get none of them@comma{} provide @code{none}.
+To get the nsets corresponding to individual entities@comma{}
 provide their labels. For a cuboidal domain@comma{} they are
 @code{[x-z][0@comma{}1]} for the
 domain faces@comma{} @code{[x-z][0@comma{}1][x-z][0@comma{}1]} for the
@@ -503,14 +504,16 @@ vertex labels are obtained from the face labels as for cuboidal domains.
 Append @samp{body} to a label to get only the body nodes of
 the set. Combine labels with commas.
 ,
-any, faces}
+see above, faces}
 
 @opt{-faset, char_string,
-Specify the domain surfaces to provide. Use @samp{faces} for all faces.
+Specify the domain surfaces to provide. Use @samp{faces} for all
+faces@comma{}.  To get the fasets corresponding to individual
+entities@comma{} provide their labels (see option @option{-faset}).
 Combine them with commas.
-@c @file{.surf} for fepx
+To get none of them@comma{} provide @code{none}.
 ,
-faces@comma{} [x-z][0@comma{}1] (for a cubic domain),none}
+see above,none}
 
 @subsection Post-Processing Options
 

@@ -13,7 +13,7 @@ nem_input_options_default (struct IN *pIn, struct TESSPARA *pTessPara)
   (*pIn).nset = ut_alloc_1d_char (1000);
   sprintf ((*pIn).nset, "faces");
   (*pIn).faset = ut_alloc_1d_char (100);
-  (*pIn).faset[0] = '\0';
+  strcpy ((*pIn).faset, "none");
 
   (*pIn).tess = NULL;
   (*pIn).vox = NULL;

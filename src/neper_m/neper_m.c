@@ -163,7 +163,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
 #endif
 
   // Searching node sets ###
-  if (strlen (In.nset) > 0 && Mesh3D.EltQty > 0)
+  if (strlen (In.nset) > 0 && strcmp (In.nset, "none") != 0 && Mesh3D.EltQty > 0)
   {
     ut_print_message (0, 2, "Searching nsets ...\n");
     nem_nsets (In, Tess, Mesh0D, Mesh1D, Mesh2D, &NSet0D, &NSet1D, &NSet2D);
