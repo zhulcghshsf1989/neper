@@ -148,12 +148,13 @@ void
 nem_dupnodemerge (struct NODES* pNodes, struct MESH* pMesh0D, struct MESH* pMesh1D,
 		  struct MESH* pMesh2D, struct MESH* pMesh3D, double eps)
 {
-  int i, j, qty;
+  int i, j;
 
-  int* old_new = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
+  int* slave_master = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
 
+  // Changing slaves to masters
   for (i = 1; i <= (*pNodes).NodeQty; i++)
-    old_new[i] = i;
+    slave_master[i] = i;
 
   char* message = ut_alloc_1d_char (1000);
   ut_print_progress (stdout, 0, 1, "%3.0f%%", message);
@@ -161,28 +162,48 @@ nem_dupnodemerge (struct NODES* pNodes, struct MESH* pMesh0D, struct MESH* pMesh
   int testqty = 0;
   int tottestqty = ((*pNodes).NodeQty * ((*pNodes).NodeQty - 1)) / 2;
 
-  qty = 0;
   for (i = 1; i < (*pNodes).NodeQty; i++)
   {
     for (j = i + 1; j <= (*pNodes).NodeQty; j++)
       if (neut_nodes_dist_pair (*pNodes, i, j) < eps)
-      {
-	old_new[j] = old_new[i];
-	qty++;
-      }
+	slave_master[j] = slave_master[i];
 
     testqty += (*pNodes).NodeQty - i;
 
     ut_print_progress (stdout, testqty, tottestqty, "%3.0f%%", message);
   }
 
-  ut_print_message (0, 3, "%d %s removed.\n", qty, (qty <= 1) ? "node" : "nodes");
+  neut_mesh_switch (pMesh0D, slave_master, NULL, NULL);
+  neut_mesh_switch (pMesh1D, slave_master, NULL, NULL);
+  neut_mesh_switch (pMesh2D, slave_master, NULL, NULL);
+  neut_mesh_switch (pMesh3D, slave_master, NULL, NULL);
 
-  neut_mesh_switch (pMesh0D, old_new, NULL, NULL);
-  neut_mesh_switch (pMesh1D, old_new, NULL, NULL);
-  neut_mesh_switch (pMesh2D, old_new, NULL, NULL);
-  neut_mesh_switch (pMesh3D, old_new, NULL, NULL);
-  (*pNodes).NodeQty -= qty;
+  // Removing useless nodes
+  int* node_nbs = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
+  int nodeqty = 0;
+  
+  for (i = 1; i <= (*pNodes).NodeQty; i++)
+    node_nbs[i] = (slave_master[i] == i) ? ++nodeqty : -1;
+
+  for (i = 1; i <= (*pNodes).NodeQty; i++)
+    if (node_nbs[i] != -1)
+      ut_array_1d_memcpy ((*pNodes).NodeCoo[node_nbs[i]], 3,
+	  (*pNodes).NodeCoo[i]);
+
+  neut_mesh_switch (pMesh0D, node_nbs, NULL, NULL);
+  neut_mesh_switch (pMesh1D, node_nbs, NULL, NULL);
+  neut_mesh_switch (pMesh2D, node_nbs, NULL, NULL);
+  neut_mesh_switch (pMesh3D, node_nbs, NULL, NULL);
+
+  ut_print_message (0, 3, "%d %s removed.\n",
+      (*pNodes).NodeQty - nodeqty,
+      ((*pNodes).NodeQty - nodeqty <= 1) ? "node" : "nodes");
+
+  (*pNodes).NodeQty = nodeqty;
+
+  ut_free_1d_char (message);
+  ut_free_1d_int (slave_master);
+  ut_free_1d_int (node_nbs);
 
   return;
 }
