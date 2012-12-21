@@ -5,7 +5,7 @@
 #include"nem_meshing_1D.h"
 
 void
-nem_meshing_1D (struct TESS Tess, struct TESSPARA TessPara,
+nem_meshing_1D (struct TESS Tess, struct MESHPARA MeshPara,
            struct NODES RNodes, struct MESH RMesh1D,
 	   int* edge_op,
 	   struct NODES* pNodes, struct MESH* pMesh1D)
@@ -35,10 +35,10 @@ nem_meshing_1D (struct TESS Tess, struct TESSPARA TessPara,
   {
     if (edge_op == NULL || edge_op[i] == 0)
     {
-      if (TessPara.dboundcl < 0)
+      if (MeshPara.dboundcl < 0)
       {
-	cl  = TessPara.cl;
-	pcl  = TessPara.pcl;
+	cl  = MeshPara.cl;
+	pcl  = MeshPara.pcl;
       }
       else 
       {
@@ -53,20 +53,20 @@ nem_meshing_1D (struct TESS Tess, struct TESSPARA TessPara,
 	vals[0] = neut_tess_edge_polybodylevelmax (Tess, Tess.PolyBody, i);
 	vals[1] = neut_tess_edge_polytruelevelmax (Tess, Tess.PolyTrue, i);
 
-	status = ut_math_eval (TessPara.dbound, var_qty, vars, vals, &dbound);
+	status = ut_math_eval (MeshPara.dbound, var_qty, vars, vals, &dbound);
 
 	if (status == -1)
 	  abort ();
 
 	if (dbound == 1)
 	{
-	  cl  = TessPara.dboundcl;
-	  pcl = TessPara.dboundpcl;
+	  cl  = MeshPara.dboundcl;
+	  pcl = MeshPara.dboundpcl;
 	}
 	else
 	{
-	  cl  = TessPara.cl;
-	  pcl = TessPara.pcl;
+	  cl  = MeshPara.cl;
+	  pcl = MeshPara.pcl;
 	}
 
 	ut_free_2d_char (vars, var_qty);

@@ -5,11 +5,11 @@
 #include"nem_meshing_3D.h"
 
 int
-nem_meshing_3D_poly_cl (struct TESSPARA TessPara, struct TESS Tess, int poly,
+nem_meshing_3D_poly_cl (struct MESHPARA MeshPara, struct TESS Tess, int poly,
                 double* pcl)
 {
-  if (TessPara.dboundcl < 0)
-    (*pcl)  = TessPara.cl;
+  if (MeshPara.dboundcl < 0)
+    (*pcl)  = MeshPara.cl;
   else 
   {
     int var_qty = 2;
@@ -23,15 +23,15 @@ nem_meshing_3D_poly_cl (struct TESSPARA TessPara, struct TESS Tess, int poly,
     vals[0] = Tess.PolyBody[poly];
     vals[1] = Tess.PolyTrue[poly];
 
-    status = ut_math_eval (TessPara.dbound, var_qty, vars, vals, &dbound);
+    status = ut_math_eval (MeshPara.dbound, var_qty, vars, vals, &dbound);
 
     if (status == -1)
       abort ();
 
     if (dbound == 1)
-	(*pcl)  = TessPara.dboundcl;
+	(*pcl)  = MeshPara.dboundcl;
     else
-	(*pcl)  = TessPara.cl;
+	(*pcl)  = MeshPara.cl;
 
     ut_free_2d_char (vars, var_qty);
     ut_free_1d (vals);

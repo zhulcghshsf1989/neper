@@ -5,7 +5,7 @@
 #include"nem_meshing_2D.h"
 
 void
-nem_meshing_2D (struct IN In, struct TESSPARA TessPara, struct TESS Tess,
+nem_meshing_2D (struct IN In, struct MESHPARA MeshPara, struct TESS Tess,
            double** face_proj, int* face_op, struct NODES RNodes,
 	   struct MESH RMesh2D, struct MESH Mesh1D,
 	   struct NODES *pNodes, struct MESH *pMesh2D)
@@ -139,7 +139,7 @@ nem_meshing_2D (struct IN In, struct TESSPARA TessPara, struct TESS Tess,
 	  rnd = (iter + 1) * 1.e-5; // mandatory
 
 	  status = nem_mesh_2d_gmsh (Tess, i, face_proj[i], *pNodes,
-	      Mesh1D, TessPara.cl, In.gmsh, algos[a][0], rnd, allowed_t,
+	      Mesh1D, MeshPara.cl, In.gmsh, algos[a][0], rnd, allowed_t,
 	      &N, &M, &acl, &elapsed_t);
 
 	  if (status == 0) // success

@@ -3,6 +3,7 @@
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_structs/neut_tesl_struct.h"
+#include "neut_structs/neut_reg_struct.h"
 #include "neut_structs/neut_elset_struct.h"
 #include "neut_structs/neut_mesh_struct.h"
 #include "neut_structs/neut_nodes_struct.h"
@@ -10,7 +11,7 @@
 #include "neut_structs/neut_vox_struct.h"
 #include "neut_structs/neut_part_struct.h"
 #include "neut_structs/neut_nset_struct.h"
-#include "neut_structs/neut_tesspara_struct.h"
+#include "neut_structs/neut_meshpara_struct.h"
 #include "neut_structs/neut_print_struct.h"
 #include "neut_structs/neut_data_struct.h"
 #include "neut_structs/neut_multim_struct.h"

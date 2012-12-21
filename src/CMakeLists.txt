@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 2.6)
 project(neper C)
 
-set (NEPER_VERSION_MAJOR 2)
-set (NEPER_VERSION_MINOR 0)
-set (NEPER_VERSION_PATCH 0)
-set (NEPER_VERSION \"2.0.0-devel2-46\ \")
+set (NEPER_VERSION_MAJOR )
+set (NEPER_VERSION_MINOR )
+set (NEPER_VERSION_PATCH )
+set (NEPER_VERSION \"\ \")
 set (NEPER_EMAIL \"neper-users@lists.sourceforge.net\")
 
 # should we use the optional libraries?

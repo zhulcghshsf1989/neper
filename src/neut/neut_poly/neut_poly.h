@@ -8,4 +8,3 @@
 #include <math.h>
 #include <string.h>
 #include "neut.h"
-#include "../../neper_t/Tesl/Tesl0.h"

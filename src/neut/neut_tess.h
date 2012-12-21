@@ -11,9 +11,9 @@
 #include "neut_tess/neut_tess_fprintf.h"
 #include "neut_tess/neut_tess_fscanf.h"
 #include "neut_tess/neut_tess_tess.h"
-#include "neut_tess/neut_tess_poly.h"
 #include "neut_tess/neut_tess_op.h"
 #include "neut_tess/neut_tess_test.h"
-#include "neut_tess/neut_tess_gen.h"
+#include "neut_tess/neut_tess_topo.h"
+#include "neut_tess/neut_tess_geom.h"
 
 #endif /* NEUT_TESS_H */

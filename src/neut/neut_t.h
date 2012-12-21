@@ -8,7 +8,9 @@
 #include "neper_config.h"
 #include "ut.h"
 
-#include "neut_structs.h"
+#include "neut_structs/neut_tesl_struct.h"
+#include "neut_structs/neut_tess_struct.h"
+#include "neut_structs/neut_reg_struct.h"
 #include "neut_tesl.h"
 #include "neut_tess.h"
 #include "neut_vox.h"

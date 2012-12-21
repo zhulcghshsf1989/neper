@@ -51,7 +51,7 @@ nem_init_remesh (char* mesh, char* tess, struct TESS* pTess, struct NODES* pRNod
 void
 nem_init_scaling (char* elttype, struct TESS* pTess, struct VOX* pVox, struct NODES* pRNodes,
     struct MESH RMesh0D, struct MESH RMesh1D, struct MESH RMesh2D,
-    struct MESH RMesh3D, struct TESSPARA* pTessPara)
+    struct MESH RMesh3D, struct MESHPARA* pMeshPara)
 {
   int i, polyqty;
   double* scale = NULL;
@@ -78,8 +78,8 @@ nem_init_scaling (char* elttype, struct TESS* pTess, struct VOX* pVox, struct NO
 
   scale = ut_alloc_1d (3);
 
-  if ((*pTessPara).cltype == 1 || (*pTessPara).cltype == 3
-   || ((*pTessPara).dboundrcl > 0 && (*pTessPara).dboundcl < 0))
+  if ((*pMeshPara).cltype == 1 || (*pMeshPara).cltype == 3
+   || ((*pMeshPara).dboundrcl > 0 && (*pMeshPara).dboundcl < 0))
   {
     if (input == 't')
       neut_tess_volume (*pTess, &vol);
@@ -100,19 +100,19 @@ nem_init_scaling (char* elttype, struct TESS* pTess, struct VOX* pVox, struct NO
 
   /* Calculation of cl */
   // cltype == 0: nothing to do
-  if ((*pTessPara).cltype == 1)
-    rcl2cl ((*pTessPara).rcl, vol, polyqty, elttype, &((*pTessPara).cl));
-  else if ((*pTessPara).cltype == 2)
+  if ((*pMeshPara).cltype == 1)
+    rcl2cl ((*pMeshPara).rcl, vol, polyqty, elttype, &((*pMeshPara).cl));
+  else if ((*pMeshPara).cltype == 2)
   {
-    if (ut_num_equal ((*pTessPara).cl3[0], (*pTessPara).cl3[1], 1e-12)
-     && ut_num_equal ((*pTessPara).cl3[1], (*pTessPara).cl3[2], 1e-12))
-      (*pTessPara).cl = (*pTessPara).cl3[1];
+    if (ut_num_equal ((*pMeshPara).cl3[0], (*pMeshPara).cl3[1], 1e-12)
+     && ut_num_equal ((*pMeshPara).cl3[1], (*pMeshPara).cl3[2], 1e-12))
+      (*pMeshPara).cl = (*pMeshPara).cl3[1];
     else
-      (*pTessPara).cl = pow ((*pTessPara).cl3[0] * (*pTessPara).cl3[1] *
-			    (*pTessPara).cl3[2], 0.333333333333333333333333333333333);
+      (*pMeshPara).cl = pow ((*pMeshPara).cl3[0] * (*pMeshPara).cl3[1] *
+			    (*pMeshPara).cl3[2], 0.333333333333333333333333333333333);
 
     for (i = 0; i < 3; i++)
-      scale[i] = (*pTessPara).cl / (*pTessPara).cl3[i];
+      scale[i] = (*pMeshPara).cl / (*pMeshPara).cl3[i];
 
     if (input == 't')
       neut_tess_scale (pTess, scale[0], scale[1], scale[2]);
@@ -121,19 +121,19 @@ nem_init_scaling (char* elttype, struct TESS* pTess, struct VOX* pVox, struct NO
     else
       neut_nodes_scale (pRNodes, scale[0], scale[1], scale[2]);
   }
-  else if ((*pTessPara).cltype == 3)
+  else if ((*pMeshPara).cltype == 3)
   {
-    if (ut_num_equal ((*pTessPara).rcl3[0], (*pTessPara).rcl3[1], 1e-12)
-     && ut_num_equal ((*pTessPara).rcl3[1], (*pTessPara).rcl3[2], 1e-12))
-      (*pTessPara).rcl = (*pTessPara).rcl3[1];
+    if (ut_num_equal ((*pMeshPara).rcl3[0], (*pMeshPara).rcl3[1], 1e-12)
+     && ut_num_equal ((*pMeshPara).rcl3[1], (*pMeshPara).rcl3[2], 1e-12))
+      (*pMeshPara).rcl = (*pMeshPara).rcl3[1];
     else
-      (*pTessPara).rcl = pow ((*pTessPara).rcl3[0] * (*pTessPara).rcl3[1] *
-			     (*pTessPara).rcl3[2], 0.333333333333333333333333333333333);
+      (*pMeshPara).rcl = pow ((*pMeshPara).rcl3[0] * (*pMeshPara).rcl3[1] *
+			     (*pMeshPara).rcl3[2], 0.333333333333333333333333333333333);
 
-    rcl2cl ((*pTessPara).rcl, vol, polyqty, elttype, &((*pTessPara).cl));
+    rcl2cl ((*pMeshPara).rcl, vol, polyqty, elttype, &((*pMeshPara).cl));
 
     for (i = 0; i < 3; i++)
-      scale[i] = (*pTessPara).rcl / (*pTessPara).rcl3[i];
+      scale[i] = (*pMeshPara).rcl / (*pMeshPara).rcl3[i];
 
     if (input == 't')
       neut_tess_scale (pTess, scale[0], scale[1], scale[2]);
@@ -148,13 +148,13 @@ nem_init_scaling (char* elttype, struct TESS* pTess, struct VOX* pVox, struct NO
   }
   
   /* Calculation of cl_skin */
-  if ((*pTessPara).dboundrcl > 0 && (*pTessPara).dboundcl < 0)
-    rcl2cl ((*pTessPara).dboundrcl, vol, polyqty, elttype, &((*pTessPara).dboundcl));
+  if ((*pMeshPara).dboundrcl > 0 && (*pMeshPara).dboundcl < 0)
+    rcl2cl ((*pMeshPara).dboundrcl, vol, polyqty, elttype, &((*pMeshPara).dboundcl));
 
-  if ((*pTessPara).dbound != NULL && (*pTessPara).dboundcl > 0 && (*pTessPara).dboundcl < (*pTessPara).cl)
+  if ((*pMeshPara).dbound != NULL && (*pMeshPara).dboundcl > 0 && (*pMeshPara).dboundcl < (*pMeshPara).cl)
   {
     ut_print_message (2, 0, "dboundcl = %f < cl = %f is not allowed.\n",
-	              (*pTessPara).dboundcl, (*pTessPara).cl);
+	              (*pMeshPara).dboundcl, (*pMeshPara).cl);
     ut_print_message (2, 0, "That means a refined mesh on the boundary; is that really what you want?  Not available.\n");
     abort ();
   }
@@ -165,22 +165,22 @@ nem_init_scaling (char* elttype, struct TESS* pTess, struct VOX* pVox, struct NO
 }
 
 void
-nem_post_scaling (struct TESSPARA TessPara, struct TESS* pTess,
+nem_post_scaling (struct MESHPARA MeshPara, struct TESS* pTess,
                   struct VOX* pVox, struct NODES* pNodes)
 {
   int i;
 
-  if (TessPara.cltype < 2)
+  if (MeshPara.cltype < 2)
     return;
   
   double* scale = ut_alloc_1d (3);
 
-  if (TessPara.cltype == 2)
+  if (MeshPara.cltype == 2)
     for (i = 0; i < 3; i++)
-      scale[i] = TessPara.cl3[i] / TessPara.cl;
-  else if (TessPara.cltype == 3)
+      scale[i] = MeshPara.cl3[i] / MeshPara.cl;
+  else if (MeshPara.cltype == 3)
     for (i = 0; i < 3; i++)
-      scale[i] = TessPara.rcl3[i] / TessPara.rcl;
+      scale[i] = MeshPara.rcl3[i] / MeshPara.rcl;
 
   if ((*pTess).PolyQty > 0)
     neut_tess_scale (pTess, scale[0], scale[1], scale[2]);

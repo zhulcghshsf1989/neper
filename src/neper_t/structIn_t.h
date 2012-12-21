@@ -2,6 +2,9 @@
 /* Copyright (C) 2003-2012, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
+#ifndef STRUCTIN_T_H
+#define STRUCTIN_T_H
+
 struct IN
 {
   int n;
@@ -13,6 +16,7 @@ struct IN
   int    randomize2;
   char*  randomizedir;
   
+  char* mode;    // running mode: tess or vox
   char* input;   // NULL (=none), n, tess, vox
 
   char* domain;
@@ -23,10 +27,6 @@ struct IN
   int voxsizetype;
   int voxsize;
   int* voxsize3;
-
-  char* regularization;
-  int mloop;
-  int maxedgedelqty;
 
   int checktess;
 
@@ -59,3 +59,5 @@ struct IN
   double centroidconv;
 };
 typedef struct IN IN;
+
+#endif /* STRUCTIN_T_H */

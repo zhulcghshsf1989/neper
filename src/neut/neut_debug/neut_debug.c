@@ -740,7 +740,7 @@ neut_debug_poly (FILE* file, struct POLY Poly)
   fprintf (file, "FaceVerQty: FaceVerNb = \n");
   for (i = 1; i <= Poly.FaceQty; i++)
   {
-    printf ("%d: ", Poly.FaceVerQty[i]);
+    fprintf (file, "%d: ", Poly.FaceVerQty[i]);
     ut_array_1d_int_fprintf (file, Poly.FaceVerNb[i] + 1, Poly.FaceVerQty[i], "%d");
   }
 

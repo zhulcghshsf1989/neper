@@ -2,8 +2,8 @@
 /* Copyright (C) 2003-2012, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-#ifndef  TESSTEST_H
-#define  TESSTEST_H
+#ifndef NEUT_TESS_TEST_H
+#define NEUT_TESS_TEST_H
 
 #include "neut_structs.h"
 
@@ -13,4 +13,4 @@ extern int neut_tess_testAroundVer2 (struct TESS, int, int);
 extern int neut_tess_test_face_normal (struct TESS, int, int);
 extern int neut_tess_test_dom (struct TESS, int);
 
-#endif  /* TESSTEST_H */
+#endif  /* NEUT_TESS_TEST_H */

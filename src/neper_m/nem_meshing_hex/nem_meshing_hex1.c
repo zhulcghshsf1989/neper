@@ -5,7 +5,7 @@
 #include "nem_meshing_hex.h"
 
 void
-nem_tess_mesh_hex (struct IN In, struct TESSPARA TessPara, struct TESS Tess, 
+nem_tess_mesh_hex (struct IN In, struct MESHPARA MeshPara, struct TESS Tess, 
 		  struct NODES *pNodes, struct MESH* pMesh0D,
 		  struct MESH* pMesh1D, struct MESH* pMesh2D, 
 		  struct MESH *pMesh3D, struct NSET* pNSet2D)
@@ -17,7 +17,7 @@ nem_tess_mesh_hex (struct IN In, struct TESSPARA TessPara, struct TESS Tess,
   neut_tess_bbox (Tess, dsize);
 
   double cl;
-  nem_meshing_3D_poly_cl (TessPara, Tess, 1, &cl);
+  nem_meshing_3D_poly_cl (MeshPara, Tess, 1, &cl);
 
   for (i = 0; i < 3; i++)
     msize[i] = (dsize[i][1] - dsize[i][0]) / cl;
@@ -79,7 +79,7 @@ nem_tess_mesh_hex (struct IN In, struct TESSPARA TessPara, struct TESS Tess,
 }
 
 void
-nem_vox_mesh_hex (struct IN In, struct TESSPARA TessPara, struct VOX Vox,
+nem_vox_mesh_hex (struct IN In, struct MESHPARA MeshPara, struct VOX Vox,
                   struct NODES* pNodes, struct MESH* pMesh0D, struct
 		  MESH* pMesh1D, struct MESH* pMesh2D, struct MESH* pMesh3D,
 		  struct NSET* pNSet2D)
@@ -97,7 +97,7 @@ nem_vox_mesh_hex (struct IN In, struct TESSPARA TessPara, struct VOX Vox,
   neut_vox_bbox (Vox, dsize);
 
   double cl;
-  nem_meshing_3D_poly_cl (TessPara, Tess, 1, &cl);
+  nem_meshing_3D_poly_cl (MeshPara, Tess, 1, &cl);
 
   for (i = 0; i < 3; i++)
     msize[i] = ut_num_max_int ((dsize[i][1] - dsize[i][0]) / cl, 1);

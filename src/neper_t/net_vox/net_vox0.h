@@ -3,4 +3,4 @@
 /* See the COPYING file in the top-level directory. */
 
 extern void net_tess_vox (struct IN, struct TESS, struct VOX*);
-extern void net_vox (struct IN, struct POLY, struct GERMSET, struct VOX*);
+extern void net_vox (struct IN, struct TESS, struct GERMSET, struct VOX*);
