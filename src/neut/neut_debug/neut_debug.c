@@ -132,11 +132,6 @@ neut_debug_tess (FILE* file, struct TESS Tess)
   int i;
 
   fprintf (file, "====== Beginning of Tess ==================================\n");
-  if (Tess.version != NULL)
-    fprintf (file, "version = %s\n", Tess.version);
-  else
-    fprintf (file, "version = NULL\n");
-
   fprintf (file, "N = %d\n", Tess.N);
   fprintf (file, "Id = %d\n", Tess.Id);
 

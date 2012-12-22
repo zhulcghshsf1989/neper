@@ -28,8 +28,6 @@ nem_reconmesh (char* dim, struct NODES* pNodes, struct MESH *pMesh0D,
     sprintf ((*pTessb).DomType, "unknown");
   }
 
-  (*pTessb).version = ut_alloc_1d_char (10);
-  strcpy ((*pTessb).version, "1.10");
   (*pTessb).N = (*pMesh3D).ElsetQty;
   (*pTessb).Type = ut_alloc_1d_char (10);
   strcpy ((*pTessb).Type, "standard");

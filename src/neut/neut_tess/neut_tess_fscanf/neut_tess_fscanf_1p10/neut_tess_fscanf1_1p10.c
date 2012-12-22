@@ -27,8 +27,6 @@ neut_tess_fscanf_verbosity_1p10 (FILE* file, struct TESS* pTess, int verbosity)
   neut_tess_fscanf_domain_1p10 (pTess, file);
   neut_tess_init_domain_facelabel (pTess);
   neut_tess_fscanf_foot_1p10 (file);
-
-  sprintf ((*pTess).version, "2.0"); // new at format 1.10
   neut_tess_init_edgelength (pTess);
 
   if (neut_tess_test (*pTess, verbosity) != 0)

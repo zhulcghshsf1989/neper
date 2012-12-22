@@ -26,8 +26,6 @@ neut_tess_fscanf_verbosity (FILE* file, struct TESS* pTess, int verbosity)
     (*pTess).N = (*pTess).PolyQty;
     (*pTess).DomType = ut_alloc_1d_char (5);
     strcpy ((*pTess).DomType, "cube");
-    (*pTess).version = ut_alloc_1d_char (5);
-    strcpy ((*pTess).version, "2.0");
     neut_tess_init_domain (pTess);
   }
 
@@ -46,8 +44,6 @@ neut_tess_fscanf_verbosity (FILE* file, struct TESS* pTess, int verbosity)
     neut_tess_fscanf_poly (pTess, file);
     neut_tess_fscanf_domain (pTess, file);
     neut_tess_fscanf_foot (file);
-
-    sprintf ((*pTess).version, "2.0"); // new at format 2.0
     neut_tess_init_edgelength (pTess);
   }
 

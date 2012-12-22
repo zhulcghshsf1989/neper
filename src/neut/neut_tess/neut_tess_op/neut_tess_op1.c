@@ -7,7 +7,6 @@
 void
 neut_tess_set_zero (struct TESS* pTess)
 {
-  (*pTess).version = NULL;
   (*pTess).N = 0;
   (*pTess).Id = -1;
   (*pTess).morpho = 0;
@@ -80,7 +79,6 @@ neut_tess_set_zero (struct TESS* pTess)
 void
 neut_tess_free (struct TESS* pTess)
 {
-  ut_free_1d_char((*pTess).version);
   ut_free_2d     ((*pTess).VerCoo, (*pTess).VerQty + 1);
   ut_free_1d_int ((*pTess).VerEdgeQty);
   ut_free_2d_int ((*pTess).VerEdgeNb, (*pTess).VerQty + 1);
