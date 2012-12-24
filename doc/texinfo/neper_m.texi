@@ -109,7 +109,7 @@ Here is what a typical run of @mM{} looks like:
 
 @c typical_start
 @verbatim
-    $ neper -M -gmsh /usr/bin/gmsh n10-id1.tess -maxff 20
+    $ neper -M -gmsh /usr/bin/gmsh n10-id1.tess 
 
     ========================    N   e   p   e   r    =======================
     Info   : A 3D random polycrystal generator for the finite element method
@@ -119,7 +119,7 @@ Here is what a typical run of @mM{} looks like:
     Info   : ---------------------------------------------------------------
     Info   : MODULE -M loaded with arguments:
     Info   : [ini file] (none)
-    Info   : [com line] -gmsh /home/rquey/bin/gmsh n10-id1.tess -maxff 20
+    Info   : [com line] -gmsh /home/rquey/bin/gmsh n10-id1.tess 
     Info   : ---------------------------------------------------------------
     Info   : Reading input data ...
     Info   :   - Reading arguments ...
@@ -127,10 +127,6 @@ Here is what a typical run of @mM{} looks like:
     Info   :   - Loading tessellation ...
     Info   :     [i] Parsing file `n10-id1.tess' ...
     Info   :     [i] Parsed file `n10-id1.tess'.
-    Info   :   - Regularizing tessellation ... (sel = 0.12)
-    Info   :     > loop    length   deleted
-    Info   :     >    1      100%        16
-    Info   :     >    2      100%         0
     Info   : Meshing ... (cl = 0.232, pl = 2)
     Info   :   - Preparing  ...  100%
     Info   :   - 0D meshing ...  100%
@@ -319,7 +315,7 @@ any, dis^(exp((dis^0.1)/(dis^0.1-1)))}
 
 @subsection Domain Boundary Meshing Options
 
-These options are for specifying geometry regularization and meshing
+These options are for specifying meshing
 conditions for the polyhedra at the domain boundary different than those
 that apply to the inner polyhedra.  This applies to meshing into
 tetrahedral elements and is useful for coarsening the
@@ -667,8 +663,8 @@ at @url{http://neper.sourceforge.net/neper_m.html}.
 @com{neper -M -remeshtess n150.tess -remesh n150_def.msh -transport }
 @comx{n150_def.msh 1 elt real1 n150_def.data -rcl 0.5 -o n150_new}
 @item    Mesh tessellation n100-id1.tess in 2nd-order elements and partition the mesh in 8 partitions.
-@com{neper -M n100-id1.tess -maxff 20 -order 2 -partqty 8}
+@com{neper -M n100-id1.tess -order 2 -partqty 8}
 @item    Mesh tessellation n100-id1.tess with different element sizes along x, y and z: rcl = 1, 1 and 0.25.
-@com{neper -M n100-id1.tess -maxff 20 -rcl3 1 1 0.25}
+@com{neper -M n100-id1.tess -rcl3 1 1 0.25}
 @c Example_end
 @end enumerate

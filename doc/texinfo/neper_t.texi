@@ -417,15 +417,18 @@ at @url{http://neper.sourceforge.net/neper_t.html}.
 @c Example_beg
 @item    Generate a polycrystal made of 100 grains, with identifier = 1.
 @com{neper -T -n 100 -id 1}
+@item    Generate a polycrystal made of 100 grains, with identifier = 1,
+  and apply regularization.
+@com{neper -T -n 100 -id 1 -maxff 20}
 @item    Use an elongated domain and generate a polycrystal made of 100 grains, with identifier = 1.
-@com{neper -T -n 100 -id 1 -domain cube 3 1 0.33}
+@com{neper -T -n 100 -id 1 -maxff 20 -domain cube 3 1 0.33}
 @item    Generate a polycrystal made of 100 grains, with identifier = 1, and stretch it to model a morphological texture.
-@com{neper -T -n 100 -id 1 -scale 3 1 0.33}
+@com{neper -T -n 100 -id 1 -maxff 20 -scale 3 1 0.33}
 @item    Generate a polycrystal made of 100 columnar grains.
-@com{neper -T -n 100 -id 1 -morpho columnarz}
+@com{neper -T -n 100 -id 1 -maxff 20 -morpho columnarz}
 @item    Generate a polycrystal made of approximately 5x5x5 truncated octahedra.
 @com{neper -T -n 5 -morpho tocta -o tocta5}
 @item    Generate a polycrystal made of 100 grains in a cylindrical domain of height 2 and diameter 1.
-@com{neper -T -n 100 -id 1 -domain cylinder 2 1}
+@com{neper -T -n 100 -id 1 -maxff 20 -domain cylinder 2 1}
 @c Example_end
 @end enumerate
