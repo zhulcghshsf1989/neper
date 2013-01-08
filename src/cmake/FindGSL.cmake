@@ -92,7 +92,7 @@ IF (GSL_CONFIG)
  EXEC_PROGRAM(${GSL_CONFIG}
    ARGS --prefix
    OUTPUT_VARIABLE GSL_PREFIX)
- SET(GSL_INCLUDE_DIR ${GSL_PREFIX}/include CACHE STRING INTERNAL)
+ SET(GSL_INCLUDE_DIR ${GSL_PREFIX}/include)
 
  # set link libraries and link flags
 
