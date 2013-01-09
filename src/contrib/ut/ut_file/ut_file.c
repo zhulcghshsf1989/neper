@@ -352,6 +352,12 @@ ut_file_format (char* filename, char** pformat)
     sprintf ((*pformat), "tess");
     res = 1;
   }
+  else if (strncmp (string, "***mtess", 8) == 0)
+  {
+    (*pformat) = ut_alloc_1d_char (6);
+    sprintf ((*pformat), "mtess");
+    res = 1;
+  }
   else if (strcmp (string, "***vox") == 0)
   {
     (*pformat) = ut_alloc_1d_char (4);

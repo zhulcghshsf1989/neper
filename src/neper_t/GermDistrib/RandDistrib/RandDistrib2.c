@@ -3,7 +3,6 @@
 /* See the COPYING file in the top-level directory. */
 
 #include"RandDistrib.h"
-#include<gsl/gsl_rng.h>
 
 /* IniGermsCoo initializes the variable: GermsCoo */
 void

@@ -6,7 +6,6 @@
 #include<stdlib.h>
 #include<string.h>
 #include<math.h>
-#include<gsl/gsl_rng.h>
 
 #include"../structIn_t.h"
 #include "ut.h"

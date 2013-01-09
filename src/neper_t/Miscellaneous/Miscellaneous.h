@@ -6,8 +6,6 @@
 #include<stdlib.h>
 #include<math.h>
 #include<string.h>
-#include<gsl/gsl_rng.h>
-#include<gsl/gsl_randist.h>
 
 #include"ut.h"
 #include"neut_t.h"

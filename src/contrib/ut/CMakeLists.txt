@@ -31,6 +31,7 @@ add_library (ut
   ut_free/ut_free.c
   ut_math/ut_math.c
   ut_mat/ut_mat.c
+  ut_linalg/ut_linalg.c
   ut_num/ut_num.c
   ut_legacy/ut_legacy.c
   ut_option/ut_option.c
@@ -80,6 +81,7 @@ set (INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ut_file.h)
 set (INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ut_free.h)
 set (INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ut_math.h)
 set (INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ut_mat.h)
+set (INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ut_linalg.h)
 set (INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ut_num.h)
 set (INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ut_legacy.h)
 set (INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ut_option.h)

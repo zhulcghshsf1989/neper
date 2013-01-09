@@ -82,35 +82,26 @@ void
 UpdVerCoo (struct POLYMOD *pPolymod, int first, int second, int third)
 {
   int i;
-  int s;
-  gsl_matrix *A = gsl_matrix_alloc (3, 3);
-  gsl_vector *B = gsl_vector_alloc (3);
-  gsl_vector *X = gsl_vector_alloc (3);
-  gsl_permutation *p = gsl_permutation_alloc (3);
+  double** A = ut_alloc_2d (3, 3);
+  double*  B = ut_alloc_1d (3);
 
   for (i = 0; i < 3; i++)
   {
-    gsl_matrix_set (A, 0, i, (*pPolymod).FaceEq[first][i + 1]);
-    gsl_matrix_set (A, 1, i, (*pPolymod).FaceEq[second][i + 1]);
-    gsl_matrix_set (A, 2, i, (*pPolymod).FaceEq[third][i + 1]);
+    A[0][i] = (*pPolymod).FaceEq[first][i + 1];
+    A[1][i] = (*pPolymod).FaceEq[second][i + 1];
+    A[2][i] = (*pPolymod).FaceEq[third][i + 1];
   }
-  gsl_vector_set (B, 0, (*pPolymod).FaceEq[first][0]);
-  gsl_vector_set (B, 1, (*pPolymod).FaceEq[second][0]);
-  gsl_vector_set (B, 2, (*pPolymod).FaceEq[third][0]);
+  B[0] = (*pPolymod).FaceEq[first][0];
+  B[1] = (*pPolymod).FaceEq[second][0];
+  B[2] = (*pPolymod).FaceEq[third][0];
 
-  gsl_linalg_LU_decomp (A, p, &s);
-  gsl_linalg_LU_solve (A, p, B, X);
-  
   (*pPolymod).VerCoo = ut_realloc_2d_addline ((*pPolymod).VerCoo, 
 					      (*pPolymod).VerQty + 1, 3);
 
-  for (i = 0; i < 3; i++)
-    (*pPolymod).VerCoo[(*pPolymod).VerQty][i] = gsl_vector_get (X, i);
+  ut_linalg_solve_LU (A, B, 3, (*pPolymod).VerCoo[(*pPolymod).VerQty]);
 
-  gsl_matrix_free (A);
-  gsl_vector_free (B);
-  gsl_vector_free (X);
-  gsl_permutation_free (p);
+  ut_free_2d (A, 3);
+  ut_free_1d (B);
 
   return;
 }

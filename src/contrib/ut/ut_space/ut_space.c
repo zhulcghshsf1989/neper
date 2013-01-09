@@ -7,11 +7,6 @@
 #include"ut_space.h"
 #include"ut.h"
 
-#ifdef HAVE_GSL
-#include<gsl/gsl_rng.h>
-#include<gsl/gsl_linalg.h>
-#endif
-
 double
 ut_space_dist2d (double *a, double *b)
 {
@@ -504,6 +499,8 @@ ut_space_hexa_center (double *p0, double *p1, double *p2, double *p3,
 }
 
 #ifdef HAVE_GSL
+#include<gsl/gsl_linalg.h>
+
 /* Projection of a point along a vector onto a plane. */
 void
 ut_space_projpoint_alongonto (double *coo, double *n, double *plane)
@@ -620,93 +617,6 @@ ut_space_points_invect_plane (double *p1, double *p2, double *invect,
 
   return;
 }
-
-/*
-void
-ut_space_points_invect_plane (double *p1, double *p2, double *invect, double *eq)
-{
-  // int i, j;
-  double norm;
-
-  int s;
-  gsl_matrix *A = gsl_matrix_alloc (4, 4);
-  gsl_vector *B = gsl_vector_alloc (4);
-  gsl_vector *X = gsl_vector_alloc (4);
-  gsl_permutation *p = gsl_permutation_alloc (4);
-
-  gsl_matrix_set (A, 0, 0, invect[0]);
-  gsl_matrix_set (A, 0, 1, invect[1]);
-  gsl_matrix_set (A, 0, 2, invect[2]);
-  gsl_matrix_set (A, 0, 3, 0);
-  gsl_vector_set (B, 0, 0);
-
-  gsl_matrix_set (A, 1, 0, p1[0]);
-  gsl_matrix_set (A, 1, 1, p1[1]);
-  gsl_matrix_set (A, 1, 2, p1[2]);
-  gsl_matrix_set (A, 1, 3, -1);
-  gsl_vector_set (B, 1, 0);
-
-  gsl_matrix_set (A, 2, 0, p2[0]);
-  gsl_matrix_set (A, 2, 1, p2[1]);
-  gsl_matrix_set (A, 2, 2, p2[2]);
-  gsl_matrix_set (A, 2, 3, -1);
-  gsl_vector_set (B, 2, 0);
-
-  gsl_matrix_set (A, 3, 0, 1);
-  gsl_matrix_set (A, 3, 1, 1);
-  gsl_matrix_set (A, 3, 2, 1);
-  gsl_matrix_set (A, 3, 3, 0);
-  gsl_vector_set (B, 3, 1);
-
-  gsl_linalg_LU_decomp (A, p, &s);
-
-  if (fabs (gsl_linalg_LU_det (A, s)) < 1e-15)
-  {
-    gsl_matrix_set (A, 3, 0, 1);
-    gsl_matrix_set (A, 3, 1, 0);
-    gsl_matrix_set (A, 3, 2, 0);
-    gsl_linalg_LU_decomp (A, p, &s);
-    if (fabs (gsl_linalg_LU_det (A, s)) < 1e-15)
-    {
-      gsl_matrix_set (A, 3, 0, 0);
-      gsl_matrix_set (A, 3, 1, 1);
-      gsl_matrix_set (A, 3, 2, 0);
-      gsl_linalg_LU_decomp (A, p, &s);
-      if (fabs (gsl_linalg_LU_det (A, s)) < 1e-15)
-      {
-	gsl_matrix_set (A, 3, 0, 0);
-	gsl_matrix_set (A, 3, 1, 0);
-	gsl_matrix_set (A, 3, 2, 1);
-	gsl_linalg_LU_decomp (A, p, &s);
-	if (fabs (gsl_linalg_LU_det (A, s)) < 1e-15)
-	{
-	  abort ();
-	}
-      }
-    }
-  }
-
-  gsl_linalg_LU_solve (A, p, B, X);
-
-  norm = sqrt (pow (gsl_vector_get (X, 0), 2) +
-	       pow (gsl_vector_get (X, 1), 2) +
-	       pow (gsl_vector_get (X, 2), 2));
-
-  gsl_vector_scale (X, 1 / norm);
-
-  eq[0] = gsl_vector_get (X, 3);
-  eq[1] = gsl_vector_get (X, 0);
-  eq[2] = gsl_vector_get (X, 1);
-  eq[3] = gsl_vector_get (X, 2);
-
-  gsl_matrix_free (A);
-  gsl_vector_free (B);
-  gsl_vector_free (X);
-  gsl_permutation_free (p);
-
-  return;
-}
-*/
 
 void
 ut_space_points_invect_plane_new (double *p1, double *p2, double *invect,

@@ -4,11 +4,6 @@
 
 #include"DeleteEdge.h"
 
-#ifdef HAVE_GSL
-#include<gsl/gsl_rng.h>
-#include<gsl/gsl_linalg.h>
-#endif
-
 void
 UpdateFaceState (struct TESS *pTess, int delver, int newver)
 {
@@ -275,11 +270,9 @@ int
 UpdateVerCooMiniFF (struct TESS *pTess, int newver, int verbosity)
 {
   int i, j, k;
-  gsl_matrix *A = NULL;
-  gsl_vector *B = NULL;
-  gsl_vector *X = NULL;
-  gsl_permutation *p = NULL;
-  int s;
+  double** A = NULL;
+  double*  B = NULL;
+  double*  X = NULL;
   int faceqty;
   int* face = NULL;
   int N; // nb of faces
@@ -348,16 +341,11 @@ UpdateVerCooMiniFF (struct TESS *pTess, int newver, int verbosity)
     printf ("\n\n");
   }
 
-  A = gsl_matrix_alloc (3 + M, 3 + M);
-  B = gsl_vector_alloc (3 + M);
-  X = gsl_vector_alloc (3 + M);
-  p = gsl_permutation_alloc (3 + M);
-
-  gsl_matrix_set_zero (A);
-  gsl_vector_set_zero (B);
+  A = ut_alloc_2d (3 + M, 3 + M);
+  B = ut_alloc_1d (3 + M);
+  X = ut_alloc_1d (3 + M);
 
   // Filling up the 3 x 3 first values of A
-  double** NN = ut_alloc_2d (3, 3);
   double* n = NULL;
   double d;
   for (i = 0; i < N; i++)
@@ -365,25 +353,17 @@ UpdateVerCooMiniFF (struct TESS *pTess, int newver, int verbosity)
     n = (*pTess).FaceEq[face[i]] + 1;
     for (j = 0; j < 3; j++)
       for (k = 0; k < 3; k++)
-	NN[j][k] += n[j] * n[k];
+	A[j][k] += n[j] * n[k];
   }
 
-  for (j = 0; j < 3; j++)
-    for (k = 0; k < 3; k++)
-      gsl_matrix_set (A, j, k, NN[j][k]);
-
   // Filling up the 3 first values of B
-  double* BB = ut_alloc_1d (3);
   for (i = 0; i < N; i++)
   {
     n = (*pTess).FaceEq[face[i]] + 1;
     d = (*pTess).FaceEq[face[i]][0];
     for (j = 0; j < 3; j++)
-      BB[j] += d * n[j];
+      B[j] += d * n[j];
   }
-
-  for (j = 0; j < 3; j++)
-    gsl_vector_set (B, j, BB[j]);
 
   // Filling up the 3 x M (x 2) constraint values of A and
   // the M constraint values of B.
@@ -395,58 +375,17 @@ UpdateVerCooMiniFF (struct TESS *pTess, int newver, int verbosity)
     dprime = constraint[i][0];
     for (j = 0; j < 3; j++)
     {
-      gsl_matrix_set (A, i + 3, j, nprime[j]);
-      gsl_matrix_set (A, j, i + 3, nprime[j]);
-      gsl_vector_set (B, i + 3, dprime);
+      A[i + 3][j] = nprime[j];
+      A[j][i + 3] = nprime[j];
+      B[i + 3] = dprime;
     }
   }
 
-  if (verbosity >= 3)
-  {
-    printf ("\n\nA = \n");
-    for (i = 0; i < 3 + M; i++)
-    {
-      for (j = 0; j < 3 + M; j++)
-	printf ("%f ", gsl_matrix_get (A, i, j));
-      printf ("\n");
-    }
-  }
+  int status = ut_linalg_solve_LU (A, B, M + 3, X);
 
-  if (verbosity >= 3)
-  {
-  printf ("B = \n");
-  for (i = 0; i < 3 + M; i++)
-    printf ("%f\n", gsl_vector_get (B, i));
-  }
+  ut_array_1d_memcpy ((*pTess).VerCoo[newver], 3, X);
 
-  gsl_linalg_LU_decomp (A, p, &s);
-
-  int status = 0;
-  if (fabs (gsl_linalg_LU_det (A, s)) < 1e-15)
-    status = -1;
-
-  if (status == 0)
-  {
-    gsl_linalg_LU_solve (A, p, B, X);
-
-    for (i = 0; i < 3; i++)
-      (*pTess).VerCoo[newver][i] = gsl_vector_get (X, i);
-  }
-
-  if (verbosity >= 3)
-  {
-    printf ("X = \n");
-    for (i = 0; i < 3 + M; i++)
-      printf ("%f\n", gsl_vector_get (X, i));
-  }
-
-  gsl_matrix_free (A);
-  gsl_vector_free (B);
-  gsl_vector_free (X);
-  gsl_permutation_free (p);
   ut_free_1d_int (face);
-  ut_free_2d (NN, 3);
-  ut_free_1d (BB);
   ut_free_2d (constraint, M);
   ut_free_1d_int (domainface);
   ut_free_1d_int (tmp);

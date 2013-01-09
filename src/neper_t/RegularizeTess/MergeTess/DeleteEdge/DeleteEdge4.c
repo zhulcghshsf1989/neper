@@ -178,7 +178,7 @@ DeleteFace (struct TESS *pTess, int face, int edge, int verbosity)
 
     printf ("sorting\n");
   }
-  gsl_sort_int ((*pTess).EdgeFaceNb[nnew], 1, (*pTess).EdgeFaceQty[nnew]);
+  ut_array_1d_int_sort ((*pTess).EdgeFaceNb[nnew], (*pTess).EdgeFaceQty[nnew]);
   if (verbosity >= 3)
   {
     printf ("EdgeFaceNb: %d: ", (*pTess).EdgeFaceQty[nnew]);

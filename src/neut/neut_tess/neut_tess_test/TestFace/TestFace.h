@@ -5,7 +5,6 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
-#include"gsl/gsl_sort_int.h"
 
 #include"ut.h"
 #include"../../../neut_tess.h"

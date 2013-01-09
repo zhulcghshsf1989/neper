@@ -3,22 +3,20 @@
 /* See the COPYING file in the top-level directory. */
 
 #include"PolyCalc.h"
-#include<gsl/gsl_sort.h>
-#include<gsl/gsl_sort_vector.h>
 
 void
 NeiSearching (struct GERMSET GermSet, int ToSort, int germ, int *nbs,
 	      double *dists)
 {
   int i;
-  size_t *TmpNb = (size_t *) calloc (GermSet.N, sizeof (size_t));
+  int* TmpNb = ut_alloc_1d_int (GermSet.N);
   double *TmpDist = ut_alloc_1d (GermSet.N);
 
   for (i = 0; i < GermSet.N; i++)
     TmpDist[i] = ut_space_dist (GermSet.GermsCoo[germ] + 1,
 				GermSet.GermsCoo[i + 1] + 1);
 
-  gsl_sort_index (TmpNb, TmpDist, 1, GermSet.N);
+  ut_array_1d_sort_index (TmpDist, GermSet.N, TmpNb);
 
   for (i = 0; i < ToSort; i++)
   {
@@ -26,8 +24,7 @@ NeiSearching (struct GERMSET GermSet, int ToSort, int germ, int *nbs,
     dists[i] = TmpDist[TmpNb[i]];
   }
 
-  ut_free_1d_sizet (TmpNb);
-
+  ut_free_1d_int (TmpNb);
   ut_free_1d (TmpDist);
 
   return;

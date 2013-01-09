@@ -512,6 +512,21 @@ ut_print_progress (FILE* file, long nb, long tot, char* format, char* prev)
 }
 
 void
+ut_print_clearline (FILE* file, int nb)
+{
+  int i;
+
+  for (i = 0; i < nb; i++)
+    fprintf (file, "\b");
+  for (i = 0; i < nb; i++)
+    fprintf (file, " ");
+  for (i = 0; i < nb; i++)
+    fprintf (file, "\b");
+
+  return;
+}
+
+void
 ut_print_reportbug (void)
 {
   ut_print_messagewnc (2, 72, "You have discovered a bug!  Please send a bug report to <rquey@users.sf.net>.");

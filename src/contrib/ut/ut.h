@@ -10,6 +10,7 @@
 #include "ut_free.h"
 #include "ut_math.h"
 #include "ut_mat.h"
+#include "ut_linalg.h"
 #include "ut_num.h"
 #include "ut_option.h"
 #include "ut_print.h"

@@ -8,6 +8,7 @@
 #include<string.h>
 #include<time.h>
 #include<float.h>
+#include<gsl/gsl_rng.h>
 
 #include"../../structIn_t.h"
 #include"ut.h"
