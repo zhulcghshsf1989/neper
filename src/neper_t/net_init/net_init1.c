@@ -5,23 +5,23 @@
 #include"net_init.h"
 
 void
-net_init_reg (struct TESS* pTess, struct TESSPARA* pTessPara)
+net_init_reg (struct TESS* pTess, struct REG* pReg)
 {
   double vol;
 
   /* Calculation of sel */
   // seltype == 0: nothing to do
-  if ((*pTessPara).seltype == 1)
+  if ((*pReg).seltype == 1)
   {
     neut_tess_volume (*pTess, &vol);
-    rsel2sel ((*pTessPara).rsel, vol, (*pTess).PolyQty, &((*pTessPara).sel));
+    rsel2sel ((*pReg).rsel, vol, (*pTess).PolyQty, &((*pReg).sel));
   }
   
   // Calculation of sel_skin
-  if ((*pTessPara).dbound != NULL && (*pTessPara).dboundseltype == 1)
+  if ((*pReg).dbound != NULL && (*pReg).dboundseltype == 1)
   {
     neut_tess_volume (*pTess, &vol);
-    rsel2sel ((*pTessPara).dboundrsel, vol, (*pTess).PolyQty, &((*pTessPara).dboundsel));
+    rsel2sel ((*pReg).dboundrsel, vol, (*pTess).PolyQty, &((*pReg).dboundsel));
   }
 
   return;

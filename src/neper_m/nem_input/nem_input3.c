@@ -6,7 +6,7 @@
 
 /* SetDefaultOptions set the options to their default values */
 void
-nem_input_options_default (struct IN *pIn, struct TESSPARA *pTessPara)
+nem_input_options_default (struct IN *pIn, struct MESHPARA *pMeshPara)
 {
   /* General options --------------------------------------- */
 
@@ -40,25 +40,25 @@ nem_input_options_default (struct IN *pIn, struct TESSPARA *pTessPara)
   (*pIn).singnodedup = 0;
   (*pIn).dupnodemerge = -1;
   
-  (*pTessPara).cltype = 1; // O: cl, 1: rcl, 2: cl3, 3: rcl3 
-  (*pTessPara).cl = -1;
-  (*pTessPara).rcl = 1;
-  (*pTessPara).cl3  = ut_alloc_1d (3);
-  (*pTessPara).rcl3 = ut_alloc_1d (3);
-  (*pTessPara).dboundcl  = -1;
-  (*pTessPara).dboundrcl = -1;
-  (*pTessPara).dboundpcl =  2;
-  (*pTessPara).dbound = ut_alloc_1d_char (10);
+  (*pMeshPara).cltype = 1; // O: cl, 1: rcl, 2: cl3, 3: rcl3 
+  (*pMeshPara).cl = -1;
+  (*pMeshPara).rcl = 1;
+  (*pMeshPara).cl3  = ut_alloc_1d (3);
+  (*pMeshPara).rcl3 = ut_alloc_1d (3);
+  (*pMeshPara).dboundcl  = -1;
+  (*pMeshPara).dboundrcl = -1;
+  (*pMeshPara).dboundpcl =  2;
+  (*pMeshPara).dbound = ut_alloc_1d_char (10);
 
-  (*pTessPara).msizetype = 1;
-  (*pTessPara).msize = 20;
-  (*pTessPara).msize3 = ut_alloc_1d_int (3);
-  (*pTessPara).msize3[0] = 20;
-  (*pTessPara).msize3[1] = 20;
-  (*pTessPara).msize3[2] = 20;
+  (*pMeshPara).msizetype = 1;
+  (*pMeshPara).msize = 20;
+  (*pMeshPara).msize3 = ut_alloc_1d_int (3);
+  (*pMeshPara).msize3[0] = 20;
+  (*pMeshPara).msize3[1] = 20;
+  (*pMeshPara).msize3[2] = 20;
 
-  (*pTessPara).clmin = 0;
-  (*pTessPara).pcl = 2;
+  (*pMeshPara).clmin = 0;
+  (*pMeshPara).pcl = 2;
   (*pIn).mesh2dalgo = ut_alloc_1d_char (100);
   (*pIn).mesh3dalgo = ut_alloc_1d_char (100);
   (*pIn).mesh3dreport = 0;
@@ -103,7 +103,7 @@ nem_input_options_default (struct IN *pIn, struct TESSPARA *pTessPara)
 }
 
 void
-nem_input_options_set (struct IN *pIn, struct TESSPARA *pTessPara,
+nem_input_options_set (struct IN *pIn, struct MESHPARA *pMeshPara,
 		       int argc, char **argv)
 {
   int i, j, k, ArgQty, Res;
@@ -266,55 +266,55 @@ nem_input_options_set (struct IN *pIn, struct TESSPARA *pTessPara,
 	(*pIn).elttype = ut_arg_nextaschar (argv, &i, Arg);
       else if (strcmp (Arg, "-cl") == 0 && i < argc - 1)
       {
-	(*pTessPara).cltype = 0;
-	(*pTessPara).cl = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
+	(*pMeshPara).cltype = 0;
+	(*pMeshPara).cl = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
       }
       else if (strcmp (Arg, "-rcl") == 0 && i < argc - 1)
       {
-	(*pTessPara).cltype = 1;
-	(*pTessPara).rcl = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
+	(*pMeshPara).cltype = 1;
+	(*pMeshPara).rcl = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
       }
       else if (strcmp (Arg, "-cl3") == 0 && i < argc - 3)
       {
-	(*pTessPara).cltype = 2;
-	(*pTessPara).cl3[0] = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
-	(*pTessPara).cl3[1] = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
-	(*pTessPara).cl3[2] = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
+	(*pMeshPara).cltype = 2;
+	(*pMeshPara).cl3[0] = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
+	(*pMeshPara).cl3[1] = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
+	(*pMeshPara).cl3[2] = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
       }
       else if (strcmp (Arg, "-rcl3") == 0 && i < argc - 3)
       {
-	(*pTessPara).cltype = 3;
-	(*pTessPara).rcl3[0] = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
-	(*pTessPara).rcl3[1] = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
-	(*pTessPara).rcl3[2] = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
+	(*pMeshPara).cltype = 3;
+	(*pMeshPara).rcl3[0] = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
+	(*pMeshPara).rcl3[1] = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
+	(*pMeshPara).rcl3[2] = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
       }
       else if (strcmp (Arg, "-msize") == 0 && i < argc - 1)
       {
-	(*pTessPara).msizetype = 1;
-	(*pTessPara).msize = ut_arg_nextasint (argv, &i, Arg, 1, INT_MAX);
+	(*pMeshPara).msizetype = 1;
+	(*pMeshPara).msize = ut_arg_nextasint (argv, &i, Arg, 1, INT_MAX);
       }
       else if (strcmp (Arg, "-msize3") == 0 && i < argc - 1)
       {
-	(*pTessPara).msizetype = 3;
-	(*pTessPara).msize3[0] = ut_arg_nextasint (argv, &i, Arg, 1, INT_MAX);
-	(*pTessPara).msize3[1] = ut_arg_nextasint (argv, &i, Arg, 1, INT_MAX);
-	(*pTessPara).msize3[2] = ut_arg_nextasint (argv, &i, Arg, 1, INT_MAX);
+	(*pMeshPara).msizetype = 3;
+	(*pMeshPara).msize3[0] = ut_arg_nextasint (argv, &i, Arg, 1, INT_MAX);
+	(*pMeshPara).msize3[1] = ut_arg_nextasint (argv, &i, Arg, 1, INT_MAX);
+	(*pMeshPara).msize3[2] = ut_arg_nextasint (argv, &i, Arg, 1, INT_MAX);
       }
       else if (strcmp (Arg, "-dbound") == 0 && i < argc - 1)
       {
-	ut_free_1d_char ((*pTessPara).dbound);
-	(*pTessPara).dbound = ut_arg_nextaschar (argv, &i, Arg);
+	ut_free_1d_char ((*pMeshPara).dbound);
+	(*pMeshPara).dbound = ut_arg_nextaschar (argv, &i, Arg);
       }
       else if (strcmp (Arg, "-dboundcl") == 0 && i < argc - 1)
-	(*pTessPara).dboundcl = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
+	(*pMeshPara).dboundcl = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
       else if (strcmp (Arg, "-dboundrcl") == 0 && i < argc - 1)
-	(*pTessPara).dboundrcl = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
+	(*pMeshPara).dboundrcl = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
       else if ((strcmp (Arg, "-dboundpl") == 0 && i < argc - 1))
-	(*pTessPara).dboundpcl = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
+	(*pMeshPara).dboundpcl = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
       else if (strcmp (Arg, "-clmin") == 0 && i < argc - 1)
-	(*pTessPara).clmin = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
+	(*pMeshPara).clmin = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
       else if ((strcmp (Arg, "-pl") == 0 && i < argc - 1))
-	(*pTessPara).pcl = ut_arg_nextasreal (argv, &i, Arg, 1., 1.e30);
+	(*pMeshPara).pcl = ut_arg_nextasreal (argv, &i, Arg, 1., 1.e30);
       else if (strcmp (Arg, "-mesh2dalgo") == 0 && i < argc - 1)
       {
 	ut_free_1d_char ((*pIn).mesh2dalgo);

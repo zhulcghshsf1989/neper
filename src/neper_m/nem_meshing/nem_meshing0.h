@@ -3,7 +3,7 @@
 /* See the COPYING file in the top-level directory. */
 
 extern int
-nem_meshing (struct IN In, struct TESSPARA TessPara, struct TESS Tess, 
+nem_meshing (struct IN In, struct MESHPARA MeshPara, struct TESS Tess, 
              struct NODES RNodes, struct MESH RMesh1D, struct MESH RMesh2D,
              struct NODES* pNodes, struct MESH* pMesh0D,
 	     struct MESH* pMesh1D, struct MESH* pMesh2D,
@@ -11,7 +11,7 @@ nem_meshing (struct IN In, struct TESSPARA TessPara, struct TESS Tess,
 
 /*
 extern int
-nem_vox_mesh (struct IN In, struct TESSPARA TessPara, struct VOX Vox, 
+nem_vox_mesh (struct IN In, struct MESHPARA MeshPara, struct VOX Vox, 
 	      struct NODES* pNodes, struct MESH* pMesh0D,
 	      struct MESH* pMesh1D, struct MESH* pMesh2D,
 	      struct MESH* pMesh3D);

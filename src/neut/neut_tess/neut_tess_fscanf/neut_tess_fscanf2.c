@@ -58,9 +58,6 @@ neut_tess_fscanf_head (struct TESS* pTess, FILE * file)
     abort ();
   }
 
-  (*pTess).version = ut_alloc_1d_char (4);
-  sprintf ((*pTess).version, "2.0");
-
   if (ut_file_string_scanncomp (file, "**general") != 0)
   {
     ut_print_message (2, 0, "Input file is not a valid tessellation file.\n");
@@ -308,133 +305,97 @@ neut_tess_fscanf_domain (struct TESS* pTess, FILE * file)
 {
   int i, id;
 
-  if (! strncmp ((*pTess).version, "2.0", 4))
+  (*pTess).DomType = ut_alloc_1d_char (10);
+
+  if (ut_file_string_scanncomp (file, "**domain") != 0
+   || ut_file_string_scanncomp (file, "*general") != 0
+   || fscanf (file, "%s", (*pTess).DomType)        != 1
+   || ut_file_string_scanncomp (file, "*vertex")  != 0
+   || fscanf (file, "%d", &((*pTess).DomVerQty))   != 1)
+    abort ();
+
+  (*pTess).DomTessVerNb = ut_alloc_1d_int ((*pTess).DomVerQty + 1);
+  (*pTess).DomVerEdgeQty = ut_alloc_1d_int ((*pTess).DomVerQty + 1);
+  (*pTess).DomVerEdgeNb = ut_alloc_1d_pint ((*pTess).DomVerQty + 1);
+
+  for (i = 1; i <= (*pTess).DomVerQty; i++)
   {
-    (*pTess).DomType = ut_alloc_1d_char (10);
-
-    if (ut_file_string_scanncomp (file, "**domain") != 0
-     || ut_file_string_scanncomp (file, "*general") != 0
-     || fscanf (file, "%s", (*pTess).DomType)        != 1
-     || ut_file_string_scanncomp (file, "*vertex")  != 0
-     || fscanf (file, "%d", &((*pTess).DomVerQty))   != 1)
+    if (fscanf (file, "%d", &id) != 1 || id != i)
       abort ();
 
-    (*pTess).DomTessVerNb = ut_alloc_1d_int ((*pTess).DomVerQty + 1);
-    (*pTess).DomVerEdgeQty = ut_alloc_1d_int ((*pTess).DomVerQty + 1);
-    (*pTess).DomVerEdgeNb = ut_alloc_1d_pint ((*pTess).DomVerQty + 1);
-
-    for (i = 1; i <= (*pTess).DomVerQty; i++)
-    {
-      if (fscanf (file, "%d", &id) != 1 || id != i)
-	abort ();
-
-      if (fscanf (file, "%d%d", &((*pTess).DomTessVerNb[i]),
-				&((*pTess).DomVerEdgeQty[i])) != 2)
-	abort ();
-
-      (*pTess).DomVerEdgeNb[i] = ut_alloc_1d_int ((*pTess).DomVerEdgeQty[i]);
-      ut_array_1d_int_fscanf (file, (*pTess).DomVerEdgeNb[i], (*pTess).DomVerEdgeQty[i]);
-    }
-
-    // Reading edges
-    
-    if (ut_file_string_scanncomp (file, "*edge")   != 0
-     || fscanf (file, "%d", &((*pTess).DomEdgeQty)) != 1)
+    if (fscanf (file, "%d%d", &((*pTess).DomTessVerNb[i]),
+			      &((*pTess).DomVerEdgeQty[i])) != 2)
       abort ();
 
-    (*pTess).DomTessEdgeQty = ut_alloc_1d_int ((*pTess).DomEdgeQty + 1);
-    (*pTess).DomTessEdgeNb = ut_alloc_1d_pint ((*pTess).DomEdgeQty + 1);
-    (*pTess).DomEdgeVerNb = ut_alloc_2d_int ((*pTess).DomEdgeQty + 1, 2);
-    (*pTess).DomEdgeFaceNb = ut_alloc_2d_int ((*pTess).DomEdgeQty + 1, 2);
-
-    for (i = 1; i <= (*pTess).DomEdgeQty; i++)
-    {
-      if (fscanf (file, "%d", &id) != 1 || id != i)
-	abort ();
-
-      if (fscanf (file, "%d", &((*pTess).DomTessEdgeQty[i])) != 1)
-	abort ();
-
-      (*pTess).DomTessEdgeNb[i] = ut_alloc_1d_int ((*pTess).DomTessEdgeQty[i] + 1);
-      ut_array_1d_int_fscanf (file, (*pTess).DomTessEdgeNb[i] + 1, (*pTess).DomTessEdgeQty[i]);
-      ut_array_1d_int_fscanf (file, (*pTess).DomEdgeVerNb[i], 2);
-      ut_array_1d_int_fscanf (file, (*pTess).DomEdgeFaceNb[i], 2);
-    }
-    
-    // Reading faces
-    if (ut_file_string_scanncomp (file, "*face") != 0
-     || fscanf (file, "%d", &((*pTess).DomFaceQty)) != 1)
-      abort ();
-
-    (*pTess).DomFaceEq = ut_alloc_2d ((*pTess).DomFaceQty + 1, 4);
-    (*pTess).DomFaceLabel = ut_alloc_2d_char ((*pTess).DomFaceQty + 1, 10);
-    (*pTess).DomTessFaceQty = ut_alloc_1d_int ((*pTess).DomFaceQty + 1);
-    (*pTess).DomTessFaceNb  = ut_alloc_1d_pint ((*pTess).DomFaceQty + 1);
-    (*pTess).DomFaceVerQty  = ut_alloc_1d_int ((*pTess).DomFaceQty + 1);
-    (*pTess).DomFaceVerNb   = ut_alloc_1d_pint ((*pTess).DomFaceQty + 1);
-    (*pTess).DomFaceEdgeNb  = ut_alloc_1d_pint ((*pTess).DomFaceQty + 1);
-
-    for (i = 1; i <= (*pTess).DomFaceQty; i++)
-    {
-      if (fscanf (file, "%d", &id) != 1 || id != i)
-      {
-	printf ("id = %d != %d\n", id, i);
-	abort ();
-      }
-      
-      if (fscanf (file, "%d", &((*pTess).DomTessFaceQty[i])) != 1)
-	abort ();
-
-      (*pTess).DomTessFaceNb[i] = ut_alloc_1d_int ((*pTess).DomTessFaceQty[i] + 1);
-
-      ut_array_1d_int_fscanf (file, (*pTess).DomTessFaceNb[i] + 1, (*pTess).DomTessFaceQty[i]);
-      ut_array_1d_fscanf (file, (*pTess).DomFaceEq[i] + 1, 3);
-      if (fscanf (file, "%lf", &((*pTess).DomFaceEq[i][0])) != 1)
-	abort ();
-      if (fscanf (file, "%s", (*pTess).DomFaceLabel[i]) != 1)
-	abort ();
-      if (fscanf (file, "%d", &((*pTess).DomFaceVerQty[i])) != 1)
-	abort ();
-
-      (*pTess).DomFaceVerNb[i]  = ut_alloc_1d_int ((*pTess).DomFaceVerQty[i] + 1);
-      (*pTess).DomFaceEdgeNb[i] = ut_alloc_1d_int ((*pTess).DomFaceVerQty[i] + 1);
-
-      ut_array_1d_int_fscanf (file, (*pTess).DomFaceVerNb[i] + 1, (*pTess).DomFaceVerQty[i]);
-      ut_array_1d_int_fscanf (file, (*pTess).DomFaceEdgeNb[i] + 1, (*pTess).DomFaceVerQty[i]);
-    }
+    (*pTess).DomVerEdgeNb[i] = ut_alloc_1d_int ((*pTess).DomVerEdgeQty[i]);
+    ut_array_1d_int_fscanf (file, (*pTess).DomVerEdgeNb[i], (*pTess).DomVerEdgeQty[i]);
   }
 
-  else if (! strcmp ((*pTess).version, "1.9.2"))
+  // Reading edges
+
+  if (ut_file_string_scanncomp (file, "*edge")   != 0
+   || fscanf (file, "%d", &((*pTess).DomEdgeQty)) != 1)
+    abort ();
+
+  (*pTess).DomTessEdgeQty = ut_alloc_1d_int ((*pTess).DomEdgeQty + 1);
+  (*pTess).DomTessEdgeNb = ut_alloc_1d_pint ((*pTess).DomEdgeQty + 1);
+  (*pTess).DomEdgeVerNb = ut_alloc_2d_int ((*pTess).DomEdgeQty + 1, 2);
+  (*pTess).DomEdgeFaceNb = ut_alloc_2d_int ((*pTess).DomEdgeQty + 1, 2);
+
+  for (i = 1; i <= (*pTess).DomEdgeQty; i++)
   {
-    double** bbox = ut_alloc_2d (3, 2);
+    if (fscanf (file, "%d", &id) != 1 || id != i)
+      abort ();
 
-    neut_tess_bbox (*pTess, bbox);
+    if (fscanf (file, "%d", &((*pTess).DomTessEdgeQty[i])) != 1)
+      abort ();
 
-    (*pTess).DomType = ut_alloc_1d_char (5);
-    sprintf ((*pTess).DomType, "cube");
+    (*pTess).DomTessEdgeNb[i] = ut_alloc_1d_int ((*pTess).DomTessEdgeQty[i] + 1);
+    ut_array_1d_int_fscanf (file, (*pTess).DomTessEdgeNb[i] + 1, (*pTess).DomTessEdgeQty[i]);
+    ut_array_1d_int_fscanf (file, (*pTess).DomEdgeVerNb[i], 2);
+    ut_array_1d_int_fscanf (file, (*pTess).DomEdgeFaceNb[i], 2);
+  }
 
-    (*pTess).DomFaceQty = 6;
-    (*pTess).DomFaceEq = ut_alloc_2d ((*pTess).DomFaceQty + 1, 4);
+  // Reading faces
+  if (ut_file_string_scanncomp (file, "*face") != 0
+   || fscanf (file, "%d", &((*pTess).DomFaceQty)) != 1)
+    abort ();
+
+  (*pTess).DomFaceEq = ut_alloc_2d ((*pTess).DomFaceQty + 1, 4);
+  (*pTess).DomFaceLabel = ut_alloc_2d_char ((*pTess).DomFaceQty + 1, 10);
+  (*pTess).DomTessFaceQty = ut_alloc_1d_int ((*pTess).DomFaceQty + 1);
+  (*pTess).DomTessFaceNb  = ut_alloc_1d_pint ((*pTess).DomFaceQty + 1);
+  (*pTess).DomFaceVerQty  = ut_alloc_1d_int ((*pTess).DomFaceQty + 1);
+  (*pTess).DomFaceVerNb   = ut_alloc_1d_pint ((*pTess).DomFaceQty + 1);
+  (*pTess).DomFaceEdgeNb  = ut_alloc_1d_pint ((*pTess).DomFaceQty + 1);
+
+  for (i = 1; i <= (*pTess).DomFaceQty; i++)
+  {
+    if (fscanf (file, "%d", &id) != 1 || id != i)
+    {
+      printf ("id = %d != %d\n", id, i);
+      abort ();
+    }
     
-    (*pTess).DomFaceEq[1][1] = -1;
-    (*pTess).DomFaceEq[1][0] =  bbox[0][0];
-    (*pTess).DomFaceEq[2][1] =  1;
-    (*pTess).DomFaceEq[2][0] =  bbox[0][1];
-    (*pTess).DomFaceEq[3][2] = -1;
-    (*pTess).DomFaceEq[3][0] =  bbox[1][0];
-    (*pTess).DomFaceEq[4][2] =  1;
-    (*pTess).DomFaceEq[4][0] =  bbox[1][1];
-    (*pTess).DomFaceEq[5][3] = -1;
-    (*pTess).DomFaceEq[5][0] =  bbox[2][0];
-    (*pTess).DomFaceEq[6][3] =  1;
-    (*pTess).DomFaceEq[6][0] =  bbox[2][1];
+    if (fscanf (file, "%d", &((*pTess).DomTessFaceQty[i])) != 1)
+      abort ();
 
-    neut_tess_init_domtessface (pTess);
-    // this would be needed for backward compatibility...
-    // neut_tess_init_domtessedge (pTess);
-    // neut_tess_init_domtessver  (pTess);
+    (*pTess).DomTessFaceNb[i] = ut_alloc_1d_int ((*pTess).DomTessFaceQty[i] + 1);
 
-    ut_free_2d (bbox, 3);
+    ut_array_1d_int_fscanf (file, (*pTess).DomTessFaceNb[i] + 1, (*pTess).DomTessFaceQty[i]);
+    ut_array_1d_fscanf (file, (*pTess).DomFaceEq[i] + 1, 3);
+    if (fscanf (file, "%lf", &((*pTess).DomFaceEq[i][0])) != 1)
+      abort ();
+    if (fscanf (file, "%s", (*pTess).DomFaceLabel[i]) != 1)
+      abort ();
+    if (fscanf (file, "%d", &((*pTess).DomFaceVerQty[i])) != 1)
+      abort ();
+
+    (*pTess).DomFaceVerNb[i]  = ut_alloc_1d_int ((*pTess).DomFaceVerQty[i] + 1);
+    (*pTess).DomFaceEdgeNb[i] = ut_alloc_1d_int ((*pTess).DomFaceVerQty[i] + 1);
+
+    ut_array_1d_int_fscanf (file, (*pTess).DomFaceVerNb[i] + 1, (*pTess).DomFaceVerQty[i]);
+    ut_array_1d_int_fscanf (file, (*pTess).DomFaceEdgeNb[i] + 1, (*pTess).DomFaceVerQty[i]);
   }
 
   return;

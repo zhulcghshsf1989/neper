@@ -152,7 +152,7 @@ TestFaceState (struct TESS Tess, int i, int verbosity)
 }
 
 /* TestFaceBound tests whether the face has 3 aligned vertices (on a domain edge)
- * or not. The case where three of the vertices of a face have 2 common bounds is
+ * or not. The case where three of the vertices of a face have 2 com bounds is
  * considered as critical.
  */
 int

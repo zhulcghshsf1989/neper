@@ -106,7 +106,7 @@ TestVerFaceCoplaneity (struct TESS Tess, int ver, int verbosity)
   int i, j, k;
   int edge1, edge2;
   int face;
-  int common;
+  int com;
 
   for (i = 0; i < Tess.VerEdgeQty[ver] - 1; i++)
   {
@@ -116,19 +116,19 @@ TestVerFaceCoplaneity (struct TESS Tess, int ver, int verbosity)
     {
       edge2 = Tess.VerEdgeNb[ver][j];
 
-      common = 0;
+      com = 0;
       for (k = 0; k < Tess.EdgeFaceQty[edge1]; k++)
       {
 	face = Tess.EdgeFaceNb[edge1][k];
 	if (ut_array_1d_int_eltpos
 	    (Tess.EdgeFaceNb[edge2], Tess.EdgeFaceQty[edge2], face) != -1)
-	  common++;
+	  com++;
       }
 
-      if (common > 1)
+      if (com > 1)
       {
 	if (verbosity)
-	  ut_print_message (2, 3, "has edges %d and %d, but these edges share more than 1 (= %d) face.\n", edge1, edge2, common);
+	  ut_print_message (2, 3, "has edges %d and %d, but these edges share more than 1 (= %d) face.\n", edge1, edge2, com);
 
 	return 2;
       }

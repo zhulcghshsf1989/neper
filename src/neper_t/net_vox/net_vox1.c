@@ -78,7 +78,7 @@ net_tess_vox (struct IN In, struct TESS Tess, VOX* pVox)
 }
 
 void
-net_vox (struct IN In, struct POLY Domain, struct GERMSET GermSet, struct VOX* pVox)
+net_vox (struct IN In, struct TESS Domain, struct GERMSET GermSet, struct VOX* pVox)
 {
   int i, j, k, l;
   double* coo = ut_alloc_1d (3);
@@ -86,6 +86,10 @@ net_vox (struct IN In, struct POLY Domain, struct GERMSET GermSet, struct VOX* p
   double* bboxv = ut_alloc_1d (7);
   double** bbox = ut_alloc_2d (3, 2);
   int Germ;
+  struct POLY DomainPoly;
+
+  neut_poly_set_zero (&DomainPoly);
+  net_tess_poly (Domain, 1, &DomainPoly);
 
   (*pVox).version = ut_alloc_1d_char (5);
   strcpy ((*pVox).version, "1.10");
@@ -105,7 +109,7 @@ net_vox (struct IN In, struct POLY Domain, struct GERMSET GermSet, struct VOX* p
   }
   else
   {
-    neut_poly_bbox (Domain, bboxv);
+    neut_poly_bbox (DomainPoly, bboxv);
     bbox[0][1] = bboxv[2];
     bbox[1][1] = bboxv[4];
     bbox[2][1] = bboxv[6];
@@ -130,7 +134,7 @@ net_vox (struct IN In, struct POLY Domain, struct GERMSET GermSet, struct VOX* p
       {
 	coo[0] = (*pVox).vsize[0] * ((double) i + 0.5);
 
-	if (neut_poly_point_in (Domain, coo) == 0)
+	if (neut_poly_point_in (DomainPoly, coo) == 0)
 	  (*pVox).VoxPoly[i][j][k] = 0;
 	else
 	{
@@ -165,6 +169,7 @@ net_vox (struct IN In, struct POLY Domain, struct GERMSET GermSet, struct VOX* p
   ut_free_1d (bboxv);
   ut_free_2d (bbox, 3);
   ut_free_1d (GermDist);
+  neut_poly_free (&DomainPoly);
 
   return;
 }

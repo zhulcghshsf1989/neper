@@ -5,14 +5,14 @@
 #include"nem_meshing_0D.h"
 
 void
-VerMeshing (struct TESS Tess, int ver, struct TESSPARA TessPara,
+VerMeshing (struct TESS Tess, int ver, struct MESHPARA MeshPara,
             struct NODES* pNodes, struct MESH* pMesh)
 {
   int     i, edge;
   double  mindist;
   double  cl;
   double  pcl;
-  double  clmin  = TessPara.clmin;
+  double  clmin  = MeshPara.clmin;
   double* dist   = NULL;
 
   neut_nodes_free (pNodes);
@@ -42,10 +42,10 @@ VerMeshing (struct TESS Tess, int ver, struct TESSPARA TessPara,
 /*********************************************************************** 
  * Nodes: if dbound ver & dboundvercl initialized, using it */
 
-  if (TessPara.dboundcl < 0)
+  if (MeshPara.dboundcl < 0)
   {
-    cl  = TessPara.cl;
-    pcl  = TessPara.pcl;
+    cl  = MeshPara.cl;
+    pcl  = MeshPara.pcl;
   }
   else 
   {
@@ -60,20 +60,20 @@ VerMeshing (struct TESS Tess, int ver, struct TESSPARA TessPara,
     vals[0] = neut_tess_ver_polybodylevelmax (Tess, Tess.PolyBody, ver);
     vals[1] = neut_tess_ver_polytruelevelmax (Tess, Tess.PolyTrue, ver);
 
-    status = ut_math_eval (TessPara.dbound, var_qty, vars, vals, &dbound);
+    status = ut_math_eval (MeshPara.dbound, var_qty, vars, vals, &dbound);
 
     if (status == -1)
       abort ();
 
     if (dbound == 1)
     {
-      cl  = TessPara.dboundcl;
-      pcl = TessPara.dboundpcl;
+      cl  = MeshPara.dboundcl;
+      pcl = MeshPara.dboundpcl;
     }
     else
     {
-      cl  = TessPara.cl;
-      pcl = TessPara.pcl;
+      cl  = MeshPara.cl;
+      pcl = MeshPara.pcl;
     }
 
     ut_free_2d_char (vars, var_qty);

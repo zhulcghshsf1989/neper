@@ -9,9 +9,11 @@
 
 #include"ut.h"
 #include"neut_t.h"
+#include "../net_domain/net_domain.h"
+#include "../net_tess/net_tess.h"
 
 #include"net_utils0.h"
-#include "../PolyComp/PolyAlloc/PolyAlloc0.h"
-#include "../PolyComp/PolyDet/PolyCalc/PolyCalc0.h"
-#include "../PolyComp/PolyReg/PolyReg0.h"
-#include "../PolyComp/PolyFree/PolyFree0.h"
+#include "../net_tess/net_polycomp/PolyAlloc/PolyAlloc0.h"
+#include "../net_tess/net_polycomp/PolyDet/PolyCalc/PolyCalc0.h"
+#include "../net_tess/net_polycomp/PolyReg/PolyReg0.h"
+#include "../net_tess/net_polycomp/PolyFree/PolyFree0.h"

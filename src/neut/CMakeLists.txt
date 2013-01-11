@@ -85,7 +85,8 @@ add_library (neut
 ./neut_tess/neut_tess_test/TestPoly/TestPoly1.c
 ./neut_tess/neut_tess_test/TestDom/TestDom1.c
 ./neut_tess/neut_tess_test/TestDom/TestDom2.c
-./neut_tess/neut_tess_gen/neut_tess_gen.c
+./neut_tess/neut_tess_topo/neut_tess_topo.c
+./neut_tess/neut_tess_geom/neut_tess_geom.c
 ./neut_vox/neut_vox_fscanf/neut_vox_fscanf1.c
 ./neut_vox/neut_vox_fscanf/neut_vox_fscanf2.c
 ./neut_vox/neut_vox_fprintf/neut_vox_fprintf1.c

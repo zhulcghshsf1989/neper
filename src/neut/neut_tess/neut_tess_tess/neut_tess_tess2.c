@@ -12,12 +12,6 @@ neut_tess_tessGen (struct TESS TessA, struct TESS *pTessB)
   neut_tess_tessFaceQty (TessA, pTessB);
   neut_tess_tessPolyQty (TessA, pTessB);
 
-  if (TessA.version != NULL)
-  {
-    (*pTessB).version = ut_alloc_1d_char (strlen (TessA.version) + 1);
-    strcpy ((*pTessB).version, TessA.version);
-  }
-
   (*pTessB).N = TessA.N;
   (*pTessB).Id = TessA.Id;
 

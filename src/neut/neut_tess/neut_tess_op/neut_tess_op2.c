@@ -11,7 +11,7 @@ neut_tess_init_domain_memcpy (struct TESS* pTess, struct POLY Domain, char* type
   struct TESS DomTess;
 
   neut_tess_set_zero (&DomTess);
-  neut_poly_tess (Domain, &DomTess);
+  net_poly_tess (Domain, &DomTess);
 
   // General
   (*pTess).DomType = ut_alloc_1d_char (strlen (type) + 1);

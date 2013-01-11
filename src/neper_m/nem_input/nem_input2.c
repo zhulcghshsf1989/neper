@@ -6,14 +6,14 @@
 
 void
 nem_input_treatargs (int fargc, char **fargv, int argc, char **argv,
-		     struct IN *pIn, struct TESSPARA *pTessPara)
+		     struct IN *pIn, struct MESHPARA *pMeshPara)
 {
   /* Setting default options */
-  nem_input_options_default (pIn, pTessPara);
+  nem_input_options_default (pIn, pMeshPara);
 
   /* Reading options. */
-  nem_input_options_set (pIn, pTessPara, fargc, fargv);
-  nem_input_options_set (pIn, pTessPara, argc, argv);
+  nem_input_options_set (pIn, pMeshPara, fargc, fargv);
+  nem_input_options_set (pIn, pMeshPara, argc, argv);
 
   // If not set up, setting dim default value
   if ((*pIn).meshdim == -1)

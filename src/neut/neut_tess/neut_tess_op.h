@@ -2,8 +2,8 @@
 /* Copyright (C) 2003-2012, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-#ifndef  NEUT_TESS_OP_H
-#define  NEUT_TESS_OP_H
+#ifndef NEUT_TESS_OP_H
+#define NEUT_TESS_OP_H
 
 /// \brief Set a TESS structure to zero
 ///
@@ -160,5 +160,11 @@ extern void neut_tess_init_domain_memcpy (struct TESS* pTess, struct POLY Domain
 ///
 ///
 extern void neut_tess_init_domain_facelabel (struct TESS* pTess);
+
+/// \brief Sort the polys of a tessellation.
+///
+///
+///
+extern void neut_tess_sort (struct TESS* pTess, char* entity, char* expr);
 
 #endif /* NEUT_TESS_OP_H */

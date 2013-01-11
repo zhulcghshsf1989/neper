@@ -7,7 +7,6 @@
 void
 neut_tess_set_zero (struct TESS* pTess)
 {
-  (*pTess).version = NULL;
   (*pTess).N = 0;
   (*pTess).Id = -1;
   (*pTess).morpho = 0;
@@ -80,7 +79,6 @@ neut_tess_set_zero (struct TESS* pTess)
 void
 neut_tess_free (struct TESS* pTess)
 {
-  ut_free_1d_char((*pTess).version);
   ut_free_2d     ((*pTess).VerCoo, (*pTess).VerQty + 1);
   ut_free_1d_int ((*pTess).VerEdgeQty);
   ut_free_2d_int ((*pTess).VerEdgeNb, (*pTess).VerQty + 1);
@@ -250,7 +248,7 @@ neut_tess_poly_switch (struct TESS* pTess, int p1, int p2)
   ut_array_1d_int_switch ((*pTess).PolyFaceQty, p1, p2);
 
   // FacePoly | the following is to avoid problems when p1 and p2 share
-  // a common face
+  // a com face
   for (i = 1; i <= (*pTess).PolyFaceQty[p1]; i++)
   {
     id = (*pTess).PolyFaceNb[p1][i];
@@ -924,7 +922,7 @@ neut_tess_init_domtessedge (struct TESS* pTess)
       {
 	nb[1] = (*pTess).DomTessFaceNb[dface2][k];
 
-	status = neut_tess_faces_commonedge (*pTess, nb, 2, &edge);
+	status = neut_tess_faces_comedge (*pTess, nb, 2, &edge);
 
 	if (status == 0)
 	{
@@ -1022,7 +1020,7 @@ neut_tess_init_edgedom (struct TESS* pTess)
     else if (qty == 2) // the edge is on a domain edge
     {
       (*pTess).EdgeDom[i][0] = 1;
-      status = neut_tess_domfaces_commondomedge (*pTess, nb, 2, &((*pTess).EdgeDom[i][1]));
+      status = neut_tess_domfaces_comdomedge (*pTess, nb, 2, &((*pTess).EdgeDom[i][1]));
       if (status == -1)
 	ut_error_reportbug ();
     }
@@ -1093,13 +1091,13 @@ neut_tess_init_verdom (struct TESS* pTess)
     else if (domfaceqty == 2) // the ver is on a domain edge
     {
       (*pTess).VerDom[i][0] = 1;
-      if (neut_tess_domfaces_commondomedge (*pTess, domface, domfaceqty, &((*pTess).VerDom[i][1])) != 0)
+      if (neut_tess_domfaces_comdomedge (*pTess, domface, domfaceqty, &((*pTess).VerDom[i][1])) != 0)
 	ut_error_reportbug ();
     }
     else if (domfaceqty >= 3) // the ver is on a domain ver
     {
       (*pTess).VerDom[i][0] = 0;
-      if (neut_tess_domfaces_commondomver (*pTess, domface, domfaceqty, &((*pTess).VerDom[i][1])) != 0)
+      if (neut_tess_domfaces_comdomver (*pTess, domface, domfaceqty, &((*pTess).VerDom[i][1])) != 0)
 	ut_error_reportbug ();
     }
 
@@ -1182,5 +1180,98 @@ neut_tess_init_facedom_face_v (struct TESS* pTess, int face)
   ut_free_1d_int (domface1);
   ut_free_1d_int (domface2);
 
+  return;
+}
+
+extern void
+neut_tess_sort (struct TESS* pTess, char* entity, char* expr)
+{
+  int i;
+  int var_qty;
+  char** vars = NULL;
+  double* vals = NULL;
+  double* res = NULL;
+  int status = -1;
+  char* expr2 = NULL;
+  int knownexpr;
+  int* perm = NULL;
+  
+  if (strcmp (expr, "true") == 0)
+    knownexpr =  3;
+  else if (strcmp (expr, "-true") == 0)
+    knownexpr = -3;
+  else if (strcmp (expr, "body") == 0)
+    knownexpr =  4;
+  else if (strcmp (expr, "-body") == 0)
+    knownexpr = -4;
+  else
+  {
+    knownexpr = 0;
+#ifdef HAVE_LIBMATHEVAL
+    status = ut_math_eval_substitute (expr, &expr2);
+#else 
+    ut_print_messagewnc (2, 72, "This capability is not available because this version of Neper has not been compiled with libmatheval.");
+    abort ();
+#endif
+  }
+
+  if (knownexpr == 0 && status == -1)
+  {
+    ut_print_message (2, 0, "Expression of unknown format.\n");
+    abort ();
+  }
+
+  if (strcmp (entity, "poly") == 0)
+  {
+    var_qty = 6;
+    vars = ut_alloc_2d_char (var_qty, 5);
+    vals = ut_alloc_1d      (var_qty);
+    strcpy (vars[0], "cenx");
+    strcpy (vars[1], "ceny");
+    strcpy (vars[2], "cenz");
+    strcpy (vars[3], "true");
+    strcpy (vars[4], "body");
+    strcpy (vars[5], "vol");
+
+    res = ut_alloc_1d ((*pTess).PolyQty + 1);
+    (*pTess).PolyId = ut_alloc_1d_int ((*pTess).PolyQty + 1);
+    perm = ut_alloc_1d_int ((*pTess).PolyQty + 1);
+    for (i = 1; i <= (*pTess).PolyQty; i++)
+    {
+      // initialize vals for this poly
+      vals[0] = (*pTess).CenterCoo[i][0];
+      vals[1] = (*pTess).CenterCoo[i][1];
+      vals[2] = (*pTess).CenterCoo[i][2];
+      vals[3] = (*pTess).PolyTrue[i];
+      vals[4] = (*pTess).PolyBody[i];
+      neut_tess_poly_volume (*pTess, i, &(vals[5]));
+
+      // calculating function value
+      if (knownexpr != 0)
+	res[i] = ut_num_sgn (knownexpr) * vals[ut_num_fabs_int(knownexpr)];
+#ifdef HAVE_LIBMATHEVAL 
+      else
+	status = ut_math_eval (expr2, var_qty, vars, vals, &(res[i]));
+#endif
+    }
+
+    ut_array_1d_sort_index (res + 1, (*pTess).PolyQty, (*pTess).PolyId + 1);
+
+    ut_array_1d_sort_index_perm ((*pTess).PolyId + 1, (*pTess).PolyQty, perm + 1);
+    ut_array_1d_int_addval ((*pTess).PolyId + 1, (*pTess).PolyQty, 1, (*pTess).PolyId + 1);
+    ut_array_1d_int_addval (perm + 1, (*pTess).PolyQty, 1, perm + 1);
+
+    for (i = 1; i <= (*pTess).PolyQty; i++)
+      neut_tess_poly_switch (pTess, i, perm[i]);
+
+    ut_free_2d_char (vars, var_qty);
+    ut_free_1d (vals);
+    ut_free_1d (res);
+    ut_free_1d_int (perm);
+  }
+
+  if (knownexpr == 0)
+    ut_free_1d_char (expr2);
+  
   return;
 }

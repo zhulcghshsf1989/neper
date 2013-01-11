@@ -126,7 +126,7 @@ nem_stat_elts (FILE* file, char* ste, struct NODES Nodes, struct MESH Mesh3D,
 
 void
 nem_stat_elsets (FILE* file, char* ste, struct NODES Nodes, struct MESH Mesh3D, 
-	         struct TESSPARA TessPara, struct TESS Tess)
+	         struct MESHPARA MeshPara, struct TESS Tess)
 {
   int i, j, t, b;
   double vol, rrmean, rrmin, rrmax, Osize;
@@ -172,9 +172,9 @@ nem_stat_elsets (FILE* file, char* ste, struct NODES Nodes, struct MESH Mesh3D,
       }
       else if (! strcmp (val[j], "Osize"))
       {
-	if (TessPara.cl > 0)
+	if (MeshPara.cl > 0)
 	{
-	  neut_mesh_elset_Osize (Nodes, Mesh3D, i, TessPara.cl, &Osize);
+	  neut_mesh_elset_Osize (Nodes, Mesh3D, i, MeshPara.cl, &Osize);
 	  fprintf (file, "%.12f", Osize);
 	}
 	else

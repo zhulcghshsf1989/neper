@@ -14,7 +14,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   struct IN In;
   struct TESS Tess;
   struct VOX Vox;
-  struct TESSPARA TessPara;
+  struct MESHPARA MeshPara;
   struct NODES Nodes, RNodes;
   struct MESH Mesh0D, Mesh1D, Mesh2D, Mesh3D;
   struct MESH RMesh0D, RMesh1D, RMesh2D, RMesh3D;
@@ -22,7 +22,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   struct NSET NSet0D, NSet1D, NSet2D;
 
   nem_in_set_zero     (&In);
-  nem_tesspara_set_zero (&TessPara);
+  nem_meshpara_set_zero (&MeshPara);
   neut_tess_set_zero  (&Tess);
   neut_vox_set_zero   (&Vox);
   neut_nodes_set_zero (&RNodes);
@@ -45,7 +45,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
 
   // Reading input data ###
   ut_print_message (0, 1, "Reading input data ...\n");
-  nem_input (&In, &TessPara, fargc, fargv, argc, argv);
+  nem_input (&In, &MeshPara, fargc, fargv, argc, argv);
 
   // ###################################################################
   // ### LOADING INPUT DATA ############################################
@@ -74,7 +74,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   }
 
   // Scaling input data if necessary (use of cl3/rcl3) ###
-  nem_init_scaling (In.elttype, &Tess, &Vox, &RNodes, RMesh0D, RMesh1D, RMesh2D, RMesh3D, &TessPara);
+  nem_init_scaling (In.elttype, &Tess, &Vox, &RNodes, RMesh0D, RMesh1D, RMesh2D, RMesh3D, &MeshPara);
 
   // ###################################################################
   // ### COMPUTING OUTPUT MESH #########################################
@@ -90,22 +90,22 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
     ut_print_message (0, 1, "Meshing ...");
 
     if (! strcmp (In.elttype, "tet"))
-      nem_meshing (In, TessPara, Tess, RNodes, RMesh1D, RMesh2D, &Nodes,
+      nem_meshing (In, MeshPara, Tess, RNodes, RMesh1D, RMesh2D, &Nodes,
 		   &Mesh0D, &Mesh1D, &Mesh2D, &Mesh3D);
     
     else if (! strcmp (In.elttype, "hex"))
     {
       if (In.tess != NULL)
-	nem_tess_mesh_hex (In, TessPara, Tess, &Nodes, &Mesh0D, &Mesh1D,
+	nem_tess_mesh_hex (In, MeshPara, Tess, &Nodes, &Mesh0D, &Mesh1D,
 	    &Mesh2D, &Mesh3D, &NSet2D);
       else if (In.vox != NULL)
-	nem_vox_mesh_hex (In, TessPara, Vox, &Nodes, &Mesh0D, &Mesh1D,
+	nem_vox_mesh_hex (In, MeshPara, Vox, &Nodes, &Mesh0D, &Mesh1D,
 	    &Mesh2D, &Mesh3D, &NSet2D);
     }
   }
 
   // Inverse scaling of input / mesh if necessary (use of cl3/rcl3) ###
-  nem_post_scaling (TessPara, &Tess, &Vox, &Nodes);
+  nem_post_scaling (MeshPara, &Tess, &Vox, &Nodes);
 
   // Loading mesh (mutually exclusive with the 2 previous ones) ###
   if (In.loadmesh != NULL)
@@ -191,14 +191,14 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
     if (Tess.PolyTrue == NULL)
       neut_tess_init_polytrue (&Tess);
 
-    nem_stat (Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, In, TessPara, Tess);
+    nem_stat (Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, In, MeshPara, Tess);
   }
 
   // ###################################################################
   // ### CLOSING #######################################################
   
   nem_in_free (In);
-  nem_tesspara_free (TessPara);
+  nem_meshpara_free (MeshPara);
   neut_tess_free  (&Tess);
   neut_nodes_free (&Nodes);
   neut_mesh_free (&Mesh0D);

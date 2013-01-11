@@ -5,7 +5,7 @@
 #include"nem_meshing_0D.h"
 
 void
-nem_meshing_0D (struct TESS Tess, struct TESSPARA TessPara, struct NODES* pNodes, struct MESH* pMesh0D)
+nem_meshing_0D (struct TESS Tess, struct MESHPARA MeshPara, struct NODES* pNodes, struct MESH* pMesh0D)
 {
   int i;
   struct NODES N;
@@ -21,10 +21,10 @@ nem_meshing_0D (struct TESS Tess, struct TESSPARA TessPara, struct NODES* pNodes
 
   if (Tess.maxff > 0)
   {
-    if (1.01 * Tess.sel < TessPara.cl / TessPara.pcl)
+    if (1.01 * Tess.sel < MeshPara.cl / MeshPara.pcl)
       ut_print_messagewnc (1, 72, "Regularization was used with sel < cl / pl.  The mesh could be locally overrefined.");
     if (Tess.dbound != NULL)
-      if (1.01 * Tess.dboundsel < TessPara.dboundcl / TessPara.dboundpcl)
+      if (1.01 * Tess.dboundsel < MeshPara.dboundcl / MeshPara.dboundpcl)
 	ut_print_messagewnc (1, 72, "Regularization was used with dboundsel < dboundcl / dboundpl.  The mesh could be locally overrefined.");
   }
 
@@ -33,7 +33,7 @@ nem_meshing_0D (struct TESS Tess, struct TESSPARA TessPara, struct NODES* pNodes
   ut_print_progress (stdout, 0, Tess.VerQty, "%3.0f%%", message);
   for (i = 1; i <= Tess.VerQty; i++)
   {
-    VerMeshing (Tess, i, TessPara, &N, &M);
+    VerMeshing (Tess, i, MeshPara, &N, &M);
 
     /* renumbering mesh nodes / elts to match global nodes */
     M.EltNodes[1][0] = (*pNodes).NodeQty + 1;

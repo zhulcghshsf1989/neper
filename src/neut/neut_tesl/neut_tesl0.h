@@ -3,7 +3,6 @@
 /* See the COPYING file in the top-level directory. */
 
 extern void neut_tesl_bbox (struct TESL, double**);
-extern void neut_tesl_volume (struct TESL, double*);
 extern void neut_tesl_domainface (struct TESL, int **);
 extern void neut_tesl_domainfacever (struct TESL, int **);
 extern int neut_tesl_poly_true (struct TESL, int);

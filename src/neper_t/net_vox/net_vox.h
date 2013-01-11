@@ -11,6 +11,7 @@
 #include"ut.h"
 #include"neut_t.h"
 #include"../structIn_t.h"
+#include"net_utils/net_utils0.h"
 #include"net_vox0.h"
 
 extern void net_vox_init_size (int, int, int*, double**, struct VOX*);

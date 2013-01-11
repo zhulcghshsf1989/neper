@@ -132,11 +132,6 @@ neut_debug_tess (FILE* file, struct TESS Tess)
   int i;
 
   fprintf (file, "====== Beginning of Tess ==================================\n");
-  if (Tess.version != NULL)
-    fprintf (file, "version = %s\n", Tess.version);
-  else
-    fprintf (file, "version = NULL\n");
-
   fprintf (file, "N = %d\n", Tess.N);
   fprintf (file, "Id = %d\n", Tess.Id);
 
@@ -740,7 +735,7 @@ neut_debug_poly (FILE* file, struct POLY Poly)
   fprintf (file, "FaceVerQty: FaceVerNb = \n");
   for (i = 1; i <= Poly.FaceQty; i++)
   {
-    printf ("%d: ", Poly.FaceVerQty[i]);
+    fprintf (file, "%d: ", Poly.FaceVerQty[i]);
     ut_array_1d_int_fprintf (file, Poly.FaceVerNb[i] + 1, Poly.FaceVerQty[i], "%d");
   }
 

@@ -7,184 +7,86 @@
 int
 neper_t (int fargc, char **fargv, int argc, char **argv)
 {
-  // Initializing variables --------------------------------------------
+  // ###################################################################
+  // ### INITIALIZING ##################################################
   
-  struct IN In;
-  struct TESSPARA TessPara;
-  struct POLY Domain;
-  struct GERMSET GermSet;
-  struct TESS Tess;
-  struct VOX Vox;
+  // Variable declaration ###
+  int i;
   FILE* file = NULL;
-  char* action = NULL;
+  struct IN In;
+  struct REG Reg;
+  struct GERMSET GermSet;
+  struct TESS* Tess;
+  struct VOX Vox;
 
-  neut_tess_set_zero     (&Tess);
-  neut_vox_set_zero     (&Vox);
   net_in_set_zero       (&In);
-  nem_tesspara_set_zero (&TessPara);
+  net_reg_set_zero      (&Reg);
   neut_germset_set_zero (&GermSet);
-  neut_poly_set_zero    (&Domain);
+  neut_vox_set_zero     (&Vox);
 
-  // Printing header ---------------------------------------------------
+  Tess = calloc (sizeof (struct TESS), 2);
+  for (i = 0; i < 2; i++)
+    neut_tess_set_zero (&(Tess[i]));
 
+  // Printing program header ###
   ut_print_moduleheader ("-T", fargc, fargv, argc, argv);
 
-  // Reading input data ------------------------------------------------
- 
+  // Reading input data ###
   ut_print_message (0, 1, "Reading input data ...\n");
-  InputData_t (&In, &TessPara, &action, fargc, fargv, argc, argv);
+  net_input (&In, &Reg, fargc, fargv, argc, argv);
 
-  if (ut_string_inlist (action, ',', "tessellate") == 1
-   || ut_string_inlist (action, ',', "voxelize") == 1  )
+  // ###################################################################
+  // ### CREATING INPUTS: DOMAIN AND GERMS #############################
+
+  // Creating domain ###
+  if (strcmp (In.input, "tess") != 0 && strcmp (In.input, "vox") != 0)
   {
     ut_print_message (0, 1, "Creating domain ...\n");
-    DomainComp (In, &Domain);
+    net_domain (In, &(Tess[0]));
 
     ut_print_message (0, 1, "Creating polyhedron centres ...\n");
-    GermDistrib (In, Domain, &GermSet);
+    net_germ (In, Tess[0], &GermSet);
     ut_print_message (0, 2, "%d centres created.\n", GermSet.N);
     if (GermSet.nN != 0)
       ut_print_message (0, 2, "%d centres created outside the domain.\n", GermSet.nN);
-  /*
-   * Init GermSet here 
-  if (! strcmp ((*pIn).input, "n_reg"))
-    net_n1d_morpho_n ((*pIn).N1d, parts[0], &((*pIn).n));
-  */
   }
 
-  // -------------------------------------------------------------------
-  // Creating / loading + action on tessellation (depending on input) --
-  // -------------------------------------------------------------------
- 
-  if (ut_string_inlist (action, ',', "tessellate") == 1
-   || ! strcmp (In.input, "tess"))
+  // ###################################################################
+  // ### COMPUTING TESSELLATION ########################################
+
+  if (! strcmp (In.mode, "tess"))
   {
-    if (ut_string_inlist (action, ',', "tessellate") == 1)
+    if (strcmp (In.input, "tess") != 0)
     {
-      int i, iter;
-      struct POLY* Poly = NULL;
-      struct TESL Tesl;
-      neut_tesl_set_zero (&Tesl);
-
-      char* message = ut_alloc_1d_char (1000);
-      double rdistmax = -1;
-      int status = 1;
-
-      // Printing message
-      if (In.centroid == 0)
-	ut_print_message (0, 1, "Creating tessellation ... ");
-      else
-      {
-	ut_print_message (0, 1,
-	    "Creating centroidal tessellation ... (max = %d, conv = %.2f)\n",
-	    In.centroiditermax, In.centroidconv);
-	ut_print_message (0, 2, "iter      conv\n");
-	ut_print_message (0, 2, "");
-      }
-
-      for (iter = 1; (status == 1) &&
-		     (iter <= ((In.centroid == 1) ? In.centroiditermax : 1)); iter++)
-      {
-	if (iter > 1)
-	{
-	  for (i = 0; i < (int) strlen (message); i++)
-	    printf ("\b");
-	}
-
-	if (In.centroid)
-	{
-	  sprintf (message, "%4d", iter);
-	  printf ("%s", message);
-	  fflush (stdout);
-	}
-
-	// Calculation of all polyhedra, one by one
-	PolyComp (Domain, GermSet, &Poly, 0);
-
-	// Sticking polyhedra into a single tessellation
-	if (iter > 1)
-	  neut_tesl_free (&Tesl);
-
-	Tessellation (GermSet, Poly, &Tesl);
-
-	for (i = 1; i <= GermSet.N; i++)
-	  neut_poly_free (&(Poly[i]));
-	free (Poly);
-	Poly = NULL;
-
-	if (In.centroid == 1)
-	  status = net_centroid (In, Tesl, &GermSet, &rdistmax);
-	else 
-	  status = 0;
-
-	if (In.centroid)
-	{
-	  printf ("  %8.3g", rdistmax);
-	  fflush (stdout);
-	  sprintf (message, "%s  %8.3g", message, rdistmax);
-	}
-      }
-      
-      printf ("\n");
-      
-      neut_tesl_tess (Tesl, &Tess);
-      neut_tess_init_domain_poly (&Tess, Domain, In.domain);
-
-      neut_tesl_free (&Tesl);
-      
-      ut_free_1d_char (message);
+      ut_print_message (0, 1, "Creating tessellation ... ");
+      net_tess (In.centroid, In.centroidfact, In.centroiditermax,
+		In.centroidconv, In.domain, Tess[0], &GermSet, &(Tess[1]));
     }
 
-    else if (! strcmp (In.input, "tesl"))
+    else
     {
       ut_print_message (0, 1, "Importing tessellation ...\n");
       file = ut_file_open (In.load, "r");
-      neut_tess_fscanf_verbosity (file, &Tess, In.checktess);
+      neut_tess_fscanf_verbosity (file, &(Tess[1]), In.checktess);
       ut_file_close (file, In.load, "r");
 
       if (In.checktess)
 	return 0;
     }
-
-    if (In.sorttess_qty > 0)
-    {
-      ut_print_message (0, 1, "Sorting tessellation ...\n");
-      net_tess_sort (&Tess, In.sorttess[0], In.sorttess[1]);
-    }
-  
-    if (TessPara.maxff > 0)
-    {
-      net_init_reg (&Tess, &TessPara);
-      RegularizeTess (&Tess, TessPara, In);
-    }
-
-    if (In.scale != NULL)
-      neut_tess_scale (&Tess, In.scale[0], In.scale[1], In.scale[2]);
-  
-    // -------------------------------------------------------------------
-    // Creating voxel data on tessellation (depending on input) ----------
-    // -------------------------------------------------------------------
-
-    if (ut_string_inlist (action, ',', "tess_voxelize") == 1)
-    {
-      ut_print_message (0, 1, "Voxelizing tessellation ... ");
-      net_tess_vox (In, Tess, &Vox);
-    }
   }
 
-  // -------------------------------------------------------------------
-  // Creating / loading + action on voxel data (depending on input) ----
-  // -------------------------------------------------------------------
+  // ###################################################################
+  // ### COMPUTING VOXEL DATA ##########################################
   
-  else if (ut_string_inlist (action, ',', "voxelize") == 1
-        || ! strcmp (In.input, "vox"))
+  else if (! strcmp (In.mode, "vox"))
   {
-    if (ut_string_inlist (action, ',', "voxelize") == 1)
+    if (strcmp (In.input, "vox") != 0)
     {
       ut_print_message (0, 1, "Voxelizing domain ... \n");
-      net_vox (In, Domain, GermSet, &Vox);
+      net_vox (In, Tess[0], GermSet, &Vox);
     }
-    else if (! strcmp (In.input, "vox"))
+
+    else 
     {
       ut_print_message (0, 1, "Importing voxel data ...\n");
       file = ut_file_open (In.load, "r");
@@ -199,27 +101,61 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
     }
   }
 
-  // -------------------------------------------------------------------
-  // Action on voxel data (depending on input) -------------------------
-  // -------------------------------------------------------------------
-  
-  // Scaling
-  if ( Vox.PolyQty > 0 && In.scale != NULL)
-      neut_vox_scale (&Vox, In.scale[0], In.scale[1], In.scale[2],
-	  NULL);
+  // Sorting tessellation ###
+  if (In.sorttess_qty > 0)
+  {
+    ut_print_message (0, 1, "Sorting polys with expression \"%s\" ...\n", 
+		      In.sorttess[1]);
+    if ((Tess[1]).PolyQty > 0)
+      neut_tess_sort (&(Tess[1]), In.sorttess[0], In.sorttess[1]);
+  }
 
-  // Writing results ---------------------------------------------------
+  // Scaling ###
+  if (In.scale != NULL)
+  {
+    if ((Tess[1]).PolyQty > 0)
+      neut_tess_scale (&(Tess[1]), In.scale[0], In.scale[1], In.scale[2]);
+
+    if (Vox.PolyQty > 0)
+      neut_vox_scale (&Vox, In.scale[0], In.scale[1], In.scale[2], NULL);
+  }
+  
+  // #################################################################
+  // ### Regularizing tessellation ###################################
+
+  if (Reg.maxff > 0)
+  {
+    if ((Tess[1]).PolyQty > 0)
+    {
+      net_init_reg (&(Tess[1]), &Reg);
+      net_regularization (Reg, &(Tess[1]));
+    }
+  }
+
+  // #################################################################
+  // ### Voxelizing tessellation if necessary ########################
+
+  if ((Tess[1]).PolyQty && ut_string_inlist (In.format, ',', "vox") == 1)
+  {
+    ut_print_message (0, 1, "Voxelizing tessellation ... ");
+    net_tess_vox (In, Tess[1], &Vox);
+  }
+
+  // ###################################################################
+  // ### WRITING RESULTS ###############################################
  
   ut_print_message (0, 1, "Writing results ...\n");
-  Res_t (In, Tess, Vox);
+  net_res (In, Tess[1], Vox);
 
-  // Cleaning memory ---------------------------------------------------
+  // ###################################################################
+  // ### CLOSING #######################################################
 
   net_in_free (In);
   neut_germset_free (GermSet);
-  neut_tess_free (&Tess);
-  neut_vox_free (&Vox);
-  neut_poly_free (&Domain);
+  neut_vox_free     (&Vox);
 
-  return 0;
+  for (i = 0; i < 2; i++)
+    neut_tess_free (&(Tess[i]));
+
+  return EXIT_SUCCESS;
 }

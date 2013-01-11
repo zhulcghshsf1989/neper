@@ -5,7 +5,7 @@
 #include"nem_meshing_3D.h"
 
 void
-nem_meshing_3D (struct IN In, struct TESSPARA TessPara, struct TESS Tess,
+nem_meshing_3D (struct IN In, struct MESHPARA MeshPara, struct TESS Tess,
 	   struct NODES *pNodes, struct MESH Mesh2D, struct MESH *pMesh3D)
 {
   int i;
@@ -66,7 +66,7 @@ nem_meshing_3D (struct IN In, struct TESSPARA TessPara, struct TESS Tess,
 
     // Setting parameter (cl) ------------------------------------------
     
-    nem_meshing_3D_poly_cl (TessPara, Tess, i, &cl);
+    nem_meshing_3D_poly_cl (MeshPara, Tess, i, &cl);
 
     // Meshing poly ----------------------------------------------------
     

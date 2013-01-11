@@ -8,8 +8,6 @@
 struct TESS
 {
   // GENERAL INFORMATION -----------------------------------------------
-  char* version;
-
   int N;              // value of option -n.
 
   int Id;             // identifier of the tessellation

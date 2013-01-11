@@ -8,7 +8,7 @@ void
 nem_stat (struct NODES Nodes,
 	  struct MESH Mesh0D, struct MESH Mesh1D,
 	  struct MESH Mesh2D, struct MESH Mesh3D, 
-	  struct IN In, struct TESSPARA TessPara, struct TESS Tess)
+	  struct IN In, struct MESHPARA MeshPara, struct TESS Tess)
 {
   FILE* file = NULL;
   char* name = NULL;
@@ -40,7 +40,7 @@ nem_stat (struct NODES Nodes,
     name = ut_string_addextension (In.body, "stelset");
 
     file = ut_file_open (name, "w");
-    nem_stat_elsets (file, In.stelset, Nodes, Mesh3D, TessPara, Tess);
+    nem_stat_elsets (file, In.stelset, Nodes, Mesh3D, MeshPara, Tess);
     ut_file_close (file, name, "w");
 
     ut_free_1d_char (name);

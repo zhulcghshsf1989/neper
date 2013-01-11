@@ -8,5 +8,6 @@
 #include<string.h>
 
 #include "neut.h"
+#include "../../neper_t/net_utils/net_utils0.h"
 
 #include"../neut_tess_op.h"
