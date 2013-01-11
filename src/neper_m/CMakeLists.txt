@@ -7,7 +7,7 @@ option (HAVE_LIBSCOTCH   "Use libscotch"                        OFF)
 
 include_directories("${PROJECT_BINARY_DIR}")
 
-add_definitions(-Wall -W -g -O3)
+add_definitions(-Wall -W -g -O3 -Werror)
 set (CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
 
 add_library (neper_m

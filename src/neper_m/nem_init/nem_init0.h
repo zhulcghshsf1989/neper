@@ -2,7 +2,7 @@
 /* Copyright (C) 2003-2012, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-extern void nem_init_remesh (char*, char*, struct TESS*, struct NODES*,
+extern void nem_init_remesh (struct TESS*, struct NODES*,
     struct MESH*, struct MESH*, struct MESH*, struct MESH*);
 extern void nem_init_scaling (char* elttype, struct TESS* pTess, struct VOX* pVox,
     struct NODES* pRNodes, struct MESH RMesh0D, struct MESH RMesh1D,

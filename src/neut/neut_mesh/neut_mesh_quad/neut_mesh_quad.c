@@ -8,14 +8,11 @@ void
 neut_mesh_quad (int *size, int order, struct NODES *pNodes, struct MESH
     *pMesh, struct NSET* pNSet2D)
 {
-  int i, j, k, elt, x, y, z, pos1, pos2, nid, eid, nodesperelt;
+  int i, x, y, z, pos1, pos2, nid, eid, nodesperelt;
   double nx, ny, nz;
   int *nqty = ut_alloc_1d_int (3);
 
   /* General ------------------------------------------------------- */
-
-  (*pMesh).msize = ut_alloc_1d_int (3);
-  ut_array_1d_int_memcpy ((*pMesh).msize, 3, size);
 
   (*pMesh).EltOrder = order;
   (*pMesh).Dimension = 3;
@@ -25,26 +22,7 @@ neut_mesh_quad (int *size, int order, struct NODES *pNodes, struct MESH
   nodesperelt = neut_elt_nodeqty ((*pMesh).EltType, (*pMesh).Dimension,
       (*pMesh).EltOrder);
   
-  (*pMesh).EltQty   = (*pMesh).msize[0] * (*pMesh).msize[1] * (*pMesh).msize[2];
-
-  /* Calculating element coordinates ------------------------------- */
-
-  // Filling EltCoo
-  (*pMesh).EltCoo   = ut_alloc_2d ((*pMesh).EltQty + 1, 3);
-
-  elt = 0;
-  for (k = 1; k <= (*pMesh).msize[2]; k++)
-    for (j = 1; j <= (*pMesh).msize[1]; j++)
-      for (i = 1; i <= (*pMesh).msize[0]; i++)
-      {
-	elt++;
-	((*pMesh).EltCoo[elt][0] = ((double) i - 0.5) /
-	                           (double) (*pMesh).msize[0]);
-	((*pMesh).EltCoo[elt][1] = ((double) j - 0.5) /
-	                           (double) (*pMesh).msize[1]);
-	((*pMesh).EltCoo[elt][2] = ((double) k - 0.5) /
-	                           (double) (*pMesh).msize[2]);
-      }
+  (*pMesh).EltQty   = size[0] * size[1] * size[2];
 
   /* Calculating NodeCoo and NodeQty ------------------------------- */
 

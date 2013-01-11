@@ -16,6 +16,14 @@ extern void neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes,
     struct MESH *pMesh0D, struct MESH *pMesh1D, struct MESH *pMesh2D,
     struct MESH *pMesh3D);
 
+/// \brief Read in a mesh at the Gmsh format.
+///
+///
+///
+extern void neut_mesh_name_fscanf_msh (char* filename, struct NODES *pNodes,
+    struct MESH *pMesh0D, struct MESH *pMesh1D, struct MESH *pMesh2D,
+    struct MESH *pMesh3D);
+
 /// \brief Read in a mesh at the geof format.
 ///
 ///

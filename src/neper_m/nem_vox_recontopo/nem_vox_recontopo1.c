@@ -24,9 +24,9 @@ nem_vox_recontopo (struct VOX Vox, struct TESS* pTess, struct NODES* pNodes,
   neut_nodes_scale (pNodes, dsize[0], dsize[1], dsize[2]);
 
   elt = 0;
-  for (k = 1; k <= Mesh3D.msize[2]; k++)
-    for (j = 1; j <= Mesh3D.msize[1]; j++)
-      for (i = 1; i <= Mesh3D.msize[0]; i++)
+  for (k = 1; k <= Vox.size[2]; k++)
+    for (j = 1; j <= Vox.size[1]; j++)
+      for (i = 1; i <= Vox.size[0]; i++)
 	Mesh3D.EltElset[++elt] = Vox.VoxPoly[i - 1][j - 1][k - 1];
 
   neut_mesh_init_elsets (&Mesh3D);

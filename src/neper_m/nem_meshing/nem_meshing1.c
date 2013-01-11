@@ -41,7 +41,7 @@ nem_meshing (struct IN In, struct TESSPARA TessPara, struct TESS Tess,
   {
     nem_meshing_2D (In, TessPara, Tess, face_eq, face_op, RNodes, RMesh2D, *pMesh1D, pNodes, pMesh2D);
     
-    if (In.remesh)
+    if (pMesh2D != NULL && (*pMesh2D).EltQty > 0)
       nem_mesh_pinching (Tess, face_eq, *pMesh1D, *pNodes, pMesh2D);
   }
 

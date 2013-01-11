@@ -7,24 +7,35 @@
 
 struct MESH
 {
-  char* EltType;
-  int Dimension;		/* Dimension of the mesh (0,1,2 or 3). */
-  int EltOrder;			/* elt order */
+  // mesh properties (all elements are of the same type / dimension / order)
 
-  int EltQty;
-  int **EltNodes;		/* EltNodes[i][0...]: nodes of elt i */
+  char* EltType;                // type of elements (tri or quad)
+  int Dimension;		// Dimension (0, 1, 2 or 3)
+  int EltOrder;			// Elt order (1 or 2)
 
-  int ElsetQty;			/* nb of elsets */
-  int **Elsets;			/* Elsets[i][0,1...] elset qty of elts */
-                                /* and their nbs */
+  // information on the elements and element sets
 
-  int* EltElset;
+  int EltQty;                   // total number of elements
+                                // arrays are indexed [1...EltQty]
 
-  int NodeQty;
-  int** NodeElts;
+  int **EltNodes;		// for each elt: nodes, indexed [0...]
 
-  double** EltCoo;              // Used in -MM.
-  int* msize;                   // Used in -MM.
+  int ElsetQty;			// total number of elsets
+                                // arrays are indexed [1...ElsetQty]
+
+  int **Elsets;			// for each elset:
+                                // [0]: total number of elts
+                                // [1...Elsets[][0]]: ids of the elts
+
+  int* EltElset;                // for each elt: elset
+
+  // information on the nodes
+
+  int NodeQty;                  // total number of nodes
+
+  int** NodeElts;               // for each node:
+                                // [0]: total number of elts
+                                // [1...NodeElts[][0]]: ids of the elts
 };
 typedef struct MESH MESH;
 

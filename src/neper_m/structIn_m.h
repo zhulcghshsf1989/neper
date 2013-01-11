@@ -7,83 +7,79 @@
 
 struct IN
 {
-  char *gmsh;
+  // prerequisites
 
-  /* FILE NAMES */
-  char* loadmesh;
+  char* gmsh;     	    // absolute path to Gmsh
 
-  /* MESH */
-  int morder;
-  int meshdim;
-  char* elttype;
+  // input data
 
-  char* meshpoly;
-  char* meshface;
+  char* tess;               // input tess file
+  char* vox;                // input vox  file
+  char *mesh;               // input mesh file
+  char* nodecoo;            // node coo file (goes with mesh)
 
-  char* outdim;
+  char* loadmesh;           // load an output mesh file
 
-  char *format;			/* tess, msh, geof and/or fepx */
-  char* mesh2dalgo;		/* 2d algo: 1: iso, 2: aniso, 3: triangle */
-  char* mesh3dalgo;		/* 3d algo: 1: iso, 2: aniso, 3: triangle */
-  char* mesh3doptiexpr;
-  char* mesh3doptidisexpr;
-  double mesh2dmaxtime;
-  double mesh2drmaxtime;
-  int    mesh2diter;
-  double mesh3dmaxtime;
-  double mesh3drmaxtime;
-  int    mesh3diter;
-  int    mesh3dreport;
-  double mesh3dclconv;
+  // meshing options
+  char* elttype;            // type of elements (tri or quad)
+  int morder;               // order of the mesh (1 or 2)
+  int meshdim;              // dimension of the mesh (0, 1, 2 or 3)
 
-  int singnodedup;
-  double dupnodemerge;
+  char* meshpoly;           // polys to mesh (expression)
+  char* meshface;           // faces to mesh (expression)
 
-  char *nset;		/* list of nsets (sep by ',') if nset = 0 */
-  char* faset;          /* surfs to print */
+  char* outdim;             // dimensions of the output meshes
 
-  /* operation to do */
-  int mesh;	
-  int remesh;	
-  int remap;
+  char*  mesh2dalgo;        // 2d meshing algos
+  char*  mesh3dalgo;        // 3d meshing algos
+  char*  mesh3doptiexpr;    // expression of O (see the Neper paper)
+  char*  mesh3doptidisexpr; // expression of Odis (see the Neper paper)
+  double mesh2dmaxtime;     // 2D mesher max run time
+  double mesh2drmaxtime;    // 2D mesher max relative run time
+  int    mesh2diter;        // 2D mesher max number of iterations
+  double mesh3dmaxtime;     // 3D mesher max run time
+  double mesh3drmaxtime;    // 3D mesher max relative run time
+  int    mesh3diter;        // 3D mesher max number of iterations
+  double mesh3dclconv;      // 3D mesh cl convergence criterion
+  int    mesh3dreport;      // report statistics on the 3D mesh (logical)
 
-  char* partmethod;
-  int partqty;
-  int partsets;
-  double partbalancing;
-  int partrenumber;
-  int partmode;
-  char* partarchfile;
-  char* npart;
-  char* epart;
-  char*   remap2;
-  char*** remapspec;
+  int transportqty;         // number of data to transport
+  char*** transportspec;    // data to transport, indexed [0...transportqtytransportqty-1]
 
-  char *body;
-  char *tess;
-  char *vox;
-  char *stn;
-  char *ste;
-  char *stelset;
-  
-  char *remesh2;
-  char *remeshtess;
-  char *transporttess;
-  char *rem1;
-  char *msh;
-  char *abq;
-  char *geof;
-  char *stenode;
-  char *steele;
-  char *scm;
-  char *scg;
-  char *fepx1;
-  char *fepx2;
-  char *fepx3;
-  char *fepx4;
-  char *fepx5;
-  
-  char* nodecoo;
+  int singnodedup;          // duplicate singular nodes (logical)
+  double dupnodemerge;      // merge duplicate nodes (tolerancy)
+
+  char *nset;	            // list of nsets
+  char* faset;              // list of fasets
+
+  int partmode;             // partitioning mode: 0 = partitioning, 1 = mapping
+  char* partmethod;         // partitioning method (in Scotch jargon)
+  int partqty;              // number of partitions
+  char* partarchfile;       // partitioning architecture file
+  double partbalancing;     // partitioning balancing factor
+  int partrenumber;         // renumber nodes / elts according to partitions
+  int partsets;             // write partitions in the mesh file
+
+  // output details
+
+  char *format;             // format of the output mesh
+
+  char* body;               // output file name, without extension
+  char *msh;                // mesh file at the msh format
+  char *abq;                // mesh file at the Abaqus format
+  char *geof;               // mesh file at the Zset/Zebulon format
+  char *fepx1;              // mesh file at the fepx format, parms file
+  char *fepx2;              // mesh file at the fepx format, mesh  file
+  char *fepx3;              // mesh file at the fepx format, surf  file
+  char *fepx4;              // mesh file at the fepx format, opt   file
+  char *fepx5;              // mesh file at the fepx format, bcs   file
+
+  char* npart;              // node partition file
+  char* epart;              // element partition file
+  char *stn;                // statistics on the nodes
+  char *ste;                // statistics on the elts
+  char *stelset;            // statistics on the elsets
+
 };
 typedef struct IN IN;
 

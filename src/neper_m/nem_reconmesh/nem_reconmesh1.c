@@ -37,8 +37,6 @@ nem_reconmesh (char* dim, struct NODES* pNodes, struct MESH *pMesh0D,
   (*pTessb).morpho = ut_alloc_1d_char (10);
   strcpy ((*pTessb).morpho, "unknown");
 
-  neut_nodes_init_bbox (pNodes);
-
   recon_dim = 3;
   if (ut_string_inlist (dim, ',', "0"))
     recon_dim = 0;

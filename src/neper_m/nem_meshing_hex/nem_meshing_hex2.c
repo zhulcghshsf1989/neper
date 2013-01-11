@@ -5,16 +5,18 @@
 #include "nem_meshing_hex.h"
 
 void
-nem_meshing_hexFTess (struct TESS Tess, struct MESH* pMesh)
+nem_meshing_hexFTess (struct TESS Tess, struct NODES Nodes, struct MESH* pMesh)
 {
   int elt, pid, prevpid;
   char* progress = ut_alloc_1d_char (100);
+  double* coo = ut_alloc_1d (3);
 
   ut_print_progress (stdout, 0, (*pMesh).EltQty, "%3.0f%%", progress);
   prevpid = 1;
   for (elt = 1; elt <= (*pMesh).EltQty; elt++)
   {
-    if (neut_tess_point_inpoly (Tess, (*pMesh).EltCoo[elt], prevpid) == 1)
+    neut_mesh_elt_centre (*pMesh, Nodes, elt, coo);
+    if (neut_tess_point_inpoly (Tess, coo, prevpid) == 1)
       (*pMesh).EltElset[elt] = prevpid;
     else
       for (pid = 1; pid <= Tess.PolyQty; pid++)
@@ -22,7 +24,7 @@ nem_meshing_hexFTess (struct TESS Tess, struct MESH* pMesh)
 	if (pid == prevpid)
 	  continue;
 
-	if (neut_tess_point_inpoly (Tess, (*pMesh).EltCoo[elt], pid) == 1)
+	if (neut_tess_point_inpoly (Tess, coo, pid) == 1)
 	{
 	  (*pMesh).EltElset[elt] = pid;
 	  prevpid = pid;
@@ -35,6 +37,7 @@ nem_meshing_hexFTess (struct TESS Tess, struct MESH* pMesh)
   }
 
   ut_free_1d_char (progress);
+  ut_free_1d (coo);
 
   return;
 }

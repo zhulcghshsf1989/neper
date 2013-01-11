@@ -33,12 +33,11 @@ nem_tess_mesh_hex (struct IN In, struct TESSPARA TessPara, struct TESS Tess,
 
   neut_mesh_quad (msize, In.morder, pNodes, pMesh3D, pNSet2D);
   neut_nodes_scale (pNodes, dsize[0][1], dsize[1][1], dsize[2][1]);
-  neut_mesh_scale  (pMesh3D, dsize[0][1], dsize[1][1], dsize[2][1]);
 
   /* Searching elsets ---------------------------------------------- */
 
   // ut_print_message (0, 2, "Searching elsets ... ");
-  nem_meshing_hexFTess (Tess, pMesh3D);
+  nem_meshing_hexFTess (Tess, *pNodes, pMesh3D);
 
   neut_mesh_init_elsets (pMesh3D);
 
@@ -111,7 +110,6 @@ nem_vox_mesh_hex (struct IN In, struct TESSPARA TessPara, struct VOX Vox,
 
   neut_mesh_quad (msize, In.morder, pNodes, pMesh3D, pNSet2D);
   neut_nodes_scale (pNodes, dsize[0][1], dsize[1][1], dsize[2][1]);
-  neut_mesh_scale  (pMesh3D, dsize[0][1], dsize[1][1], dsize[2][1]);
 
   /*
     // input if a vox file - reading vox
@@ -130,20 +128,18 @@ nem_vox_mesh_hex (struct IN In, struct TESSPARA TessPara, struct VOX Vox,
   */
 
   printf ("\n");
-  (*pMesh3D).msize = ut_alloc_1d_int (3);
-  ut_array_1d_int_memcpy ((*pMesh3D).msize, 3, msize);
 
   for (i = 0; i < 3; i++)
-    scale[i] = (double) (*pMesh3D).msize[i] / Vox.size[i];
+    scale[i] = (double) msize[i] / Vox.size[i];
 
   neut_vox_set_zero (&Vox2);
   neut_vox_memcpy (Vox, &Vox2);
   neut_vox_gridscale (&Vox2, scale[0], scale[1], scale[2]);
 
   elt = 0;
-  for (k = 1; k <= (*pMesh3D).msize[2]; k++)
-    for (j = 1; j <= (*pMesh3D).msize[1]; j++)
-      for (i = 1; i <= (*pMesh3D).msize[0]; i++)
+  for (k = 1; k <= msize[2]; k++)
+    for (j = 1; j <= msize[1]; j++)
+      for (i = 1; i <= msize[0]; i++)
 	(*pMesh3D).EltElset[++elt] = Vox2.VoxPoly[i - 1][j - 1][k - 1];
 
   neut_mesh_init_elsets (pMesh3D);

@@ -17,6 +17,7 @@ nem_input_options_default (struct IN *pIn, struct TESSPARA *pTessPara)
 
   (*pIn).tess = NULL;
   (*pIn).vox = NULL;
+  (*pIn).mesh = NULL;
   (*pIn).msh = NULL;
   (*pIn).geof = NULL;
   (*pIn).fepx1 = NULL;
@@ -35,9 +36,6 @@ nem_input_options_default (struct IN *pIn, struct TESSPARA *pTessPara)
   (*pIn).meshdim = -1;
   (*pIn).elttype = ut_alloc_1d_char (10);
   strcpy ((*pIn).elttype, "tet");
-
-  (*pIn).mesh = 0;
-  (*pIn).remesh = 0;
 
   (*pIn).singnodedup = 0;
   (*pIn).dupnodemerge = -1;
@@ -95,12 +93,8 @@ nem_input_options_default (struct IN *pIn, struct TESSPARA *pTessPara)
   (*pIn).mesh3dclconv = 0.02;
 
   /* Options for remeshing --------------------------------- */
-  (*pIn).remap = 0;
-  (*pIn).remesh2 = NULL;
-  (*pIn).remeshtess = NULL;
-  (*pIn).transporttess = NULL;
-  (*pIn).remap2 = NULL;
-  (*pIn).remapspec = NULL;
+  (*pIn).transportqty = 0;
+  (*pIn).transportspec = NULL;
 
   (*pIn).nodecoo = NULL;
   (*pIn).loadmesh = NULL;
@@ -184,8 +178,6 @@ nem_input_options_set (struct IN *pIn, struct TESSPARA *pTessPara,
   // Remeshing ---------------------------------------------------------
   sprintf (ArgList[++ArgQty], "-remesh");
   sprintf (ArgList[++ArgQty], "-remeshtess");
-  sprintf (ArgList[++ArgQty], "-remap");      // deprecated
-  sprintf (ArgList[++ArgQty], "-remaptess");  // deprecated
   sprintf (ArgList[++ArgQty], "-transport");
   sprintf (ArgList[++ArgQty], "-transporttess");
 
@@ -203,7 +195,7 @@ nem_input_options_set (struct IN *pIn, struct TESSPARA *pTessPara,
   /* Reading arguments ----------------------------------- */
   for (i = 1; i < argc; i++)
   {
-    /* Input file name */
+    /* Input data --------------------------------------------------- */
     if (argv[i][0] != '-')
     {
       if ((*pIn).tess == NULL && (*pIn).vox == NULL)
@@ -224,8 +216,6 @@ nem_input_options_set (struct IN *pIn, struct TESSPARA *pTessPara,
 	  (*pIn).vox = ut_alloc_1d_char (strlen (tmp) + 1);
 	  strcpy ((*pIn).vox, tmp);
 	}
-
-	(*pIn).mesh = 1;
 
 	ut_free_1d_char (tmp);
 	ut_free_1d_char (format);
@@ -253,18 +243,21 @@ nem_input_options_set (struct IN *pIn, struct TESSPARA *pTessPara,
 	ut_arg_badarg ();
       }
 
+      /* Prerequisites ---------------------------------------------- */
+
+      if (strcmp (Arg, "-gmsh") == 0 && i < argc - 1)
+      {
+	ut_free_1d_char ((*pIn).gmsh);
+	(*pIn).gmsh = ut_arg_nextaschar (argv, &i, Arg);
+      }
+
       /* General options ------------------------------------------------ */
-      if (strcmp (Arg, "-o") == 0 && i < argc - 1)
+
+      else if (strcmp (Arg, "-o") == 0 && i < argc - 1)
       {
 	ut_free_1d_char ((*pIn).body);
 	(*pIn).body = ut_arg_nextaschar (argv, &i, Arg);
 	ut_string_body ((*pIn).body, (*pIn).body);
-      }
-
-      else if (strcmp (Arg, "-gmsh") == 0 && i < argc - 1)
-      {
-	ut_free_1d_char ((*pIn).gmsh);
-	(*pIn).gmsh = ut_arg_nextaschar (argv, &i, Arg);
       }
 
       /* Options for the meshing ----------------------------------------- */
@@ -417,66 +410,62 @@ nem_input_options_set (struct IN *pIn, struct TESSPARA *pTessPara,
 	  (*pIn).faset = ut_arg_nextaschar (argv, &i, Arg);
 	}
       }
-      else if (strcmp (Arg, "-loadtess") == 0 && i < argc - 1)
-      {
-	ut_free_1d_char ((*pIn).tess);
-	(*pIn).tess = ut_arg_nextaschar (argv, &i, Arg);
-	(*pIn).mesh = 1;
-      }
+
       else if (strcmp (Arg, "-loadmesh") == 0 && i < argc - 1)
       {
 	ut_free_1d_char ((*pIn).loadmesh);
 	(*pIn).loadmesh = ut_arg_nextaschar (argv, &i, Arg);
 	(*pIn).mesh = 0;
       }
+
       else if (strcmp (Arg, "-loadmeshnodecoo") == 0 && i < argc - 1)
       {
 	ut_free_1d_char ((*pIn).nodecoo);
 	(*pIn).nodecoo = ut_arg_nextaschar (argv, &i, Arg);
       }
+
       else if (strcmp (Arg, "-remesh") == 0 && i < argc - 1)
       {
-	ut_free_1d_char ((*pIn).remesh2);
-	(*pIn).remesh2 = ut_arg_nextaschar (argv, &i, Arg);
-	(*pIn).mesh = 0;
-	(*pIn).remesh = 1;
+	ut_free_1d_char ((*pIn).mesh);
+	(*pIn).mesh = ut_arg_nextaschar (argv, &i, Arg);
       }
+
       else if (strcmp (Arg, "-remeshtess") == 0 && i < argc - 1)
       {
-	ut_free_1d_char ((*pIn).remeshtess);
-	(*pIn).remeshtess = ut_arg_nextaschar (argv, &i, Arg);
+	ut_free_1d_char ((*pIn).tess);
+	(*pIn).tess = ut_arg_nextaschar (argv, &i, Arg);
       }
-      else if ((strcmp (Arg, "-transport") == 0 && i < argc - 2) ||
-               (strcmp (Arg, "-remap")     == 0 && i < argc - 2)  )
-      {
-	ut_free_1d_char ((*pIn).remap2);
-	(*pIn).remap2 = ut_arg_nextaschar (argv, &i, Arg);
-	(*pIn).remap = ut_arg_nextasint (argv, &i, Arg, 1, INT_MAX);
-	if ((*pIn).remap > 0)
-	{
-	  (*pIn).remapspec = ut_alloc_2d_pchar ((*pIn).remap, 10);
-	  for (j = 0; j < (*pIn).remap; j++)
-	  {
-	    for (k = 0; k < 3; k++)
-	    {
-	      ut_free_1d_char ((*pIn).remapspec[j][k]);
-	      (*pIn).remapspec[j][k] = ut_arg_nextaschar (argv, &i, Arg);
-	    }
 
-	    if (strcmp ((*pIn).remapspec[j][1], "id") == 0)
-	      sprintf ((*pIn).remapspec[j][1], "int1");
-	    else if (strcmp ((*pIn).remapspec[j][1], "e") == 0
-	     || strcmp ((*pIn).remapspec[j][1], "ek") == 0)
-	      sprintf ((*pIn).remapspec[j][1], "real3");
+      else if ((strcmp (Arg, "-transport") == 0 && i < argc - 2))
+      {
+	if ((*pIn).mesh != NULL)
+	  abort ();
+
+	(*pIn).mesh = ut_arg_nextaschar (argv, &i, Arg);
+	(*pIn).transportqty = ut_arg_nextasint (argv, &i, Arg, 1, INT_MAX);
+	(*pIn).transportspec = ut_alloc_2d_pchar ((*pIn).transportqty, 10);
+	for (j = 0; j < (*pIn).transportqty; j++)
+	{
+	  for (k = 0; k < 3; k++)
+	  {
+	    ut_free_1d_char ((*pIn).transportspec[j][k]);
+	    (*pIn).transportspec[j][k] = ut_arg_nextaschar (argv, &i, Arg);
 	  }
+
+	  if (strcmp ((*pIn).transportspec[j][1], "id") == 0)
+	    sprintf ((*pIn).transportspec[j][1], "int1");
+	  else if (strcmp ((*pIn).transportspec[j][1], "e") == 0
+	   || strcmp ((*pIn).transportspec[j][1], "ek") == 0)
+	    sprintf ((*pIn).transportspec[j][1], "real3");
 	}
       }
-      else if ((strcmp (Arg, "-transporttess") == 0 && i < argc - 1)
-            || (strcmp (Arg, "-remaptess") == 0 && i < argc - 1))
+
+      else if (strcmp (Arg, "-transporttess") == 0 && i < argc - 1)
       {
-	ut_free_1d_char ((*pIn).transporttess);
-	(*pIn).transporttess = ut_arg_nextaschar (argv, &i, Arg);
+	ut_free_1d_char ((*pIn).tess);
+	(*pIn).tess = ut_arg_nextaschar (argv, &i, Arg);
       }
+
       else if (strcmp (Arg, "-format") == 0 && i < argc - 1)
       {
 	ut_free_1d_char ((*pIn).format);

@@ -32,6 +32,10 @@ nem_singnodedup (struct MESH* pMesh, struct NODES* pNodes, int*** pFoDNodes)
   int*** array = ut_alloc_3d_int (2, 2, 2);
   int*** arrayid = ut_alloc_3d_int (2, 2, 2);
   int eltnodeqty = neut_elt_nodeqty ((*pMesh).EltType, (*pMesh).Dimension, (*pMesh).EltOrder);
+  double** EltCoo = ut_alloc_2d ((*pMesh).EltQty + 1, 3);
+
+  for (i = 1; i <= (*pMesh).EltQty; i++)
+    neut_mesh_elt_centre (*pMesh, *pNodes, i, EltCoo[i]);
 
   ininodeqty = (*pNodes).NodeQty;
 
@@ -40,12 +44,8 @@ nem_singnodedup (struct MESH* pMesh, struct NODES* pNodes, int*** pFoDNodes)
 
   for (i = 1; i <= ininodeqty; i++)
   {
-    // printf ("(*pMesh).NodeElts[%d][0] = %d\n", i, (*pMesh).NodeElts[i][0]);
     if ((*pMesh).NodeElts[i][0] >= 2 && (*pMesh).NodeElts[i][0] <= 4)
     {
-      // printf ("node = %d\n", i);
-      // printf ("(*pMesh).NodeElts[i][0] = %d\n", (*pMesh).NodeElts[i][0]);
-
       status = 0;
       ut_array_3d_int_zero (array, 2, 2, 2);
       ut_array_3d_int_zero (arrayid, 2, 2, 2);
@@ -53,26 +53,12 @@ nem_singnodedup (struct MESH* pMesh, struct NODES* pNodes, int*** pFoDNodes)
       for (j = 1; j <= (*pMesh).NodeElts[i][0]; j++)
       {
 	elt = (*pMesh).NodeElts[i][j];
-	/*
-	printf ("(*pNodes).NodeCoo[i] = %f %f %f\n", (*pNodes).NodeCoo[i][0],
-	    (*pNodes).NodeCoo[i][1], (*pNodes).NodeCoo[i][2]);
-	printf ("(*pMesh).EltCoo[%d] = %f %f %f\n", elt, (*pMesh).EltCoo[elt][0],
-	    (*pMesh).EltCoo[elt][1], (*pMesh).EltCoo[elt][2]);
-	    */
-	x = ((*pMesh).EltCoo[elt][0] < (*pNodes).NodeCoo[i][0]) ? 0 : 1;
-	y = ((*pMesh).EltCoo[elt][1] < (*pNodes).NodeCoo[i][1]) ? 0 : 1;
-	z = ((*pMesh).EltCoo[elt][2] < (*pNodes).NodeCoo[i][2]) ? 0 : 1;
-	// printf ("x = %d y = %d z = %d\n", x, y, z);
+	x = (EltCoo[elt][0] < (*pNodes).NodeCoo[i][0]) ? 0 : 1;
+	y = (EltCoo[elt][1] < (*pNodes).NodeCoo[i][1]) ? 0 : 1;
+	z = (EltCoo[elt][2] < (*pNodes).NodeCoo[i][2]) ? 0 : 1;
 	array[x][y][z] = 1;
 	arrayid[x][y][z] = elt;
       }
-
-      /*
-      for (l = 0; l < 2; l++)
-	for (m = 0; m < 2; m++)
-	  for (n = 0; n < 2; n++)
-	    printf ("array[%d][%d][%d] = %d\n", l, m, n, array[l][m][n]);
-	    */
 
       for (l = 0; l < 2; l++)
 	for (m = 0; m < 2; m++)
@@ -85,7 +71,6 @@ nem_singnodedup (struct MESH* pMesh, struct NODES* pNodes, int*** pFoDNodes)
 		status = 1;
 	      else
 	      {
-		// printf ("testing elt %d\n", arrayid[l][m][n]);
 		if (status == 0)
 		  status = 1;
 	      
@@ -95,18 +80,10 @@ nem_singnodedup (struct MESH* pMesh, struct NODES* pNodes, int*** pFoDNodes)
 
 		elt = arrayid[l][m][n];
 		
-		// printf ("l = %d m = %d n = %d\n", l, m, n);
-		// printf ("l2 = %d m2 = %d n2 = %d\n", l2, m2, n2);
-		// printf ("array[l2][m][n] = %d\n", array[l2][m][n]);
-		// printf ("array[l][m2][n] = %d\n", array[l][m2][n]);
-		// printf ("array[l][m][n2] = %d\n", array[l][m][n2]);
-
 		// should the elt have his own node?
 		// is its sharing a face with another elt?
 		if (array[l2][m][n] == 0 && array[l][m2][n] == 0 && array[l][m][n2] == 0)
 		{
-		  // printf ("elt = %d should have his own node\n", elt);
-		  
 		  neut_nodes_addnode (pNodes, (*pNodes).NodeCoo[i], 0);
 		  ut_array_1d_int_findnreplace ((*pMesh).EltNodes[elt],
 						eltnodeqty, i, (*pNodes).NodeQty);
@@ -140,6 +117,7 @@ nem_singnodedup (struct MESH* pMesh, struct NODES* pNodes, int*** pFoDNodes)
   
   ut_free_3d_int (array, 2, 2);
   ut_free_3d_int (arrayid, 2, 2);
+  ut_free_2d (EltCoo, (*pMesh).EltQty + 1);
   
   return;
 }

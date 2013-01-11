@@ -3,7 +3,6 @@
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_structs/neut_tesl_struct.h"
-#include "neut_structs/neut_elset_struct.h"
 #include "neut_structs/neut_mesh_struct.h"
 #include "neut_structs/neut_nodes_struct.h"
 #include "neut_structs/neut_tess_struct.h"

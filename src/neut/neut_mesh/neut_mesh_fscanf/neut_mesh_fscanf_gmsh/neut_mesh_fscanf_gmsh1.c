@@ -64,9 +64,21 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH
     abort ();
   }
 
-  neut_nodes_init_bbox (pNodes);
-
   ReadEltsFoot (file);
+
+  return;
+}
+
+void
+neut_mesh_name_fscanf_msh (char* name, struct NODES *pNodes, struct MESH
+    *pMesh0D, struct MESH *pMesh1D, struct MESH *pMesh2D, struct MESH
+    *pMesh3D)
+{
+  FILE* file = ut_file_open (name, "r");
+
+  neut_mesh_fscanf_msh (file, pNodes, pMesh0D, pMesh1D, pMesh2D, pMesh3D);
+
+  ut_file_close (file, name, "r");
 
   return;
 }

@@ -7,12 +7,12 @@
 
 struct NODES
 {
-  int NodeQty;			/* total nb of nodes */
-  double **NodeCoo;		/* nodes coordinates (O to 2) */
+  int NodeQty;			// total nb of nodes
+                                // arrays are indexed [1...NodeQty]
 
-  double* NodeCl;
+  double **NodeCoo;		// for each node: coordinates, indexed [O...2]
 
-  double** BBox;
+  double* NodeCl;               // for each node: characteristic length
 };
 typedef struct NODES NODES;
 

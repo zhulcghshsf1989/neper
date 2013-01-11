@@ -15,21 +15,6 @@ nem_input_treatargs (int fargc, char **fargv, int argc, char **argv,
   nem_input_options_set (pIn, pTessPara, fargc, fargv);
   nem_input_options_set (pIn, pTessPara, argc, argv);
 
-  (*pIn).mesh = 0;
-  if (((*pIn).tess != NULL || (*pIn).vox != NULL)
-   && (ut_string_inlist ((*pIn).format, ',', "msh")
-   || ut_string_inlist ((*pIn).format, ',', "geof")
-   || ut_string_inlist ((*pIn).format, ',', "abq")
-   || ut_string_inlist ((*pIn).format, ',', "inp")
-   || ut_string_inlist ((*pIn).format, ',', "fepx")
-   || ut_string_inlist ((*pIn).format, ',', "parms")
-   || ut_string_inlist ((*pIn).format, ',', "mesh")
-   || ut_string_inlist ((*pIn).format, ',', "opt")
-   || ut_string_inlist ((*pIn).format, ',', "surf")
-   || ut_string_inlist ((*pIn).format, ',', "bcs")
-   ))
-    (*pIn).mesh = 1;
-  
   // If not set up, setting dim default value
   if ((*pIn).meshdim == -1)
   {
@@ -112,29 +97,24 @@ nem_input_treatargs (int fargc, char **fargv, int argc, char **argv,
       (*pIn).body = ut_alloc_1d_char (strlen ((*pIn).loadmesh) + 1);
       ut_string_body ((*pIn).loadmesh, (*pIn).body);
     }
-    else if ((*pIn).remesh == 1)
+    else if ((*pIn).mesh != NULL)
     {
-      (*pIn).body = ut_alloc_1d_char (strlen ((*pIn).remesh2) + 1);
-      ut_string_body ((*pIn).remesh2, (*pIn).body);
+      (*pIn).body = ut_alloc_1d_char (strlen ((*pIn).mesh) + 1);
+      ut_string_body ((*pIn).mesh, (*pIn).body);
     }
   }
 
   /* Writing all file names */
   (*pIn).geof    = ut_string_addextension ((*pIn).body, ".geof");
-  (*pIn).scm     = ut_string_addextension ((*pIn).body, ".scm");
-  (*pIn).scg     = ut_string_addextension ((*pIn).body, ".scg");
   (*pIn).msh     = ut_string_addextension ((*pIn).body, ".msh");
   (*pIn).abq     = ut_string_addextension ((*pIn).body, ".inp");
   (*pIn).epart   = ut_string_addextension ((*pIn).body, ".epart");
   (*pIn).npart   = ut_string_addextension ((*pIn).body, ".npart");
-  (*pIn).rem1    = ut_string_addextension ((*pIn).body, ".rem1");
   (*pIn).fepx1   = ut_string_addextension ((*pIn).body, ".parms");
   (*pIn).fepx2   = ut_string_addextension ((*pIn).body, ".mesh");
   (*pIn).fepx3   = ut_string_addextension ((*pIn).body, ".surf");
   (*pIn).fepx4   = ut_string_addextension ((*pIn).body, ".opt");
   (*pIn).fepx5   = ut_string_addextension ((*pIn).body, ".bcs");
-  (*pIn).stenode = ut_string_addextension ((*pIn).body, ".node");
-  (*pIn).steele  = ut_string_addextension ((*pIn).body, ".ele");
 
   return;
 }

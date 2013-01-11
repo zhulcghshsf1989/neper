@@ -39,10 +39,6 @@ nem_in_set_zero (struct IN* pIn)
   (*pIn).msh          = NULL;
   (*pIn).abq          = NULL;
   (*pIn).geof         = NULL;
-  (*pIn).stenode      = NULL;
-  (*pIn).steele       = NULL;
-  (*pIn).scm          = NULL;
-  (*pIn).scg          = NULL;
   (*pIn).fepx1         = NULL;
   (*pIn).fepx2         = NULL;
   (*pIn).fepx3         = NULL;
@@ -52,7 +48,6 @@ nem_in_set_zero (struct IN* pIn)
   (*pIn).mesh3doptiexpr = NULL;
   (*pIn).mesh3doptidisexpr = NULL;
   // (*pIn).mesh3doptisizeexpr = NULL;
-  (*pIn).rem1 = NULL;
   (*pIn).outdim = NULL;
 
   return;
@@ -80,16 +75,11 @@ nem_in_free (struct IN In)
   ut_free_1d_char (In.msh);
   ut_free_1d_char (In.abq);
   ut_free_1d_char (In.geof);
-  ut_free_1d_char (In.stenode);
-  ut_free_1d_char (In.steele);
-  ut_free_1d_char (In.scm);
-  ut_free_1d_char (In.scg);
   ut_free_1d_char (In.fepx1);
   ut_free_1d_char (In.fepx2);
   ut_free_1d_char (In.fepx3);
   ut_free_1d_char (In.fepx4);
   ut_free_1d_char (In.fepx5);
-  ut_free_1d_char (In.rem1);
   ut_free_1d_char (In.outdim);
   ut_free_1d_char (In.mesh3doptiexpr);
   ut_free_1d_char (In.mesh3doptidisexpr);

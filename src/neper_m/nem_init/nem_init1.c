@@ -5,40 +5,22 @@
 #include"nem_init.h"
 
 void
-nem_init_remesh (char* mesh, char* tess, struct TESS* pTess, struct NODES* pRNodes,
-		  struct MESH* pRMesh0D, struct MESH* pRMesh1D,
-		  struct MESH* pRMesh2D, struct MESH* pRMesh3D)
+nem_init_remesh (struct TESS* pTess, struct NODES* pRNodes,
+		 struct MESH* pRMesh0D, struct MESH* pRMesh1D,
+		 struct MESH* pRMesh2D, struct MESH* pRMesh3D)
 {
-  FILE* file = NULL;
-
-  ut_print_message (0, 2, "Loading mesh ...\n");
-
-  file = ut_file_open (mesh, "r");
-  neut_mesh_fscanf_msh (file, pRNodes, pRMesh0D, pRMesh1D,
-                                       pRMesh2D, pRMesh3D);
-  ut_file_close (file, mesh, "r");
-
   neut_mesh_init_eltelset (pRMesh2D, NULL);
   neut_mesh_init_nodeelts (pRMesh2D, (*pRNodes).NodeQty);
   neut_mesh_init_eltelset (pRMesh3D, NULL);
   neut_mesh_init_nodeelts (pRMesh3D, (*pRNodes).NodeQty);
 
-  neut_nodes_init_bbox (pRNodes);
-
-  if (tess == NULL)
+  if ((*pTess).PolyQty == 0)
   {
     ut_print_message (0, 2, "Reconstructing meshes and topology ...\n");
     nem_reconmesh ("3,2,1,0", pRNodes, pRMesh0D, pRMesh1D, pRMesh2D, pRMesh3D, pTess);
   }
   else
   {
-    ut_print_message (0, 2, "Loading tessellation ...\n");
-    file = ut_file_open (tess, "r");
-    neut_tess_fscanf (file, pTess);
-    ut_file_close (file, tess, "r");
-    ut_print_message (0, 2, "Testing tessellation ...\n");
-    neut_tess_test (*pTess, 0);
-    
     ut_print_message (0, 2, "Reconstructing meshes ...\n");
     nem_reconmesh ("3,2,1,0", pRNodes, pRMesh0D, pRMesh1D, pRMesh2D, pRMesh3D, NULL);
     

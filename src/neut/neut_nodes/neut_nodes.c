@@ -45,35 +45,11 @@ neut_nodes_bbox (struct NODES Nodes, double *bbox)
 }
 
 void
-neut_nodes_init_bbox (struct NODES* pNodes)
-{
-  /* assuming a cubic box aligned with the X, Y and Z axes */
-  int i, j;
-
-  if ((*pNodes).BBox == NULL)
-    (*pNodes).BBox = ut_alloc_2d (3, 2);
-
-  (*pNodes).BBox[0][0] = (*pNodes).BBox[1][0] = (*pNodes).BBox[2][0] = DBL_MAX;
-  (*pNodes).BBox[0][1] = (*pNodes).BBox[1][1] = (*pNodes).BBox[2][1] = -DBL_MAX;
-
-  for (i = 1; i <= (*pNodes).NodeQty; i++)
-    for (j = 0; j < 3; j++)
-    {
-      (*pNodes).BBox[j][0] = ut_num_min ((*pNodes).BBox[j][0], (*pNodes).NodeCoo[i][j]);
-      (*pNodes).BBox[j][1] = ut_num_max ((*pNodes).BBox[j][1], (*pNodes).NodeCoo[i][j]);
-    }
-
-  return;
-}
-
-
-void
 neut_nodes_set_zero (struct NODES* pNodes)
 {
   (*pNodes).NodeQty = 0;
   (*pNodes).NodeCoo = NULL;
   (*pNodes).NodeCl = NULL;
-  (*pNodes).BBox = NULL;
 
   return;
 }
@@ -84,7 +60,6 @@ neut_nodes_free (struct NODES *pNodes)
   if (pNodes != NULL)
   {
     ut_free_2d ((*pNodes).NodeCoo, (*pNodes).NodeQty + 1);
-    ut_free_2d ((*pNodes).BBox, 3);
     ut_free_1d ((*pNodes).NodeCl);
   }
   neut_nodes_set_zero (pNodes);
@@ -123,12 +98,6 @@ neut_nodes_memcpy (struct NODES Nodes, struct NODES* pNodes2)
   {
     (*pNodes2).NodeCl = ut_alloc_1d (Nodes.NodeQty + 1);
     ut_array_1d_memcpy ((*pNodes2).NodeCl + 1, Nodes.NodeQty, Nodes.NodeCl + 1);
-  }
-
-  if (Nodes.BBox != NULL)
-  {
-    (*pNodes2).BBox = ut_alloc_2d (3, 2);
-    ut_array_2d_memcpy ((*pNodes2).BBox, 3, 2, Nodes.BBox);
   }
 
   return;

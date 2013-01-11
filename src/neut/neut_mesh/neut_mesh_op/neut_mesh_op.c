@@ -29,9 +29,6 @@ neut_mesh_alloc (int Dimension, char* EltType, int EltOrder, int EltQty,
   Mesh.EltType = ut_alloc_1d_char (strlen (EltType) + 1);
   strcpy (Mesh.EltType, EltType);
 
-  Mesh.EltCoo = NULL;
-  Mesh.msize = NULL;
-
   return Mesh;
 }
 
@@ -51,10 +48,6 @@ neut_mesh_free (struct MESH *pMesh)
 
   if ((*pMesh).NodeElts != NULL)
     ut_free_2d_int ((*pMesh).NodeElts, (*pMesh).NodeQty + 1);
-
-  ut_free_2d ((*pMesh).EltCoo, (*pMesh).EltQty + 1);
-
-  ut_free_1d_int ((*pMesh).msize);
 
   neut_mesh_set_zero (pMesh);
 
@@ -78,9 +71,6 @@ neut_mesh_set_zero (struct MESH *pMesh)
 
   (*pMesh).NodeElts = NULL;
   (*pMesh).EltElset = NULL;
-
-  (*pMesh).EltCoo = NULL;
-  (*pMesh).msize = NULL;
 
   return;
 }
@@ -656,37 +646,6 @@ neut_mesh_order1to2 (struct NODES *pNodes, struct MESH* pMesh1D,
 }
 
 void
-neut_mesh_scale (struct MESH *pMesh, double scalex, double scaley, double scalez)
-{
-  int i;
-
-  for (i = 1; i <= (*pMesh).EltQty; i++)
-  {
-    (*pMesh).EltCoo[i][0] *= scalex;
-    (*pMesh).EltCoo[i][1] *= scaley;
-    (*pMesh).EltCoo[i][2] *= scalez;
-  }
-
-  return;
-}
-
-void
-neut_mesh_shift (struct MESH *pMesh, double shiftx, double
-    shifty, double shiftz)
-{
-  int i;
-
-  for (i = 1; i <= (*pMesh).EltQty; i++)
-  {
-    (*pMesh).EltCoo[i][0] += shiftx;
-    (*pMesh).EltCoo[i][1] += shifty;
-    (*pMesh).EltCoo[i][2] += shiftz;
-  }
-
-  return;
-}
-
-void
 neut_mesh_mergeelsets (struct MESH* pEMesh)
 {
   int i, tot;
@@ -898,12 +857,6 @@ neut_mesh_rmelts (struct MESH* pMesh, struct NODES Nodes, int* rmelt, int rmeltq
     ut_array_1d_int_memcpy ((*pMesh).EltNodes[i], eltnodeqty, (*pMesh).EltNodes[new_old[i]]);
   (*pMesh).EltNodes = ut_realloc_2d_int_delline ((*pMesh).EltNodes, (*pMesh).EltQty + 1, eltqty + 1);
 
-  // Updating EltCoo
-  if ((*pMesh).EltCoo != NULL)
-    for (i = 1; i <= eltqty; i++)
-      ut_array_1d_memcpy ((*pMesh).EltCoo[i], 3, (*pMesh).EltCoo[new_old[i]]);
-  (*pMesh).EltCoo = ut_realloc_2d_delline ((*pMesh).EltCoo, (*pMesh).EltQty + 1, eltqty + 1);
-
   // Updating EltElset
   if ((*pMesh).EltElset != NULL)
     for (i = 1; i <= eltqty; i++)
@@ -949,13 +902,6 @@ neut_mesh_rmelt (struct MESH* pMesh, int elt)
     ut_error_reportbug ();
   else
     (*pMesh).Elsets[elset][0]--;
-
-  // Updating EltCoo
-  if ((*pMesh).EltCoo != NULL)
-    for (i = elt; i < (*pMesh).EltQty; i++)
-      ut_array_1d_memcpy ((*pMesh).EltCoo[i], 3, (*pMesh).EltCoo[i + 1]);
-  (*pMesh).EltCoo = ut_realloc_2d_delline ((*pMesh).EltCoo,
-                                           (*pMesh).EltQty + 1, (*pMesh).EltQty);
 
   // Updating EltElset
   if ((*pMesh).EltElset != NULL)
@@ -1003,12 +949,6 @@ neut_mesh_rmelset (struct MESH* pMesh, struct NODES Nodes, int elset)
   for (i = 1; i <= eltqty; i++)
     ut_array_1d_int_memcpy ((*pMesh).EltNodes[i], eltnodeqty, (*pMesh).EltNodes[new_old[i]]);
   (*pMesh).EltNodes = ut_realloc_2d_int_delline ((*pMesh).EltNodes, (*pMesh).EltQty + 1, eltqty + 1);
-
-  // Updating EltCoo
-  if ((*pMesh).EltCoo != NULL)
-    for (i = 1; i <= eltqty; i++)
-      ut_array_1d_memcpy ((*pMesh).EltCoo[i], 3, (*pMesh).EltCoo[new_old[i]]);
-  (*pMesh).EltCoo = ut_realloc_2d_delline ((*pMesh).EltCoo, (*pMesh).EltQty + 1, eltqty + 1);
 
   // Updating EltElset
   if ((*pMesh).EltElset != NULL)

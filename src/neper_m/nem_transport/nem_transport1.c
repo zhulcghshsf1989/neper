@@ -14,34 +14,34 @@ nem_transport (struct IN In, struct TESS Tess, struct NODES RNodes, struct
   char* name = NULL;
   int dim;
 
-  ut_print_message (0, 2, "nem_transporting element data ...\n");
+  ut_print_message (0, 2, "transporting element data ...\n");
   
   nem_transport_mesh3d_parelt (Tess, RNodes, RMesh2D, RMesh3D, *pNodes, *pMesh2D, *pMesh3D, oldelt);
 
-  for (i = 0; i < In.remap; i++)
+  for (i = 0; i < In.transportqty; i++)
   {
-    ut_print_message (0, 3, "nem_transporting `%s' ...\n", In.remapspec[i][2]);
+    ut_print_message (0, 3, "transporting `%s' ...\n", In.transportspec[i][2]);
 
-    if (strcmp (In.remapspec[i][0], "elt") != 0)
+    if (strcmp (In.transportspec[i][0], "elt") != 0)
     {
       ut_print_message (2, 0, "Unknown type of data\n");
-      printf ("data %d: %s %s %s\n", i + 1, In.remapspec[i][0],
-			In.remapspec[i][1], In.remapspec[i][2]);
+      printf ("data %d: %s %s %s\n", i + 1, In.transportspec[i][0],
+			In.transportspec[i][1], In.transportspec[i][2]);
       ut_print_message (2, 0, "(must be `elt')\n");
       continue;
     }
 
-    if (sscanf (In.remapspec[i][1], "real%d", &dim) == 1)
+    if (sscanf (In.transportspec[i][1], "real%d", &dim) == 1)
     {
       double** data = ut_alloc_2d (RMesh3D.EltQty + 1, dim);
 
-      file = ut_file_open (In.remapspec[i][2], "r");
+      file = ut_file_open (In.transportspec[i][2], "r");
       for (j = 1; j <= RMesh3D.EltQty; j++)
 	ut_array_1d_fscanf (file, data[j], dim);
-      ut_file_close (file, In.remapspec[i][2], "r");
+      ut_file_close (file, In.transportspec[i][2], "r");
 
-      name = ut_alloc_1d_char (strlen (In.remapspec[i][2]) + 5);
-      sprintf (name, "%s.rem", In.remapspec[i][2]);
+      name = ut_alloc_1d_char (strlen (In.transportspec[i][2]) + 5);
+      sprintf (name, "%s.rem", In.transportspec[i][2]);
 
       file = ut_file_open (name, "w");
       for (j = 1; j <= (*pMesh3D).EltQty; j++)
@@ -51,17 +51,17 @@ nem_transport (struct IN In, struct TESS Tess, struct NODES RNodes, struct
 
       ut_free_2d (data, RMesh3D.EltQty + 1);
     }
-    else if (sscanf (In.remapspec[i][1], "int%d", &dim) == 1)
+    else if (sscanf (In.transportspec[i][1], "int%d", &dim) == 1)
     {
       int** data = ut_alloc_2d_int (RMesh3D.EltQty + 1, dim);
 
-      file = ut_file_open (In.remapspec[i][2], "r");
+      file = ut_file_open (In.transportspec[i][2], "r");
       for (j = 1; j <= RMesh3D.EltQty; j++)
 	ut_array_1d_int_fscanf (file, data[j], dim);
-      ut_file_close (file, In.remapspec[i][2], "r");
+      ut_file_close (file, In.transportspec[i][2], "r");
 
-      name = ut_alloc_1d_char (strlen (In.remapspec[i][2]) + 5);
-      sprintf (name, "%s.rem", In.remapspec[i][2]);
+      name = ut_alloc_1d_char (strlen (In.transportspec[i][2]) + 5);
+      sprintf (name, "%s.rem", In.transportspec[i][2]);
 
       file = ut_file_open (name, "w");
       for (j = 1; j <= (*pMesh3D).EltQty; j++)

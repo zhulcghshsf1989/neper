@@ -40,20 +40,6 @@ extern void neut_mesh_memcpy (struct MESH Old, struct MESH* pNew);
 ///
 extern int neut_mesh_cmp (struct NODES N1, struct MESH M1, struct NODES N2, struct MESH M2);
 
-/// \brief Scale a mesh.
-///
-///
-///
-extern void neut_mesh_scale (struct MESH* pMesh, double scalex, double
-    scaley, double scalez);
-
-/// \brief Shift a mesh.
-///
-///
-///
-extern void neut_mesh_shift (struct MESH* pMesh, double shiftx, double
-    shifty, double shiftz);
-
 #ifdef HAVE_LIBSCOTCH
 #include <scotch.h>
 /// \brief Convert a mesh into a mesh at the Scotch format.

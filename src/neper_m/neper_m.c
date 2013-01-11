@@ -21,10 +21,15 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   struct PART Part;
   struct NSET NSet0D, NSet1D, NSet2D;
 
-  nem_in_set_zero    (&In);
+  nem_in_set_zero     (&In);
   nem_tesspara_set_zero (&TessPara);
-  neut_tess_set_zero   (&Tess);
+  neut_tess_set_zero  (&Tess);
   neut_vox_set_zero   (&Vox);
+  neut_nodes_set_zero (&RNodes);
+  neut_mesh_set_zero  (&RMesh0D);
+  neut_mesh_set_zero  (&RMesh1D);
+  neut_mesh_set_zero  (&RMesh2D);
+  neut_mesh_set_zero  (&RMesh3D);
   neut_nodes_set_zero (&Nodes);
   neut_mesh_set_zero  (&Mesh0D);
   neut_mesh_set_zero  (&Mesh1D);
@@ -34,11 +39,6 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   neut_nset_set_zero  (&NSet0D);
   neut_nset_set_zero  (&NSet1D);
   neut_nset_set_zero  (&NSet2D);
-  neut_nodes_set_zero (&RNodes);
-  neut_mesh_set_zero  (&RMesh0D);
-  neut_mesh_set_zero  (&RMesh1D);
-  neut_mesh_set_zero  (&RMesh2D);
-  neut_mesh_set_zero  (&RMesh3D);
   
   // Printing program header ###
   ut_print_moduleheader ("-M", fargc, fargv, argc, argv);
@@ -64,16 +64,13 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
     neut_vox_name_fscanf (In.vox, &Vox);
   }
 
-  // Loading input mesh for remeshing and / or transport ###
-  else if (In.remesh || In.remap > 0)
+  // Loading input mesh (remeshing and / or transport) ###
+  if (In.mesh != NULL)
   {
-    char *mesh, *tess;
-    mesh = (In.remesh) ? In.remesh2 : In.remap2;
-    tess = (In.remesh) ? In.remeshtess : In.transporttess;
+    ut_print_message (0, 1, "Loading mesh ...\n");
+    neut_mesh_name_fscanf_msh (In.mesh, &RNodes, &RMesh0D, &RMesh1D, &RMesh2D, &RMesh3D);
 
-    ut_print_message (0, 1, "Loading %s data ...\n",
-	                    (In.remesh) ? "remeshing" : "transport");
-    nem_init_remesh (mesh, tess, &Tess, &RNodes, &RMesh0D, &RMesh1D, &RMesh2D, &RMesh3D);
+    nem_init_remesh (&Tess, &RNodes, &RMesh0D, &RMesh1D, &RMesh2D, &RMesh3D);
   }
 
   // Scaling input data if necessary (use of cl3/rcl3) ###
@@ -82,22 +79,20 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   // ###################################################################
   // ### COMPUTING OUTPUT MESH #########################################
 
-  // Meshing ###
-  if (In.mesh && Vox.PolyQty > 0 && ! strcmp (In.elttype, "tet"))
+  if (In.vox != NULL && ! strcmp (In.elttype, "tet"))
   {
     ut_print_message (0, 1, "Reconstructing topology ...\n");
     nem_vox_recontopo (Vox, &Tess, &RNodes, &RMesh1D, &RMesh2D, &NSet2D);
   }
 
-  // Meshing ###
-  if (In.mesh || In.remesh)
+  if (In.tess != NULL || In.vox != NULL || In.mesh != NULL)
   {
     ut_print_message (0, 1, "Meshing ...");
+
     if (! strcmp (In.elttype, "tet"))
-    {
       nem_meshing (In, TessPara, Tess, RNodes, RMesh1D, RMesh2D, &Nodes,
 		   &Mesh0D, &Mesh1D, &Mesh2D, &Mesh3D);
-    }
+    
     else if (! strcmp (In.elttype, "hex"))
     {
       if (In.tess != NULL)
@@ -172,7 +167,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   // ###################################################################
   // WRITING MESH ######################################################
 
-  if (In.mesh || In.remesh || In.loadmesh != NULL)
+  if (Mesh0D.EltQty + Mesh1D.EltQty + Mesh2D.EltQty + Mesh3D.EltQty > 0)
   {
     ut_print_message (0, 1, "Writing mesh results ...\n");
     nem_writemesh (In, Tess, Nodes, &Mesh0D, &Mesh1D, &Mesh2D, &Mesh3D, NSet0D, NSet1D, NSet2D, Part);
@@ -181,9 +176,9 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   // ###################################################################
   // ### DATA TRANSPORT (GOES WITH REMESHING) ##########################
 
-  if (In.remap > 0)
+  if (In.transportqty > 0)
   {
-    ut_print_message (0, 1, "Mesh data transport ...\n");
+    ut_print_message (0, 1, "Transporting data ...\n");
     nem_transport (In, Tess, RNodes, RMesh2D, RMesh3D, &Nodes, &Mesh2D, &Mesh3D);
   }
 
@@ -202,6 +197,9 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   // ###################################################################
   // ### CLOSING #######################################################
   
+  nem_in_free (In);
+  nem_tesspara_free (TessPara);
+  neut_tess_free  (&Tess);
   neut_nodes_free (&Nodes);
   neut_mesh_free (&Mesh0D);
   neut_mesh_free (&Mesh1D);
@@ -211,9 +209,6 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   neut_nset_free (&NSet1D);
   neut_nset_free (&NSet0D);
   neut_part_free (Part);
-  neut_tess_free  (&Tess);
-  nem_in_free (In);
-  nem_tesspara_free (TessPara);
   neut_nodes_free (&RNodes);
   neut_mesh_free  (&RMesh0D);
   neut_mesh_free  (&RMesh1D);

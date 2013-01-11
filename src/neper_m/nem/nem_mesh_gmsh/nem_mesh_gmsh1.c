@@ -348,10 +348,6 @@ nem_mesh_3d_gmsh (struct TESS Tess, int poly, struct NODES Nodes,
       // nodes: skin nodes (numbers refer to *pN)
       neut_mesh_init_nodeelts (pM, (*pN).NodeQty);
 
-      // useless here but neut_mesh3d_mesh2d requires the bbox for other
-      // purposes...
-      neut_nodes_init_bbox (pN);
-
       neut_mesh3d_mesh2d (*pN, *pM, &M2, &Elsets, &ElsetQty, 0);
       neut_mesh_mergeelsets (&M2);
 
