@@ -2,8 +2,8 @@
 /* Copyright (C) 2003-2012, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-#ifndef NEM_INIT
-#define NEM_INIT
+#ifndef NEM_SCALING_H
+#define NEM_SCALING_H
 
 #include<stdio.h>
 #include<stdlib.h>
@@ -13,8 +13,8 @@
 #include"ut.h"
 #include"neut_m.h"
 #include"../structIn_m.h"
-#include"../nem_reconmesh/nem_reconmesh0.h"
+#include"../nem_reconstruct/nem_reconstruct0.h"
 
-#include"nem_init0.h"
+#include"nem_scaling0.h"
 
-#endif /* NEM_INIT */
+#endif /* NEM_SCALING_H */

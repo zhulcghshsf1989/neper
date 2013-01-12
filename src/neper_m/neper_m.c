@@ -62,6 +62,12 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   {
     ut_print_message (0, 1, "Loading voxel data ...\n");
     neut_vox_name_fscanf (In.vox, &Vox);
+
+    if (! strcmp (In.elttype, "tet"))
+    {
+      ut_print_message (0, 1, "Reconstructing topology ...\n");
+      nem_reconstruct_vox (Vox, &Tess, &RNodes, &RMesh1D, &RMesh2D, &NSet2D);
+    }
   }
 
   // Loading input mesh (remeshing and / or transport) ###
@@ -70,22 +76,20 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
     ut_print_message (0, 1, "Loading mesh ...\n");
     neut_mesh_name_fscanf_msh (In.mesh, &RNodes, &RMesh0D, &RMesh1D, &RMesh2D, &RMesh3D);
 
-    nem_init_remesh (&Tess, &RNodes, &RMesh0D, &RMesh1D, &RMesh2D, &RMesh3D);
+    if (! strcmp (In.elttype, "tet"))
+    {
+      ut_print_message (0, 1, "Reconstructing topology ...\n");
+      nem_reconstruct_mesh ("0,1,2,3", &RNodes, &RMesh0D, &RMesh1D, &RMesh2D, &RMesh3D, &Tess);
+    }
   }
 
-  // Scaling input data if necessary (use of cl3/rcl3) ###
-  nem_init_scaling (In.elttype, &Tess, &Vox, &RNodes, RMesh0D, RMesh1D, RMesh2D, RMesh3D, &MeshPara);
+  // Pre-scaling of input if necessary (use of cl3/rcl3) ###
+  nem_scaling_pre (In.elttype, &Tess, &Vox, &RNodes, RMesh0D, RMesh1D, RMesh2D, RMesh3D, &MeshPara);
 
   // ###################################################################
   // ### COMPUTING OUTPUT MESH #########################################
 
-  if (In.vox != NULL && ! strcmp (In.elttype, "tet"))
-  {
-    ut_print_message (0, 1, "Reconstructing topology ...\n");
-    nem_vox_recontopo (Vox, &Tess, &RNodes, &RMesh1D, &RMesh2D, &NSet2D);
-  }
-
-  if (In.tess != NULL || In.vox != NULL || In.mesh != NULL)
+  if (Tess.PolyQty > 0 || Vox.PolyQty > 0)
   {
     ut_print_message (0, 1, "Meshing ...");
 
@@ -96,16 +100,16 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
     else if (! strcmp (In.elttype, "hex"))
     {
       if (In.tess != NULL)
-	nem_tess_mesh_hex (In, MeshPara, Tess, &Nodes, &Mesh0D, &Mesh1D,
+	nem_meshing_tess_hex (In, MeshPara, Tess, &Nodes, &Mesh0D, &Mesh1D,
 	    &Mesh2D, &Mesh3D, &NSet2D);
       else if (In.vox != NULL)
-	nem_vox_mesh_hex (In, MeshPara, Vox, &Nodes, &Mesh0D, &Mesh1D,
+	nem_meshing_vox_hex (In, MeshPara, Vox, &Nodes, &Mesh0D, &Mesh1D,
 	    &Mesh2D, &Mesh3D, &NSet2D);
     }
   }
 
-  // Inverse scaling of input / mesh if necessary (use of cl3/rcl3) ###
-  nem_post_scaling (MeshPara, &Tess, &Vox, &Nodes);
+  // Post-scaling of input / mesh if necessary (use of cl3/rcl3) ###
+  nem_scaling_post (MeshPara, &Tess, &Vox, &Nodes);
 
   // Loading mesh (mutually exclusive with the 2 previous ones) ###
   if (In.loadmesh != NULL)
@@ -117,13 +121,13 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   if (In.singnodedup)
   {
     ut_print_message (0, 1, "Duplicating singular nodes ... ");
-    nem_singnodedup (&Mesh3D, &Nodes, NULL);
+    nem_cleaning_singnodedup (&Mesh3D, &Nodes, NULL);
   }
 
   if (In.dupnodemerge > 0)
   {
     ut_print_message (0, 1, "Merging duplicated nodes ... ");
-    nem_dupnodemerge (&Nodes, &Mesh0D, &Mesh1D, &Mesh2D, &Mesh3D,
+    nem_cleaning_dupnodemerge (&Nodes, &Mesh0D, &Mesh1D, &Mesh2D, &Mesh3D,
 	In.dupnodemerge);
   }
 
@@ -134,7 +138,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
    || (Tess.PolyQty == 0 && strlen (In.nset) > 0))
   {
     ut_print_message (0, 1, "Reconstructing mesh ...\n");
-    nem_reconmesh (In.outdim, &Nodes, &Mesh0D, &Mesh1D, &Mesh2D,
+    nem_reconstruct_mesh (In.outdim, &Nodes, &Mesh0D, &Mesh1D, &Mesh2D,
 	       &Mesh3D, &Tess);
   }
 

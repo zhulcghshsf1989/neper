@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../structIn_m.h"
 #include "neut.h"
-#include "nem_vox_recontopo0.h"
-#include "../nem_reconmesh/nem_reconmesh0.h"
+#include "nem_reconstruct_vox0.h"
+#include "../nem_reconstruct0.h"

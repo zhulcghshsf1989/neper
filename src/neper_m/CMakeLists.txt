@@ -14,7 +14,6 @@ add_library (neper_m
 ./nem_stat/nem_stat1.c
 ./nem_stat/nem_stat2.c
 ./nem_readmesh/nem_readmesh1.c
-./nem_vox_recontopo/nem_vox_recontopo1.c
 ./nem_meshing/nem_meshing1.c
 ./nem_meshing/nem_meshing2.c
 ./nem_meshing/nem_meshing3.c
@@ -37,8 +36,7 @@ add_library (neper_m
 ./nem/nem_mesh_gmsh/nem_mesh_gmsh3.c
 ./nem/nem_mesh_gmsh/nem_mesh_gmsh2.c
 ./nem/nem_mesh_gmsh/nem_mesh_gmsh1.c
-./nem_init/nem_init1.c
-./nem_init/nem_init2.c
+./nem_scaling/nem_scaling1.c
 ./nem_transport/nem_transport1.c
 ./nem_transport/nem_transport2.c
 ./nem_partition/nem_partition5.c
@@ -46,8 +44,9 @@ add_library (neper_m
 ./nem_partition/nem_partition4.c
 ./nem_partition/nem_partition3.c
 ./nem_partition/nem_partition2.c
-./nem_reconmesh/nem_reconmesh1.c
-./nem_reconmesh/nem_reconmesh2.c
+./nem_reconstruct/nem_reconstruct_mesh/nem_reconstruct_mesh1.c
+./nem_reconstruct/nem_reconstruct_mesh/nem_reconstruct_mesh2.c
+./nem_reconstruct/nem_reconstruct_vox/nem_reconstruct_vox1.c
 ./nem_writemesh/nem_writemesh1.c
 ./nem_nsets/nem_nsets1.c
 ./nem_nsets/nem_nsets2.c

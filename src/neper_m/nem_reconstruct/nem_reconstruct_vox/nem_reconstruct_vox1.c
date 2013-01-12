@@ -2,10 +2,10 @@
 /* Copyright (C) 2003-2012, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-#include "nem_vox_recontopo.h"
+#include "nem_reconstruct_vox.h"
 
 void
-nem_vox_recontopo (struct VOX Vox, struct TESS* pTess, struct NODES* pNodes,
+nem_reconstruct_vox (struct VOX Vox, struct TESS* pTess, struct NODES* pNodes,
 		   struct MESH *pMesh1D, struct MESH *pMesh2D,
 		   struct NSET* pNSet2D)
 {
@@ -32,7 +32,7 @@ nem_vox_recontopo (struct VOX Vox, struct TESS* pTess, struct NODES* pNodes,
   neut_mesh_init_elsets (&Mesh3D);
 
   neut_tess_set_zero (pTess);
-  nem_reconmesh ("0,1,2,3", pNodes, &Mesh0D, pMesh1D, &Mesh2D,
+  nem_reconstruct_mesh ("0,1,2,3", pNodes, &Mesh0D, pMesh1D, &Mesh2D,
 			    &Mesh3D, pTess);
 
   ut_free_2d_int (Mesh3D.NodeElts, (*pNodes).NodeQty + 1);

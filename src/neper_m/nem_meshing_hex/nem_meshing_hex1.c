@@ -5,10 +5,10 @@
 #include "nem_meshing_hex.h"
 
 void
-nem_tess_mesh_hex (struct IN In, struct MESHPARA MeshPara, struct TESS Tess, 
-		  struct NODES *pNodes, struct MESH* pMesh0D,
-		  struct MESH* pMesh1D, struct MESH* pMesh2D, 
-		  struct MESH *pMesh3D, struct NSET* pNSet2D)
+nem_meshing_tess_hex (struct IN In, struct MESHPARA MeshPara, struct TESS Tess, 
+		      struct NODES *pNodes, struct MESH* pMesh0D,
+		      struct MESH* pMesh1D, struct MESH* pMesh2D, 
+		      struct MESH *pMesh3D, struct NSET* pNSet2D)
 {
   int i;
   int* msize = ut_alloc_1d_int (3);
@@ -44,7 +44,7 @@ nem_tess_mesh_hex (struct IN In, struct MESHPARA MeshPara, struct TESS Tess,
   neut_mesh_rmelset (pMesh3D, *pNodes, 0);
   neut_nodes_rmorphans (pNodes, pMesh3D, pNSet2D);
 
-  nem_reconmesh (In.outdim, pNodes, pMesh0D, pMesh1D, pMesh2D,
+  nem_reconstruct_mesh (In.outdim, pNodes, pMesh0D, pMesh1D, pMesh2D,
 		        pMesh3D, NULL);
 
   int* meshpoly = ut_alloc_1d_int (Tess.PolyQty + 1);
@@ -78,11 +78,10 @@ nem_tess_mesh_hex (struct IN In, struct MESHPARA MeshPara, struct TESS Tess,
 }
 
 void
-nem_vox_mesh_hex (struct IN In, struct MESHPARA MeshPara, struct VOX Vox,
-                  struct NODES* pNodes, struct MESH* pMesh0D, struct
-		  MESH* pMesh1D, struct MESH* pMesh2D, struct MESH* pMesh3D,
-		  struct NSET* pNSet2D)
-
+nem_meshing_vox_hex (struct IN In, struct MESHPARA MeshPara, struct VOX Vox,
+		     struct NODES* pNodes, struct MESH* pMesh0D, struct
+		     MESH* pMesh1D, struct MESH* pMesh2D, struct MESH* pMesh3D,
+		     struct NSET* pNSet2D)
 {
   int i, j, k, elt;
   struct VOX Vox2;
@@ -150,7 +149,7 @@ nem_vox_mesh_hex (struct IN In, struct MESHPARA MeshPara, struct VOX Vox,
   if (In.meshpoly != NULL)
     nem_meshing_hex_meshpoly (In.meshpoly, Vox, pMesh3D, pNodes, pNSet2D);
 
-  nem_reconmesh (In.outdim, pNodes, pMesh0D, pMesh1D, pMesh2D, pMesh3D,
+  nem_reconstruct_mesh (In.outdim, pNodes, pMesh0D, pMesh1D, pMesh2D, pMesh3D,
       NULL);
 
   ut_free_1d_int (msize);

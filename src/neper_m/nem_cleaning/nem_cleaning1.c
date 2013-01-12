@@ -4,29 +4,8 @@
 
 #include "nem_cleaning.h"
 
-/*
 void
-nem_cleaning (struct MESH* pMesh, struct NODES* pNodes)
-{
-  int rmvoxqty, rmpacketqty;
-  struct VOX Vox;
-
-  ut_print_message (0, 3, "Cleaning mesh ... ");
-
-  neut_vox_set_zero (&Vox);
-
-  neut_vox_clean (Vox, 2, &Vox, &rmvoxqty, &rmpacketqty);
-
-  printf ("%d elt%s removed (%d packet%s).\n",
-	  rmvoxqty, (rmvoxqty < 2) ? "" : "s",
-	  rmpacketqty, (rmpacketqty < 2) ? "" : "s");
-
-  return;
-}
-*/
-
-void
-nem_singnodedup (struct MESH* pMesh, struct NODES* pNodes, int*** pFoDNodes)
+nem_cleaning_singnodedup (struct MESH* pMesh, struct NODES* pNodes, int*** pFoDNodes)
 {
   int i, j, x, y, z, l, m, n, l2, m2, n2, o, elt, ininodeqty, status;
   int*** array = ut_alloc_3d_int (2, 2, 2);
@@ -123,8 +102,8 @@ nem_singnodedup (struct MESH* pMesh, struct NODES* pNodes, int*** pFoDNodes)
 }
 
 void
-nem_dupnodemerge (struct NODES* pNodes, struct MESH* pMesh0D, struct MESH* pMesh1D,
-		  struct MESH* pMesh2D, struct MESH* pMesh3D, double eps)
+nem_cleaning_dupnodemerge (struct NODES* pNodes, struct MESH* pMesh0D, struct MESH* pMesh1D,
+			   struct MESH* pMesh2D, struct MESH* pMesh3D, double eps)
 {
   int i, j;
 

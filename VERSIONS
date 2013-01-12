@@ -1,4 +1,4 @@
-New in 2.0.0-devel2-50:
+New in 2.0.0-devel2-55:
 - module -T: fixed option -pointpoly, clean up code.
 - module -M: new module resulting from the merge of -FM and -MM; fixed
   meshing of regularized tessellations; add -dupnodemerge function;

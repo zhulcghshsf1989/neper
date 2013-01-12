@@ -33,7 +33,7 @@ nevs_load (char** argv, int* pi, struct NODES *pNodes,
 
     // WORKAROUND for the case of elttype="quad" for which Tess is not
     // reconstructed properly.
-    nem_reconmesh ("3,2,1,0", pNodes, pMesh0D, pMesh1D, pMesh2D, pMesh3D, pTess);
+    nem_reconstruct_mesh ("3,2,1,0", pNodes, pMesh0D, pMesh1D, pMesh2D, pMesh3D, pTess);
   }
 
   else

@@ -2,10 +2,10 @@
 /* Copyright (C) 2003-2012, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-#include "nem_reconmesh.h"
+#include "nem_reconstruct_mesh.h"
 
 void
-nem_reconmesh_2d (struct NODES Nodes, struct MESH *pMesh2D,
+nem_reconstruct_mesh_2d (struct NODES Nodes, struct MESH *pMesh2D,
               struct MESH *pMesh3D, struct TESS* pTess)
 {
   int i, FaceQty;
@@ -19,7 +19,7 @@ nem_reconmesh_2d (struct NODES Nodes, struct MESH *pMesh2D,
     if ((*pMesh2D).Dimension != 2)
       ut_error_reportbug ();
 
-  // Reconstructing 2D mesh 
+  // Reconstructing 2D mesh
   if (pMesh2D == NULL || (*pMesh2D).EltQty == 0)
   {
     ut_print_message (0, 2, "Reconstructing 2D mesh ... ");
@@ -33,7 +33,7 @@ nem_reconmesh_2d (struct NODES Nodes, struct MESH *pMesh2D,
     neut_mesh3d_mesh2d (Nodes, *pMesh3D, pMesh2D, &FacePoly, &FaceQty, 1);
 
     (*pTess).FaceQty = FaceQty;
-    (*pTess).FacePoly = ut_alloc_2d_int ((*pTess).FaceQty + 1, 2); 
+    (*pTess).FacePoly = ut_alloc_2d_int ((*pTess).FaceQty + 1, 2);
     for (i = 1; i <= (*pTess).FaceQty; i++)
       ut_array_1d_int_memcpy ((*pTess).FacePoly[i], 2, FacePoly[i - 1]);
   }
@@ -49,7 +49,7 @@ nem_reconmesh_2d (struct NODES Nodes, struct MESH *pMesh2D,
     neut_mesh_init_nodeelts (pMesh2D, Nodes.NodeQty);
 
   // face equations: the elt normals are (weighted) averaged, so as the
-  // constant for the equation. 
+  // constant for the equation.
 
   int elt, j;
   double area, norm;
@@ -58,7 +58,7 @@ nem_reconmesh_2d (struct NODES Nodes, struct MESH *pMesh2D,
 
   if ((*pTess).FaceState == NULL)
     (*pTess).FaceState = ut_alloc_1d_int ((*pTess).FaceQty + 1);
-    
+
   ut_array_1d_int_set ((*pTess).FaceState + 1, (*pTess).FaceQty, 1);
 
   if ((*pTess).FaceEq == NULL)
@@ -91,7 +91,7 @@ nem_reconmesh_2d (struct NODES Nodes, struct MESH *pMesh2D,
 }
 
 void
-nem_reconmesh_1d (struct NODES Nodes, struct MESH *pMesh1D,
+nem_reconstruct_mesh_1d (struct NODES Nodes, struct MESH *pMesh1D,
               struct MESH *pMesh2D, struct TESS* pTess)
 {
   int i, EdgeQty;
@@ -106,7 +106,7 @@ nem_reconmesh_1d (struct NODES Nodes, struct MESH *pMesh1D,
     if ((*pMesh1D).Dimension != 1)
       ut_error_reportbug ();
 
-  // Reconstructing 1D mesh 
+  // Reconstructing 1D mesh
   if (pMesh1D == NULL || (*pMesh1D).EltQty == 0)
   {
     ut_print_message (0, 2, "Reconstructing 1D mesh ... ");
@@ -123,10 +123,10 @@ nem_reconmesh_1d (struct NODES Nodes, struct MESH *pMesh1D,
 	&EdgeFaceQty, &EdgeQty, 1);
 
     (*pTess).EdgeQty = EdgeQty;
-    (*pTess).EdgeFaceQty = ut_alloc_1d_int ((*pTess).EdgeQty + 1); 
+    (*pTess).EdgeFaceQty = ut_alloc_1d_int ((*pTess).EdgeQty + 1);
     ut_array_1d_int_memcpy ((*pTess).EdgeFaceQty + 1, (*pTess).EdgeQty,
 	EdgeFaceQty);
-    (*pTess).EdgeFaceNb = ut_alloc_1d_pint ((*pTess).EdgeQty + 1); 
+    (*pTess).EdgeFaceNb = ut_alloc_1d_pint ((*pTess).EdgeQty + 1);
     (*pTess).EdgeFaceNb[0] = ut_alloc_1d_int (1);
     for (i = 1; i <= (*pTess).EdgeQty; i++)
     {
@@ -145,7 +145,7 @@ nem_reconmesh_1d (struct NODES Nodes, struct MESH *pMesh1D,
 
   if ((*pMesh1D).NodeElts == NULL)
     neut_mesh_init_nodeelts (pMesh1D, Nodes.NodeQty);
-  
+
   neut_tess_init_facestuff_fromedge (pTess);
 
   ut_free_1d_int (EdgeFaceQty);
@@ -155,7 +155,7 @@ nem_reconmesh_1d (struct NODES Nodes, struct MESH *pMesh1D,
 }
 
 void
-nem_reconmesh_0d (struct NODES Nodes, struct MESH *pMesh0D,
+nem_reconstruct_mesh_0d (struct NODES Nodes, struct MESH *pMesh0D,
               struct MESH *pMesh1D, struct TESS* pTess)
 {
   int i, VerQty;
@@ -177,7 +177,7 @@ nem_reconmesh_0d (struct NODES Nodes, struct MESH *pMesh0D,
     if ((*pMesh0D).Dimension != 0)
       ut_error_reportbug ();
 
-  // Reconstructing 0D mesh 
+  // Reconstructing 0D mesh
   if (pMesh0D == NULL || (*pMesh0D).EltQty == 0)
   {
     ut_print_message (0, 2, "Reconstructing 0D mesh ... ");
@@ -243,7 +243,7 @@ nem_reconmesh_0d (struct NODES Nodes, struct MESH *pMesh0D,
 
   if (pTess == NULL)
     neut_tess_free (pTessb);
-  
+
   if (pTess != NULL)
     ut_free_2d_int (VerEdgeNb, (*pTess).VerQty);
 
@@ -253,7 +253,7 @@ nem_reconmesh_0d (struct NODES Nodes, struct MESH *pMesh0D,
 }
 
 void
-nem_reconmesh_finalizetess (struct TESS* pTess, struct NODES RNodes,
+nem_reconstruct_mesh_finalizetess (struct TESS* pTess, struct NODES RNodes,
     struct MESH RMesh0D, struct MESH RMesh1D, struct MESH RMesh2D,
     struct MESH RMesh3D)
 {
@@ -263,13 +263,17 @@ nem_reconmesh_finalizetess (struct TESS* pTess, struct NODES RNodes,
   // double* eq = ut_alloc_1d (4);
   // double* eqe = ut_alloc_1d (4);
 
+  ut_array_1d_int_set ((*pTess).FaceState + 1, (*pTess).FaceQty, 1);
+  ut_array_1d_int_set ((*pTess).VerState + 1, (*pTess).VerQty, 1);
+
+
   // (re)initializing tess properties from nodes / mesh ver coo
   for (i = 1; i <= (*pTess).VerQty; i++)
   {
     node = RMesh0D.EltNodes[i][0];
     ut_array_1d_memcpy ((*pTess).VerCoo[i], 3, RNodes.NodeCoo[node]);
   }
-  
+
   // edge length (sum over the elements to account for curvature)
   for (i = 1; i <= (*pTess).EdgeQty; i++)
   {
@@ -282,9 +286,9 @@ nem_reconmesh_finalizetess (struct TESS* pTess, struct NODES RNodes,
     }
     (*pTess).EdgeLength[i] = length;
   }
-  
+
   // face equations: the elt normals are (weighted) averaged, so as the
-  // constant for the equation. 
+  // constant for the equation.
 
   /*
   if ((*pTess).FaceState == NULL)
@@ -386,6 +390,82 @@ nem_reconmesh_finalizetess (struct TESS* pTess, struct NODES RNodes,
 
   // ut_free_1d (eqe);
   // ut_free_1d (eq);
+
+  // If the domain is not defined, initializing it.
+  if ((*pTess).DomFaceQty == 0)
+    neut_tess_init_domain (pTess);
+
+  if ((*pTess).PolyTrue == NULL)
+    neut_tess_init_polytrue (pTess);
+
+  if ((*pTess).PolyBody == NULL)
+    neut_tess_init_polybody (pTess);
+
+  return;
+}
+
+void
+nem_reconstruct_mesh_tess_updating (struct TESS* pTess, struct NODES
+    RNodes, struct MESH RMesh0D, struct MESH RMesh1D, struct MESH
+    RMesh2D, struct MESH RMesh3D)
+{
+  int i, j, elt, node;
+  double length, norm;
+  double* eq = ut_alloc_1d (4);
+  double* eqe = ut_alloc_1d (4);
+
+  ut_print_message (0, 2, "Retrieving tessellation properties ...\n");
+
+  // reinitializing tess properties from nodes / mesh
+  // ver coo
+  for (i = 1; i <= (*pTess).VerQty; i++)
+  {
+    node = RMesh0D.EltNodes[i][0];
+    ut_array_1d_memcpy ((*pTess).VerCoo[i], 3, RNodes.NodeCoo[node]);
+  }
+  
+  // edge length (sum over the elements to account for curvature)
+  for (i = 1; i <= (*pTess).EdgeQty; i++)
+  {
+    length = 0;
+    for (j = 1; j <= RMesh1D.Elsets[i][0]; j++)
+    {
+      elt = RMesh1D.Elsets[i][j];
+      length += ut_space_dist (RNodes.NodeCoo[RMesh1D.EltNodes[elt][0]],
+                               RNodes.NodeCoo[RMesh1D.EltNodes[elt][1]]);
+    }
+    (*pTess).EdgeLength[i] = length;
+  }
+  
+  // face equations
+  // the elt normals are averaged, so as the constant for the equation
+  // the constant does not really matter because it does not change the
+  // projection (which is done along the normal).
+
+  for (i = 1; i <= (*pTess).FaceQty; i++)
+  {
+    (*pTess).FaceState[i] = 1;
+
+    ut_array_1d_zero (eq, 4);
+    for (j = 1; j <= RMesh2D.Elsets[i][0]; j++)
+    {
+      elt = RMesh2D.Elsets[i][j];
+      neut_mesh_elt_eq (RMesh2D, RNodes, elt, eqe);
+      ut_array_1d_add (eqe, eq, 4, eq);
+    }
+
+    norm = ut_vector_norm (eq + 1);
+    ut_array_1d_scale (eq, 4, 1./norm);
+
+    ut_array_1d_memcpy ((*pTess).FaceEq[i], 4, eq);
+  }
+
+  // poly centre: centre of mass of the elsets
+  for (i = 1; i <= (*pTess).PolyQty; i++)
+    neut_mesh_elset_centre (RNodes, RMesh3D, i, (*pTess).CenterCoo[i]);
+
+  ut_free_1d (eqe);
+  ut_free_1d (eq);
   
   return;
 }

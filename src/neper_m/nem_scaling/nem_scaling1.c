@@ -2,36 +2,10 @@
 /* Copyright (C) 2003-2012, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-#include"nem_init.h"
+#include"nem_scaling.h"
 
 void
-nem_init_remesh (struct TESS* pTess, struct NODES* pRNodes,
-		 struct MESH* pRMesh0D, struct MESH* pRMesh1D,
-		 struct MESH* pRMesh2D, struct MESH* pRMesh3D)
-{
-  neut_mesh_init_eltelset (pRMesh2D, NULL);
-  neut_mesh_init_nodeelts (pRMesh2D, (*pRNodes).NodeQty);
-  neut_mesh_init_eltelset (pRMesh3D, NULL);
-  neut_mesh_init_nodeelts (pRMesh3D, (*pRNodes).NodeQty);
-
-  if ((*pTess).PolyQty == 0)
-  {
-    ut_print_message (0, 2, "Reconstructing meshes and topology ...\n");
-    nem_reconmesh ("3,2,1,0", pRNodes, pRMesh0D, pRMesh1D, pRMesh2D, pRMesh3D, pTess);
-  }
-  else
-  {
-    ut_print_message (0, 2, "Reconstructing meshes ...\n");
-    nem_reconmesh ("3,2,1,0", pRNodes, pRMesh0D, pRMesh1D, pRMesh2D, pRMesh3D, NULL);
-    
-    nem_init_mesh_tess_updating (pTess, *pRNodes, *pRMesh0D, *pRMesh1D, *pRMesh2D, *pRMesh3D);
-  }
-
-  return;
-}
-
-void
-nem_init_scaling (char* elttype, struct TESS* pTess, struct VOX* pVox, struct NODES* pRNodes,
+nem_scaling_pre (char* elttype, struct TESS* pTess, struct VOX* pVox, struct NODES* pRNodes,
     struct MESH RMesh0D, struct MESH RMesh1D, struct MESH RMesh2D,
     struct MESH RMesh3D, struct MESHPARA* pMeshPara)
 {
@@ -125,10 +99,10 @@ nem_init_scaling (char* elttype, struct TESS* pTess, struct VOX* pVox, struct NO
       neut_nodes_scale (pRNodes, scale[0], scale[1], scale[2]);
 
     if (input == 'm')
-      nem_init_mesh_tess_updating
+      nem_reconstruct_mesh_tess_updating
 	(pTess, *pRNodes, RMesh0D, RMesh1D, RMesh2D, RMesh3D);
   }
-  
+
   /* Calculation of cl_skin */
   if ((*pMeshPara).dboundrcl > 0 && (*pMeshPara).dboundcl < 0)
     rcl2cl ((*pMeshPara).dboundrcl, vol, polyqty, elttype, &((*pMeshPara).dboundcl));
@@ -142,19 +116,19 @@ nem_init_scaling (char* elttype, struct TESS* pTess, struct VOX* pVox, struct NO
   }
 
   ut_free_1d (scale);
-  
+
   return;
 }
 
 void
-nem_post_scaling (struct MESHPARA MeshPara, struct TESS* pTess,
+nem_scaling_post (struct MESHPARA MeshPara, struct TESS* pTess,
                   struct VOX* pVox, struct NODES* pNodes)
 {
   int i;
 
   if (MeshPara.cltype < 2)
     return;
-  
+
   double* scale = ut_alloc_1d (3);
 
   if (MeshPara.cltype == 2)
@@ -166,7 +140,7 @@ nem_post_scaling (struct MESHPARA MeshPara, struct TESS* pTess,
 
   if ((*pTess).PolyQty > 0)
     neut_tess_scale (pTess, scale[0], scale[1], scale[2]);
-    
+
   if ((*pVox).PolyQty > 0)
     neut_vox_scale (pVox, scale[0], scale[1], scale[2], NULL);
 
