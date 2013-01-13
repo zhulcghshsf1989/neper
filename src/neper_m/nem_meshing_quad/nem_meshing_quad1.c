@@ -2,13 +2,13 @@
 /* Copyright (C) 2003-2012, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-#include "nem_meshing_hex.h"
+#include "nem_meshing_quad.h"
 
 void
-nem_meshing_tess_hex (struct IN In, struct MESHPARA MeshPara, struct TESS Tess, 
-		      struct NODES *pNodes, struct MESH* pMesh0D,
-		      struct MESH* pMesh1D, struct MESH* pMesh2D, 
-		      struct MESH *pMesh3D, struct NSET* pNSet2D)
+nem_meshing_tess_quad (struct IN In, struct MESHPARA MeshPara, struct TESS Tess,
+		       struct NODES *pNodes, struct MESH* pMesh0D,
+		       struct MESH* pMesh1D, struct MESH* pMesh2D,
+		       struct MESH *pMesh3D, struct NSET* pNSet2D)
 {
   int i;
   int* msize = ut_alloc_1d_int (3);
@@ -37,7 +37,7 @@ nem_meshing_tess_hex (struct IN In, struct MESHPARA MeshPara, struct TESS Tess,
   /* Searching elsets ---------------------------------------------- */
 
   // ut_print_message (0, 2, "Searching elsets ... ");
-  nem_meshing_hexFTess (Tess, *pNodes, pMesh3D);
+  nem_meshing_quadFTess (Tess, *pNodes, pMesh3D);
 
   neut_mesh_init_elsets (pMesh3D);
 
@@ -65,7 +65,7 @@ nem_meshing_tess_hex (struct IN In, struct MESHPARA MeshPara, struct TESS Tess,
     if (In.singnodedup)
     {
       ut_print_message (0, 2, "Duplicating nodes with singularity ... ");
-      nem_meshing_hex_singnodedup (pMesh3D, pNodes, pFoDNodes);
+      nem_meshing_quad_singnodedup (pMesh3D, pNodes, pFoDNodes);
     }
     */
 
@@ -78,10 +78,10 @@ nem_meshing_tess_hex (struct IN In, struct MESHPARA MeshPara, struct TESS Tess,
 }
 
 void
-nem_meshing_vox_hex (struct IN In, struct MESHPARA MeshPara, struct VOX Vox,
-		     struct NODES* pNodes, struct MESH* pMesh0D, struct
-		     MESH* pMesh1D, struct MESH* pMesh2D, struct MESH* pMesh3D,
-		     struct NSET* pNSet2D)
+nem_meshing_vox_quad (struct IN In, struct MESHPARA MeshPara, struct VOX Vox,
+		      struct NODES* pNodes, struct MESH* pMesh0D, struct
+		      MESH* pMesh1D, struct MESH* pMesh2D, struct MESH* pMesh3D,
+		      struct NSET* pNSet2D)
 {
   int i, j, k, elt;
   struct VOX Vox2;
@@ -147,7 +147,7 @@ nem_meshing_vox_hex (struct IN In, struct MESHPARA MeshPara, struct VOX Vox,
   neut_nodes_rmorphans (pNodes, pMesh3D, pNSet2D);
 
   if (In.meshpoly != NULL)
-    nem_meshing_hex_meshpoly (In.meshpoly, Vox, pMesh3D, pNodes, pNSet2D);
+    nem_meshing_quad_meshpoly (In.meshpoly, Vox, pMesh3D, pNodes, pNSet2D);
 
   nem_reconstruct_mesh (In.outdim, pNodes, pMesh0D, pMesh1D, pMesh2D, pMesh3D,
       NULL);

@@ -12,7 +12,7 @@ nem_nsets (struct IN In, struct TESS Tess, struct MESH Mesh0D, struct MESH Mesh1
   if (In.nset == NULL || strlen (In.nset) == 0 || ! strcmp (In.nset, "none"))
     return;
 
-  if (! strcmp (In.elttype, "tet"))
+  if (! strcmp (In.elttype, "tri"))
   {
     nem_nsets_2d_tess (Tess, Mesh2D, pNSet2D);
     nem_nsets_1d_tess (Tess, Mesh1D, *pNSet2D, pNSet1D);
@@ -27,12 +27,12 @@ nem_nsets (struct IN In, struct TESS Tess, struct MESH Mesh0D, struct MESH Mesh1
     }
   }
 
-  else if (! strcmp (In.elttype, "hex"))
+  else if (! strcmp (In.elttype, "quad"))
   {
     if (Tess.PolyQty > 0 && ! strcmp (Tess.DomType, "cube"))
     {
-      nem_nsets_1d_tess_hex (Tess, *pNSet2D, pNSet1D);
-      nem_nsets_0d_tess_hex (Tess, *pNSet2D, *pNSet1D, pNSet0D);
+      nem_nsets_1d_tess_quad (Tess, *pNSet2D, pNSet1D);
+      nem_nsets_0d_tess_quad (Tess, *pNSet2D, *pNSet1D, pNSet0D);
 
       if (ut_string_finds (In.nset, "all") != -1
        || ut_string_finds (In.nset, "body") != -1
@@ -45,15 +45,15 @@ nem_nsets (struct IN In, struct TESS Tess, struct MESH Mesh0D, struct MESH Mesh1
 
     else
     {
-      nem_nsets_1d_hex (*pNSet2D, pNSet1D);
-      nem_nsets_0d_hex (*pNSet1D, pNSet0D);
+      nem_nsets_1d_quad (*pNSet2D, pNSet1D);
+      nem_nsets_0d_quad (*pNSet1D, pNSet0D);
 
       if (ut_string_finds (In.nset, "all") != -1
        || ut_string_finds (In.nset, "body") != -1
        || ut_string_finds (In.nset, "bodies") != -1)
       {
-	nem_nsets_2dbody_hex (*pNSet1D, pNSet2D);
-	nem_nsets_1dbody_hex (*pNSet0D, pNSet1D);
+	nem_nsets_2dbody_quad (*pNSet1D, pNSet2D);
+	nem_nsets_1dbody_quad (*pNSet0D, pNSet1D);
       }
     }
   }

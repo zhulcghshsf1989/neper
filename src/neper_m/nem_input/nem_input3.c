@@ -34,8 +34,8 @@ nem_input_options_default (struct IN *pIn, struct MESHPARA *pMeshPara)
   /* Options for meshing ------------------------------- */
   (*pIn).morder = 1;
   (*pIn).meshdim = -1;
-  (*pIn).elttype = ut_alloc_1d_char (10);
-  strcpy ((*pIn).elttype, "tet");
+  (*pIn).elttype = ut_alloc_1d_char (5);
+  strcpy ((*pIn).elttype, "tri");
 
   (*pIn).singnodedup = 0;
   (*pIn).dupnodemerge = -1;
@@ -262,8 +262,6 @@ nem_input_options_set (struct IN *pIn, struct MESHPARA *pMeshPara,
 
       /* Options for the meshing ----------------------------------------- */
 
-      else if (strcmp (Arg, "-elttype") == 0 && i < argc - 1)
-	(*pIn).elttype = ut_arg_nextaschar (argv, &i, Arg);
       else if (strcmp (Arg, "-cl") == 0 && i < argc - 1)
       {
 	(*pMeshPara).cltype = 0;

@@ -414,9 +414,9 @@ rsel2sel (double rsel, double vol, int PolyQty, double* psel)
 void
 rcl2cl (double rcl, double vol, int PolyQty, char* elttype, double* pcl)
 {
-  if (elttype == NULL || ! strcmp (elttype, "tet") || ! strcmp (elttype, "tri"))
+  if (elttype == NULL || ! strcmp (elttype, "tri"))
     (*pcl) = rcl * 0.5 * pow (vol / PolyQty, 0.3333333333333333333333333333);
-  else if (! strcmp (elttype, "hex") || ! strcmp (elttype, "quad"))
+  else if (! strcmp (elttype, "quad"))
   {
     (*pcl) = rcl * 0.5 * pow (vol / PolyQty, 0.3333333333333333333333333333);
     (*pcl) *= .43084877208099956915;

@@ -18,7 +18,7 @@
 #include"nem_input/nem_input0.h"
 #include"nem_scaling/nem_scaling0.h"
 #include"nem_meshing/nem_meshing0.h"
-#include"nem_meshing_hex/nem_meshing_hex0.h"
+#include"nem_meshing_quad/nem_meshing_quad0.h"
 #include"nem_cleaning/nem_cleaning0.h"
 #include"nem_nsets/nem_nsets0.h"
 #include"nem_writemesh/nem_writemesh0.h"

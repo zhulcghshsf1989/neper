@@ -63,7 +63,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
     ut_print_message (0, 1, "Loading voxel data ...\n");
     neut_vox_name_fscanf (In.vox, &Vox);
 
-    if (! strcmp (In.elttype, "tet"))
+    if (! strcmp (In.elttype, "tri"))
     {
       ut_print_message (0, 1, "Reconstructing topology ...\n");
       nem_reconstruct_vox (Vox, &Tess, &RNodes, &RMesh1D, &RMesh2D, &NSet2D);
@@ -76,7 +76,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
     ut_print_message (0, 1, "Loading mesh ...\n");
     neut_mesh_name_fscanf_msh (In.mesh, &RNodes, &RMesh0D, &RMesh1D, &RMesh2D, &RMesh3D);
 
-    if (! strcmp (In.elttype, "tet"))
+    if (! strcmp (In.elttype, "tri"))
     {
       ut_print_message (0, 1, "Reconstructing topology ...\n");
       nem_reconstruct_mesh ("0,1,2,3", &RNodes, &RMesh0D, &RMesh1D, &RMesh2D, &RMesh3D, &Tess);
@@ -93,17 +93,17 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   {
     ut_print_message (0, 1, "Meshing ...");
 
-    if (! strcmp (In.elttype, "tet"))
+    if (! strcmp (In.elttype, "tri"))
       nem_meshing (In, MeshPara, Tess, RNodes, RMesh1D, RMesh2D, &Nodes,
 		   &Mesh0D, &Mesh1D, &Mesh2D, &Mesh3D);
     
-    else if (! strcmp (In.elttype, "hex"))
+    else if (! strcmp (In.elttype, "quad"))
     {
       if (In.tess != NULL)
-	nem_meshing_tess_hex (In, MeshPara, Tess, &Nodes, &Mesh0D, &Mesh1D,
+	nem_meshing_tess_quad (In, MeshPara, Tess, &Nodes, &Mesh0D, &Mesh1D,
 	    &Mesh2D, &Mesh3D, &NSet2D);
       else if (In.vox != NULL)
-	nem_meshing_vox_hex (In, MeshPara, Vox, &Nodes, &Mesh0D, &Mesh1D,
+	nem_meshing_vox_quad (In, MeshPara, Vox, &Nodes, &Mesh0D, &Mesh1D,
 	    &Mesh2D, &Mesh3D, &NSet2D);
     }
   }

@@ -144,7 +144,7 @@ neut_mesh3d_slice (struct NODES Nodes, struct MESH Mesh, double* eq,
   
   if (! strcmp (Mesh.EltType, "tri"))
     for (i = 1; i <= Mesh.EltQty; i++)
-      neut_mesh3d_elt_slice_tet (Nodes, Mesh, i, eq, pSNodes, pSMesh, pelt_newold,
+      neut_mesh3d_elt_slice_tri (Nodes, Mesh, i, eq, pSNodes, pSMesh, pelt_newold,
 				 pnode_newold, pnode_fact);
   else if (! strcmp (Mesh.EltType, "quad"))
     for (i = 1; i <= Mesh.EltQty; i++)
@@ -159,7 +159,7 @@ neut_mesh3d_slice (struct NODES Nodes, struct MESH Mesh, double* eq,
 }
 
 int
-neut_mesh3d_elt_slice_tet (struct NODES Nodes, struct MESH Mesh, int elt, double* eq,
+neut_mesh3d_elt_slice_tri (struct NODES Nodes, struct MESH Mesh, int elt, double* eq,
 			   struct NODES* pSNodes, struct MESH* pSMesh,
 			   int** pelt_newold, int*** pnode_newold, double** pnode_fact)
 {
@@ -320,7 +320,7 @@ neut_mesh3d_elt_slice_quad (struct NODES Nodes, struct MESH Mesh, int elt, doubl
   {
     nodeqty = (*pSNodes).NodeQty;
     eltqty  = (*pSMesh).EltQty;
-    neut_mesh3d_elt_slice_tet (ENodes, TEMesh, i, eq, pSNodes, pSMesh,
+    neut_mesh3d_elt_slice_tri (ENodes, TEMesh, i, eq, pSNodes, pSMesh,
 			       pelt_newold, pnode_newold, pnode_fact);
 
     // Renumbering added elts

@@ -151,7 +151,7 @@ nem_nsets_1dbody_tess (struct TESS Tess, struct NSET NSet0D, struct NSET* pNSet1
 }
 
 void
-nem_nsets_1d_tess_hex (struct TESS Tess, struct NSET NSet2D, struct NSET* pNSet1D)
+nem_nsets_1d_tess_quad (struct TESS Tess, struct NSET NSet2D, struct NSET* pNSet1D)
 {
   int i;
 
@@ -169,7 +169,7 @@ nem_nsets_1d_tess_hex (struct TESS Tess, struct NSET NSet2D, struct NSET* pNSet1
 }
 
 void
-nem_nsets_0d_tess_hex (struct TESS Tess, struct NSET NSet2D, struct NSET NSet1D,
+nem_nsets_0d_tess_quad (struct TESS Tess, struct NSET NSet2D, struct NSET NSet1D,
                       struct NSET* pNSet0D)
 {
   int i;
@@ -191,7 +191,7 @@ nem_nsets_0d_tess_hex (struct TESS Tess, struct NSET NSet2D, struct NSET NSet1D,
 }
 
 void
-nem_nsets_1d_hex (struct NSET NSet2D, struct NSET* pNSet1D)
+nem_nsets_1d_quad (struct NSET NSet2D, struct NSET* pNSet1D)
 {
   int i;
   char** edgelabel = ut_alloc_2d_char (13, 7);
@@ -229,7 +229,7 @@ nem_nsets_1d_hex (struct NSET NSet2D, struct NSET* pNSet1D)
 }
 
 void
-nem_nsets_0d_hex (struct NSET NSet1D, struct NSET* pNSet0D)
+nem_nsets_0d_quad (struct NSET NSet1D, struct NSET* pNSet0D)
 {
   int i;
   char** verlabel = ut_alloc_2d_char (9, 7);
@@ -263,7 +263,7 @@ nem_nsets_0d_hex (struct NSET NSet1D, struct NSET* pNSet0D)
 }
 
 void
-nem_nsets_2dbody_hex (struct NSET NSet1D, struct NSET* pNSet2D)
+nem_nsets_2dbody_quad (struct NSET NSet1D, struct NSET* pNSet2D)
 {
   int i, j, k, edge;
   int ref, prevqty = (*pNSet2D).qty;
@@ -312,7 +312,7 @@ nem_nsets_2dbody_hex (struct NSET NSet1D, struct NSET* pNSet2D)
 }
 
 void
-nem_nsets_1dbody_hex (struct NSET NSet0D, struct NSET* pNSet1D)
+nem_nsets_1dbody_quad (struct NSET NSet0D, struct NSET* pNSet1D)
 {
   int i, j, k, ver;
   int ref, prevqty = (*pNSet1D).qty;

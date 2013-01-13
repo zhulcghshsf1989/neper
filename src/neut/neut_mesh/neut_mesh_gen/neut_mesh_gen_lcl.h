@@ -7,7 +7,7 @@
 #include<string.h>
 #include"neut.h"
 
-extern int neut_mesh3d_elt_slice_tet (struct NODES Nodes, struct MESH
+extern int neut_mesh3d_elt_slice_tri (struct NODES Nodes, struct MESH
     Mesh, int elt, double* eq, struct NODES* pSNodes, struct MESH*
     pSMesh, int** pelt_newold, int*** pnode_newold, double**
     pnode_fact);

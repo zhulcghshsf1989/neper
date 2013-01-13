@@ -15,6 +15,19 @@ nem_input_treatargs (int fargc, char **fargv, int argc, char **argv,
   nem_input_options_set (pIn, pMeshPara, fargc, fargv);
   nem_input_options_set (pIn, pMeshPara, argc, argv);
 
+  // Checking out the elttype value
+  if (! strcmp ((*pIn).elttype, "tet"))
+    strcpy ((*pIn).elttype, "tri");
+  else if (! strcmp ((*pIn).elttype, "hex"))
+    strcpy ((*pIn).elttype, "quad");
+
+  if (strcmp ((*pIn).elttype, "tri") != 0
+   && strcmp ((*pIn).elttype, "quad") != 0)
+  {
+    ut_print_message (2, 0, "Unknown elt type `%s'.\n", (*pIn).elttype);
+    abort ();
+  }
+
   // If not set up, setting dim default value
   if ((*pIn).meshdim == -1)
   {

@@ -18,14 +18,14 @@ extern void nem_nsets_0d_tess (struct TESS, struct MESH, struct NSET, struct NSE
 extern void nem_nsets_2dbody_tess (struct TESS, struct NSET, struct NSET*);
 extern void nem_nsets_1dbody_tess (struct TESS, struct NSET, struct NSET*);
 
-extern void nem_nsets_1d_tess_hex (struct TESS Tess, struct NSET NSet2D, struct NSET* pNSet1D);
-extern void nem_nsets_0d_tess_hex (struct TESS Tess, struct NSET NSet2D, struct NSET  NSet1D,
+extern void nem_nsets_1d_tess_quad (struct TESS Tess, struct NSET NSet2D, struct NSET* pNSet1D);
+extern void nem_nsets_0d_tess_quad (struct TESS Tess, struct NSET NSet2D, struct NSET  NSet1D,
                                   struct NSET* pNSet0D);
 
 extern void nem_nsets_1d_names (struct TESS Tess, int id, struct NSET NSet2D, struct NSET* pNSet1D);
 extern void nem_nsets_0d_names (struct TESS Tess, int id, struct NSET NSet2D, struct NSET* pNSet0D);
 
-extern void nem_nsets_1d_hex (struct NSET NSet2D, struct NSET* pNSet1D);
-extern void nem_nsets_0d_hex (struct NSET NSet1D, struct NSET* pNSet0D);
-extern void nem_nsets_2dbody_hex (struct NSET NSet1D, struct NSET* pNSet2D);
-extern void nem_nsets_1dbody_hex (struct NSET NSet0D, struct NSET* pNSet1D);
+extern void nem_nsets_1d_quad (struct NSET NSet2D, struct NSET* pNSet1D);
+extern void nem_nsets_0d_quad (struct NSET NSet1D, struct NSET* pNSet0D);
+extern void nem_nsets_2dbody_quad (struct NSET NSet1D, struct NSET* pNSet2D);
+extern void nem_nsets_1dbody_quad (struct NSET NSet0D, struct NSET* pNSet1D);

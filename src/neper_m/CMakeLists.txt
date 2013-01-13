@@ -51,8 +51,8 @@ add_library (neper_m
 ./nem_nsets/nem_nsets1.c
 ./nem_nsets/nem_nsets2.c
 ./nem_nsets/nem_nsets3.c
-./nem_meshing_hex/nem_meshing_hex1.c
-./nem_meshing_hex/nem_meshing_hex2.c
+./nem_meshing_quad/nem_meshing_quad1.c
+./nem_meshing_quad/nem_meshing_quad2.c
 ./neper_m.c
 )
 

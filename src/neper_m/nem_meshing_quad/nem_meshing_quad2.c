@@ -2,10 +2,10 @@
 /* Copyright (C) 2003-2012, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-#include "nem_meshing_hex.h"
+#include "nem_meshing_quad.h"
 
 void
-nem_meshing_hexFTess (struct TESS Tess, struct NODES Nodes, struct MESH* pMesh)
+nem_meshing_quadFTess (struct TESS Tess, struct NODES Nodes, struct MESH* pMesh)
 {
   int elt, pid, prevpid;
   char* progress = ut_alloc_1d_char (100);
@@ -43,7 +43,7 @@ nem_meshing_hexFTess (struct TESS Tess, struct NODES Nodes, struct MESH* pMesh)
 }
 
 void
-nem_meshing_hex_meshpoly (char* meshpoly, struct VOX Vox, struct MESH* pMesh, struct NODES* pNodes,
+nem_meshing_quad_meshpoly (char* meshpoly, struct VOX Vox, struct MESH* pMesh, struct NODES* pNodes,
                    struct NSET* pNSet2D)
 {
   int i, polyqty;
