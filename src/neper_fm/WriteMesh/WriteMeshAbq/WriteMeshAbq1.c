@@ -100,6 +100,8 @@ WriteMeshAbq (FILE* file, char* dim, struct NODES Nodes,
 
 // 3D elts -------------------------------------------------------------
 
+  int id_shift = ut_string_inlist (dim, ',', "2") ? Mesh2D.EltQty : 0;
+
   if (ut_string_inlist (dim, ',', "3"))
   {
     fprintf (file, "\n*Element, type=");
@@ -110,7 +112,7 @@ WriteMeshAbq (FILE* file, char* dim, struct NODES Nodes,
 
     for (i = 1; i <= Mesh3D.EltQty; i++)
     {
-      fprintf (file, "%d, ", i);
+      fprintf (file, "%d, ", i + id_shift);
       for (j = 0; j < eltnodeqty3D - 1; j++)
 	fprintf (file, "%d, ", Mesh3D.EltNodes[i][seq3d[j]]);
       fprintf (file, "%d\n", Mesh3D.EltNodes[i][seq3d[eltnodeqty3D - 1]]);
@@ -140,8 +142,8 @@ WriteMeshAbq (FILE* file, char* dim, struct NODES Nodes,
       fprintf (file, "\n*Elset, elset=poly%d\n", i);
       col = 0;
       for (j = 1; j < Mesh3D.Elsets[i][0]; j++)
-	ut_print_wnc (file, &col, 72, "%d, ", Mesh3D.Elsets[i][j]);
-      ut_print_wnc (file, &col, 72, "%d\n", Mesh3D.Elsets[i][Mesh3D.Elsets[i][0]]);
+	ut_print_wnc (file, &col, 72, "%d, ", Mesh3D.Elsets[i][j] + id_shift);
+      ut_print_wnc (file, &col, 72, "%d\n", Mesh3D.Elsets[i][Mesh3D.Elsets[i][0]] + id_shift);
     }
   }
 
