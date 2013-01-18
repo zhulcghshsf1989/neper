@@ -347,6 +347,8 @@ WriteMapMeshAbq (struct IN In, char *nsetlist,
 {
   int i, j, col, call;
 
+  fprintf (file, "*Part, name=tess\n");
+
   /* Writing nodes */
   fprintf (file, "*Node\n");
   for (i = 1; i <= Nodes.NodeQty; i++)
@@ -429,6 +431,8 @@ WriteMapMeshAbq (struct IN In, char *nsetlist,
     ut_print_wnc_wncall (file, &col, 72, &call, 16, "%d\n",
 	                 Mesh.Elsets[i][Mesh.Elsets[i][0]]);
   }
+
+  fprintf (file, "*End Part\n");
 
   return;
 }

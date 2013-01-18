@@ -24,6 +24,8 @@ WriteMeshAbq (FILE* file, char* dim, struct NODES Nodes,
 /*----------------------------------------------------------------------
  * header */
 
+  fprintf (file, "*Part, name=tess\n");
+
 /*----------------------------------------------------------------------
  * nodes */
 
@@ -151,6 +153,10 @@ WriteMeshAbq (FILE* file, char* dim, struct NODES Nodes,
 
   if (nset != NULL)
     neut_mesh_fprintf_abq_nsets (file, NSet0D, NSet1D, NSet2D, nset);
+
+// foot ----------------------------------------------------------------
+
+  fprintf (file, "*End Part\n");
   
   return;
 }

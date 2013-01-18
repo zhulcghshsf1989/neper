@@ -1,4 +1,4 @@
-New in 1.10.4-devel-3:
+New in 1.10.4-devel-4:
 - module -T: fixed option -pointpoly.
 - module -FM: fixed mesh output for Abaqus.
 - module -MM: fixed meshing of regularized tessellations.
