@@ -11,12 +11,12 @@ struct VOX
   char* version;
   char* format;
 
-  int* size;
-  double* vsize;
+  int* size;                  // number of voxels in x, y, z
+  double* vsize;              // size of voxels in x, y, z
 
-  int*** VoxPoly;
+  int*** VoxPoly;             // Poly of a voxel, indexed [0...size[0]-1], etc.
 
-  int PolyQty;
+  int PolyQty;                // Number of grains
 };
 typedef struct VOX VOX;
 

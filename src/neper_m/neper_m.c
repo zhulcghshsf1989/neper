@@ -15,9 +15,10 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   struct TESS Tess;
   struct VOX Vox;
   struct MESHPARA MeshPara;
-  struct NODES Nodes, RNodes;
-  struct MESH Mesh0D, Mesh1D, Mesh2D, Mesh3D;
-  struct MESH RMesh0D, RMesh1D, RMesh2D, RMesh3D;
+  struct NODES RNodes;                            // input nodes (remeshing)
+  struct MESH RMesh0D, RMesh1D, RMesh2D, RMesh3D; // input nodes (remeshing)
+  struct NODES Nodes;                             // output nodes
+  struct MESH Mesh0D, Mesh1D, Mesh2D, Mesh3D;     // output meshes
   struct PART Part;
   struct NSET NSet0D, NSet1D, NSet2D;
 
