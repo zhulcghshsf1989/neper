@@ -51,6 +51,13 @@ extern void neut_mesh_elt_normal (struct MESH Mesh, struct NODES Nodes, int elt,
 ///
 extern void neut_mesh_elt_eq (struct MESH Mesh, struct NODES Nodes, int elt, double *eq);
 
+/// \brief Get the equation of an elset of a 2D mesh.
+///
+/// The equation is the average of the equations of the elts, weighted
+/// by their respective areas.
+///
+extern void neut_mesh_elset_eq (struct MESH Mesh, struct NODES Nodes, int elset, double *eq);
+
 /// \brief Get the radius ratio of an elt of a 3D mesh.
 ///
 ///

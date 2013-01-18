@@ -55,27 +55,16 @@ nem_writemesh (struct IN In, struct TESS Tess,
 
   if (ut_string_inlist (In.format, ',', "msh"))
   {
-    file = ut_file_open (In.msh, "w");
     if (ut_string_inlist (In.outdim, ',', "3") == 1 && (*pMesh3D).EltType == NULL)
-    {
-      printf ("(*pMesh3D).EltType == NULL\n");
-      ut_error_reportbug ();
-    }
+      ut_print_message (1, 3, "3D mesh is void.\n");
     if (ut_string_inlist (In.outdim, ',', "2") == 1 && (*pMesh2D).EltType == NULL)
-    {
-      printf ("(*pMesh2D).EltType == NULL\n");
-      ut_error_reportbug ();
-    }
+      ut_print_message (1, 3, "2D mesh is void.\n");
     if (ut_string_inlist (In.outdim, ',', "1") == 1 && (*pMesh1D).EltType == NULL)
-    {
-      printf ("(*pMesh1D).EltType == NULL\n");
-      ut_error_reportbug ();
-    }
+      ut_print_message (1, 3, "1D mesh is void.\n");
     if (ut_string_inlist (In.outdim, ',', "0") == 1 && (*pMesh0D).EltType == NULL)
-    {
-      printf ("(*pMesh0D).EltType == NULL\n");
-      ut_error_reportbug ();
-    }
+      ut_print_message (1, 3, "1D mesh is void.\n");
+
+    file = ut_file_open (In.msh, "w");
     neut_mesh_fprintf_gmsh (file, In.outdim, Nodes, *pMesh0D, *pMesh1D,
 	*pMesh2D, *pMesh3D, Part);
     ut_file_close (file, In.msh, "w");

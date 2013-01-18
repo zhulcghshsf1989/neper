@@ -89,7 +89,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   // ###################################################################
   // ### COMPUTING OUTPUT MESH #########################################
 
-  if (Tess.PolyQty > 0 || Vox.PolyQty > 0)
+  if (Tess.PolyQty + Tess.FaceQty + Tess.EdgeQty + Tess.VerQty > 0 || Vox.PolyQty > 0)
   {
     ut_print_message (0, 1, "Meshing ...");
 
@@ -132,14 +132,16 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   }
 
   // Reconstructing mesh if necessary (2D, 1D, 0D from 3D) ###
-  if ((ut_string_inlist (In.outdim, ',', "2") && Mesh2D.EltQty == 0)
-   || (ut_string_inlist (In.outdim, ',', "1") && Mesh1D.EltQty == 0)
-   || (ut_string_inlist (In.outdim, ',', "0") && Mesh0D.EltQty == 0)
-   || (Tess.PolyQty == 0 && strlen (In.nset) > 0))
+  // Should not be necessary for cases other that -loadmesh.
+  if (In.loadmesh != NULL
+   && ((ut_string_inlist (In.outdim, ',', "2") && Mesh2D.EltQty == 0)
+   ||  (ut_string_inlist (In.outdim, ',', "1") && Mesh1D.EltQty == 0)
+   ||  (ut_string_inlist (In.outdim, ',', "0") && Mesh0D.EltQty == 0)
+   ||  (Tess.PolyQty == 0 && strlen (In.nset) > 0)))
   {
     ut_print_message (0, 1, "Reconstructing mesh ...\n");
     nem_reconstruct_mesh (In.outdim, &Nodes, &Mesh0D, &Mesh1D, &Mesh2D,
-	       &Mesh3D, &Tess);
+			  &Mesh3D, &Tess);
   }
 
   // managing mesh order ###
@@ -165,7 +167,10 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   if (strlen (In.nset) > 0 && strcmp (In.nset, "none") != 0 && Mesh3D.EltQty > 0)
   {
     ut_print_message (0, 2, "Searching nsets ...\n");
-    nem_nsets (In, Tess, Mesh0D, Mesh1D, Mesh2D, &NSet0D, &NSet1D, &NSet2D);
+    if (Mesh2D.ElsetQty > 0)
+      nem_nsets (In, Tess, Mesh0D, Mesh1D, Mesh2D, &NSet0D, &NSet1D, &NSet2D);
+    else
+      ut_print_message (1, 3, "2D mesh is void.  Skipping ...\n");
   }
 
   // ###################################################################

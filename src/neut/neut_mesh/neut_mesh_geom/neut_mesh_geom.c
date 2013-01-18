@@ -9,7 +9,7 @@ int
 neut_mesh_elt_area (struct NODES Nodes, struct MESH Mesh, int elt, double* parea)
 {
   if (Mesh.Dimension != 2)
-    return -1;
+    ut_error_reportbug ();
 
   (*parea) = ut_space_triangle_area (Nodes.NodeCoo[Mesh.EltNodes[elt][0]],
 				     Nodes.NodeCoo[Mesh.EltNodes[elt][1]],
@@ -191,6 +191,34 @@ neut_mesh_elt_eq (struct MESH Mesh, struct NODES Nodes, int elt,
 
     ut_free_2d (eqs, 4);
   }
+
+  return;
+}
+
+void
+neut_mesh_elset_eq (struct MESH Mesh, struct NODES Nodes, int elset,
+		     double *eq)
+{
+  int i, elt;
+  double norm, area;
+  double* eqe = ut_alloc_1d (4);
+
+  if (Mesh.Dimension != 2)
+    ut_error_reportbug ();
+
+  for (i = 1; i <= Mesh.Elsets[elset][0]; i++)
+  {
+    elt = Mesh.Elsets[elset][i];
+    neut_mesh_elt_eq (Mesh, Nodes, elt, eqe);
+    neut_mesh_elt_area (Nodes, Mesh, elt, &area);
+    ut_array_1d_scale (eqe, 4, area);
+    ut_array_1d_add (eqe, eq, 4, eq);
+  }
+
+  norm = ut_vector_norm (eq + 1);
+  ut_array_1d_scale (eq, 4, 1./norm);
+
+  ut_free_1d (eqe);
 
   return;
 }

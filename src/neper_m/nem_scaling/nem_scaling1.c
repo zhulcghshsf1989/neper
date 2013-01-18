@@ -24,13 +24,23 @@ nem_scaling_pre (char* elttype, struct TESS* pTess, struct VOX* pVox, struct NOD
     input = 'v'; // vox
     polyqty = (*pVox).PolyQty;
   }
-  else if (RMesh3D.EltQty > 0)
+  else if (RMesh3D.ElsetQty + RMesh2D.ElsetQty + RMesh1D.ElsetQty + RMesh0D.ElsetQty > 0)
   {
     input = 'm'; // mesh
     polyqty = RMesh3D.ElsetQty;
   }
   else
     return;
+
+  // If cltype is rcl or rcl3, data must be 3D
+  if ((*pMeshPara).cltype == 1 || (*pMeshPara).cltype == 3)
+    if (((input == 't' || input == 'm') && (*pTess).PolyQty == 0)
+     || ((input == 'v') && (*pVox).PolyQty == 0))
+     {
+       ut_print_message (2, 0, "Option -rcl[3] cannot be used since input data is not 3D.\n");
+       ut_print_message (2, 0, "Use -cl[3] instead.\n");
+       abort ();
+     }
 
   scale = ut_alloc_1d (3);
 

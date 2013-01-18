@@ -1173,6 +1173,7 @@ neut_mesh_facepoly (struct NODES Nodes, struct MESH Mesh2D, struct MESH Mesh3D, 
 
     if (elset3dqty == 1)
     {
+      (*pfacepoly)[i] = ut_realloc_1d_int ((*pfacepoly)[i], 2);
       (*pfacepoly)[i][1] = (*pfacepoly)[i][0];
       neut_mesh_skinelt_fod (Nodes, Mesh2D, elt2d, &fodeq,
 					&fodqty, &((*pfacepoly)[i][0]), &dir);

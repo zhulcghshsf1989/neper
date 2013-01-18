@@ -41,6 +41,22 @@ nem_reconstruct_mesh (char* dim, struct NODES* pNodes, struct MESH *pMesh0D,
   (*pTessb).morpho = ut_alloc_1d_char (10);
   strcpy ((*pTessb).morpho, "unknown");
 
+  // Testing out the dimension of the input data
+  int input_dim;
+  if (pMesh3D != NULL && (*pMesh3D).ElsetQty > 0)
+    input_dim = 3;
+  else if (pMesh2D != NULL && (*pMesh2D).ElsetQty > 0)
+    input_dim = 2;
+  else if (pMesh1D != NULL && (*pMesh1D).ElsetQty > 0)
+    input_dim = 1;
+  else if (pMesh0D != NULL && (*pMesh0D).ElsetQty > 0)
+    input_dim = 0;
+  else
+  {
+    ut_print_message (2, 0, "nem_reconstruct_mesh: all input meshes are void!\n");
+    abort ();
+  }
+
   int recon_dim = 3;
   if (ut_string_inlist (dim, ',', "0"))
     recon_dim = 0;
@@ -49,17 +65,25 @@ nem_reconstruct_mesh (char* dim, struct NODES* pNodes, struct MESH *pMesh0D,
   else if (ut_string_inlist (dim, ',', "2"))
     recon_dim = 2;
 
+  // Testing out compatibility of output with input
+  if (recon_dim > input_dim)
+  {
+    ut_print_message (2, 0, "nem_reconstruct_mesh: all input meshes are void!\n");
+    abort ();
+  }
+
   if ((*pMesh3D).NodeElts == NULL)
     neut_mesh_init_nodeelts (pMesh3D, (*pNodes).NodeQty);
 
-  if (recon_dim <= 2)
+  if (input_dim >= 2 && recon_dim <= 2)
     nem_reconstruct_mesh_2d (*pNodes, pMesh2D, pMesh3D, pTessb);
 
-  if (recon_dim <= 1)
+  if (input_dim >= 1 && recon_dim <= 1)
     nem_reconstruct_mesh_1d (*pNodes, pMesh1D, pMesh2D, pTessb);
 
-  if (recon_dim <= 0)
-    nem_reconstruct_mesh_0d (*pNodes, pMesh0D, pMesh1D, pTess ? pTessb : NULL);
+  if (input_dim >= 0 && recon_dim <= 0)
+    nem_reconstruct_mesh_0d (*pNodes, pMesh0D, pMesh1D, pTessb);
+    // nem_reconstruct_mesh_0d (*pNodes, pMesh0D, pMesh1D, pTess ? pTessb : NULL);
 
   if (pTess != NULL)
     nem_reconstruct_mesh_finalizetess (pTessb, *pNodes, *pMesh0D, *pMesh1D, *pMesh2D, *pMesh3D);

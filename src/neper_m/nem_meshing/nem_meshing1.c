@@ -16,6 +16,8 @@ nem_meshing (struct IN In, struct MESHPARA MeshPara, struct TESS Tess,
 	     struct MESH* pMesh1D, struct MESH* pMesh2D,
 	     struct MESH* pMesh3D)
 {
+  int meshdim;
+
   double** face_eq = ut_alloc_2d (Tess.FaceQty + 1, 4);
   int* face_op = ut_alloc_1d_int (Tess.FaceQty + 1);
   int* edge_op = ut_alloc_1d_int (Tess.EdgeQty + 1);
@@ -28,16 +30,31 @@ nem_meshing (struct IN In, struct MESHPARA MeshPara, struct TESS Tess,
     ut_print_message (0, 1, "             dboundcl = %.3g, dboundpl = %.3g)\n", MeshPara.dboundcl, MeshPara.dboundpcl);
   }
 
-  if (In.meshdim >= 0)
+  meshdim = In.meshdim;
+
+  if (Tess.PolyQty == 0)
+    meshdim = ut_num_min (2, meshdim);
+  else if (Tess.FaceQty == 0)
+    meshdim = ut_num_min (1, meshdim);
+  else if (Tess.EdgeQty == 0)
+    meshdim = ut_num_min (0, meshdim);
+  else if (Tess.VerQty == 0)
+    meshdim = ut_num_min (-1, meshdim);
+
+  if (meshdim < In.meshdim)
+    ut_print_message (1, 2, "Meshing will be applied in %dD (not %dD).\n",
+			    meshdim, In.meshdim);
+
+  if (meshdim >= 0)
     nem_meshing_prep (Tess, RNodes, RMesh1D, RMesh2D, face_eq, edge_op, face_op);
 
-  if (In.meshdim >= 0)
+  if (meshdim >= 0)
     nem_meshing_0D (Tess, MeshPara, pNodes, pMesh0D);
 
-  if (In.meshdim >= 1)
+  if (meshdim >= 1)
     nem_meshing_1D (Tess, MeshPara, RNodes, RMesh1D, edge_op, pNodes, pMesh1D);
 
-  if (In.meshdim >= 2)
+  if (meshdim >= 2)
   {
     nem_meshing_2D (In, MeshPara, Tess, face_eq, face_op, RNodes, RMesh2D, *pMesh1D, pNodes, pMesh2D);
     
@@ -45,7 +62,7 @@ nem_meshing (struct IN In, struct MESHPARA MeshPara, struct TESS Tess,
       nem_mesh_pinching (Tess, face_eq, *pMesh1D, *pNodes, pMesh2D);
   }
 
-  if (In.meshdim >= 3)
+  if (meshdim >= 3)
     nem_meshing_3D (In, MeshPara, Tess, pNodes, *pMesh2D, pMesh3D);
 
   ut_free_2d (face_eq, Tess.FaceQty + 1);
