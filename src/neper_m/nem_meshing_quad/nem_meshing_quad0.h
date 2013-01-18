@@ -8,7 +8,6 @@ nem_meshing_tess_quad (struct IN In, struct MESHPARA MeshPara, struct TESS Tess,
 		       struct MESH* pMesh1D, struct MESH* pMesh2D,
 		       struct MESH *pMesh3D, struct NSET* pNSet2D);
 
-// extern void nemm_in_msize (struct IN, double**, int*);
 extern void
 nem_meshing_vox_quad (struct IN In, struct MESHPARA MeshPara, struct VOX Vox,
 		      struct NODES* pNodes,

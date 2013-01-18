@@ -13,11 +13,6 @@ net_tess_vox (struct IN In, struct TESS Tess, VOX* pVox)
   double* coo = ut_alloc_1d (3);
   double** bbox = ut_alloc_2d (3, 2);
 
-  (*pVox).version = ut_alloc_1d_char (5);
-  strcpy ((*pVox).version, "1.10");
-  (*pVox).format = ut_alloc_1d_char (10);
-  strcpy ((*pVox).version, "binary16");
-
   neut_tess_bbox (Tess, bbox);
 
   (*pVox).PolyQty = Tess.PolyQty;
@@ -90,11 +85,6 @@ net_vox (struct IN In, struct TESS Domain, struct GERMSET GermSet, struct VOX* p
 
   neut_poly_set_zero (&DomainPoly);
   net_tess_poly (Domain, 1, &DomainPoly);
-
-  (*pVox).version = ut_alloc_1d_char (5);
-  strcpy ((*pVox).version, "1.10");
-  (*pVox).format = ut_alloc_1d_char (10);
-  strcpy ((*pVox).version, "binary16");
 
   if (! strcmp (In.domain, "cube"))
   {

@@ -6,10 +6,10 @@
 
 int
 nem_meshing_3D_poly_cl (struct MESHPARA MeshPara, struct TESS Tess, int poly,
-                double* pcl)
+                double* pl)
 {
   if (MeshPara.dboundcl < 0)
-    (*pcl)  = MeshPara.cl;
+    (*pl)  = MeshPara.cl;
   else 
   {
     int var_qty = 2;
@@ -29,9 +29,9 @@ nem_meshing_3D_poly_cl (struct MESHPARA MeshPara, struct TESS Tess, int poly,
       abort ();
 
     if (dbound == 1)
-	(*pcl)  = MeshPara.dboundcl;
+	(*pl)  = MeshPara.dboundcl;
     else
-	(*pcl)  = MeshPara.cl;
+	(*pl)  = MeshPara.cl;
 
     ut_free_2d_char (vars, var_qty);
     ut_free_1d (vals);

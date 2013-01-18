@@ -11,7 +11,7 @@ VerMeshing (struct TESS Tess, int ver, struct MESHPARA MeshPara,
   int     i, edge;
   double  mindist;
   double  cl;
-  double  pcl;
+  double  pl;
   double  clmin  = MeshPara.clmin;
   double* dist   = NULL;
 
@@ -45,7 +45,7 @@ VerMeshing (struct TESS Tess, int ver, struct MESHPARA MeshPara,
   if (MeshPara.dboundcl < 0)
   {
     cl  = MeshPara.cl;
-    pcl  = MeshPara.pcl;
+    pl  = MeshPara.pl;
   }
   else 
   {
@@ -68,12 +68,12 @@ VerMeshing (struct TESS Tess, int ver, struct MESHPARA MeshPara,
     if (dbound == 1)
     {
       cl  = MeshPara.dboundcl;
-      pcl = MeshPara.dboundpcl;
+      pl = MeshPara.dboundpcl;
     }
     else
     {
       cl  = MeshPara.cl;
-      pcl = MeshPara.pcl;
+      pl = MeshPara.pl;
     }
 
     ut_free_2d_char (vars, var_qty);
@@ -81,7 +81,7 @@ VerMeshing (struct TESS Tess, int ver, struct MESHPARA MeshPara,
   }
 
 /***********************************************************************
- * Nodes: calculating characteristic length from cl, pcl & clmin (&
+ * Nodes: calculating characteristic length from cl, pl & clmin (&
  * mindist) */
 
   dist = ut_alloc_1d (Tess.VerEdgeQty[ver]);
@@ -93,10 +93,10 @@ VerMeshing (struct TESS Tess, int ver, struct MESHPARA MeshPara,
   }
   mindist = ut_array_1d_min (dist, Tess.VerEdgeQty[ver]);
 
-  if (mindist * (1 + pcl) > cl)
+  if (mindist * (1 + pl) > cl)
     (*pNodes).NodeCl[1] = cl;
   else
-    (*pNodes).NodeCl[1] = mindist * pcl;
+    (*pNodes).NodeCl[1] = mindist * pl;
 
   (*pNodes).NodeCl[1] = ut_num_max ((*pNodes).NodeCl[1], clmin);
 

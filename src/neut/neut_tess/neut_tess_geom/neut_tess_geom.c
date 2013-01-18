@@ -412,14 +412,14 @@ rsel2sel (double rsel, double vol, int PolyQty, double* psel)
 
 /* rcl2cl sets cl from rcl */
 void
-rcl2cl (double rcl, double vol, int PolyQty, char* elttype, double* pcl)
+rcl2cl (double rcl, double vol, int PolyQty, char* elttype, double* pl)
 {
   if (elttype == NULL || ! strcmp (elttype, "tri"))
-    (*pcl) = rcl * 0.5 * pow (vol / PolyQty, 0.3333333333333333333333333333);
+    (*pl) = rcl * 0.5 * pow (vol / PolyQty, 0.3333333333333333333333333333);
   else if (! strcmp (elttype, "quad"))
   {
-    (*pcl) = rcl * 0.5 * pow (vol / PolyQty, 0.3333333333333333333333333333);
-    (*pcl) *= .43084877208099956915;
+    (*pl) = rcl * 0.5 * pow (vol / PolyQty, 0.3333333333333333333333333333);
+    (*pl) *= .43084877208099956915;
   }
   
   return;

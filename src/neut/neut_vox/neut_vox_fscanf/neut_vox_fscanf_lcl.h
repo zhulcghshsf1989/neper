@@ -12,6 +12,6 @@
 #include"../neut_vox_fscanf.h"
 
 extern void neut_vox_fscanf_version (FILE*, char*);
-extern void neut_vox_fscanf_head (struct VOX*, FILE*);
-extern void neut_vox_fscanf_foot (FILE *);
-extern void neut_vox_fscanf_data (struct VOX* pVox, FILE * file);
+extern void neut_vox_fscanf_head (struct VOX* pVox, char** format, FILE* file);
+extern void neut_vox_fscanf_data (struct VOX* pVox, char*  format, FILE* file);
+extern void neut_vox_fscanf_foot (FILE* file);

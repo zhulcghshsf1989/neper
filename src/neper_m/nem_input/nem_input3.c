@@ -50,15 +50,8 @@ nem_input_options_default (struct IN *pIn, struct MESHPARA *pMeshPara)
   (*pMeshPara).dboundpcl =  2;
   (*pMeshPara).dbound = ut_alloc_1d_char (10);
 
-  (*pMeshPara).msizetype = 1;
-  (*pMeshPara).msize = 20;
-  (*pMeshPara).msize3 = ut_alloc_1d_int (3);
-  (*pMeshPara).msize3[0] = 20;
-  (*pMeshPara).msize3[1] = 20;
-  (*pMeshPara).msize3[2] = 20;
-
   (*pMeshPara).clmin = 0;
-  (*pMeshPara).pcl = 2;
+  (*pMeshPara).pl = 2;
   (*pIn).mesh2dalgo = ut_alloc_1d_char (100);
   (*pIn).mesh3dalgo = ut_alloc_1d_char (100);
   (*pIn).mesh3dreport = 0;
@@ -127,8 +120,6 @@ nem_input_options_set (struct IN *pIn, struct MESHPARA *pMeshPara,
   sprintf (ArgList[++ArgQty], "-rcl");
   sprintf (ArgList[++ArgQty], "-cl3");
   sprintf (ArgList[++ArgQty], "-rcl3");
-  sprintf (ArgList[++ArgQty], "-msize");
-  sprintf (ArgList[++ArgQty], "-msize3");
   sprintf (ArgList[++ArgQty], "-pl");
   sprintf (ArgList[++ArgQty], "-clmin");
   sprintf (ArgList[++ArgQty], "-order");
@@ -286,18 +277,6 @@ nem_input_options_set (struct IN *pIn, struct MESHPARA *pMeshPara,
 	(*pMeshPara).rcl3[1] = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
 	(*pMeshPara).rcl3[2] = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
       }
-      else if (strcmp (Arg, "-msize") == 0 && i < argc - 1)
-      {
-	(*pMeshPara).msizetype = 1;
-	(*pMeshPara).msize = ut_arg_nextasint (argv, &i, Arg, 1, INT_MAX);
-      }
-      else if (strcmp (Arg, "-msize3") == 0 && i < argc - 1)
-      {
-	(*pMeshPara).msizetype = 3;
-	(*pMeshPara).msize3[0] = ut_arg_nextasint (argv, &i, Arg, 1, INT_MAX);
-	(*pMeshPara).msize3[1] = ut_arg_nextasint (argv, &i, Arg, 1, INT_MAX);
-	(*pMeshPara).msize3[2] = ut_arg_nextasint (argv, &i, Arg, 1, INT_MAX);
-      }
       else if (strcmp (Arg, "-dbound") == 0 && i < argc - 1)
       {
 	ut_free_1d_char ((*pMeshPara).dbound);
@@ -312,7 +291,7 @@ nem_input_options_set (struct IN *pIn, struct MESHPARA *pMeshPara,
       else if (strcmp (Arg, "-clmin") == 0 && i < argc - 1)
 	(*pMeshPara).clmin = ut_arg_nextasreal (argv, &i, Arg, 0., 1.e30);
       else if ((strcmp (Arg, "-pl") == 0 && i < argc - 1))
-	(*pMeshPara).pcl = ut_arg_nextasreal (argv, &i, Arg, 1., 1.e30);
+	(*pMeshPara).pl = ut_arg_nextasreal (argv, &i, Arg, 1., 1.e30);
       else if (strcmp (Arg, "-mesh2dalgo") == 0 && i < argc - 1)
       {
 	ut_free_1d_char ((*pIn).mesh2dalgo);

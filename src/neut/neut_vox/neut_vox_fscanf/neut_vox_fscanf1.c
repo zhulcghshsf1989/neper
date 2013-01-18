@@ -7,9 +7,13 @@
 void
 neut_vox_fscanf (FILE* file, struct VOX* pVox)
 {
-  neut_vox_fscanf_head (pVox, file);
-  neut_vox_fscanf_data  (pVox, file);
+  char* format = NULL;
+
+  neut_vox_fscanf_head (pVox, &format, file);
+  neut_vox_fscanf_data  (pVox, format, file);
   neut_vox_fscanf_foot (file);
+
+  ut_free_1d_char (format);
 
   return;
 }

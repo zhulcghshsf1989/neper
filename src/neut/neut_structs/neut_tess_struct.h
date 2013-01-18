@@ -8,6 +8,7 @@
 struct TESS
 {
   // GENERAL INFORMATION -----------------------------------------------
+
   int N;              // value of option -n.
 
   int Id;             // identifier of the tessellation
@@ -31,11 +32,11 @@ struct TESS
   int *VerEdgeQty;    // VerEdgeQty[i] is the quantity of parent edges.
   int **VerEdgeNb;    // VerEdge[i][j] (j=0...) are the parent edges.
 
-  int **VerDom;     // VerDom[i][0] is the boundary type:
-                      // 0: ver = domain ver
-		      // 1: ver on a domain edge
-		      // 2: ver on a domain face
-		      // -1: ver not on domain
+  int **VerDom;       // VerDom[i][0] is the boundary type:
+                      //  0: ver = domain ver
+		      //  1: on a domain edge
+		      //  2: on a domain face
+		      // -1: not on domain
 		      // VerDom[i][1] is the id of the boundary entity
 
   int *VerState;      // VerState[i] is the state of vertex i:
@@ -45,7 +46,7 @@ struct TESS
 
   // EDGE INFORMATION --------------------------------------------------
   
-  int EdgeQty;
+  int EdgeQty;        // number of edges
 
   // For edge i (i=1...EdgeQty):
   int **EdgeVerNb;    // VerNb[i][j] (j=0,1) are the numbers of the two 
@@ -62,11 +63,15 @@ struct TESS
   int *EdgeDel;	      // EdgeDel[i]=0 means edge i can be deleted;
                       // -1 -> to large.
 		      //
-  int **EdgeDom;    // 
+  int **EdgeDom;      // EdgeDom[i][0] is the boundary type:
+		      //  1: on a domain edge
+		      //  2: on a domain face
+		      // -1: not on domain
+		      // EdgeDom[i][1] is the id of the boundary entity
 
   // FACE INFORMATION --------------------------------------------------
   
-  int FaceQty;	
+  int FaceQty;	      // number of faces
   
   // For face i (i=1...FaceQty):
   int **FacePoly;     // FacePoly[i][j] (j=0,1) are the numbers of the two 
@@ -96,11 +101,14 @@ struct TESS
                       // if facept=-1, undefined (e.g. for remeshing).
   double **FacePtCoo; // coo of the pt used for interpolation.
   double *FaceFF;     // ff of the face.
-  int **FaceDom;     // boundary number of the face (none = 0, otherwise > 0).
+  int **FaceDom;      // FaceDom[i][0] is the boundary type:
+		      //  2: on a domain face
+		      // -1: not on domain
+		      // FaceDom[i][1] is the id of the boundary entity
 
   // POLYHEDRON INFORMATION --------------------------------------------
   
-  int PolyQty;
+  int PolyQty;        // number of polyhedra
 
   // For polyhedron i (i=1...PolyQty):
 

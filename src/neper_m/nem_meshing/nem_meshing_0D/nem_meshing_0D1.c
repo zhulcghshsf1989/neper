@@ -21,7 +21,7 @@ nem_meshing_0D (struct TESS Tess, struct MESHPARA MeshPara, struct NODES* pNodes
 
   if (Tess.maxff > 0)
   {
-    if (1.01 * Tess.sel < MeshPara.cl / MeshPara.pcl)
+    if (1.01 * Tess.sel < MeshPara.cl / MeshPara.pl)
       ut_print_messagewnc (1, 72, "Regularization was used with sel < cl / pl.  The mesh could be locally overrefined.");
     if (Tess.dbound != NULL)
       if (1.01 * Tess.dboundsel < MeshPara.dboundcl / MeshPara.dboundpcl)

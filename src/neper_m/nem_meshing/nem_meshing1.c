@@ -23,10 +23,10 @@ nem_meshing (struct IN In, struct MESHPARA MeshPara, struct TESS Tess,
   int* edge_op = ut_alloc_1d_int (Tess.EdgeQty + 1);
 
   if (MeshPara.dboundcl < 0)
-    printf (" (cl = %.3g, pl = %.3g)\n", MeshPara.cl, MeshPara.pcl);
+    printf (" (cl = %.3g, pl = %.3g)\n", MeshPara.cl, MeshPara.pl);
   else
   {
-    printf (" (cl = %.3g, pl = %.3g,\n", MeshPara.cl, MeshPara.pcl);
+    printf (" (cl = %.3g, pl = %.3g,\n", MeshPara.cl, MeshPara.pl);
     ut_print_message (0, 1, "             dboundcl = %.3g, dboundpl = %.3g)\n", MeshPara.dboundcl, MeshPara.dboundpcl);
   }
 

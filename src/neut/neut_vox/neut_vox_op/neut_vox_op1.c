@@ -7,8 +7,6 @@
 void
 neut_vox_set_zero (struct VOX* pVox)
 {
-  (*pVox).version = NULL;
-  (*pVox).format = NULL;
   (*pVox).size = ut_alloc_1d_int (3);
   (*pVox).vsize = ut_alloc_1d (3);
   (*pVox).VoxPoly = NULL;
@@ -20,8 +18,6 @@ neut_vox_set_zero (struct VOX* pVox)
 void
 neut_vox_free (struct VOX* pVox)
 {
-  ut_free_1d_char ((*pVox).version);
-  ut_free_1d_char ((*pVox).format);
   ut_free_3d_int  ((*pVox).VoxPoly, (*pVox).size[0], (*pVox).size[1]);
   ut_free_1d_int  ((*pVox).size);
   ut_free_1d      ((*pVox).vsize);
@@ -35,11 +31,6 @@ void
 neut_vox_memcpy (struct VOX Vox1, struct VOX* pVox2)
 {
   neut_vox_free (pVox2);
-
-  (*pVox2).version = ut_alloc_1d_char (strlen (Vox1.version) + 1);
-  strcpy ((*pVox2).version, Vox1.version);
-  (*pVox2).format = ut_alloc_1d_char (strlen (Vox1.format) + 1);
-  strcpy ((*pVox2).format, Vox1.format);
 
   (*pVox2).size = ut_alloc_1d_int (3);
   ut_array_1d_int_memcpy ((*pVox2).size, 3, Vox1.size);
@@ -59,11 +50,6 @@ void
 neut_vox_memcpy_parms (struct VOX Vox1, struct VOX* pVox2)
 {
   neut_vox_free (pVox2);
-
-  (*pVox2).version = ut_alloc_1d_char (strlen (Vox1.version) + 1);
-  strcpy ((*pVox2).version, Vox1.version);
-  (*pVox2).format = ut_alloc_1d_char (strlen (Vox1.format) + 1);
-  strcpy ((*pVox2).format, Vox1.format);
 
   (*pVox2).size = ut_alloc_1d_int (3);
   ut_array_1d_int_memcpy ((*pVox2).size, 3, Vox1.size);
@@ -218,11 +204,6 @@ neut_vox_gridscale (struct VOX* pVox, double scale1, double scale2, double scale
 
   neut_vox_set_zero (&Vox2);
 
-  Vox2.version = ut_alloc_1d_char (strlen ((*pVox).version) + 1);
-  strcpy (Vox2.version, (*pVox).version);
-  Vox2.format = ut_alloc_1d_char (strlen ((*pVox).format) + 1);
-  strcpy (Vox2.format, (*pVox).format);
-
   Vox2.PolyQty = (*pVox).PolyQty;
   
   Vox2.size = ut_alloc_1d_int (3);
@@ -312,10 +293,6 @@ neut_vox_segment (struct VOX Vox, int type, struct VOX* pSeg)
   int*  pos  = ut_alloc_1d_int (3);
 
   neut_vox_set_zero (pSeg);
-  (*pSeg).version = ut_alloc_1d_char (strlen (Vox.version) + 1);
-  strcpy ((*pSeg).version, Vox.version);
-  (*pSeg).format = ut_alloc_1d_char (strlen (Vox.format) + 1);
-  strcpy ((*pSeg).format, Vox.format);
     
   (*pSeg).size = ut_alloc_1d_int (3);
   ut_array_1d_int_memcpy ((*pSeg).size, 3, Vox.size);

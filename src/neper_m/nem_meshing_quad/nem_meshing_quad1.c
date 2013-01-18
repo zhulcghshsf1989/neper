@@ -22,8 +22,6 @@ nem_meshing_tess_quad (struct IN In, struct MESHPARA MeshPara, struct TESS Tess,
   for (i = 0; i < 3; i++)
     msize[i] = (dsize[i][1] - dsize[i][0]) / cl;
 
-  // nemm_in_msize (In, dsize, msize);
-
   // neut_utils_nset_expand (In.nset, &expandnset);
   // neut_utils_nset_expand (In.faset, &expandfaset);
 

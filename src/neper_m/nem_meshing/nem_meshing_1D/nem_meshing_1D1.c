@@ -16,7 +16,7 @@ nem_meshing_1D (struct TESS Tess, struct MESHPARA MeshPara,
   struct MESH M;
   int* node_nbs = NULL;
   int* elt_nbs = NULL;
-  double cl, pcl;
+  double cl, pl;
   double l;
   char* message = ut_alloc_1d_char (8);
 
@@ -38,7 +38,7 @@ nem_meshing_1D (struct TESS Tess, struct MESHPARA MeshPara,
       if (MeshPara.dboundcl < 0)
       {
 	cl  = MeshPara.cl;
-	pcl  = MeshPara.pcl;
+	pl  = MeshPara.pl;
       }
       else 
       {
@@ -61,19 +61,19 @@ nem_meshing_1D (struct TESS Tess, struct MESHPARA MeshPara,
 	if (dbound == 1)
 	{
 	  cl  = MeshPara.dboundcl;
-	  pcl = MeshPara.dboundpcl;
+	  pl = MeshPara.dboundpcl;
 	}
 	else
 	{
 	  cl  = MeshPara.cl;
-	  pcl = MeshPara.pcl;
+	  pl = MeshPara.pl;
 	}
 
 	ut_free_2d_char (vars, var_qty);
 	ut_free_1d (vals);
       }
 
-      EdgeMeshing (Tess, i, cl, pcl, *pNodes, &N, &M);
+      EdgeMeshing (Tess, i, cl, pl, *pNodes, &N, &M);
     }
     else
       neut_mesh_elset_mesh (RNodes, RMesh1D, i, &N, &M);

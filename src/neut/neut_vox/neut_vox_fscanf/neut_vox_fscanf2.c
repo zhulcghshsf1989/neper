@@ -6,9 +6,11 @@
 
 /* Tessellation exportation: head */
 void
-neut_vox_fscanf_head (struct VOX* pVox, FILE * file)
+neut_vox_fscanf_head (struct VOX* pVox, char** pformat, FILE * file)
 {
   int status;
+
+  (*pformat) = ut_alloc_1d_char (10);
 
   if (ut_file_string_scanncomp (file, "***vox") != 0)
   {
@@ -23,13 +25,8 @@ neut_vox_fscanf_head (struct VOX* pVox, FILE * file)
     abort ();
   }
 
-  (*pVox).version = ut_alloc_1d_char (5);
-  sprintf ((*pVox).version, "1.10");
-
-  (*pVox).format = ut_alloc_1d_char (10);
-
-  if (fscanf (file, "%s", (*pVox).format) != 1
-  || (! strcmp ((*pVox).format, "ascii") && ! strncmp ((*pVox).format, "binary", 6)))
+  if (fscanf (file, "%s", *pformat) != 1
+  || (! strcmp (*pformat, "ascii") && ! strncmp (*pformat, "binary", 6)))
   {
     ut_print_message (2, 0, "Input file is not a valid voxel tessellation file.\n");
     abort ();
@@ -72,7 +69,7 @@ neut_vox_fscanf_foot (FILE * file)
 
 /* Tessellation exportation: vertex */
 void
-neut_vox_fscanf_data (struct VOX* pVox, FILE * file)
+neut_vox_fscanf_data (struct VOX* pVox, char* format, FILE * file)
 {
   int i, j, k;
   char c;
@@ -82,7 +79,7 @@ neut_vox_fscanf_data (struct VOX* pVox, FILE * file)
 
   (*pVox).VoxPoly = ut_alloc_3d_int ((*pVox).size[0], (*pVox).size[1], (*pVox).size[2]);
 
-  if (! strcmp ((*pVox).format, "ascii"))
+  if (! strcmp (format, "ascii"))
     for (k = 0; k < (*pVox).size[2]; k++)
       for (j = 0; j < (*pVox).size[1]; j++)
 	for (i = 0; i < (*pVox).size[0]; i++)
@@ -91,7 +88,7 @@ neut_vox_fscanf_data (struct VOX* pVox, FILE * file)
 	    abort ();
 	}
 
-  else if (! strcmp ((*pVox).format, "binary8"))
+  else if (! strcmp (format, "binary8"))
   {
     if (fscanf (file, "%c", &c) != 1) // get rid of the '\n' right after the format string
      abort ();
@@ -108,7 +105,7 @@ neut_vox_fscanf_data (struct VOX* pVox, FILE * file)
 	}
   }
 
-  else if (! strcmp ((*pVox).format, "binary16"))
+  else if (! strcmp (format, "binary16"))
   {
     if (fscanf (file, "%c", &c) != 1) // idem
       abort ();
@@ -125,8 +122,8 @@ neut_vox_fscanf_data (struct VOX* pVox, FILE * file)
 	}
   }
 
-  else if (! strcmp ((*pVox).format, "binary32")
-	|| ! strcmp ((*pVox).format, "binary"  ))
+  else if (! strcmp (format, "binary32")
+	|| ! strcmp (format, "binary"  ))
   {
     if (fscanf (file, "%c", &c) != 1) // idem
       abort ();

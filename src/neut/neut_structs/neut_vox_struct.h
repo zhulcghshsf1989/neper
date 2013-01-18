@@ -8,15 +8,17 @@
 struct VOX
 {
   // GENERAL INFORMATION -----------------------------------------------
-  char* version;
-  char* format;
 
-  int* size;                  // number of voxels in x, y, z
-  double* vsize;              // size of voxels in x, y, z
+  int* size;          // number of voxels in the 3 directions of space
+  double* vsize;      // size of voxels in the 3 directions of space
 
-  int*** VoxPoly;             // Poly of a voxel, indexed [0...size[0]-1], etc.
+  // DATA --------------------------------------------------------------
 
-  int PolyQty;                // Number of grains
+  int*** VoxPoly;     // VoxPoly[i][j][k]: poly of pixel at
+                      // position i, j, k, with i in [0...size[0]-1],
+                      // j in [0...size[1]-1] and k in [0...size[2]-1]
+
+  int PolyQty;        // number of polyhedra
 };
 typedef struct VOX VOX;
 
