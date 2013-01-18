@@ -23,6 +23,7 @@ neut_mesh_fprintf_inp (FILE* file, char* dim, struct NODES Nodes,
 
 /*----------------------------------------------------------------------
  * header */
+  fprintf (file, "*Part, name=tess\n\n");
 
 /*----------------------------------------------------------------------
  * nodes */
@@ -183,6 +184,10 @@ neut_mesh_fprintf_inp (FILE* file, char* dim, struct NODES Nodes,
 
   if (nset != NULL)
     neut_mesh_fprintf_inp_nsets (file, NSet0D, NSet1D, NSet2D, nset);
+
+// foot ----------------------------------------------------------------
+
+  fprintf (file, "\n*End Part\n");
   
   return;
 }
