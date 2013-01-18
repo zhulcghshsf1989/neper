@@ -67,6 +67,8 @@ neut_mesh_fprintf_inp (FILE* file, char* dim, struct NODES Nodes,
 
 // 3D elts -------------------------------------------------------------
 
+  int id_shift = ut_string_inlist (dim, ',', "2") ? Mesh2D.EltQty : 0;
+
   if (ut_string_inlist (dim, ',', "3"))
   {
     fprintf (file, "*Element, type=");
@@ -80,7 +82,7 @@ neut_mesh_fprintf_inp (FILE* file, char* dim, struct NODES Nodes,
 
       for (i = 1; i <= Mesh3D.EltQty; i++)
       {
-	fprintf (file, "%d, ", i);
+	fprintf (file, "%d, ", i + id_shift);
 	for (j = 0; j < eltnodeqty3D - 1; j++)
 	  fprintf (file, "%d, ", Mesh3D.EltNodes[i][seq3d[j]]);
 	fprintf (file, "%d\n", Mesh3D.EltNodes[i][seq3d[eltnodeqty3D - 1]]);
@@ -172,7 +174,7 @@ neut_mesh_fprintf_inp (FILE* file, char* dim, struct NODES Nodes,
       call = 0;
       for (j = 1; j <= Mesh3D.Elsets[i][0]; j++)
 	ut_print_wnc_wncall (file, &col, 72, &call, 16, 
-	    (j < Mesh3D.Elsets[i][0]) ? "%d," : "%d\n", Mesh3D.Elsets[i][j]);
+	    (j < Mesh3D.Elsets[i][0]) ? "%d," : "%d\n", Mesh3D.Elsets[i][j] + id_shift);
       fprintf (file, "\n");
     }
   }
