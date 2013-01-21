@@ -77,12 +77,13 @@ neut_vox_fscanf_data (struct VOX* pVox, char* format, FILE * file)
   if (ut_file_string_scanncomp (file, "**voxel") != 0)
     abort ();
 
-  (*pVox).VoxPoly = ut_alloc_3d_int ((*pVox).size[0], (*pVox).size[1], (*pVox).size[2]);
+  (*pVox).VoxPoly = ut_alloc_3d_int ((*pVox).size[0] + 2,
+      (*pVox).size[1] + 2, (*pVox).size[2] + 2);
 
   if (! strcmp (format, "ascii"))
-    for (k = 0; k < (*pVox).size[2]; k++)
-      for (j = 0; j < (*pVox).size[1]; j++)
-	for (i = 0; i < (*pVox).size[0]; i++)
+    for (k = 1; k <= (*pVox).size[2]; k++)
+      for (j = 1; j <= (*pVox).size[1]; j++)
+	for (i = 1; i <= (*pVox).size[0]; i++)
 	{
 	  if (fscanf (file, "%d", &((*pVox).VoxPoly[i][j][k])) != 1)
 	    abort ();
@@ -94,9 +95,9 @@ neut_vox_fscanf_data (struct VOX* pVox, char* format, FILE * file)
      abort ();
 
     unsigned char data;
-    for (k = 0; k < (*pVox).size[2]; k++)
-      for (j = 0; j < (*pVox).size[1]; j++)
-	for (i = 0; i < (*pVox).size[0]; i++)
+    for (k = 1; k <= (*pVox).size[2]; k++)
+      for (j = 1; j <= (*pVox).size[1]; j++)
+	for (i = 1; i <= (*pVox).size[0]; i++)
 	{
 	  if (fread (&data, sizeof (unsigned char), 1, file) != 1)
 	   abort ();
@@ -111,9 +112,9 @@ neut_vox_fscanf_data (struct VOX* pVox, char* format, FILE * file)
       abort ();
 
     short data;
-    for (k = 0; k < (*pVox).size[2]; k++)
-      for (j = 0; j < (*pVox).size[1]; j++)
-	for (i = 0; i < (*pVox).size[0]; i++)
+    for (k = 1; k <= (*pVox).size[2]; k++)
+      for (j = 1; j <= (*pVox).size[1]; j++)
+	for (i = 1; i <= (*pVox).size[0]; i++)
 	{
 	  if (fread (&data, sizeof (short), 1, file) != 1)
 	    abort ();
@@ -129,9 +130,9 @@ neut_vox_fscanf_data (struct VOX* pVox, char* format, FILE * file)
       abort ();
 
     int data;
-    for (k = 0; k < (*pVox).size[2]; k++)
-      for (j = 0; j < (*pVox).size[1]; j++)
-	for (i = 0; i < (*pVox).size[0]; i++)
+    for (k = 1; k <= (*pVox).size[2]; k++)
+      for (j = 1; j <= (*pVox).size[1]; j++)
+	for (i = 1; i <= (*pVox).size[0]; i++)
 	{
 	  if (fread (&data, sizeof (int), 1, file) != 1)
 	    abort ();
@@ -144,9 +145,9 @@ neut_vox_fscanf_data (struct VOX* pVox, char* format, FILE * file)
     abort ();
 
   (*pVox).PolyQty = 0;
-  for (k = 0; k < (*pVox).size[2]; k++)
-    for (j = 0; j < (*pVox).size[1]; j++)
-      for (i = 0; i < (*pVox).size[0]; i++)
+  for (k = 1; k <= (*pVox).size[2]; k++)
+    for (j = 1; j <= (*pVox).size[1]; j++)
+      for (i = 1; i <= (*pVox).size[0]; i++)
 	(*pVox).PolyQty = ut_num_max_int ((*pVox).PolyQty, (*pVox).VoxPoly[i][j][k]);
 
   return;

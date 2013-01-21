@@ -17,6 +17,33 @@ nem_reconstruct_vox (struct VOX Vox, struct TESS* pTess, struct NODES* pNodes,
   neut_mesh_set_zero (&Mesh2D);
   neut_mesh_set_zero (&Mesh3D);
 
+  // Considering that the domain is a filled cube to set VoxPoly at the
+  // boundary.  This is for marching cube.
+
+  // x = 0 and x = 1
+  for (k = 1; k <= Vox.size[2]; k++)
+    for (j = 1; j <= Vox.size[1]; j++)
+    {
+      Vox.VoxPoly[0][j][k] = -1;
+      Vox.VoxPoly[Vox.size[0] + 1][j][k] = -2;
+    }
+  
+  // y = 0 and y = 1
+  for (i = 1; i <= Vox.size[0]; i++)
+    for (k = 1; k <= Vox.size[2]; k++)
+    {
+      Vox.VoxPoly[i][0][k] = -3;
+      Vox.VoxPoly[i][Vox.size[1] + 1][k] = -4;
+    }
+
+  // z = 0 and z = 1
+  for (i = 1; i <= Vox.size[0]; i++)
+    for (j = 1; j <= Vox.size[1]; j++)
+    {
+      Vox.VoxPoly[i][j][0] = -5;
+      Vox.VoxPoly[i][j][Vox.size[2] + 1] = -6;
+    }
+
   for (i = 0; i < 3; i++)
     dsize[i] = Vox.size[i] * Vox.vsize[i];
 
@@ -27,7 +54,7 @@ nem_reconstruct_vox (struct VOX Vox, struct TESS* pTess, struct NODES* pNodes,
   for (k = 1; k <= Vox.size[2]; k++)
     for (j = 1; j <= Vox.size[1]; j++)
       for (i = 1; i <= Vox.size[0]; i++)
-	Mesh3D.EltElset[++elt] = Vox.VoxPoly[i - 1][j - 1][k - 1];
+	Mesh3D.EltElset[++elt] = Vox.VoxPoly[i][j][k];
 
   neut_mesh_init_elsets (&Mesh3D);
 

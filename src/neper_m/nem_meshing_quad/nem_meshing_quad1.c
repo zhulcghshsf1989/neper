@@ -137,7 +137,7 @@ nem_meshing_vox_quad (struct IN In, struct MESHPARA MeshPara, struct VOX Vox,
   for (k = 1; k <= msize[2]; k++)
     for (j = 1; j <= msize[1]; j++)
       for (i = 1; i <= msize[0]; i++)
-	(*pMesh3D).EltElset[++elt] = Vox2.VoxPoly[i - 1][j - 1][k - 1];
+	(*pMesh3D).EltElset[++elt] = Vox2.VoxPoly[i][j][k];
 
   neut_mesh_init_elsets (pMesh3D);
 

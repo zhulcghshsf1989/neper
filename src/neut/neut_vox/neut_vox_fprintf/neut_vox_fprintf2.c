@@ -28,11 +28,11 @@ neut_vox_fprintf_data (FILE* file, char* format, struct VOX Vox)
   if (! strcmp (format, "ascii"))
   {
     count = 0;
-    for (k = 0; k < Vox.size[2]; k++)
+    for (k = 1; k <= Vox.size[2]; k++)
     {
       // ut_print_progress (stdout, k + 1, Vox.size[2], "%3.0f%%", progress);
-      for (j = 0; j < Vox.size[1]; j++)
-	for (i = 0; i < Vox.size[0]; i++)
+      for (j = 1; j <= Vox.size[1]; j++)
+	for (i = 1; i <= Vox.size[0]; i++)
 	  ut_print_wnc_int (file, Vox.VoxPoly[i][j][k], &count, 72);
     }
   }
@@ -49,11 +49,11 @@ neut_vox_fprintf_data (FILE* file, char* format, struct VOX Vox)
     else
       abort ();
 
-    for (k = 0; k < Vox.size[2]; k++)
+    for (k = 1; k <= Vox.size[2]; k++)
     {
       // ut_print_progress (stdout, k + 1, Vox.size[2], "%3.0f%%", progress);
-      for (j = 0; j < Vox.size[1]; j++)
-	for (i = 0; i < Vox.size[0]; i++)
+      for (j = 1; j <= Vox.size[1]; j++)
+	for (i = 1; i <= Vox.size[0]; i++)
 	  fwrite (&(Vox.VoxPoly[i][j][k]), size, 1, file);
     }
   }

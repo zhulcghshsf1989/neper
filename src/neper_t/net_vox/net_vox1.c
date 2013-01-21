@@ -20,25 +20,26 @@ net_tess_vox (struct IN In, struct TESS Tess, VOX* pVox)
   (*pVox).size = ut_alloc_1d_int (3);
   net_vox_init_size (In.voxsizetype, In.voxsize, In.voxsize3, bbox, pVox);
 
-  (*pVox).VoxPoly = ut_alloc_3d_int ((*pVox).size[0], (*pVox).size[1], (*pVox).size[2]);
+  (*pVox).VoxPoly
+    = ut_alloc_3d_int ((*pVox).size[0] + 2, (*pVox).size[1] + 2, (*pVox).size[2] + 2);
 
   ut_print_progress (stdout, 0, (*pVox).size[0] * (*pVox).size[1] * (*pVox).size[2],
                      "%3.0f%%", progress);
   prevpid = 1;
   qty = 0;
-  for (k = 0; k < (*pVox).size[2]; k++)
+  for (k = 1; k <= (*pVox).size[2]; k++)
   {
-    coo[2] = (*pVox).vsize[2] * ((double) k + 0.5);
+    coo[2] = (*pVox).vsize[2] * ((double) k - 0.5);
 
-    for (j = 0; j < (*pVox).size[1]; j++)
+    for (j = 1; j <= (*pVox).size[1]; j++)
     {
-      coo[1] = (*pVox).vsize[1] * ((double) j + 0.5);
+      coo[1] = (*pVox).vsize[1] * ((double) j - 0.5);
 
-      for (i = 0; i < (*pVox).size[0]; i++)
+      for (i = 1; i <= (*pVox).size[0]; i++)
       {
 	qty++;
 
-	coo[0] = (*pVox).vsize[0] * ((double) i + 0.5);
+	coo[0] = (*pVox).vsize[0] * ((double) i - 0.5);
 
 	if (neut_tess_point_inpoly (Tess, coo, prevpid) == 1)
 	  (*pVox).VoxPoly[i][j][k] = prevpid;
@@ -110,19 +111,20 @@ net_vox (struct IN In, struct TESS Domain, struct GERMSET GermSet, struct VOX* p
   (*pVox).size = ut_alloc_1d_int (3);
   net_vox_init_size (In.voxsizetype, In.voxsize, In.voxsize3, bbox, pVox);
 
-  (*pVox).VoxPoly = ut_alloc_3d_int ((*pVox).size[0], (*pVox).size[1], (*pVox).size[2]);
+  (*pVox).VoxPoly
+    = ut_alloc_3d_int ((*pVox).size[0] + 2, (*pVox).size[1] + 2, (*pVox).size[2] + 2);
 
-  for (k = 0; k < (*pVox).size[2]; k++)
+  for (k = 1; k <= (*pVox).size[2]; k++)
   {
-    coo[2] = (*pVox).vsize[2] * ((double) k + 0.5);
+    coo[2] = (*pVox).vsize[2] * ((double) k - 0.5);
 
-    for (j = 0; j < (*pVox).size[1]; j++)
+    for (j = 1; j <= (*pVox).size[1]; j++)
     {
-      coo[1] = (*pVox).vsize[1] * ((double) j + 0.5);
+      coo[1] = (*pVox).vsize[1] * ((double) j - 0.5);
 
-      for (i = 0; i < (*pVox).size[0]; i++)
+      for (i = 1; i <= (*pVox).size[0]; i++)
       {
-	coo[0] = (*pVox).vsize[0] * ((double) i + 0.5);
+	coo[0] = (*pVox).vsize[0] * ((double) i - 0.5);
 
 	if (neut_poly_point_in (DomainPoly, coo) == 0)
 	  (*pVox).VoxPoly[i][j][k] = 0;
@@ -142,9 +144,9 @@ net_vox (struct IN In, struct TESS Domain, struct GERMSET GermSet, struct VOX* p
   }
 
   if (! strcmp (In.ttype, "periodic"))
-    for (k = 0; k < (*pVox).size[2]; k++)
-      for (j = 0; j < (*pVox).size[1]; j++)
-	for (i = 0; i < (*pVox).size[0]; i++)
+    for (k = 1; k <= (*pVox).size[2]; k++)
+      for (j = 1; j <= (*pVox).size[1]; j++)
+	for (i = 1; i <= (*pVox).size[0]; i++)
 	{
 	  Germ = (*pVox).VoxPoly[i][j][k];
 

@@ -15,8 +15,8 @@ struct VOX
   // DATA --------------------------------------------------------------
 
   int*** VoxPoly;     // VoxPoly[i][j][k]: poly of pixel at
-                      // position i, j, k, with i in [0...size[0]-1],
-                      // j in [0...size[1]-1] and k in [0...size[2]-1]
+                      // position i, j, k, with i in [1...size[0]],
+                      // j in [1...size[1]] and k in [1...size[2]]
 
   int PolyQty;        // number of polyhedra
 };

@@ -18,7 +18,7 @@ neut_vox_set_zero (struct VOX* pVox)
 void
 neut_vox_free (struct VOX* pVox)
 {
-  ut_free_3d_int  ((*pVox).VoxPoly, (*pVox).size[0], (*pVox).size[1]);
+  ut_free_3d_int  ((*pVox).VoxPoly, (*pVox).size[0] + 2, (*pVox).size[1] + 2);
   ut_free_1d_int  ((*pVox).size);
   ut_free_1d      ((*pVox).vsize);
 
@@ -39,9 +39,10 @@ neut_vox_memcpy (struct VOX Vox1, struct VOX* pVox2)
   ut_array_1d_memcpy ((*pVox2).vsize, 3, Vox1.vsize);
 
   (*pVox2).PolyQty = Vox1.PolyQty;
-  (*pVox2).VoxPoly = ut_alloc_3d_int ((*pVox2).size[0], (*pVox2).size[1], (*pVox2).size[2]);
-  ut_array_3d_int_memcpy ((*pVox2).VoxPoly, (*pVox2).size[0],
-                          (*pVox2).size[1], (*pVox2).size[2], Vox1.VoxPoly);
+  (*pVox2).VoxPoly = ut_alloc_3d_int ((*pVox2).size[0] + 2,
+                                      (*pVox2).size[1] + 2, (*pVox2).size[2] + 2);
+  ut_array_3d_int_memcpy ((*pVox2).VoxPoly, (*pVox2).size[0] + 2,
+                          (*pVox2).size[1] + 2, (*pVox2).size[2] + 2, Vox1.VoxPoly);
 
   return;
 }
@@ -214,19 +215,19 @@ neut_vox_gridscale (struct VOX* pVox, double scale1, double scale2, double scale
   for (i = 0; i < 3; i++)
     Vox2.vsize[i] = (*pVox).vsize[i] / ((double) Vox2.size[i] / (double) (*pVox).size[i]);
 
-  Vox2.VoxPoly = ut_alloc_3d_int (Vox2.size[0], Vox2.size[1], Vox2.size[2]);
+  Vox2.VoxPoly = ut_alloc_3d_int (Vox2.size[0] + 2, Vox2.size[1] + 2, Vox2.size[2] + 2);
 
-  for (k = 0; k < Vox2.size[2]; k++)
+  for (k = 1; k <= Vox2.size[2]; k++)
   {
     pos[2][0] = ((double) k / Vox2.size[2]) * ((*pVox).size[2]);
     pos[2][1] = ((double) (k + 0.99999999) / Vox2.size[2]) * ((*pVox).size[2]);
 
-    for (j = 0; j < Vox2.size[1]; j++)
+    for (j = 1; j <= Vox2.size[1]; j++)
     {
       pos[1][0] = ((double) j       / (double) Vox2.size[1]) * ((*pVox).size[1]);
       pos[1][1] = ((double) (j + 0.99999999) / (double) Vox2.size[1]) * ((*pVox).size[1]);
 
-      for (i = 0; i < Vox2.size[0]; i++)
+      for (i = 1; i <= Vox2.size[0]; i++)
       {
 	pos[0][0] = ((double) i       / (double) Vox2.size[0]) * ((*pVox).size[0]);
 	pos[0][1] = ((double) (i + 0.99999999) / (double) Vox2.size[0]) * ((*pVox).size[0]);
@@ -297,13 +298,14 @@ neut_vox_segment (struct VOX Vox, int type, struct VOX* pSeg)
   (*pSeg).size = ut_alloc_1d_int (3);
   ut_array_1d_int_memcpy ((*pSeg).size, 3, Vox.size);
 
-  (*pSeg).VoxPoly = ut_alloc_3d_int ((*pSeg).size[0], (*pSeg).size[1], (*pSeg).size[2]);
+  (*pSeg).VoxPoly = ut_alloc_3d_int ((*pSeg).size[0] + 2,
+				     (*pSeg).size[1] + 2, (*pSeg).size[2] + 2);
 
   (*pSeg).PolyQty = 0;
-  for (k = 0; k < Vox.size[2]; k++)
+  for (k = 1; k <= Vox.size[2]; k++)
   {
-    for (j = 0; j < Vox.size[1]; j++)
-      for (i = 0; i < Vox.size[0]; i++)
+    for (j = 1; j <= Vox.size[1]; j++)
+      for (i = 1; i <= Vox.size[0]; i++)
 	// pixel belongs to the 0 phase and has not been segmented yet
 	if (Vox.VoxPoly[i][j][k] != 0 && ut_num_d2ri ((*pSeg).VoxPoly[i][j][k]) == 0)
 	{
@@ -425,9 +427,9 @@ neut_vox_polys_voxqty (struct VOX Vox, int** pvoxqty)
 
   (*pvoxqty) = ut_alloc_1d_int (Vox.PolyQty + 1);
 
-  for (k = 0; k < Vox.size[2]; k++)
-    for (j = 0; j < Vox.size[1]; j++)
-      for (i = 0; i < Vox.size[0]; i++)
+  for (k = 1; k <= Vox.size[2]; k++)
+    for (j = 1; j <= Vox.size[1]; j++)
+      for (i = 1; i <= Vox.size[0]; i++)
 	(*pvoxqty)[Vox.VoxPoly[i][j][k]]++;
 
   return;
@@ -442,11 +444,11 @@ neut_vox_poly_vox (struct VOX Vox, int poly, struct VOX* pPolyVox)
 
   (*pPolyVox).PolyQty = 1;
   (*pPolyVox).VoxPoly
-    = ut_alloc_3d_int (Vox.size[0], Vox.size[1], Vox.size[2]);
+    = ut_alloc_3d_int (Vox.size[0] + 2, Vox.size[1] + 2, Vox.size[2] + 2);
 
-  for (k = 0; k < Vox.size[2]; k++)
-    for (j = 0; j < Vox.size[1]; j++)
-      for (i = 0; i < Vox.size[0]; i++)
+  for (k = 1; k <= Vox.size[2]; k++)
+    for (j = 1; j <= Vox.size[1]; j++)
+      for (i = 1; i <= Vox.size[0]; i++)
 	if (Vox.VoxPoly[i][j][k] == poly)
 	  (*pPolyVox).VoxPoly[i][j][k] = poly;
 
