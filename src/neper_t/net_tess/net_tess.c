@@ -81,6 +81,12 @@ net_tess (int centroid, double centroidfact, int centroiditermax,
   neut_tesl_free (&Tesl);
 
   neut_tess_init_domain_poly (pTess, DomainPoly, domain);
+
+  if (neut_tess_test (*pTess, 0) != 0 || neut_tess_test_dom (*pTess, 0) != 0)
+  {
+    ut_print_message (2, 2, "The tessellation is not valid.\n");
+    ut_error_reportbug ();
+  }
   
   ut_free_1d_char (message);
   neut_poly_free (&DomainPoly);
