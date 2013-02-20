@@ -9,7 +9,7 @@ net_input (struct IN *pIn, struct REG* pReg,
 	     int fargc, char **fargv, int argc, char **argv)
 {
   int tess_out, vox_out;
-  
+
   net_input_treatargs (fargc, fargv, argc, argv, pIn, pReg);
 
   tess_out = 0;
@@ -18,7 +18,8 @@ net_input (struct IN *pIn, struct REG* pReg,
    || ut_string_inlist ((*pIn).format, ',', "geo" ) == 1
    || ut_string_inlist ((*pIn).format, ',', "ply" ) == 1)
     tess_out = 1;
-  if (ut_string_inlist ((*pIn).format, ',', "vox") == 1)
+  if (ut_string_inlist ((*pIn).format, ',', "vox") == 1
+   || ut_string_inlist ((*pIn).format, ',', "raw") == 1)
     vox_out  = 1;
 
   // Setting mode
@@ -29,7 +30,7 @@ net_input (struct IN *pIn, struct REG* pReg,
   else if (vox_out == 1)
   {
     // centroid and reg can be done only on tess
-    if ((*pIn).centroid == 1 || (*pReg).maxff > 0)
+    if ((*pIn).centroidstring != NULL || (*pReg).regstring != NULL)
       strcpy ((*pIn).mode, "tess");
     else
       strcpy ((*pIn).mode, "vox");
@@ -47,9 +48,9 @@ net_input (struct IN *pIn, struct REG* pReg,
       ut_print_message (2, 2, "tess-type output not available with ttype not `standard'.\n");
       abort ();
     }
-    else if (! strcmp ((*pIn).input, "n_reg") && strcmp ((*pIn).morpho, "tocta") != 0)
+    else if (! strcmp ((*pIn).input, "n_reg") && strcmp ((*pIn).morpho[1], "tocta") != 0)
     {
-      ut_print_message (2, 0, "tess-type output not available for morpho=%s\n", (*pIn).morpho);
+      ut_print_message (2, 0, "tess-type output not available for morpho=%s\n", (*pIn).morpho[1]);
       abort ();
     }
   }
@@ -60,11 +61,32 @@ net_input (struct IN *pIn, struct REG* pReg,
 void
 net_in_set_zero (struct IN* pIn)
 {
+  (*pIn).nstring = NULL;
+  (*pIn).n = NULL;
+  (*pIn).idstring = NULL;
+  (*pIn).id = NULL;
+  (*pIn).morphostring = NULL;
+  (*pIn).morpho = NULL;
+  (*pIn).ttype = NULL;
+  (*pIn).levelqty = 0;
+
+  (*pIn).randomize = 0;
+  (*pIn).randomize2 = 0;
+  (*pIn).randomizedir = NULL;
+
+  (*pIn).mode = NULL;
   (*pIn).input = 0;
-  (*pIn).checktess = 0;
 
   (*pIn).domain = NULL;
+  (*pIn).domainparms = NULL;
+  (*pIn).domainparms2 = NULL;
   (*pIn).scale = NULL;
+
+  (*pIn).voxsizetype = 0;
+  (*pIn).voxsize = 0;
+  (*pIn).voxsize3 = NULL;
+
+  (*pIn).checktess = 0;
 
   (*pIn).format = NULL;
   (*pIn).voxformat = NULL;
@@ -72,11 +94,16 @@ net_in_set_zero (struct IN* pIn)
   (*pIn).load   = NULL;
   (*pIn).tess   = NULL;
   (*pIn).vox    = NULL;
+  (*pIn).raw    = NULL;
   (*pIn).geo    = NULL;
   (*pIn).ply   = NULL;
+  (*pIn).stv   = NULL;
+  (*pIn).ste   = NULL;
+  (*pIn).stf   = NULL;
+  (*pIn).stp   = NULL;
   (*pIn).dec   = NULL;
   (*pIn).debug   = NULL;
-  
+
   (*pIn).printstattess = ut_alloc_1d_char (5);
   strcpy ((*pIn).printstattess, "none");
   (*pIn).sorttess_qty = 0;
@@ -85,14 +112,11 @@ net_in_set_zero (struct IN* pIn)
   (*pIn).point = NULL;
   (*pIn).polyid = NULL;
 
-  (*pIn).centroid = 0;
+  (*pIn).centroidstring = NULL;
+  (*pIn).centroid = NULL;
   (*pIn).centroiditermax = 0;
   (*pIn).centroidfact = 0;
   (*pIn).centroidconv = 0;
-  
-  (*pIn).voxsizetype = 0;
-  (*pIn).voxsize = 0;
-  (*pIn).voxsize3 = NULL;
 
   return;
 }
@@ -108,6 +132,7 @@ net_in_free (struct IN In)
   ut_free_1d_char (In.load);
   ut_free_1d_char (In.tess);
   ut_free_1d_char (In.vox);
+  ut_free_1d_char (In.raw);
   ut_free_1d_char (In.geo);
   ut_free_1d_char (In.ply);
   ut_free_1d_char (In.dec);
@@ -118,16 +143,32 @@ net_in_free (struct IN In)
   ut_free_1d_char (In.polyid);
   ut_free_1d_int  (In.voxsize3);
 
+  ut_free_1d_char (In.nstring);
+  ut_free_1d_char (In.centroidstring);
+
+  ut_free_1d_char (In.printstattess);
+  ut_free_1d_char (In.input);
+  ut_free_1d_int (In.centroid);
+  ut_free_1d_char (In.ttype);
+  ut_free_1d_char (In.morphostring);
+  ut_free_2d_char (In.morpho, In.levelqty + 1);
+  ut_free_1d_char (In.randomizedir);
+  ut_free_2d_char (In.n, In.levelqty + 1);
+  ut_free_1d_char (In.idstring);
+  ut_free_1d_int  (In.id);
+  ut_free_1d_char (In.mode);
+
   return;
 }
 
 void
 net_reg_set_zero (struct REG* pReg)
 {
-  (*pReg).regularization = NULL;
+  (*pReg).regstring = NULL;
+  (*pReg).reg = NULL;
   (*pReg).mloop = 2;
   (*pReg).maxedgedelqty = INT_MAX;
-  (*pReg).maxff = 0;
+  (*pReg).maxff = 20;
   (*pReg).seltype = 0;
   (*pReg).sel = 0;
   (*pReg).rsel = 0;
@@ -135,6 +176,16 @@ net_reg_set_zero (struct REG* pReg)
   (*pReg).dboundsel = 0;
   (*pReg).dboundrsel = 0;
   (*pReg).dbound = NULL;
+
+  return;
+}
+
+void
+net_reg_free (struct REG Reg)
+{
+  ut_free_1d_char (Reg.regstring);
+  ut_free_1d_int (Reg.reg);
+  ut_free_1d_char (Reg.dbound);
 
   return;
 }

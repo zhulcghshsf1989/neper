@@ -79,6 +79,83 @@ nevs_tessdata_init (struct TESS Tess, struct TESSDATA* pTessData)
 }
 
 void
+nevs_tessdata_mtessdata (struct MTESS MTess, struct TESS* Tess, int levelmax,
+			 struct TESSDATA TessData, struct TESSDATA** pMTessData)
+{
+  int i, j, tessid, level;
+  struct TESSDATA* pTessData = NULL; // shortcut
+
+  (*pMTessData) = calloc (MTess.TessQty + 1, sizeof (TESSDATA));
+  pTessData = &((*pMTessData)[1]);
+
+  neut_tessdata_set_default (pTessData);
+
+  (*pTessData).verqty  = TessData.verqty;
+  (*pTessData).edgeqty = TessData.edgeqty;
+  (*pTessData).faceqty = TessData.faceqty;
+  (*pTessData).polyqty = TessData.polyqty;
+
+  (*pTessData).col[0] = ut_alloc_2d_int ((*pTessData).polyqty + 1, 3);
+  ut_array_2d_int_memcpy ((*pTessData).col[0] + 1, (*pTessData).polyqty,
+    3, TessData.col[0] + 1);
+
+  (*pTessData).col[1] = ut_alloc_2d_int ((*pTessData).faceqty + 1, 3);
+  ut_array_2d_int_memcpy ((*pTessData).col[1] + 1, (*pTessData).faceqty,
+    3, TessData.col[1] + 1);
+  (*pTessData).col[2] = ut_alloc_2d_int ((*pTessData).edgeqty + 1, 3);
+  ut_array_2d_int_memcpy ((*pTessData).col[2] + 1, (*pTessData).edgeqty,
+    3, TessData.col[2] + 1);
+  (*pTessData).col[3] = ut_alloc_2d_int ((*pTessData).verqty  + 1, 3);
+  ut_array_2d_int_memcpy ((*pTessData).col[3] + 1, (*pTessData).verqty,
+    3, TessData.col[3] + 1);
+  (*pTessData).rad[2] = ut_alloc_1d     ((*pTessData).edgeqty + 1);
+  ut_array_1d_memcpy ((*pTessData).rad[2] + 1, (*pTessData).edgeqty,
+    TessData.rad[2] + 1);
+  (*pTessData).rad[3] = ut_alloc_1d     ((*pTessData).verqty  + 1);
+  ut_array_1d_memcpy ((*pTessData).rad[3] + 1, (*pTessData).verqty,
+    TessData.rad[3] + 1);
+
+  if (levelmax == -1)
+    levelmax = MTess.LevelQty;
+
+  for (level = 2; level <= levelmax; level++)
+  {
+    for (i = 1; i <= MTess.LevelTessQty[level]; i++)
+    {
+      tessid = MTess.LevelTess[level][i];
+      pTessData = &((*pMTessData)[tessid]);
+
+      neut_tessdata_set_default (pTessData);
+
+      (*pTessData).verqty  = Tess[tessid].VerQty;
+      (*pTessData).edgeqty = Tess[tessid].EdgeQty;
+      (*pTessData).faceqty = Tess[tessid].FaceQty;
+      (*pTessData).polyqty = Tess[tessid].PolyQty;
+
+      (*pTessData).col[0] = ut_alloc_2d_int ((*pTessData).polyqty + 1, 3);
+      (*pTessData).col[1] = ut_alloc_2d_int ((*pTessData).faceqty + 1, 3);
+      (*pTessData).col[2] = ut_alloc_2d_int ((*pTessData).edgeqty + 1, 3);
+      (*pTessData).col[3] = ut_alloc_2d_int ((*pTessData).verqty  + 1, 3);
+      (*pTessData).rad[2] = ut_alloc_1d     ((*pTessData).edgeqty + 1);
+      (*pTessData).rad[3] = ut_alloc_1d     ((*pTessData).verqty  + 1);
+
+      // Polys
+      int* dom = MTess.TessDom[tessid];
+
+      for (j = 1; j <= (*pTessData).polyqty; j++)
+	ut_array_1d_int_memcpy ((*pTessData).col[0][j], 3,
+	    (*pMTessData)[dom[0]].col[0][dom[1]]);
+
+      // Edges
+      for (j = 1; j <= (*pTessData).edgeqty; j++)
+	(*pTessData).rad[2][j] = (*pMTessData)[dom[0]].rad[2][1];
+    }
+  }
+
+  return;
+}
+
+void
 nevs_tessdata_fscanf (struct TESS Tess, char* entity, char* type, char* argument,
                      struct TESSDATA* pTessData)
 {

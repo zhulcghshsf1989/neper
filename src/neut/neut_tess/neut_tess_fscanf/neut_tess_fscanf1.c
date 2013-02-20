@@ -37,19 +37,24 @@ neut_tess_fscanf_verbosity (FILE* file, struct TESS* pTess, int verbosity)
 
   else if (! strcmp (version, "2.0"))
   {
+    char* tmp = ut_alloc_1d_char (100);
     neut_tess_fscanf_head (pTess, file);
     neut_tess_fscanf_ver (pTess, file);
     neut_tess_fscanf_edge (pTess, file);
     neut_tess_fscanf_face (pTess, file);
     neut_tess_fscanf_poly (pTess, file);
-    neut_tess_fscanf_domain (pTess, file);
+
+    ut_file_nextstring (file, tmp);
+    if (! strcmp (tmp, "**domain"))
+      neut_tess_fscanf_domain (pTess, file);
+
     neut_tess_fscanf_foot (file);
     neut_tess_init_edgelength (pTess);
   }
 
   else
   {
-    ut_print_message (2, 2, "Unsupported tesl file version `%s'.\n", version);
+    ut_print_message (2, 2, "Unsupported tess file version `%s'.\n", version);
     abort ();
   }
 

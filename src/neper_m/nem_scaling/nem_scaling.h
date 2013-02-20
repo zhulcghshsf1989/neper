@@ -14,6 +14,7 @@
 #include"neut_m.h"
 #include"../structIn_m.h"
 #include"../nem_reconstruct/nem_reconstruct0.h"
+#include"../nem/nem.h"
 
 #include"nem_scaling0.h"
 

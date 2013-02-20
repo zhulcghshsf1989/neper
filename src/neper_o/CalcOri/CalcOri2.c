@@ -26,15 +26,15 @@ neo_init_ori (FILE* file, struct ORI* pOri)
    || strcmp  (type, "centroid"   ) == 0
    || strncmp (type, "columnar", 8) == 0
    || strncmp (type, "bamboo"  , 6) == 0)
-    (*pOri).Random = neut_rand_nnid2rand (n, id) - 1;
+    (*pOri).Random = neut_rand_nnid2rand (n, id, 0, 1) - 1;
   else if (strcmp (type, "cube") == 0)
-    (*pOri).Random = neut_rand_nnid2rand (n, id) + 1;
+    (*pOri).Random = neut_rand_nnid2rand (n, id, 0, 1) + 1;
   else if (strcmp (type, "dodeca") == 0)
-    (*pOri).Random = neut_rand_nnid2rand (n, id) + 2;
+    (*pOri).Random = neut_rand_nnid2rand (n, id, 0, 1) + 2;
   else if (strcmp (type, "tocta") == 0)
-    (*pOri).Random = neut_rand_nnid2rand (n, id) + 3;
+    (*pOri).Random = neut_rand_nnid2rand (n, id, 0, 1) + 3;
   else if (strcmp (type, "custom") == 0)
-    (*pOri).Random = neut_rand_nnid2rand (n, id) + 4;
+    (*pOri).Random = neut_rand_nnid2rand (n, id, 0, 1) + 4;
   else
     abort ();
   

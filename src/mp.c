@@ -175,7 +175,7 @@ NeperHeader (char* prog_version)
     ("\n========================    N   e   p   e   r    =======================\n");
   
   ut_print_message (0, 0,
-		    "A 3D random polycrystal generator for the finite element method\n");
+		  "A software package for polycrystal generation and meshing.\n");
 
   ut_print_message (0, 0, "Version %s\n", prog_version);
 

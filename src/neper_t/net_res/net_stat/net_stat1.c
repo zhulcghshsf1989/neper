@@ -5,7 +5,7 @@
 #include "net_stat.h"
 
 void
-net_stat (struct IN In, struct TESS net_poly_tesl)
+net_stat (struct IN In, struct TESS Tess)
 {
   FILE* file = NULL;
   char* name = NULL;
@@ -15,7 +15,7 @@ net_stat (struct IN In, struct TESS net_poly_tesl)
     name = ut_string_addextension (In.body, "stver");
 
     file = ut_file_open (name, "w");
-    WriteStatTessVer (file, In.stv, net_poly_tesl);
+    WriteStatTessVer (file, In.stv, Tess);
     ut_file_close (file, name, "w");
     ut_free_1d_char (name);
   }
@@ -25,7 +25,7 @@ net_stat (struct IN In, struct TESS net_poly_tesl)
     name = ut_string_addextension (In.body, "stedge");
 
     file = ut_file_open (name, "w");
-    WriteStatTessEdge (file, In.ste, net_poly_tesl);
+    WriteStatTessEdge (file, In.ste, Tess);
     ut_file_close (file, name, "w");
     ut_free_1d_char (name);
   }
@@ -35,7 +35,7 @@ net_stat (struct IN In, struct TESS net_poly_tesl)
     name = ut_string_addextension (In.body, "stface");
 
     file = ut_file_open (name, "w");
-    WriteStatTessFace (file, In.stf, net_poly_tesl);
+    WriteStatTessFace (file, In.stf, Tess);
     ut_file_close (file, name, "w");
     ut_free_1d_char (name);
   }
@@ -45,7 +45,7 @@ net_stat (struct IN In, struct TESS net_poly_tesl)
     name = ut_string_addextension (In.body, "stpoly");
 
     file = ut_file_open (name, "w");
-    WriteStatTessPoly (file, In.stp, net_poly_tesl);
+    WriteStatTessPoly (file, In.stp, Tess);
     ut_file_close (file, name, "w");
     ut_free_1d_char (name);
   }

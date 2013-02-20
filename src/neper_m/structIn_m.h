@@ -29,7 +29,7 @@ struct IN
   char* meshface;           // faces to mesh (expression)
 
   char* outdim;             // dimensions of the output meshes
-
+  
   char*  mesh2dalgo;        // 2d meshing algos
   char*  mesh3dalgo;        // 3d meshing algos
   char*  mesh3doptiexpr;    // expression of O (see the Neper paper)

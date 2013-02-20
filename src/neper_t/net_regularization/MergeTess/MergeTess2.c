@@ -45,7 +45,7 @@ PrintDeletion (int loop, double LengthRatio, int ThisDelQty, int edge,
 
 /* NextEdgeToDel returns the smallest edge id --excluding the forbidden edges. */
 int
-NextEdgeToDel (struct TESS net_poly_tesl, struct REG Reg, double *plengthratio)
+NextEdgeToDel (struct TESS Tess, struct REG Reg, double *plengthratio)
 {
   int i;			/* mute variable */
   int edgenb = -1;		/* returned value */
@@ -53,10 +53,10 @@ NextEdgeToDel (struct TESS net_poly_tesl, struct REG Reg, double *plengthratio)
 
   (*plengthratio) = 1.;
 
-  for (i = 1; i <= net_poly_tesl.EdgeQty; i++)
-    if (net_poly_tesl.EdgeState[i] == 0 && net_poly_tesl.EdgeDel[i] == 0)
+  for (i = 1; i <= Tess.EdgeQty; i++)
+    if (Tess.EdgeState[i] == 0 && Tess.EdgeDel[i] == 0)
     {
-      neut_tess_edge_selratio (net_poly_tesl, Reg, i, &lratio);
+      neut_tess_edge_selratio (Tess, Reg, i, &lratio);
 
       if (lratio < *plengthratio)
       {

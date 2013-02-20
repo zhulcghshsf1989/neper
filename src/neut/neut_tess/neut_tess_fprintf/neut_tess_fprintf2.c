@@ -14,6 +14,7 @@ GEHead (struct TESS Tess, FILE * file)
   fprintf (file, " **format\n");
   fprintf (file, "   2.0\n");
   fprintf (file, " **general\n");
+  // fprintf (file, "   %d\n", Tess.Level);
   fprintf (file, "   %d %d %s %s\n", Tess.N, Tess.Id, Tess.Type, Tess.morpho);
 
   if (Tess.PolyId != NULL)
@@ -60,6 +61,7 @@ GEVer (struct TESS Tess, FILE * file)
   {
     fprintf (file, " %3d ", i);
     ut_array_1d_int_fprintf (file, Tess.VerDom[i], 2, "%d");
+
     fprintf (file, "    ");
     fprintf (file, " %d", Tess.VerEdgeQty[i]);
     for (j = 0; j < Tess.VerEdgeQty[i]; j++)
@@ -86,6 +88,7 @@ GEEdge (struct TESS Tess, FILE * file)
   {
     fprintf (file, " %3d ", i);
     ut_array_1d_int_fprintf (file, Tess.EdgeDom[i], 2, "%d");
+
     fprintf (file, "     ");
     ut_array_1d_int_fprintf (file, Tess.EdgeVerNb[i], 2, "%d");
 
@@ -158,7 +161,21 @@ GEPoly (struct TESS Tess, FILE * file)
     fprintf (file, "     %d %d", Tess.PolyTrue[i], Tess.PolyBody[i]);
     fprintf (file, "\n");
 
-    /* polyhedron faces */
+    /*
+    // polyhedron vers
+    fprintf (file, "     %d", Tess.PolyVerQty[i]);
+    for (j = 1; j <= Tess.PolyVerQty[i]; j++)
+      fprintf (file, " %d", Tess.PolyVerNb[i][j]);
+    fprintf (file, "\n");
+
+    // polyhedron edges
+    fprintf (file, "     %d", Tess.PolyEdgeQty[i]);
+    for (j = 1; j <= Tess.PolyEdgeQty[i]; j++)
+      fprintf (file, " %d", Tess.PolyEdgeNb[i][j]);
+    fprintf (file, "\n");
+    */
+
+    // polyhedron faces
     fprintf (file, "     %d", Tess.PolyFaceQty[i]);
     for (j = 1; j <= Tess.PolyFaceQty[i]; j++)
       fprintf (file, " %d", Tess.PolyFaceOri[i][j] * Tess.PolyFaceNb[i][j]);
@@ -173,6 +190,9 @@ void
 GEDomain (struct TESS Tess, FILE * file)
 {
   int i, j;
+
+  if (Tess.Level == 0)
+    return;
 
   fprintf (file, " **domain\n");
   fprintf (file, "  *general\n");

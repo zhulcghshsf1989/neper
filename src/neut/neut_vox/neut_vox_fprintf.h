@@ -7,4 +7,7 @@
 
 extern void neut_vox_fprintf (FILE*, char*, struct VOX);
 
+extern void neut_vox_name_fprintf_raw (char* vox, char* raw, char*
+    format, struct VOX Vox);
+
 #endif /* NEUT_VOX_FPRINTF_H */

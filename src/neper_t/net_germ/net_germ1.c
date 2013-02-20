@@ -5,53 +5,55 @@
 #include"net_germ.h"
 
 void
-net_germ (struct IN In, struct TESS Domain, struct GERMSET* pGermSet)
+net_germ (struct IN In, struct TESS Tess, int poly, struct GERMSET* pGSet)
 {
+  // Initializing variables --------------------------------------------
+
   struct POLY Poly;
 
   neut_poly_set_zero (&Poly);
+  net_tess_poly (Tess, poly, &Poly);
 
-  net_tess_poly (Domain, 1, &Poly);
+  neut_germset_free (pGSet);
 
-  (*pGermSet).N = In.n;
-  (*pGermSet).N1d = In.n;
-  (*pGermSet).Id = In.id;
-  (*pGermSet).NDensity = (*pGermSet).N;
-  (*pGermSet).Size = ut_alloc_1d (7);
-  neut_poly_bbox (Poly, (*pGermSet).Size);
+  // Testing out input data --------------------------------------------
 
-  (*pGermSet).morpho = ut_alloc_1d_char (strlen (In.morpho) + 1);
-  strcpy ((*pGermSet).morpho, In.morpho);
+  // Regular distributions are only available for a cubic domain
+  if ((   ! strcmp (In.morpho[Tess.Level + 1], "tocta")
+       || ! strcmp (In.morpho[Tess.Level + 1], "cube")
+       || ! strcmp (In.morpho[Tess.Level + 1], "dodeca"))
+      &&    strcmp (In.domain, "cube") != 0)
+      ut_print_message
+	(2, 0, "This morphology (%s) cannot be used with a non-cube domain (%s)\n",
+	 In.morpho[Tess.Level + 1], In.domain);
 
-  /* Distributing the germs within the domain */
-  if (In.morpho[0] == '@')
-    DistribFromFile (In.morpho + 1, In.n, &((*pGermSet).GermsCoo));
-  else if (! strcmp (In.morpho, "tocta")
-        || ! strcmp (In.morpho, "cube")
-        || ! strcmp (In.morpho, "dodeca"))
+  // Setting up properties of the germset (number of germs, etc.) ------
+
+  net_germ_prop (In, Tess, poly, pGSet);
+
+  // Distributing germs ------------------------------------------------
+
+  if (! strcmp ((*pGSet).morpho, "tocta") || ! strcmp ((*pGSet).morpho, "cube"))
+    net_germ_reg (Poly, pGSet);
+  else if ((*pGSet).morpho[0] == '@')
+    net_germ_custom ((*pGSet).morpho + 1, Poly, pGSet);
+  else
   {
-    if (strcmp (In.domain, "cube") != 0)
-    {
-      ut_print_message (2, 0, "This morphology (%s) cannot be used with a non-cube domain (%s)\n", In.morpho, In.domain);
-      abort ();
-    }
-
-    if (! strcmp (In.morpho, "tocta"))
-      TruOctaDistrib (Poly, pGermSet);
-    else if (! strcmp (In.morpho, "cube"))
-      CubeDistrib (Poly, pGermSet);
-    else
-      abort ();
+    net_germ_seed (Tess.Level, poly, NULL, pGSet);
+    net_germ_rand (In, Poly, pGSet);
   }
-  else // morpho = poisson, columnarx, ...
-    RandDistrib (In, pGermSet, Poly);
 
-  DefGermSet (In, pGermSet);
+  // Distributing germs outside the domain, if needed
+  if (! strcmp (In.ttype, "periodic")
+   || ! strcmp (In.ttype, "subdomain"))
+    net_germ_neigh (In, pGSet);
 
-  // Randomize, if needed ----------------------------------------------
+  // Randomize germ distribution ---------------------------------------
   
   if (In.randomize > 0)
-    net_germ_randomize (In, pGermSet, Poly, In.morpho);
+    net_germ_randomize (In, pGSet, Poly);
+
+  // Free'ing memory ---------------------------------------------------
 
   neut_poly_free (&Poly);
 

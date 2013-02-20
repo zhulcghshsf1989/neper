@@ -7,7 +7,8 @@
 
 struct REG
 {
-  char* regularization;
+  char* regstring;
+  int* reg;
   int mloop;
   int maxedgedelqty;
   double maxff;

@@ -44,8 +44,9 @@ neut_tess_test (struct TESS Tess, int verbosity)
   if (verbosity)
     ut_print_message (0, 1, "Checking domain:\n");
 
-  if (neut_tess_test_dom (Tess, verbosity) != 0)
-    return -1;
+  if (Tess.DomVerQty > 0)
+    if (neut_tess_test_dom (Tess, verbosity) != 0)
+      return -1;
 
   return res;
 }

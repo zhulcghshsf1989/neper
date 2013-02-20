@@ -31,6 +31,7 @@ struct PRINT
   int showedgeinit;
 
   int showtess;
+  int showtesslevel;
   int showmesh;
   char* showslice;
 

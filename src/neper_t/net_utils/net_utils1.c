@@ -10,7 +10,7 @@ net_poly_clip (struct POLY* pPoly, double* eq)
   int i, status;
   struct POLYMOD Polymod;
 
-  PolymodAlloc (&Polymod);
+  neut_polymod_set_zero (&Polymod);
 
   neut_poly_polymod ((*pPoly), &Polymod);
 
@@ -32,11 +32,11 @@ net_poly_clip (struct POLY* pPoly, double* eq)
 
   neut_poly_free (pPoly);
 
-  PolyhedronRecording (0, Polymod, pPoly);
+  net_polymod_poly (Polymod, pPoly);
 
   status = (status == 0) ? 0 : (*pPoly).FaceQty;
   
-  PolymodFree (&Polymod);
+  neut_polymod_free (&Polymod);
 
   return status;
 }
@@ -165,13 +165,13 @@ net_tess_poly (struct TESS Tess, int poly, struct POLY* pPoly)
 }
 
 void
-net_poly_tesl (struct POLY Poly, struct TESL* pTess)
+net_poly_tesl (struct POLY Poly, struct TESL* pTesl)
 {
   struct GERMSET GermSet; 
   struct POLY* PolyArray = (struct POLY*) calloc (2, sizeof (struct POLY));
   PolyArray[1] = Poly;
 
-  neut_tesl_set_zero (pTess);
+  neut_tesl_set_zero (pTesl);
 
   neut_germset_set_zero (&GermSet);
 
@@ -182,18 +182,15 @@ net_poly_tesl (struct POLY Poly, struct TESL* pTess)
   GermSet.morpho = ut_alloc_1d_char (10);
   sprintf (GermSet.morpho, "poly");
 
-  GermSet.GermsCoo = ut_alloc_2d (2, 4);
-  GermSet.GermsCoo[1][1] = 1;
-  GermSet.GermsCoo[1][2] = 2;
-  GermSet.GermsCoo[1][3] = 3;
+  GermSet.GermCoo = ut_alloc_2d (2, 3);
 
   GermSet.NDensity = 1;
 
-  net_tesl (GermSet, PolyArray, pTess);
+  net_tesl (GermSet, PolyArray, pTesl);
 
   free (PolyArray);
 
-  neut_germset_free (GermSet);
+  neut_germset_free (&GermSet);
 
   return;
 }
@@ -203,13 +200,81 @@ net_poly_tess (struct POLY Poly, struct TESS* pTess)
 {
   neut_tess_set_zero (pTess);
 
-  struct TESL Tess;
-  neut_tesl_set_zero (&Tess);
+  struct TESL Tesl;
+  neut_tesl_set_zero (&Tesl);
 
-  net_poly_tesl (Poly, &Tess);
-  neut_tesl_tess (Tess, pTess);
+  net_poly_tesl (Poly, &Tesl);
+  neut_tesl_tess (Tesl, pTess);
+  neut_tess_poly_centroid (*pTess, 1, (*pTess).CenterCoo[1]);
 
-  neut_tesl_free (&Tess);
+  neut_tesl_free (&Tesl);
+
+  return;
+}
+
+void
+net_tess_poly_tess (struct TESS Tess, int poly, struct TESS* pPoly)
+{
+  struct POLY P;
+  neut_poly_set_zero (&P);
+
+  net_tess_poly (Tess, poly, &P);
+  net_poly_tess (P, pPoly);
+
+  neut_poly_free (&P);
+
+  return;
+}
+
+void
+net_poly_centroid (struct POLY Poly, double* coo)
+{
+  int i, f, ver;
+  double area, vol, totvol;
+  double* p0 = ut_alloc_1d (3);
+  double* p1 = NULL;
+  double* p2 = NULL;
+  double* tmp = ut_alloc_1d (3);
+  double* tmpcoo = ut_alloc_1d (3);
+
+  ut_array_1d_set (tmpcoo, 3, 0);
+
+  for (i = 1; i <= Poly.VerQty; i++)
+    ut_array_1d_add (tmpcoo, Poly.VerCoo[i], 3, tmpcoo);
+
+  ut_array_1d_scale (tmpcoo, 3, 1. / Poly.VerQty);
+
+  totvol = 0;
+  ut_array_1d_set (coo, 3, 0);
+
+  for (f = 1; f <= Poly.FaceQty; f++)
+  {
+    ver = Poly.FaceVerNb[f][1];
+    ut_array_1d_memcpy (p0, 3, Poly.VerCoo[ver]);
+
+    for (i = 1; i <= Poly.FaceVerQty[f]; i++)
+    {
+      p1 = Poly.VerCoo[Poly.FaceVerNb[f][i]];
+      p2 = Poly.VerCoo[Poly.FaceVerNb[f]
+	             [ut_num_rotpos (1, Poly.FaceVerQty[f], i, 1)]];
+
+      area = ut_space_triangle_area (p0, p1, p2);
+
+      if (area > 1e-20)
+      {
+	ut_space_tet_centre (tmpcoo, p0, p1, p2, tmp);
+	vol = ut_space_tet_volume (tmpcoo, p0, p1, p2);
+	ut_array_1d_scale (tmp, 3, vol);
+	ut_array_1d_add (coo, tmp, 3, coo);
+	totvol += vol;
+      }
+    }
+  }
+
+  ut_array_1d_scale (coo, 3, 1./totvol);
+
+  ut_free_1d (p0);
+  ut_free_1d (tmp);
 
   return;
 }

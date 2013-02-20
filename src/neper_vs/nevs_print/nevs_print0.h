@@ -2,7 +2,8 @@
 /* Copyright (C) 2003-2012, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-extern void nevs_print (char**, int*, struct PRINT*, struct TESS, struct TESSDATA,
+extern void nevs_print (char**, int*, struct PRINT, struct PRINT*,
+            struct MTESS, struct TESS*, struct TESSDATA, struct TESSDATA*,
 	    struct NODES, struct MESH, struct MESH, struct MESH,
 	    struct MESH, struct MESHDATA, int, struct NODES*, struct MESH*,
 	    struct MESHDATA*);

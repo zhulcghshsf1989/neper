@@ -4,7 +4,7 @@ project(neper C)
 set (NEPER_VERSION_MAJOR 2)
 set (NEPER_VERSION_MINOR 0)
 set (NEPER_VERSION_PATCH 0)
-set (NEPER_VERSION \"2.0.0-devel2-66\ \")
+set (NEPER_VERSION \"2.0.0-alpha-1\ \")
 set (NEPER_EMAIL \"neper-users@lists.sourceforge.net\")
 
 # should we use the optional libraries?
@@ -20,7 +20,6 @@ include_directories("${PROJECT_SOURCE_DIR}/neut")
 include_directories("${PROJECT_SOURCE_DIR}/neper_t")
 include_directories("${PROJECT_SOURCE_DIR}/neper_m")
 include_directories("${PROJECT_SOURCE_DIR}/neper_o")
-# include_directories("${PROJECT_SOURCE_DIR}/neper_mm")
 include_directories("${PROJECT_SOURCE_DIR}/neper_vs")
 
 include_directories("${PROJECT_BINARY_DIR}")
@@ -31,7 +30,6 @@ include_directories("${PROJECT_BINARY_DIR}/neut")
 include_directories("${PROJECT_BINARY_DIR}/neper_t")
 include_directories("${PROJECT_BINARY_DIR}/neper_m")
 include_directories("${PROJECT_BINARY_DIR}/neper_o")
-# include_directories("${PROJECT_BINARY_DIR}/neper_mm")
 include_directories("${PROJECT_BINARY_DIR}/neper_vs")
 
 # configure a header file to pass some of the CMake settings to the
@@ -41,7 +39,7 @@ configure_file (
   "${PROJECT_BINARY_DIR}/neper_config.h"
 )
 
-add_definitions(-Wall -W -g -O3)
+add_definitions(-Wall -W -g)
 set (CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
 
 add_subdirectory(contrib/ut)
@@ -50,7 +48,6 @@ add_subdirectory(neut)
 add_subdirectory(neper_t)
 add_subdirectory(neper_m)
 add_subdirectory(neper_o)
-# add_subdirectory(neper_mm)
 add_subdirectory(neper_vs)
 
 add_executable (neper mp.c)
@@ -61,7 +58,6 @@ set (EXTRA_LIBS ${EXTRA_LIBS} neut)
 set (EXTRA_LIBS ${EXTRA_LIBS} neper_t)
 set (EXTRA_LIBS ${EXTRA_LIBS} neper_m)
 set (EXTRA_LIBS ${EXTRA_LIBS} neper_o)
-# set (EXTRA_LIBS ${EXTRA_LIBS} neper_mm)
 set (EXTRA_LIBS ${EXTRA_LIBS} neper_vs)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})

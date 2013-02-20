@@ -231,7 +231,7 @@ nem_mesh_3d_gmsh (struct TESS Tess, int poly, struct NODES Nodes,
 
   file2 = ut_file_open ("tmp-surf.msh", "W");
   neut_mesh_fprintf_gmsh (file2, "2", Nodes, Garbage, Garbage, Skin,
-      Garbage, PGarbage);
+      Garbage, PGarbage, NULL);
   ut_file_close (file2, "tmp-surf.msh", "W");
 
   clmod = cl;

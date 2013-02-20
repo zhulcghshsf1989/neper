@@ -19,6 +19,16 @@ nevs_show (char **argv, int *pi, struct TESS Tess, struct NODES Nodes,
   {
     (*pi)++;
     sscanf (argv[(*pi)], "%d", &((*pPrint).showtess));
+    if ((*pPrint).showtess < 0 || (*pPrint).showtess > 1)
+    {
+      ut_print_message (2, 0, "-showtess: bad value.\n");
+      abort ();
+    }
+  }
+  else if (strcmp (argv[(*pi)], "-showtesslevel") == 0)
+  {
+    (*pi)++;
+    sscanf (argv[(*pi)], "%d", &((*pPrint).showtesslevel));
   }
   else if (strcmp (argv[(*pi)], "-showmesh") == 0)
   {

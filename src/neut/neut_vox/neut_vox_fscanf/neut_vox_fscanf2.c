@@ -19,14 +19,14 @@ neut_vox_fscanf_head (struct VOX* pVox, char** pformat, FILE * file)
   }
 
   if (ut_file_string_scanncomp (file, "**format") != 0
-   || ut_file_string_scanncomp (file, "1.10") != 0)
+   || ut_file_string_scanncomp (file, "2.0") != 0)
   {
     ut_print_message (2, 0, "Input file is not a valid voxel tessellation file.\n");
     abort ();
   }
 
   if (fscanf (file, "%s", *pformat) != 1
-  || (! strcmp (*pformat, "ascii") && ! strncmp (*pformat, "binary", 6)))
+  || (! strcmp (*pformat, "ascii") && ! strncmp (*pformat, "bin", 3)))
   {
     ut_print_message (2, 0, "Input file is not a valid voxel tessellation file.\n");
     abort ();
@@ -73,33 +73,61 @@ neut_vox_fscanf_data (struct VOX* pVox, char* format, FILE * file)
 {
   int i, j, k;
   char c;
-
-  if (ut_file_string_scanncomp (file, "**voxel") != 0)
-    abort ();
+  FILE* file2 = NULL;
+  char* filename = NULL;
+  char* tmp = ut_alloc_1d_char (10);
+  fpos_t pos;
 
   (*pVox).VoxPoly = ut_alloc_3d_int ((*pVox).size[0] + 2,
       (*pVox).size[1] + 2, (*pVox).size[2] + 2);
 
+  if (fscanf (file, "%s", tmp) != 1)
+    abort ();
+
+  if (strcmp (tmp, "**voxel") != 0 && strcmp (tmp, "**data") != 0)
+    abort ();
+
+  do
+  {
+    fgetpos (file, &pos);
+    if (fscanf (file, "%c", &c) != 1)
+      abort ();
+  }
+  while (c == ' ' || c == '\n' || c == '\t');
+
+  fsetpos (file, &pos);
+
+  if (c == '*')
+    if (fscanf (file, "%s", tmp) != 1)
+      abort ();
+
+  if (! strcmp (tmp, "*file"))
+  {
+    filename = ut_alloc_1d_char (1000);
+    if (fscanf (file, "%s", filename) != 1)
+      abort ();
+    file2 = ut_file_open (filename, "r");
+  }
+  else
+    file2 = file;
+
   if (! strcmp (format, "ascii"))
+  {
     for (k = 1; k <= (*pVox).size[2]; k++)
       for (j = 1; j <= (*pVox).size[1]; j++)
 	for (i = 1; i <= (*pVox).size[0]; i++)
-	{
-	  if (fscanf (file, "%d", &((*pVox).VoxPoly[i][j][k])) != 1)
+	  if (fscanf (file2, "%d", &((*pVox).VoxPoly[i][j][k])) != 1)
 	    abort ();
-	}
+  }
 
   else if (! strcmp (format, "binary8"))
   {
-    if (fscanf (file, "%c", &c) != 1) // get rid of the '\n' right after the format string
-     abort ();
-
     unsigned char data;
     for (k = 1; k <= (*pVox).size[2]; k++)
       for (j = 1; j <= (*pVox).size[1]; j++)
 	for (i = 1; i <= (*pVox).size[0]; i++)
 	{
-	  if (fread (&data, sizeof (unsigned char), 1, file) != 1)
+	  if (fread (&data, sizeof (unsigned char), 1, file2) != 1)
 	   abort ();
 
 	  (*pVox).VoxPoly[i][j][k] = data;
@@ -108,38 +136,79 @@ neut_vox_fscanf_data (struct VOX* pVox, char* format, FILE * file)
 
   else if (! strcmp (format, "binary16"))
   {
-    if (fscanf (file, "%c", &c) != 1) // idem
-      abort ();
+    short data;
+    for (k = 1; k <= (*pVox).size[2]; k++)
+      for (j = 1; j <= (*pVox).size[1]; j++)
+	for (i = 1; i <= (*pVox).size[0]; i++)
+	{
+	  if (fread (&data, sizeof (short), 1, file2) != 1)
+	    abort ();
+
+	  (*pVox).VoxPoly[i][j][k] = (int) data;
+	}
+  }
+
+  else if (! strcmp (format, "binary16*"))
+  {
+    short val2 = 0;
+    char* pval = NULL;
+    char* pval2 = (char*) &val2;
 
     short data;
     for (k = 1; k <= (*pVox).size[2]; k++)
       for (j = 1; j <= (*pVox).size[1]; j++)
 	for (i = 1; i <= (*pVox).size[0]; i++)
 	{
-	  if (fread (&data, sizeof (short), 1, file) != 1)
+	  if (fread (&data, sizeof (short), 1, file2) != 1)
 	    abort ();
 
-	  (*pVox).VoxPoly[i][j][k] = data;
+	  pval = (char*) &data;
+	  pval2[1] = pval[0];
+	  pval2[0] = pval[1];
+
+	  (*pVox).VoxPoly[i][j][k] = (int) val2;
 	}
   }
 
   else if (! strcmp (format, "binary32")
 	|| ! strcmp (format, "binary"  ))
   {
-    if (fscanf (file, "%c", &c) != 1) // idem
-      abort ();
+    int data;
+    for (k = 1; k <= (*pVox).size[2]; k++)
+      for (j = 1; j <= (*pVox).size[1]; j++)
+	for (i = 1; i <= (*pVox).size[0]; i++)
+	{
+	  if (fread (&data, sizeof (int), 1, file2) != 1)
+	    abort ();
+
+	  (*pVox).VoxPoly[i][j][k] = data;
+	}
+  }
+
+  else if (! strcmp (format, "binary32*"))
+  {
+    int val2 = 0;
+    char* pval = NULL;
+    char* pval2 = (char*) &val2;
 
     int data;
     for (k = 1; k <= (*pVox).size[2]; k++)
       for (j = 1; j <= (*pVox).size[1]; j++)
 	for (i = 1; i <= (*pVox).size[0]; i++)
 	{
-	  if (fread (&data, sizeof (int), 1, file) != 1)
+	  if (fread (&data, sizeof (int), 1, file2) != 1)
 	    abort ();
 
-	  (*pVox).VoxPoly[i][j][k] = data;
+	  pval = (char*) &data;
+	  pval2[3] = pval[0];
+	  pval2[2] = pval[1];
+	  pval2[1] = pval[2];
+	  pval2[0] = pval[3];
+
+	  (*pVox).VoxPoly[i][j][k] = (int) val2;
 	}
   }
+
 
   else
     abort ();
@@ -149,6 +218,12 @@ neut_vox_fscanf_data (struct VOX* pVox, char* format, FILE * file)
     for (j = 1; j <= (*pVox).size[1]; j++)
       for (i = 1; i <= (*pVox).size[0]; i++)
 	(*pVox).PolyQty = ut_num_max_int ((*pVox).PolyQty, (*pVox).VoxPoly[i][j][k]);
+
+  if (! strcmp (tmp, "*file"))
+  {
+    ut_file_close (file2, filename, "r");
+    ut_free_1d_char (filename);
+  }
 
   return;
 }

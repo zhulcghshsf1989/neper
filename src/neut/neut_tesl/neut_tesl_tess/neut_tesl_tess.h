@@ -33,4 +33,6 @@ extern void neut_tesl_tessFacePt (struct TESS *);
 extern void neut_tesl_tessFaceEq (struct TESL, struct TESS *);
 extern void neut_tesl_tess_poly (struct TESL, struct TESS *);
 extern void neut_tesl_tessPolyQty (struct TESL, struct TESS *);
+extern void neut_tesl_tessPolyVer  (struct TESL, struct TESS *);
+extern void neut_tesl_tessPolyEdge (struct TESL, struct TESS *);
 extern void neut_tesl_tessPolyFace (struct TESL, struct TESS *);

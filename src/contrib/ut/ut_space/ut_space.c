@@ -1119,6 +1119,15 @@ ut_space_point_plane_dist (double* C, double* P, double* pdist)
   return 0;
 }
 
+int
+ut_space_point_plane_dist_signed (double* C, double* P, double* pdist)
+{
+  ut_space_point_plane_dist (C, P, pdist);
+  (*pdist) *= ut_space_planeside (P, C - 1);
+
+  return 0;
+}
+
 // Provides the intersection point between segment [AB] and plane P.
 // The results is recorded in I.
 int

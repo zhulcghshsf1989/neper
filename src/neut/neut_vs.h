@@ -10,6 +10,7 @@
 
 #include "neut_structs.h"
 #include "neut_tess.h"
+#include "neut_mtess.h"
 #include "neut_vox.h"
 #include "neut_elt.h"
 #include "neut_mesh.h"

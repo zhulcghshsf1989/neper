@@ -3,4 +3,4 @@
 /* See the COPYING file in the top-level directory. */
 
 extern void neut_germset_set_zero (struct GERMSET*);
-extern void neut_germset_free (struct GERMSET);
+extern void neut_germset_free (struct GERMSET*);

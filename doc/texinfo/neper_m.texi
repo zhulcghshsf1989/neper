@@ -7,7 +7,8 @@ possible to generate a mesh into tetrahedral elements or a
 tetrahedral elements is carried out so that the elements have sizes as
 close as possible to a desired target value, and show high quality, that
 is, equilateral shapes.  The input file is a tessellation file
-(@file{.tess}) or a voxel file (@file{.vox}), as provided by @mT{}.  The
+(@file{.tess}) or a voxel file (@file{.vox}), as provided by @mT{}.
+Voxel data can only be meshed into regular hexahedral elements. The
 output mesh can be written in several formats.
 
 Several options are available for specifying the desired mesh properties.
@@ -17,7 +18,7 @@ following parameters:
 @itemize
 @item The @dfn{characteristic length (@code{cl})}. It corresponds to the
 target size of the elements.  This size is the length of a line element
-(1D), and the length of the edge of a triangle or quadrelateral element (2D)
+(1D), and the length of the edge of a triangle or quadrilateral element (2D)
 and of a tetrahedral or hexahedral element (3D). For convenience, a
 @dfn{relative characteristic length (@code{rcl})} is also defined, whose
 value is relative to the average polyhedron size. A value
@@ -223,7 +224,6 @@ any, none}
 @optsec{-clmin,real,
 Minimum characteristic length of the elements.  Using this option is not recommended.,
 any, none}
-
 @c @optdevel{-meshface,expression,
 @c Specify the faces to mesh. The argument can be: @samp{all} for
 @c all@comma{} @samp{@@@var{file_name}} to load face numbers from a
@@ -628,7 +628,7 @@ partitions.
 
 @subsection Statistics
 
-Statistics files are provided for vertices, edges, faces and polyhedra.
+Statistics files are provided for nodes, elements and element sets.
 They are formatted with one entity per line.  Each line has the data
 provided by options @option{-stat*} and described in
 @ref{Statistics Keys}.

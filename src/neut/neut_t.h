@@ -9,14 +9,17 @@
 #include "ut.h"
 
 #include "neut_structs/neut_tesl_struct.h"
+#include "neut_structs/neut_mtess_struct.h"
 #include "neut_structs/neut_tess_struct.h"
 #include "neut_structs/neut_reg_struct.h"
 #include "neut_tesl.h"
 #include "neut_tess.h"
+#include "neut_mtess.h"
 #include "neut_vox.h"
 #include "neut_debug.h"
 #include "neut_germset.h"
 #include "neut_poly.h"
+#include "neut_polymod.h"
 #include "neut_rand.h"
 
 #endif /* NEUT_T_H */

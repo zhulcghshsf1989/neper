@@ -11,7 +11,7 @@ meshing.  It is built around several modules:
 
 @itemize @bullet
 @item @MT{} is the module for generating polycrystals.  They are
-respresented as Voronoi tessellations, or regular tessellations made of
+represented as Voronoi tessellations, or regular tessellations made of
 truncated octahedra.  The tessellations are space-filling, and the
 vertices, edges, faces and volumes, represent the quadruple points,
 triple lines, grain boundaries and grains of the polycrystals,

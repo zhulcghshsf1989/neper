@@ -131,4 +131,11 @@ extern int neut_mesh_Odis (struct NODES Nodes, struct MESH Mesh, char* Odisexpr,
 ///
 extern int neut_mesh_Osize (struct NODES Nodes, struct MESH Mesh, double cl, double* pOsize);
 
+/// \brief Get the angle between two sides of an elt at a particular node.
+///
+///
+///
+extern void neut_mesh_elt_node_angle (struct NODES Nodes, struct MESH
+    Mesh, int elt, int node, double* pangle);
+
 #endif /* NEUT_MESH_GEOM_H */

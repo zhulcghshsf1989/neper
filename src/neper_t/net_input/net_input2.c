@@ -8,12 +8,128 @@ void
 net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
             struct IN* pIn, struct REG* pReg)
 {
+  int i;
+
   net_input_options_default (pIn, pReg);
 
   /* Reading options */
 
   net_input_options_set (pIn, pReg, fargc, fargv);
   net_input_options_set (pIn, pReg, argc, argv);
+
+  // Processing nstring
+  int argqty, argqty2;
+  char** args = NULL;
+  char** args2 = NULL;
+
+  if ((*pIn).nstring != NULL)
+  {
+    ut_string_separate ((*pIn).nstring, ':', &args, &argqty);
+    (*pIn).levelqty = argqty;
+    (*pIn).n = ut_alloc_1d_pchar ((*pIn).levelqty + 1);
+    (*pIn).n[0] = ut_alloc_1d_char (2);
+    strcpy ((*pIn).n[0], "1");
+    for (i = 1; i <= (*pIn).levelqty; i++)
+    {
+      (*pIn).n[i] = ut_alloc_1d_char (strlen (args[i - 1]) + 1);
+      strcpy ((*pIn).n[i], args[i - 1]);
+    }
+    ut_free_2d_char (args, (*pIn).levelqty);
+    args = NULL;
+  }
+  else
+    (*pIn).levelqty = 0;
+
+  if ((*pIn).levelqty > 0)
+  {
+    // Processing idstring
+    (*pIn).id = ut_alloc_1d_int ((*pIn).levelqty + 1);
+    ut_array_1d_int_set ((*pIn).id, (*pIn).levelqty + 1, -1);
+
+    argqty = 0;
+    if ((*pIn).idstring != NULL)
+    {
+      ut_string_separate ((*pIn).idstring, ':', &args, &argqty);
+      if (argqty > (*pIn).levelqty)
+      {
+	ut_print_message (2, 0, "The number of levels in option `-id' exceeds the number of levels in option `-n'.");
+	abort ();
+      }
+
+      for (i = 1; i <= argqty; i++)
+	sscanf (args[i - 1], "%d", &((*pIn).id[i]));
+      ut_free_2d_char (args, argqty);
+    }
+
+    // Processing morphostring
+    (*pIn).morpho = ut_alloc_1d_pchar ((*pIn).levelqty + 1);
+    if ((*pIn).morphostring != NULL)
+    {
+      ut_string_separate ((*pIn).morphostring, ':', &args, &argqty);
+      if (argqty > (*pIn).levelqty)
+      {
+	ut_print_message (2, 0, "The number of levels in option `-morpho' exceeds the number of levels in option `-n'.");
+	abort ();
+      }
+
+      for (i = 1; i <= argqty; i++)
+      {
+	(*pIn).morpho[i] = ut_alloc_1d_char (strlen (args[i - 1]) + 1);
+	strcpy ((*pIn).morpho[i], args[i - 1]);
+	if (i > 1 && ! strcmp ((*pIn).morpho[i], "tocta"))
+	{
+	  ut_print_message (2, 0, "`-morpho tocta' is only available at level 1.\n");
+	  abort ();
+	}
+      }
+      ut_free_2d_char (args, argqty);
+      args = NULL;
+
+      for (i = argqty + 1; i <= (*pIn).levelqty; i++)
+      {
+	(*pIn).morpho[i] = ut_alloc_1d_char (8);
+	strcpy ((*pIn).morpho[i], "poisson");
+      }
+    }
+
+    // Processing centroidstring
+    (*pIn).centroid = ut_alloc_1d_int ((*pIn).levelqty + 1);
+
+    if ((*pIn).centroidstring != NULL)
+    {
+      ut_string_separate ((*pIn).centroidstring, ':', &args, &argqty);
+      for (i = 1; i <= argqty; i++)
+	sscanf (args[i - 1], "%d", &((*pIn).centroid[i]));
+      ut_free_2d_char (args, argqty);
+    }
+
+    // Processing regstring
+    (*pReg).reg = ut_alloc_1d_int ((*pIn).levelqty + 1);
+
+    if ((*pReg).regstring != NULL)
+    {
+      ut_string_separate ((*pReg).regstring, ':', &args, &argqty);
+      for (i = 1; i <= argqty; i++)
+	sscanf (args[i - 1], "%d", &((*pReg).reg[i]));
+      ut_free_2d_char (args, argqty);
+    }
+
+    // Testing consistenct between morpho = lamellae and n, which must
+    // start by lamwidth=
+    if ((*pIn).morphostring != NULL)
+    {
+      ut_string_separate ((*pIn).morphostring, ':', &args, &argqty);
+      ut_string_separate ((*pIn).nstring, ':', &args2, &argqty2);
+      for (i = 0; i < argqty; i++)
+	if (! strcmp (args[i], "lamellae"))
+	  if (strncmp (args2[i], "d=", 2) != 0)
+	    ut_print_message (2, 0, "With `-morpho lamellae', you must use `-n d='.\n");
+
+      ut_free_2d_char (args, argqty);
+      ut_free_2d_char (args2, argqty2);
+    }
+  }
+
 
   /* Testing options */
   if ((*pIn).input == NULL)
@@ -22,19 +138,14 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
     abort ();
   }
 
-  if (! strcmp ((*pIn).input, "n") && (*pIn).id == -1)
+  if (! strcmp ((*pIn).input, "n") && (*pIn).id == NULL)
     ut_print_messagewnc (1, 72,
 		"The identifier (-id) has not been specified; considering a random value ...");
 
-  char** parts = NULL;
-  int partqty;
-
-  ut_string_separate ((*pIn).morpho, '|', &parts, &partqty);
-
-  if ((*pIn).id > 0
-  && ((strcmp (parts[0], "cube"  ) == 0)
-   || (strcmp (parts[0], "dodeca") == 0)
-   || (strcmp (parts[0], "tocta" ) == 0)))
+  if ((*pIn).idstring != NULL
+  && ((strncmp ((*pIn).morphostring, "cube"  , 4) == 0)
+   || (strncmp ((*pIn).morphostring, "dodeca", 6) == 0)
+   || (strncmp ((*pIn).morphostring, "tocta" , 5) == 0)))
   {
     ut_print_message (2, 0,
 	      "Options `-id' and `-morpho' are mutually exclusive!");
@@ -49,16 +160,28 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
 
     if (! strcmp ((*pIn).input, "n"))
     {
-      if ((*pIn).id != -1)
-	sprintf ((*pIn).body, "n%d-id%d", (*pIn).n, (*pIn).id);
+      if ((*pIn).idstring != NULL)
+      {
+	sprintf ((*pIn).body, "n%s-id", (*pIn).nstring);
+	for (i = 1; i <= (*pIn).levelqty; i++)
+	{
+	  if ((*pIn).id[i] > 0)
+	    sprintf ((*pIn).body, "%s%d", (*pIn).body, (*pIn).id[i]);
+	  else
+	    (*pIn).body = strcat ((*pIn).body, "rand");
+
+	  if (i < (*pIn).levelqty)
+	    (*pIn).body = strcat ((*pIn).body, ":");
+	}
+      }
       else
       {
-	if (! strcmp ((*pIn).morpho, "poisson"))
-	  sprintf ((*pIn).body, "n%d-rand", (*pIn).n);
-	else if ((*pIn).morpho[0] != '@')
-	  sprintf ((*pIn).body, "n%d-%s", (*pIn).n, (*pIn).morpho);
+	if (! strcmp ((*pIn).morpho[1], "poisson"))
+	  sprintf ((*pIn).body, "n%s-rand", (*pIn).nstring);
+	else if ((*pIn).morpho[1][0] != '@')
+	  sprintf ((*pIn).body, "n%s-%s", (*pIn).nstring, (*pIn).morpho[1]);
 	else
-	  sprintf ((*pIn).body, "n%d-coo", (*pIn).n);
+	  sprintf ((*pIn).body, "n%s-coo", (*pIn).nstring);
       }
     }
     else if (! strcmp ((*pIn).input, "tess")
@@ -68,7 +191,7 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
       ut_string_body ((*pIn).load, (*pIn).body);
     }
     else if (! strcmp ((*pIn).input, "n_reg"))
-      sprintf ((*pIn).body, "n%d-%s", (*pIn).n, (*pIn).morpho);
+      sprintf ((*pIn).body, "n%s-%s", (*pIn).nstring, (*pIn).morpho[1]);
     else
       abort ();
   }
@@ -76,6 +199,7 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
   (*pIn).tess = ut_string_addextension ((*pIn).body, ".tess");
   (*pIn).geo = ut_string_addextension ((*pIn).body, ".geo");
   (*pIn).vox = ut_string_addextension ((*pIn).body, ".vox");
+  (*pIn).raw = ut_string_addextension ((*pIn).body, ".raw");
   (*pIn).ply = ut_string_addextension ((*pIn).body, ".ply");
   (*pIn).dec = ut_string_addextension ((*pIn).body, ".3dec");
   (*pIn).debug = ut_string_addextension ((*pIn).body, ".debug");
@@ -84,8 +208,6 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
     (*pIn).polyid = ut_string_addextension ((*pIn).point, ".polyid");
   else if ((*pIn).printpointpoly == 2)
     (*pIn).polyid = ut_string_paste ((*pIn).point, "-centre.polyid");
-
-  ut_free_2d_char (parts, partqty);
 
   return;
 }

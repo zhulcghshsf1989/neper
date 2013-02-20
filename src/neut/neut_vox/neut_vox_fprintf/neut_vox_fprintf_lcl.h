@@ -13,4 +13,7 @@
 
 extern void neut_vox_fprintf_head (FILE*, char*, struct VOX);
 extern void neut_vox_fprintf_data (FILE*, char*, struct VOX);
+extern void neut_vox_fprintf_raw (FILE* file, char* format, struct VOX Vox);
+extern void neut_vox_fprintf_data_raw (FILE* file, char* rawname, char*
+    format, struct VOX Vox);
 extern void neut_vox_fprintf_foot (FILE*);

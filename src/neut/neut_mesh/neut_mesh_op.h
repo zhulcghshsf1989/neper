@@ -171,4 +171,20 @@ extern void neut_mesh_switch (struct MESH *pMesh, int *nodes_old_new,
 extern void neut_mesh_renumber_continuous (struct MESH *pMesh, int*
     node_nbs, int* elt_nbs, int* elset_nbs);
 
+/// \brief Split an elt of a mesh into 3 elts.
+///
+/// This function works to a 2D mesh only.
+///
+extern void neut_mesh_elt_split (struct NODES* pNodes, struct MESH*
+    pMesh, int elt);
+
+/// \brief Split a pair of adjacent elts into 4 elts.
+///
+/// The new elts are based on the 4 existing nodes and a node located at
+/// the centre of the elt edge shared by the elts.
+///
+extern void
+neut_mesh_eltpair_split (struct NODES* pNodes, struct MESH* pMesh, int
+    elt1, int elt2);
+
 #endif /* NEUT_MESH_OP_H */

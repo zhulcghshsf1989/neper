@@ -6,8 +6,10 @@
 
 extern int ut_num_min_int (int, int);
 extern int ut_num_max_int (int, int);
+extern int ut_num_bound_int (int, int, int);
 extern double ut_num_min (double, double);
 extern double ut_num_max (double, double);
+extern double ut_num_bound (double, double, double);
 
 extern double ut_num_atan2 (double, double);
 extern int ut_num_d2ri (double);

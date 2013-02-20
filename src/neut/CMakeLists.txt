@@ -20,6 +20,7 @@ add_library (neut
 ./neut_poly/neut_poly_polymod/neut_poly_polymod1.c
 ./neut_poly/neut_poly_polymod/neut_poly_polymod2.c
 ./neut_poly/neut_poly_polymod/neut_poly_polymod3.c
+./neut_polymod/neut_polymod.c
 ./neut_data/neut_data.c
 ./neut_part/neut_part.c
 ./neut_multim/neut_multim.c
@@ -87,6 +88,11 @@ add_library (neut
 ./neut_tess/neut_tess_test/TestDom/TestDom2.c
 ./neut_tess/neut_tess_topo/neut_tess_topo.c
 ./neut_tess/neut_tess_geom/neut_tess_geom.c
+./neut_mtess/neut_mtess_fprintf/neut_mtess_fprintf1.c
+./neut_mtess/neut_mtess_fscanf/neut_mtess_fscanf1.c
+./neut_mtess/neut_mtess_fscanf/neut_mtess_fscanf2.c
+./neut_mtess/neut_mtess_op/neut_mtess_op1.c
+./neut_mtess/neut_mtess_topo/neut_mtess_topo1.c
 ./neut_vox/neut_vox_fscanf/neut_vox_fscanf1.c
 ./neut_vox/neut_vox_fscanf/neut_vox_fscanf2.c
 ./neut_vox/neut_vox_fprintf/neut_vox_fprintf1.c

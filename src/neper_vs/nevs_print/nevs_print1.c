@@ -6,8 +6,9 @@
 
 void
 nevs_print (char** expargv, int* pi,
-            struct PRINT* pPrint,
-            struct TESS Tess,   struct TESSDATA TessData,
+            struct PRINT Print, struct PRINT* MPrint, struct MTESS MTess,
+	    struct TESS* Tess,  struct TESSDATA TessData,
+	    struct TESSDATA* MTessData,
 	    struct NODES Nodes, struct MESH Mesh0D,
 	    struct MESH Mesh1D, struct MESH Mesh2D,
 	    struct MESH Mesh3D, struct MESHDATA MeshData,
@@ -28,24 +29,27 @@ nevs_print (char** expargv, int* pi,
     
   ut_print_message (0, 1, "Printing image ...\n");
   file = ut_file_open (filename, "w");
-  nevs_print_header (file, (*pPrint));
+  nevs_print_header (file, Print);
 
   // tessellation ------------------------------------------------------
-  if ((*pPrint).showtess == 1)
+  if (Print.showtess == 1)
   {
     ut_print_message (0, 2, "Printing tessellation ...\n");
-    nevs_print_tess (file, (*pPrint), Tess, TessData);
+    if (Print.showtesslevel == 1)
+      nevs_print_tess (file, Print, Tess[1], TessData);
+    else
+      nevs_print_mtess (file, Print, MPrint, MTess, Tess, MTessData);
   }
 
   // mesh --------------------------------------------------------------
-  if ((*pPrint).showmesh == 1)
+  if (Print.showmesh == 1)
   {
     ut_print_message (0, 2, "Printing mesh ...\n");
-    nevs_print_mesh (file, (*pPrint), Nodes, Mesh0D,
+    nevs_print_mesh (file, Print, Nodes, Mesh0D,
 		     Mesh1D, Mesh2D, Mesh3D, MeshData);
   }
 
-  if (SQty > 0 && (*pPrint).showslice != NULL && strlen ((*pPrint).showslice) != 0)
+  if (SQty > 0 && Print.showslice != NULL && strlen (Print.showslice) != 0)
   {
     int node2elt_id, elt2d_id;
     neut_meshdata_entity_id ("node2elt", &node2elt_id);
@@ -54,23 +58,23 @@ nevs_print (char** expargv, int* pi,
     for (i = 0; i < SQty; i++)
     {
       if (SMeshData[i].col[node2elt_id] != NULL)
-	nevs_print_mesh2d (file, SNodes[i], SMesh2D[i], *pPrint, 
+	nevs_print_mesh2d (file, SNodes[i], SMesh2D[i], Print,
 			   SMeshData[i].col[node2elt_id], "node");
       else if (SMeshData[i].col[elt2d_id] != NULL)
-	nevs_print_mesh2d (file, SNodes[i], SMesh2D[i], *pPrint, 
+	nevs_print_mesh2d (file, SNodes[i], SMesh2D[i], Print,
 			   SMeshData[i].col[elt2d_id], "elt");
     }
   }
 
-  nevs_print_foot (file, *pPrint);
+  nevs_print_foot (file, Print);
   ut_file_close (file, filename, "w");
 
 
-  if (ut_string_inlist ((*pPrint).format, ',', "png"))
-    nevs_print_pov2png (filename, (*pPrint).imagewidth,
-			(*pPrint).imageheight, (*pPrint).imageantialias, 2);
+  if (ut_string_inlist (Print.format, ',', "png"))
+    nevs_print_pov2png (filename, Print.imagewidth,
+			Print.imageheight, Print.imageantialias, 2);
 
-  if (ut_string_inlist ((*pPrint).format, ',', "pov") == 0)
+  if (ut_string_inlist (Print.format, ',', "pov") == 0)
     remove (filename);
 
   ut_print_message (0, 1, "Printing scale ...\n");
@@ -92,11 +96,11 @@ nevs_print (char** expargv, int* pi,
       nevs_print_scale (file, MeshData.colscheme[i], MeshData.scalemin[i], MeshData.scalemax[i], MeshData.scaleticks[i]);
       ut_file_close (file, filename2, "w");
   
-      if (ut_string_inlist ((*pPrint).format, ',', "png"))
-	nevs_print_pov2png (filename2, 0.3*(*pPrint).imageheight,
-			    (*pPrint).imageheight, (*pPrint).imageantialias, 3);
+      if (ut_string_inlist (Print.format, ',', "png"))
+	nevs_print_pov2png (filename2, 0.3*Print.imageheight,
+			    Print.imageheight, Print.imageantialias, 3);
 
-      if (ut_string_inlist ((*pPrint).format, ',', "pov") == 0)
+      if (ut_string_inlist (Print.format, ',', "pov") == 0)
 	remove (filename2);
     }
   
@@ -115,11 +119,11 @@ nevs_print (char** expargv, int* pi,
       nevs_print_scale (file, TessData.colscheme[i], TessData.scalemin[i], TessData.scalemax[i], TessData.scaleticks[i]);
       ut_file_close (file, filename2, "w");
   
-      if (ut_string_inlist ((*pPrint).format, ',', "png"))
-	nevs_print_pov2png (filename2, 0.3*(*pPrint).imageheight,
-			    (*pPrint).imageheight, (*pPrint).imageantialias, 3);
+      if (ut_string_inlist (Print.format, ',', "png"))
+	nevs_print_pov2png (filename2, 0.3*Print.imageheight,
+			    Print.imageheight, Print.imageantialias, 3);
 
-      if (ut_string_inlist ((*pPrint).format, ',', "pov") == 0)
+      if (ut_string_inlist (Print.format, ',', "pov") == 0)
 	remove (filename2);
     }
 

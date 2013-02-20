@@ -124,6 +124,7 @@ nem_input_options_set (struct IN *pIn, struct MESHPARA *pMeshPara,
   sprintf (ArgList[++ArgQty], "-clmin");
   sprintf (ArgList[++ArgQty], "-order");
   sprintf (ArgList[++ArgQty], "-dim");
+  sprintf (ArgList[++ArgQty], "-meshreconstruct"); //
   sprintf (ArgList[++ArgQty], "-mesh2dalgo");
   sprintf (ArgList[++ArgQty], "-mesh3dalgo");
   sprintf (ArgList[++ArgQty], "-mesh3doptiexpr");
@@ -131,7 +132,7 @@ nem_input_options_set (struct IN *pIn, struct MESHPARA *pMeshPara,
 
   sprintf (ArgList[++ArgQty], "-singnodedup");
   sprintf (ArgList[++ArgQty], "-dupnodemerge");
-  
+
   // development options
   sprintf (ArgList[++ArgQty], "-meshface");
   sprintf (ArgList[++ArgQty], "-meshpoly");

@@ -7,10 +7,8 @@
 #include <string.h>
 #include "neut_m.h"
 #include "nem_reconstruct_mesh0.h"
+#include "../../nem/nem.h"
 
 extern void nem_reconstruct_mesh_2d (struct NODES, struct MESH*, struct MESH*, struct TESS*);
 extern void nem_reconstruct_mesh_1d (struct NODES, struct MESH*, struct MESH*, struct TESS*);
 extern void nem_reconstruct_mesh_0d (struct NODES, struct MESH*, struct MESH*, struct TESS*);
-
-extern void nem_reconstruct_mesh_finalizetess (struct TESS*, struct NODES,
-    struct MESH, struct MESH, struct MESH, struct MESH);

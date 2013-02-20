@@ -375,7 +375,7 @@ character string of format: @samp{@w{R_value,G_value,B_value}}.  The
 
 Here are details on the @file{.tess} file format version
 @code{2.0}.  Developers may note that read and write functions are
-available as @code{neut_geo_fscanf ()} and @code{neut_geo_fprintf ()},
+available as @samp{neut_geo_fscanf} and @samp{neut_geo_fprintf},
 defined in directories @file{neut/neut_geo/neut_geo_fscanf}
 and
 @file{neut/neut_geo/neut_geo_fprintf}.
@@ -422,6 +422,8 @@ and
 @ @ @  @var{poly_id} @var{poly_centre_x} @var{poly_centre_y}
 		                                          @var{poly_centre_z} @*
 @ @ @ @ @ @ @ @ @ @ @ @var{poly_true} @var{poly_body}                                   @*
+@ @ @ @ @ @ @ @ @ @ @ @var{number_of_vers } @var{ver_1*} @var{ver_2*} ...             @*
+@ @ @ @ @ @ @ @ @ @ @ @var{number_of_edges} @var{edge_1*} @var{edge_2*} ...             @*
 @ @ @ @ @ @ @ @ @ @ @ @var{number_of_faces} @var{face_1*} @var{face_2*} ...             @*
 @ @ @  ...                                                               @*
 @  **domain                                                          @*
@@ -706,11 +708,11 @@ identifiers of the domain edges that a domain face has.
 
 @end itemize
 
-@section Voxel file @file{.vox}
+@section Voxel File @file{.vox}
 
 Here are details on the @file{.vox} file format version
 @code{2.0}.  The developers may note that read and write functions are
-available as @code{neut_vox_fscanf ()} and @code{neut_vox_fprintf ()},
+available as @samp{neut_vox_fscanf} and @samp{neut_vox_fprintf},
 defined in directories @file{neut/neut_vox/neut_vox_fscanf}
 and
 @file{neut/neut_vox/neut_vox_fprintf}.
@@ -723,8 +725,10 @@ and
 @  **general                                                         @*
 @ @ @  @var{size1} @var{size2} @var{size3}                           @*
 @ @ @  @var{vox_size1} @var{vox_size2} @var{vox_size3}               @*
-@  **voxel                                                           @*
+@  **data                                                            @*
 @ @ @  @var{vox1_poly} @var{vox2_poly} ...                           @*
+@ @emph{or}                                                          @*
+@ @ *file @var{data_file_name}                                       @*
 ***end                                                               @*
 }
 
@@ -732,24 +736,42 @@ where,
 
 @itemize
 
+@item @code{***vox} denotes the beginning of a voxel file.
+
+@item @code{**format} denotes the beginning the format field.
+
 @item @code{@var{format}} is the file format, currently @samp{2.0}
 (character string).
 
 @item @code{@var{data_format}} is the format of the data in field
-@code{**voxel}.
+@code{**data}.
 It can be either @code{ascii}, @code{binary8} (8-bit binary),
 @code{binary16}  (16-bit binary) or @code{binary32} (32-bit binary).
+The @samp{*} suffix can be added to @code{binary16} and @code{binary32}
+to switch byte ordering (from LittleEndian to BigEndian, and vice
+versa).
+
+@item @code{**general} denotes the beginning the general information field.
 
 @item @code{@var{size1}}, @code{@var{size2}} and @code{@var{size3}}
-are the sizes of the volume in the 3 directions of space.
+are the numbers of voxels of the volume in the 3 directions of space.
 
 @item @code{@var{vox_size1}}, @code{@var{vox_size2}} and
-@code{@var{vox_size3}} are the sizes of the pixels in the 3 directions
+@code{@var{vox_size3}} are the pixel sizes in the 3 directions
 of space.
 
+@item @code{**data} denotes the beginning the data field.  Data can be
+provided in the @file{.vox} file or in a separate file, using
+@option{*file}, see below.
+
 @item @code{@var{vox#_poly}} is the polyhedron voxel @code{@var{#}}
-belongs to.  The polyhedron identifiers should start from 1. Use 0 to
-simulate voids --- these voxels will not be meshed.
+belongs to.  The polyhedron identifiers should start from 1. Use 0 for
+voids (not meshed).
+
+@item @code{*file} denotes the beginning of a file field.
+
+@item @code{data_file_name} is the name of a file that contains the
+data. Typically, it is a @file{.raw} file.
 
 @end itemize
 

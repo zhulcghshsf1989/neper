@@ -12,7 +12,7 @@ neut_germset_set_zero (struct GERMSET* pGermSet)
   (*pGermSet).Id = 0;
   (*pGermSet).morpho = NULL;
   (*pGermSet).Random = 0;
-  (*pGermSet).GermsCoo = NULL;
+  (*pGermSet).GermCoo = NULL;
   (*pGermSet).NDensity = 0;
 
   // Domain neighbourhood info
@@ -20,25 +20,27 @@ neut_germset_set_zero (struct GERMSET* pGermSet)
   (*pGermSet).nN = 0;
   (*pGermSet).nSize = NULL;
   (*pGermSet).nVol = 0;
-  (*pGermSet).nGermsCoo = NULL;
+  (*pGermSet).nGermCoo = NULL;
   (*pGermSet).nGermRandId = NULL;
-  (*pGermSet).GermToGerm = NULL;
+  (*pGermSet).nMaster = NULL;
 
   return;
 }
 
 void
-neut_germset_free (struct GERMSET GermSet)
+neut_germset_free (struct GERMSET* pGermSet)
 {
-  ut_free_1d_char (GermSet.morpho);
-  ut_free_2d (GermSet.GermsCoo, GermSet.N + 1);
+  ut_free_1d_char ((*pGermSet).morpho);
+  ut_free_2d ((*pGermSet).GermCoo, (*pGermSet).N + 1);
 
   // Domain neighbourhood info
-  ut_free_1d (GermSet.Size);
-  ut_free_1d (GermSet.nSize);
-  ut_free_2d (GermSet.nGermsCoo, GermSet.nN);
-  ut_free_1d_int (GermSet.nGermRandId);
-  ut_free_1d_int (GermSet.GermToGerm);
+  ut_free_1d ((*pGermSet).Size);
+  ut_free_1d ((*pGermSet).nSize);
+  ut_free_2d ((*pGermSet).nGermCoo, (*pGermSet).nN);
+  ut_free_1d_int ((*pGermSet).nGermRandId);
+  ut_free_1d_int ((*pGermSet).nMaster);
+
+  neut_germset_set_zero (pGermSet);
 
   return;
 }

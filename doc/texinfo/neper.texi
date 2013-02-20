@@ -27,8 +27,7 @@
 @ifinfo
 @dircategory Math
 @direntry
-* Neper: (neper). A 3D random polycrystal generator for the
-* finite element method
+* Neper: (neper). Polycrystal generation and meshing
 @end direntry
 @noindent
 This is the @cite{Neper Reference Manual} for Neper @value{NEPER_VERSION}
@@ -48,7 +47,7 @@ Copyright @value{COPYRIGHT}
 @title Neper Reference Manual
 
 @subtitle The documentation for Neper @value{NEPER_VERSION}
-@subtitle A 3D random polycrystal generator for the finite element method
+@subtitle A software for polycrystal generation and meshing
 @subtitle
 @subtitle @today{}
 @c @subtitle Edition @value{NEPER_VERSION} @today{}

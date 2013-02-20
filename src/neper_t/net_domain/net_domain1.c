@@ -31,7 +31,22 @@ net_domain (struct IN In, struct TESS* pDomain)
     else
     {
       double cl;
-      rcl2cl (1, M_PI * rad * rad * h, In.n, NULL, &cl);
+      int varqty = 1;
+      char** vars = ut_alloc_2d_char (1, 10);
+      double* vals = ut_alloc_1d (1);
+      double res;
+
+      strcpy (vars[0], "vol");
+      vals[0] =  M_PI * rad * rad * h;
+
+      ut_math_eval (In.n[1], 1, vars, vals, &res);
+      res = ut_num_max (res, 1);
+
+      ut_free_2d_char (vars, varqty);
+      ut_free_1d (vals);
+
+      rcl2cl (1, M_PI * rad * rad * h, ut_num_d2ri (res), NULL, &cl);
+
       qty = (int) floor (2 * M_PI * rad / cl);
       qty = ut_num_max_int (qty, 5);
       qty += 2;
@@ -71,7 +86,6 @@ net_domain (struct IN In, struct TESS* pDomain)
   {
     int id = ut_num_d2ri (In.domainparms[0]);
     struct TESS Tess;
-    neut_tess_set_zero (&Tess);
 
     FILE* file = ut_file_open (In.domainparms2, "r");
     neut_tess_fscanf (file, &Tess);
@@ -85,6 +99,14 @@ net_domain (struct IN In, struct TESS* pDomain)
   }
 
   net_poly_tess (Poly, pDomain);
+  (*pDomain).Level = 0;
+
+  (*pDomain).VerDom = ut_alloc_2d_int ((*pDomain).VerQty + 1, 2);
+  (*pDomain).EdgeDom = ut_alloc_2d_int ((*pDomain).EdgeQty + 1, 2);
+  (*pDomain).FaceDom = ut_alloc_2d_int ((*pDomain).FaceQty + 1, 2);
+  ut_array_2d_int_set ((*pDomain).VerDom + 1, (*pDomain).VerQty, 2, -1);
+  ut_array_2d_int_set ((*pDomain).EdgeDom + 1, (*pDomain).EdgeQty, 2, -1);
+  ut_array_2d_int_set ((*pDomain).FaceDom + 1, (*pDomain).FaceQty, 2, -1);
 
   ut_free_1d (size);
   neut_poly_free (&Poly);

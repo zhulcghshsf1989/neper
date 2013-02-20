@@ -81,6 +81,8 @@ neut_tesl_tess_poly (struct TESL Tess, struct TESS *pTess)
   ut_array_1d_int_memcpy ((*pTess).PolyBody, Tess.PolyQty + 1, Tess.PolyBody);
 
   neut_tesl_tessPolyFace (Tess, pTess);
+  neut_tesl_tessPolyEdge (Tess, pTess);
+  neut_tesl_tessPolyVer (Tess, pTess);
 
   return;
 }

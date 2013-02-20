@@ -14,10 +14,7 @@
 
 #include"net_utils/net_utils0.h"
 #include"net_domain_cube/net_domain_cube0.h"
-#include "../net_tess/net_polycomp/PolyAlloc/PolyAlloc0.h"
-#include "../net_tess/net_polycomp/PolyDet/PolyCalc/PolyCalc0.h"
-#include "../net_tess/net_polycomp/PolyReg/PolyReg0.h"
-#include "../net_tess/net_polycomp/PolyFree/PolyFree0.h"
+#include "../net_tess/net_polycomp/net_polycomp0.h"
 
 extern void net_domain_cylinder_planes (double, double, int, double**);
 extern void net_domain_clip (struct POLY*, double**, int);

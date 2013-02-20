@@ -37,6 +37,7 @@ extern double ut_space_hexa_volume (double*, double*, double*, double*,
 #ifdef HAVE_GSL
 extern void ut_space_projpoint_alongonto (double *, double *, double *);
 extern int ut_space_point_plane_dist (double*, double*, double*);
+extern int ut_space_point_plane_dist_signed (double*, double*, double*);
 extern int ut_space_segment_plane_intersect (double*, double*, double*, double*);
 #endif
 

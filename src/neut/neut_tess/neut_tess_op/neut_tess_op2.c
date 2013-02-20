@@ -101,7 +101,7 @@ neut_tess_init_domain_facelabel (struct TESS* pTess)
     strcpy ((*pTess).DomFaceLabel[1], "z0");
     strcpy ((*pTess).DomFaceLabel[2], "z1");
     for (i = 3; i <= (*pTess).DomFaceQty; i++)
-      sprintf ((*pTess).DomFaceLabel[i], "f%d\n", i - 2);
+      sprintf ((*pTess).DomFaceLabel[i], "f%d", i - 2);
   }
 
   else // unknown domain type
@@ -147,7 +147,7 @@ neut_tess_init_domain_facelabel (struct TESS* pTess)
     {
       (*pTess).DomFaceLabel = ut_alloc_2d_char ((*pTess).DomFaceQty + 1, 10);
       for (i = 1; i <= (*pTess).DomFaceQty; i++)
-	sprintf ((*pTess).DomFaceLabel[i], "f%d\n", i);
+	sprintf ((*pTess).DomFaceLabel[i], "f%d", i);
     }
   }
 

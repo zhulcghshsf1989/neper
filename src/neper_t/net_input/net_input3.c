@@ -8,8 +8,8 @@
 void
 net_input_options_default (struct IN *pIn, struct REG* pReg)
 {
-  (*pIn).morpho = ut_alloc_1d_char (10);
-  sprintf ((*pIn).morpho, "poisson");
+  (*pIn).morphostring = ut_alloc_1d_char (10);
+  sprintf ((*pIn).morphostring, "poisson");
 
   (*pIn).domain = ut_alloc_1d_char (10);
   sprintf ((*pIn).domain, "cube");
@@ -26,8 +26,11 @@ net_input_options_default (struct IN *pIn, struct REG* pReg)
   (*pIn).voxsize3 = NULL;
   (*pIn).body = NULL;
 
-  (*pIn).n = -1;
-  (*pIn).id = -1;
+  (*pIn).nstring = NULL;
+  (*pIn).n = NULL;
+  (*pIn).levelqty = 1;
+  (*pIn).idstring = NULL;
+  (*pIn).id = NULL;
   (*pIn).ttype = ut_alloc_1d_char (9);
   strcpy ((*pIn).ttype, "standard");
   (*pIn).randomize = 0;
@@ -54,7 +57,8 @@ net_input_options_default (struct IN *pIn, struct REG* pReg)
 
   (*pIn).sorttess_qty = 0;
 
-  (*pIn).centroid = 0;
+  (*pIn).centroidstring = NULL;
+  (*pIn).centroid = NULL;
   (*pIn).centroiditermax = 1000;
   (*pIn).centroidconv = 2 * 1e-2;
   (*pIn).centroidfact = 0.5;
@@ -68,7 +72,8 @@ net_input_options_default (struct IN *pIn, struct REG* pReg)
 
   (*pReg).mloop = 2;
   (*pReg).maxedgedelqty = INT_MAX;
-  (*pReg).maxff = 0;
+  (*pReg).reg   = 0;
+  (*pReg).maxff = 20;
   (*pReg).seltype = 1; // 0: sel, 1: rsel
   (*pReg).sel = -1;
   (*pReg).rsel = 1;
@@ -100,7 +105,7 @@ net_input_options_set (struct IN *pIn, struct REG* pReg, int argc, char **argv)
   sprintf (ArgList[++ArgQty], "-o");
   sprintf (ArgList[++ArgQty], "-v");
   sprintf (ArgList[++ArgQty], "-libpath");
-  // net_poly_tesl options ----------------------------------------------
+  // Tessellation options ----------------------------------------------
   sprintf (ArgList[++ArgQty], "-domain");
   sprintf (ArgList[++ArgQty], "-cylinderfacet");
   sprintf (ArgList[++ArgQty], "-scale");
@@ -110,6 +115,7 @@ net_input_options_set (struct IN *pIn, struct REG* pReg, int argc, char **argv)
   sprintf (ArgList[++ArgQty], "-centroidconv");
   sprintf (ArgList[++ArgQty], "-centroiditermax");
   // Regularization options --------------------------------------------
+  sprintf (ArgList[++ArgQty], "-regularization");
   sprintf (ArgList[++ArgQty], "-maxff");
   sprintf (ArgList[++ArgQty], "-sel");
   sprintf (ArgList[++ArgQty], "-rsel");
@@ -167,11 +173,11 @@ net_input_options_set (struct IN *pIn, struct REG* pReg, int argc, char **argv)
       {
 	(*pIn).input = ut_alloc_1d_char (5);
 	strcpy ((*pIn).input, "n");
-	(*pIn).n = ut_arg_nextasint (argv, &i, Arg, 1, INT_MAX);
+	(*pIn).nstring = ut_arg_nextaschar (argv, &i, Arg);
 	
-	if ((strcmp ((*pIn).morpho, "cube"  ) == 0)
-	 || (strcmp ((*pIn).morpho, "dodeca") == 0)
-	 || (strcmp ((*pIn).morpho, "tocta" ) == 0))
+	if ((strncmp ((*pIn).morphostring, "cube"  , 4) == 0)
+	 || (strncmp ((*pIn).morphostring, "dodeca", 6) == 0)
+	 || (strncmp ((*pIn).morphostring, "tocta" , 5) == 0))
 	  strcpy ((*pIn).input, "n_reg");
       }
       else
@@ -179,24 +185,26 @@ net_input_options_set (struct IN *pIn, struct REG* pReg, int argc, char **argv)
     }
     else if (strcmp (Arg, "-id") == 0 && i < argc - 1)
     {
+      /*
       if ((*pIn).id == 0)
       {
 	ut_print_message (2, 0,
 			  "Functions `-id' and `-morpho' are mutually exclusive!");
 	abort ();
       }
-      (*pIn).id = ut_arg_nextasint (argv, &i, Arg, 1, INT_MAX);
+      */
+      (*pIn).idstring = ut_arg_nextaschar (argv, &i, Arg);
     }
     else if (strcmp (Arg, "-morpho") == 0)
     {
-      if ((*pIn).morpho != NULL)
-	ut_free_1d_char ((*pIn).morpho);
-      (*pIn).morpho = ut_arg_nextaschar (argv, &i, Arg);
+      if ((*pIn).morphostring != NULL)
+	ut_free_1d_char ((*pIn).morphostring);
+      (*pIn).morphostring = ut_arg_nextaschar (argv, &i, Arg);
 
-      if ((*pIn).n > 0)
-	if ((! strcmp ((*pIn).morpho, "cube"  ))
-	 || (! strcmp ((*pIn).morpho, "dodeca"))
-	 || (! strcmp ((*pIn).morpho, "tocta" )))
+      if ((*pIn).n != NULL)
+	if ((! strncmp ((*pIn).morphostring, "cube"  , 4))
+	 || (! strncmp ((*pIn).morphostring, "dodeca", 6))
+	 || (! strncmp ((*pIn).morphostring, "tocta" , 5)))
 	{
 	  (*pIn).input = ut_alloc_1d_char (6);
 	  strcpy ((*pIn).input, "n_reg");
@@ -264,7 +272,7 @@ net_input_options_set (struct IN *pIn, struct REG* pReg, int argc, char **argv)
     else if (strcmp (Arg, "-randomizedir") == 0 && i < argc - 1)
       (*pIn).randomizedir = ut_arg_nextaschar (argv, &i, Arg);
     else if (strcmp (Arg, "-centroid") == 0 && i < argc - 1)
-      (*pIn).centroid = ut_arg_nextasint (argv, &i, Arg, 0, 1);
+      (*pIn).centroidstring = ut_arg_nextaschar (argv, &i, Arg);
     else if (strcmp (Arg, "-centroidfact") == 0 && i < argc - 1)
       (*pIn).centroidfact = ut_arg_nextasreal (argv, &i, Arg, 0, 1);
     else if (strcmp (Arg, "-centroidconv") == 0 && i < argc - 1)
@@ -274,6 +282,8 @@ net_input_options_set (struct IN *pIn, struct REG* pReg, int argc, char **argv)
 
 /*---------------------------------------------------------------------- 
 * regularization options */
+    else if (strcmp (Arg, "-regularization") == 0 && i < argc - 1)
+      (*pReg).regstring = ut_arg_nextaschar (argv, &i, Arg);
     else if (strcmp (Arg, "-maxff") == 0 && i < argc - 1)
       (*pReg).maxff = ut_arg_nextasreal (argv, &i, Arg, 0, 180);
     else if (strcmp (Arg, "-sel") == 0 && i < argc - 1)

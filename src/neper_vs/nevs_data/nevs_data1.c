@@ -35,16 +35,20 @@ nevs_data (char** argv, int* pi, struct TESS Tess, struct NODES Nodes, struct ME
 }
 
 void
-nevs_data_init (struct TESS Tess, struct TESSDATA* pTessData,
+nevs_data_init (struct MTESS MTess, struct TESS* Tess, int level,
+		struct TESSDATA* pTessData, struct TESSDATA** pMTessData,
                 struct NODES Nodes, struct MESH Mesh3D,
                 struct MESHDATA* pMeshData)
 {
   if ((*pTessData).polyqty > 0)
-    nevs_tessdata_init (Tess, pTessData);
+  {
+    nevs_tessdata_init (Tess[1], pTessData);
+
+    nevs_tessdata_mtessdata (MTess, Tess, level, *pTessData, pMTessData);
+  }
   
   if ((*pMeshData).elt3dqty > 0)
     nevs_meshdata_init (Nodes, Mesh3D, pMeshData);
 
   return;
 }
-

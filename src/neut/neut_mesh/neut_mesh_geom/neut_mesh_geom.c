@@ -567,3 +567,34 @@ neut_mesh_eltlength (struct NODES Nodes, struct MESH Mesh, double* pavlength)
 
   return 0;
 }
+
+void
+neut_mesh_elt_node_angle (struct NODES Nodes, struct MESH Mesh, int elt,
+    int node, double* pangle)
+{
+  int pos1, pos2, pos3, before, after, eltnodeqty;
+  double* v1 = ut_alloc_1d (3);
+  double* v2 = ut_alloc_1d (3);
+
+  if (Mesh.Dimension != 2)
+    ut_error_reportbug ();
+
+  eltnodeqty = neut_elt_nodeqty (Mesh.EltType, Mesh.Dimension, 1);
+
+  pos2 = ut_array_1d_int_eltpos (Mesh.EltNodes[elt], eltnodeqty, node);
+  pos1 = ut_num_rotpos (0, eltnodeqty - 1, pos2, -1);
+  pos3 = ut_num_rotpos (0, eltnodeqty - 1, pos2,  1);
+
+  before = Mesh.EltNodes[elt][pos1];
+  after  = Mesh.EltNodes[elt][pos3];
+
+  ut_array_1d_sub (Nodes.NodeCoo[node], Nodes.NodeCoo[before], 3, v1);
+  ut_array_1d_sub (Nodes.NodeCoo[node], Nodes.NodeCoo[after] , 3, v2);
+
+  (*pangle) = ut_vector_angle (v1, v2);
+
+  ut_free_1d (v1);
+  ut_free_1d (v2);
+
+  return;
+}

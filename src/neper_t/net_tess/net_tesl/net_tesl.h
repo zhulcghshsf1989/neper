@@ -45,7 +45,6 @@ extern int CommonFacenet_tesl (struct TESL, int, int, int *);
 extern int CommonGerms (struct TESL, int, int, int *);
 extern int BissFace (struct TESL, int, int);
 extern int TreatFaceVer (struct TESL *, int, int, int);
-extern void TessPolyDescription (int, struct TESL);
 
 extern void TessGenDet (struct GERMSET, struct POLY *, struct TESL *);
 extern int TFaceQty (struct GERMSET, struct POLY *);

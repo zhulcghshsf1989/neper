@@ -135,18 +135,18 @@ IniTVNb (struct TESL net_tesl, struct POLY *Poly, int **TVNb)
 /* Recording of Face germ
  */
 void
-IniTessFacePoly (struct TESL *pnet_tesl, struct POLY *Poly, int **TFNb)
+IniTessFacePoly (struct TESL *pTesl, struct POLY *Poly, int **TFNb)
 {
   int i, j;			/* mute variables */
   int FNb;
 
-  for (i = 1; i <= (*pnet_tesl).PolyQty; i++)
+  for (i = 1; i <= (*pTesl).PolyQty; i++)
     for (j = 1; j <= Poly[i].FaceQty; j++)
       if (i < Poly[i].FacePoly[j] || Poly[i].FacePoly[j] < 0)
       {
 	FNb = TFNb[i][j];
-	(*pnet_tesl).FacePoly[FNb][0] = i;
-	(*pnet_tesl).FacePoly[FNb][1] = Poly[i].FacePoly[j];
+	(*pTesl).FacePoly[FNb][0] = i;
+	(*pTesl).FacePoly[FNb][1] = Poly[i].FacePoly[j];
       }
 
   return;
@@ -155,7 +155,7 @@ IniTessFacePoly (struct TESL *pnet_tesl, struct POLY *Poly, int **TFNb)
 /* Recording of Face eq
  */
 void
-IniTessFaceEq (struct TESL *pnet_tesl, struct POLY *Poly, int **TFNb)
+IniTessFaceEq (struct TESL *pTesl, struct POLY *Poly, int **TFNb)
 {
   int i, j, k;
   int FNb;
@@ -165,13 +165,13 @@ IniTessFaceEq (struct TESL *pnet_tesl, struct POLY *Poly, int **TFNb)
   double *b = ut_alloc_1d (4);
   double *c = ut_alloc_1d (4);
 
-  for (i = 1; i <= (*pnet_tesl).PolyQty; i++)
+  for (i = 1; i <= (*pTesl).PolyQty; i++)
     for (j = 1; j <= Poly[i].FaceQty; j++)
       if (i < Poly[i].FacePoly[j] || Poly[i].FacePoly[j] < 0)
       {
 	FNb = TFNb[i][j];
 	for (k = 0; k < 4; k++)
-	  (*pnet_tesl).FaceEq[FNb][k] = Poly[i].FaceEq[j][k];
+	  (*pTesl).FaceEq[FNb][k] = Poly[i].FaceEq[j][k];
 
 	/* Then, we check if the face is correctly oriented,    */
 	/* (if not, modification eq. <-- -eq)                   */
@@ -185,9 +185,9 @@ IniTessFaceEq (struct TESL *pnet_tesl, struct POLY *Poly, int **TFNb)
 	  b[k] = Poly[i].VerCoo[third][k - 1] - Poly[i].VerCoo[second][k - 1];
 	}
 	ut_vector_vectprod (a + 1, b + 1, c + 1);
-	if (ut_vector_scalprod ((*pnet_tesl).FaceEq[FNb] + 1, c + 1) < 0)
+	if (ut_vector_scalprod ((*pTesl).FaceEq[FNb] + 1, c + 1) < 0)
 	  for (k = 0; k < 4; k++)
-	    (*pnet_tesl).FaceEq[FNb][k] *= -1;
+	    (*pTesl).FaceEq[FNb][k] *= -1;
       }
 
   ut_free_1d (a);
@@ -200,17 +200,17 @@ IniTessFaceEq (struct TESL *pnet_tesl, struct POLY *Poly, int **TFNb)
 /* Recording of Face ver qty
  */
 void
-IniTessFaceVerQty (struct TESL *pnet_tesl, struct POLY *Poly, int **TFNb)
+IniTessFaceVerQty (struct TESL *pTesl, struct POLY *Poly, int **TFNb)
 {
   int i, j;
   int FNb;
 
-  for (i = 1; i <= (*pnet_tesl).PolyQty; i++)
+  for (i = 1; i <= (*pTesl).PolyQty; i++)
     for (j = 1; j <= Poly[i].FaceQty; j++)
       if (Poly[i].FacePoly[j] > i || Poly[i].FacePoly[j] < 0)
       {
 	FNb = TFNb[i][j];
-	(*pnet_tesl).FaceVerQty[FNb] = Poly[i].FaceVerQty[j];
+	(*pTesl).FaceVerQty[FNb] = Poly[i].FaceVerQty[j];
       }
 
   return;
@@ -219,32 +219,32 @@ IniTessFaceVerQty (struct TESL *pnet_tesl, struct POLY *Poly, int **TFNb)
 /* Recording of the numbers of the ver parent germs
  */
 void
-IniTessVerGerm (struct TESL *pnet_tesl, struct POLY *Poly, int **TVNb)
+IniTessVerGerm (struct TESL *pTesl, struct POLY *Poly, int **TVNb)
 {
   int i, j, k;
   int VNb;
   int ParF, ParG;
   int *Treat;
 
-  Treat = ut_alloc_1d_int ((*pnet_tesl).VerQty + 1);
+  Treat = ut_alloc_1d_int ((*pTesl).VerQty + 1);
 
   /* For every poly, for every ver, if the (tesl-eq) ver has not 
    * been treated yet (known thanks to Treat temporary array), the
    * 4 parent germs are recorded. The first one is positive, the
    * three others can be negative (poly initial faces).
    */
-  for (i = 1; i <= (*pnet_tesl).PolyQty; i++)
+  for (i = 1; i <= (*pTesl).PolyQty; i++)
     for (j = 1; j <= Poly[i].VerQty; j++)
     {
       VNb = TVNb[i][j];
       if (Treat[VNb] == 0)
       {
-	(*pnet_tesl).VerGerm[VNb][0] = i;
+	(*pTesl).VerGerm[VNb][0] = i;
 	for (k = 1; k <= 3; k++)
 	{
 	  ParF = Poly[i].VerFace[j][k - 1];
 	  ParG = Poly[i].FacePoly[ParF];
-	  (*pnet_tesl).VerGerm[VNb][k] = ParG;
+	  (*pTesl).VerGerm[VNb][k] = ParG;
 	}
 	Treat[VNb] = 1;
       }
@@ -259,17 +259,17 @@ IniTessVerGerm (struct TESL *pnet_tesl, struct POLY *Poly, int **TVNb)
 /* Recording of the vertex coordinates
  */
 void
-IniTessVerCoo (struct TESL *pnet_tesl, struct POLY *Poly, int **TVNb)
+IniTessVerCoo (struct TESL *pTesl, struct POLY *Poly, int **TVNb)
 {
   int i, j, k;
   int VNb;
 
-  for (i = 1; i <= (*pnet_tesl).PolyQty; i++)
+  for (i = 1; i <= (*pTesl).PolyQty; i++)
     for (j = 1; j <= Poly[i].VerQty; j++)
     {
       VNb = TVNb[i][j];
       for (k = 0; k < 3; k++)
-	(*pnet_tesl).VerCoo[VNb][k] = Poly[i].VerCoo[j][k];
+	(*pTesl).VerCoo[VNb][k] = Poly[i].VerCoo[j][k];
     }
 
   return;
@@ -279,7 +279,7 @@ IniTessVerCoo (struct TESL *pnet_tesl, struct POLY *Poly, int **TVNb)
  * 0 else.
  */
 int
-TreatFaceVer (struct TESL *pnet_tesl, int FNb, int S1, int S2)
+TreatFaceVer (struct TESL *pTesl, int FNb, int S1, int S2)
 {
   int k;
   int *PFNb = ut_alloc_1d_int (3);
@@ -290,9 +290,9 @@ TreatFaceVer (struct TESL *pnet_tesl, int FNb, int S1, int S2)
    * PPNb & they are the 3 parent germs of the studied edge.
    * If the amount of parent germs is not 3, critical error 4 is generated.
    */
-  if (CommonGerms (*pnet_tesl, S1, S2, PPNb) != 3)
+  if (CommonGerms (*pTesl, S1, S2, PPNb) != 3)
   {
-    printf ("number of common germs = %d != 3\n", CommonGerms (*pnet_tesl, S1, S2, PPNb));
+    printf ("number of common germs = %d != 3\n", CommonGerms (*pTesl, S1, S2, PPNb));
     ut_error_reportbug ();
   }
 
@@ -301,9 +301,9 @@ TreatFaceVer (struct TESL *pnet_tesl, int FNb, int S1, int S2)
    * PFNb[0...2] are the numbers of the three faces, if they all exist.
    * Else, the value is 0 or -1 (such cases are normal).
    */
-  PFNb[0] = BissFace (*pnet_tesl, PPNb[0], PPNb[1]);
-  PFNb[1] = BissFace (*pnet_tesl, PPNb[1], PPNb[2]);
-  PFNb[2] = BissFace (*pnet_tesl, PPNb[2], PPNb[0]);
+  PFNb[0] = BissFace (*pTesl, PPNb[0], PPNb[1]);
+  PFNb[1] = BissFace (*pTesl, PPNb[1], PPNb[2]);
+  PFNb[2] = BissFace (*pTesl, PPNb[2], PPNb[0]);
 
   /* If one of the parent faces of the studied edge has a number which is
    * positive (meaning the the face exists) and lower than that of the
@@ -333,21 +333,21 @@ TreatFaceVer (struct TESL *pnet_tesl, int FNb, int S1, int S2)
  * FaceEdgeNb[FNb][S1]
  */
 int
-AddEdge (struct TESL *pnet_tesl, int FNb, int i, int S1, int S2, int nb)
+AddEdge (struct TESL *pTesl, int FNb, int i, int S1, int S2, int nb)
 {
   /* Incrementation of nb
    */
   nb++;
 
-  (*pnet_tesl).EdgeVerNb = ut_realloc_2d_int_addline ((*pnet_tesl).EdgeVerNb, nb + 1, 2);
+  (*pTesl).EdgeVerNb = ut_realloc_2d_int_addline ((*pTesl).EdgeVerNb, nb + 1, 2);
 
   /* Recording of EdgeVerNb
    */
-  RecEdgeVerNb (pnet_tesl, nb, S1, S2);
+  RecEdgeVerNb (pTesl, nb, S1, S2);
 
   /* Recording of FaceEdgeNb
    */
-  RecFaceEdgeNb (pnet_tesl, FNb, i, nb);
+  RecFaceEdgeNb (pTesl, FNb, i, nb);
 
   return nb;
 }
@@ -356,7 +356,7 @@ AddEdge (struct TESL *pnet_tesl, int FNb, int i, int S1, int S2, int nb)
  * to record it in FaceEdgeNb.
  */
 void
-SearchEdge (struct TESL *pnet_tesl, int FNb, int PrevF, int S1, int S2, int p)
+SearchEdge (struct TESL *pTesl, int FNb, int PrevF, int S1, int S2, int p)
 {
   int pos1, pos2;
   int nb;
@@ -367,10 +367,10 @@ SearchEdge (struct TESL *pnet_tesl, int FNb, int PrevF, int S1, int S2, int p)
    * the edge based on S1 and S2 is used (i.e. recorded as nb). 
    */
   pos1 =
-    oneDIntEltPos ((*pnet_tesl).FaceVerNb[PrevF], 1, (*pnet_tesl).FaceVerQty[PrevF],
+    oneDIntEltPos ((*pTesl).FaceVerNb[PrevF], 1, (*pTesl).FaceVerQty[PrevF],
 		   S1, 0);
   pos2 =
-    oneDIntEltPos ((*pnet_tesl).FaceVerNb[PrevF], 1, (*pnet_tesl).FaceVerQty[PrevF],
+    oneDIntEltPos ((*pTesl).FaceVerNb[PrevF], 1, (*pTesl).FaceVerQty[PrevF],
 		   S2, 0);
 
   /* nb is the minimum value between pos1 and pos2...
@@ -386,7 +386,7 @@ SearchEdge (struct TESL *pnet_tesl, int FNb, int PrevF, int S1, int S2, int p)
 
   /* The edge number is recorded in face FNb.
    */
-  (*pnet_tesl).FaceEdgeNb[FNb][p] = (*pnet_tesl).FaceEdgeNb[PrevF][nb];
+  (*pTesl).FaceEdgeNb[FNb][p] = (*pTesl).FaceEdgeNb[PrevF][nb];
 
   return;
 }
@@ -394,24 +394,24 @@ SearchEdge (struct TESL *pnet_tesl, int FNb, int PrevF, int S1, int S2, int p)
 /* Recording of FaceEdgeOri
  */
 void
-IniTessFaceEdgeOri (struct TESL *pnet_tesl)
+IniTessFaceEdgeOri (struct TESL *pTesl)
 {
   int i, j;
   int ver;
   int edge;
 
-  for (i = 1; i <= (*pnet_tesl).FaceQty; i++)
+  for (i = 1; i <= (*pTesl).FaceQty; i++)
   {
-    (*pnet_tesl).FaceEdgeOri[i] = ut_alloc_1d_int ((*pnet_tesl).FaceVerQty[i] + 1);
+    (*pTesl).FaceEdgeOri[i] = ut_alloc_1d_int ((*pTesl).FaceVerQty[i] + 1);
 
-    for (j = 1; j <= (*pnet_tesl).FaceVerQty[i]; j++)
+    for (j = 1; j <= (*pTesl).FaceVerQty[i]; j++)
     {
-      ver = (*pnet_tesl).FaceVerNb[i][j];
-      edge = (*pnet_tesl).FaceEdgeNb[i][j];
-      if ((*pnet_tesl).EdgeVerNb[edge][0] == ver)
-	(*pnet_tesl).FaceEdgeOri[i][j] = 1;
-      else if ((*pnet_tesl).EdgeVerNb[edge][1] == ver)
-	(*pnet_tesl).FaceEdgeOri[i][j] = -1;
+      ver = (*pTesl).FaceVerNb[i][j];
+      edge = (*pTesl).FaceEdgeNb[i][j];
+      if ((*pTesl).EdgeVerNb[edge][0] == ver)
+	(*pTesl).FaceEdgeOri[i][j] = 1;
+      else if ((*pTesl).EdgeVerNb[edge][1] == ver)
+	(*pTesl).FaceEdgeOri[i][j] = -1;
       else
 	ut_error_reportbug ();
     }
@@ -423,14 +423,14 @@ IniTessFaceEdgeOri (struct TESL *pnet_tesl)
 /* Recording of net_tesl.PolyEdgeX
  */
 void
-IniTessPolyEdge (struct TESL *pnet_tesl)
+IniTessPolyEdge (struct TESL *pTesl)
 {
   int PNb;
 
   /* for every polyhedron, the edge numbers are recorded.
    */
-  for (PNb = 1; PNb <= (*pnet_tesl).PolyQty; PNb++)
-    (*pnet_tesl).PolyEdgeQty[PNb] = RecPolyEdges (pnet_tesl, PNb);
+  for (PNb = 1; PNb <= (*pTesl).PolyQty; PNb++)
+    (*pTesl).PolyEdgeQty[PNb] = RecPolyEdges (pTesl, PNb);
 
   return;
 }
@@ -439,14 +439,14 @@ IniTessPolyEdge (struct TESL *pnet_tesl)
 /* IniPolyFaceOri returns 1 if face i of polyhedron poly
    has an outgoing normal, and -1 else. */
 int
-IniPolyFaceOri (struct TESL *pnet_tesl, int poly, int i)
+IniPolyFaceOri (struct TESL *pTesl, int poly, int i)
 {
   int face;
   int d;
 
-  face = (*pnet_tesl).PolyFaceNb[poly][i];
+  face = (*pTesl).PolyFaceNb[poly][i];
 
-  d = -ut_space_planeside ((*pnet_tesl).FaceEq[face], (*pnet_tesl).CenterCoo[poly] - 1);
+  d = -ut_space_planeside ((*pTesl).FaceEq[face], (*pTesl).CenterCoo[poly] - 1);
 
   return d;
 }

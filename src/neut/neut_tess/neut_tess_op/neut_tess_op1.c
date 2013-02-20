@@ -7,6 +7,9 @@
 void
 neut_tess_set_zero (struct TESS* pTess)
 {
+  (*pTess).Level = 0;
+  (*pTess).TessId = 0;
+
   (*pTess).N = 0;
   (*pTess).Id = -1;
   (*pTess).morpho = 0;
@@ -47,6 +50,12 @@ neut_tess_set_zero (struct TESS* pTess)
   (*pTess).PolyFaceQty = NULL;
   (*pTess).PolyFaceNb = NULL;
   (*pTess).PolyFaceOri = NULL;
+
+  (*pTess).PolyEdgeQty = NULL;
+  (*pTess).PolyEdgeNb  = NULL;
+  (*pTess).PolyVerQty  = NULL;
+  (*pTess).PolyVerNb   = NULL;
+
   (*pTess).PolyTrue = NULL;
   (*pTess).PolyBody = NULL;
   (*pTess).CenterCoo = NULL;
@@ -111,6 +120,11 @@ neut_tess_free (struct TESS* pTess)
   ut_free_1d_int ((*pTess).PolyFaceQty);
   ut_free_2d_int ((*pTess).PolyFaceNb, (*pTess).PolyQty + 1);
   ut_free_2d_int ((*pTess).PolyFaceOri, (*pTess).PolyQty + 1);
+
+  ut_free_1d_int ((*pTess).PolyEdgeQty);
+  ut_free_2d_int ((*pTess).PolyEdgeNb, (*pTess).PolyQty + 1);
+  ut_free_1d_int ((*pTess).PolyVerQty);
+  ut_free_2d_int ((*pTess).PolyVerNb, (*pTess).PolyQty + 1);
 
   ut_free_1d_int ((*pTess).PolyTrue);
   ut_free_1d_int ((*pTess).PolyBody);
@@ -1273,5 +1287,95 @@ neut_tess_sort (struct TESS* pTess, char* entity, char* expr)
   if (knownexpr == 0)
     ut_free_1d_char (expr2);
   
+  return;
+}
+
+void
+neut_tess_cat (struct TESS* pTessA, struct TESS TessB)
+{
+  int i;
+  int VerQty0 = (*pTessA).VerQty;
+  int EdgeQty0 = (*pTessA).EdgeQty;
+  int FaceQty0 = (*pTessA).FaceQty;
+  int PolyQty0 = (*pTessA).PolyQty;
+  
+  // Adding vertices
+  (*pTessA).VerQty += TessB.VerQty;
+  (*pTessA).VerCoo
+    = ut_realloc_1d_pdouble ((*pTessA).VerCoo, (*pTessA).VerQty + 1);
+
+  (*pTessA).VerState
+    = ut_realloc_1d_int ((*pTessA).VerState, (*pTessA).VerQty + 1);
+  // neut_debug_tess (stdout, TessB);
+  for (i = 1; i <= TessB.VerQty; i++)
+  {
+    (*pTessA).VerState[VerQty0 + i] = 0;
+    (*pTessA).VerCoo[VerQty0 + i] = ut_alloc_1d (3);
+    ut_array_1d_memcpy ((*pTessA).VerCoo[VerQty0 + i], 3, TessB.VerCoo[i]);
+  }
+
+  // Adding edges
+  (*pTessA).EdgeQty += TessB.EdgeQty;
+  (*pTessA).EdgeVerNb
+    = ut_realloc_1d_pint ((*pTessA).EdgeVerNb, (*pTessA).EdgeQty + 1);
+  (*pTessA).EdgeState
+    = ut_realloc_1d_int ((*pTessA).EdgeState, (*pTessA).EdgeQty + 1);
+  for (i = EdgeQty0 + 1; i <= (*pTessA).EdgeQty; i++)
+  {
+    (*pTessA).EdgeState[i] = 0;
+    (*pTessA).EdgeVerNb[i] = ut_alloc_1d_int (2);
+    ut_array_1d_int_memcpy
+      ((*pTessA).EdgeVerNb[i], 2, TessB.EdgeVerNb[i - EdgeQty0]);
+    ut_array_1d_int_addval ((*pTessA).EdgeVerNb[i], 2, VerQty0,
+	(*pTessA).EdgeVerNb[i]);
+  }
+
+  // Adding faces
+  (*pTessA).FaceQty += TessB.FaceQty;
+  (*pTessA).FaceState
+    = ut_realloc_1d_int ((*pTessA).FaceState, (*pTessA).FaceQty + 1);
+  (*pTessA).FaceVerQty
+    = ut_realloc_1d_int ((*pTessA).FaceVerQty, (*pTessA).FaceQty + 1);
+  for (i = 1; i <= TessB.FaceQty; i++)
+  {
+    (*pTessA).FaceState[i + FaceQty0] = 0;
+    (*pTessA).FaceEdgeNb
+      = ut_realloc_2d_int_addline ((*pTessA).FaceEdgeNb, FaceQty0 + i +
+	  1, TessB.FaceVerQty[i] + 1);
+    (*pTessA).FaceEdgeOri
+      = ut_realloc_2d_int_addline ((*pTessA).FaceEdgeOri, FaceQty0 + i +
+	  1, TessB.FaceVerQty[i] + 1);
+    ut_array_1d_int_memcpy ((*pTessA).FaceEdgeNb[FaceQty0 + i] + 1,
+	TessB.FaceVerQty[i], TessB.FaceEdgeNb[i] + 1);
+    ut_array_1d_int_memcpy ((*pTessA).FaceEdgeOri[FaceQty0 + i] + 1,
+	TessB.FaceVerQty[i], TessB.FaceEdgeOri[i] + 1);
+    ut_array_1d_int_addval ((*pTessA).FaceEdgeNb[FaceQty0 + i] + 1,
+	TessB.FaceVerQty[i], EdgeQty0, (*pTessA).FaceEdgeNb[FaceQty0 + i] + 1);
+
+    (*pTessA).FaceVerQty[i + FaceQty0] = TessB.FaceVerQty[i];
+  }
+
+  // Adding polys
+  (*pTessA).PolyQty += TessB.PolyQty;
+  (*pTessA).PolyFaceQty
+    = ut_realloc_1d_int ((*pTessA).PolyFaceQty, (*pTessA).PolyQty + 1);
+  for (i = 1; i <= TessB.PolyQty; i++)
+  {
+    (*pTessA).PolyFaceNb
+      = ut_realloc_2d_int_addline ((*pTessA).PolyFaceNb, PolyQty0 + i +
+	  1, TessB.PolyFaceQty[i] + 1);
+    (*pTessA).PolyFaceOri
+      = ut_realloc_2d_int_addline ((*pTessA).PolyFaceOri, PolyQty0 + i +
+	  1, TessB.PolyFaceQty[i] + 1);
+    ut_array_1d_int_memcpy ((*pTessA).PolyFaceOri[PolyQty0 + i] + 1,
+	TessB.PolyFaceQty[i], TessB.PolyFaceOri[i] + 1);
+    ut_array_1d_int_memcpy ((*pTessA).PolyFaceNb[PolyQty0 + i] + 1,
+	TessB.PolyFaceQty[i], TessB.PolyFaceNb[i] + 1);
+    ut_array_1d_int_addval ((*pTessA).PolyFaceNb[PolyQty0 + i] + 1,
+	TessB.PolyFaceQty[i], FaceQty0, (*pTessA).PolyFaceNb[PolyQty0 + i] + 1);
+
+    (*pTessA).PolyFaceQty[i + PolyQty0] = TessB.PolyFaceQty[i];
+  }
+
   return;
 }

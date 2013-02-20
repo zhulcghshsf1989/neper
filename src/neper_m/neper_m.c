@@ -63,12 +63,6 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   {
     ut_print_message (0, 1, "Loading voxel data ...\n");
     neut_vox_name_fscanf (In.vox, &Vox);
-
-    if (! strcmp (In.elttype, "tri"))
-    {
-      ut_print_message (0, 1, "Reconstructing topology ...\n");
-      nem_reconstruct_vox (Vox, &Tess, &RNodes, &RMesh1D, &RMesh2D, &NSet2D);
-    }
   }
 
   // Loading input mesh (remeshing and / or transport) ###
@@ -90,11 +84,11 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   // ###################################################################
   // ### COMPUTING OUTPUT MESH #########################################
 
-  if (Tess.PolyQty + Tess.FaceQty + Tess.EdgeQty + Tess.VerQty > 0 || Vox.PolyQty > 0)
+  if (Tess.VerQty > 0 || Vox.PolyQty > 0)
   {
     ut_print_message (0, 1, "Meshing ...");
 
-    if (! strcmp (In.elttype, "tri"))
+    if (! strcmp (In.elttype, "tri") && Vox.PolyQty == 0)
       nem_meshing (In, MeshPara, Tess, RNodes, RMesh1D, RMesh2D, &Nodes,
 		   &Mesh0D, &Mesh1D, &Mesh2D, &Mesh3D);
     

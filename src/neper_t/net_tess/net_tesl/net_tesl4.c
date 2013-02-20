@@ -143,19 +143,19 @@ BissFace (struct TESL net_tesl, int S1, int S2)
 }
 
 void
-RecEdgeVerNb (struct TESL *pnet_tesl, int nb, int S1, int S2)
+RecEdgeVerNb (struct TESL *pTesl, int nb, int S1, int S2)
 {
 
-  (*pnet_tesl).EdgeVerNb[nb][0] = S1;
-  (*pnet_tesl).EdgeVerNb[nb][1] = S2;
+  (*pTesl).EdgeVerNb[nb][0] = S1;
+  (*pTesl).EdgeVerNb[nb][1] = S2;
 
   return;
 }
 
 void
-RecFaceEdgeNb (struct TESL *pnet_tesl, int FNb, int i, int nb)
+RecFaceEdgeNb (struct TESL *pTesl, int FNb, int i, int nb)
 {
-  (*pnet_tesl).FaceEdgeNb[FNb][i] = nb;
+  (*pTesl).FaceEdgeNb[FNb][i] = nb;
 
   return;
 }
@@ -163,23 +163,23 @@ RecFaceEdgeNb (struct TESL *pnet_tesl, int FNb, int i, int nb)
 /* Recording of the edge numbers of the polyhedron.
  */
 int
-RecPolyEdges (struct TESL *pnet_tesl, int PNb)
+RecPolyEdges (struct TESL *pTesl, int PNb)
 {
   int i, FNb;
   int qty = 0;
 
   // initializing alloc
-  (*pnet_tesl).PolyEdgeNb[PNb] = ut_alloc_1d_int (1);
+  (*pTesl).PolyEdgeNb[PNb] = ut_alloc_1d_int (1);
 
-  for (i = 1; i <= (*pnet_tesl).PolyFaceQty[PNb]; i++)
+  for (i = 1; i <= (*pTesl).PolyFaceQty[PNb]; i++)
   {
     /* The face number is recorded
      */
-    FNb = (*pnet_tesl).PolyFaceNb[PNb][i];
+    FNb = (*pTesl).PolyFaceNb[PNb][i];
     /* The face edges that are not recorded as polyhedron
      * edges yet as so recorded.
      */
-    qty = FaceEdges2PolyEdges (pnet_tesl, PNb, FNb, qty);
+    qty = FaceEdges2PolyEdges (pTesl, PNb, FNb, qty);
   }
 
   return qty;

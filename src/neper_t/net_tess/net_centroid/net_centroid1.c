@@ -10,14 +10,14 @@ net_centroid (double centroidfact, double centroidconv, struct TESL Tesl, struct
   int status, i;
   double* c = ut_alloc_1d (3);
   double dist, distmax, tessvol, avrad;
-  struct TESS net_poly_tesl;
+  struct TESS Tess;
 
-  neut_tess_set_zero (&net_poly_tesl);
+  neut_tess_set_zero (&Tess);
 
-  neut_tesl_tess (Tesl, &net_poly_tesl);
+  neut_tesl_tess (Tesl, &Tess);
 
-  neut_tess_volume (net_poly_tesl, &tessvol);
-  avrad = pow ((tessvol / net_poly_tesl.PolyQty) / (4/3 * M_PI), 0.33333333);
+  neut_tess_volume (Tess, &tessvol);
+  avrad = pow ((tessvol / Tess.PolyQty) / (4/3 * M_PI), 0.33333333);
 
   int id, cooqty = 0;
   int* coo = ut_alloc_1d_int (3);
@@ -63,22 +63,22 @@ net_centroid (double centroidfact, double centroidconv, struct TESL Tesl, struct
   }
 
   distmax = 0;
-  for (i = 1; i <= net_poly_tesl.PolyQty; i++)
+  for (i = 1; i <= Tess.PolyQty; i++)
   {
-    neut_tess_poly_centroid (net_poly_tesl, i, c);
-    dist = ut_space_dist (c, (*pGermSet).GermsCoo[i] + 1);
+    neut_tess_poly_centroid (Tess, i, c);
+    dist = ut_space_dist (c, (*pGermSet).GermCoo[i]);
     distmax = ut_num_max (dist, distmax);
 
     int j;
     for (j = 0; j < cooqty; j++)
     {
       id = coo[j];
-      (*pGermSet).GermsCoo[i][id + 1] = (*pGermSet).GermsCoo[i][id + 1] * (1 - centroidfact)
+      (*pGermSet).GermCoo[i][id] = (*pGermSet).GermCoo[i][id] * (1 - centroidfact)
 				 + c[id] * centroidfact;
     }
   }
 
-  neut_tess_free (&net_poly_tesl);
+  neut_tess_free (&Tess);
 
   ut_free_1d (c);
 

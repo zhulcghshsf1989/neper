@@ -167,4 +167,6 @@ extern void neut_tess_init_domain_facelabel (struct TESS* pTess);
 ///
 extern void neut_tess_sort (struct TESS* pTess, char* entity, char* expr);
 
+extern void neut_tess_cat (struct TESS* pTessA, struct TESS TessB);
+
 #endif /* NEUT_TESS_OP_H */

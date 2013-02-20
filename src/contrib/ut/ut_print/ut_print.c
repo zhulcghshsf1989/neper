@@ -324,6 +324,9 @@ ut_print_message (int head, int level, char *s, ...)
 
   fflush (stdout);
 
+  if (head == 2)
+    abort ();
+
   return;
 }
 

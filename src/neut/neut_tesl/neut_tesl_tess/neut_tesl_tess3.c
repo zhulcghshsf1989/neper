@@ -243,6 +243,48 @@ neut_tesl_tessPolyQty (struct TESL Tess, struct TESS *pTess)
 }
 
 void
+neut_tesl_tessPolyVer (struct TESL Tess, struct TESS *pTess)
+{
+  int i;
+
+  (*pTess).PolyVerQty = ut_alloc_1d_int ((*pTess).PolyQty + 1);
+  (*pTess).PolyVerNb = ut_alloc_1d_pint ((*pTess).PolyQty + 1);
+
+  ut_array_1d_int_memcpy ((*pTess).PolyVerQty + 1, (*pTess).PolyQty,
+			  Tess.PolyVerQty + 1);
+
+  for (i = 1; i <= (*pTess).PolyQty; i++)
+  {
+    (*pTess).PolyVerNb[i] = ut_alloc_1d_int ((*pTess).PolyVerQty[i] + 1);
+    ut_array_1d_int_memcpy ((*pTess).PolyVerNb[i] + 1, (*pTess).PolyVerQty[i],
+	                    Tess.PolyVerNb[i] + 1);
+  }
+
+  return;
+}
+
+void
+neut_tesl_tessPolyEdge (struct TESL Tess, struct TESS *pTess)
+{
+  int i;
+
+  (*pTess).PolyEdgeQty = ut_alloc_1d_int ((*pTess).PolyQty + 1);
+  (*pTess).PolyEdgeNb = ut_alloc_1d_pint ((*pTess).PolyQty + 1);
+
+  ut_array_1d_int_memcpy ((*pTess).PolyEdgeQty + 1, (*pTess).PolyQty,
+			  Tess.PolyEdgeQty + 1);
+
+  for (i = 1; i <= (*pTess).PolyQty; i++)
+  {
+    (*pTess).PolyEdgeNb[i] = ut_alloc_1d_int ((*pTess).PolyEdgeQty[i] + 1);
+    ut_array_1d_int_memcpy ((*pTess).PolyEdgeNb[i] + 1, (*pTess).PolyEdgeQty[i],
+	                    Tess.PolyEdgeNb[i] + 1);
+  }
+
+  return;
+}
+
+void
 neut_tesl_tessPolyFace (struct TESL Tess, struct TESS *pTess)
 {
   int i, j;

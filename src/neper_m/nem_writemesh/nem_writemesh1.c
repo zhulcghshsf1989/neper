@@ -66,7 +66,7 @@ nem_writemesh (struct IN In, struct TESS Tess,
 
     file = ut_file_open (In.msh, "w");
     neut_mesh_fprintf_gmsh (file, In.outdim, Nodes, *pMesh0D, *pMesh1D,
-	*pMesh2D, *pMesh3D, Part);
+	*pMesh2D, *pMesh3D, Part, NULL);
     ut_file_close (file, In.msh, "w");
   }
 

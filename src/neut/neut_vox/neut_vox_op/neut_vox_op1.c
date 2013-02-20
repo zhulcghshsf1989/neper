@@ -18,11 +18,17 @@ neut_vox_set_zero (struct VOX* pVox)
 void
 neut_vox_free (struct VOX* pVox)
 {
-  ut_free_3d_int  ((*pVox).VoxPoly, (*pVox).size[0] + 2, (*pVox).size[1] + 2);
-  ut_free_1d_int  ((*pVox).size);
-  ut_free_1d      ((*pVox).vsize);
+  if ((*pVox).size != NULL)
+  {
+    ut_free_3d_int  ((*pVox).VoxPoly, (*pVox).size[0] + 2, (*pVox).size[1] + 2);
+    ut_free_1d_int  ((*pVox).size);
+  }
 
-  neut_vox_set_zero (pVox);
+  ut_free_1d ((*pVox).vsize);
+
+  (*pVox).size = NULL;
+  (*pVox).vsize = NULL;
+  (*pVox).VoxPoly = NULL;
 
   return;
 }

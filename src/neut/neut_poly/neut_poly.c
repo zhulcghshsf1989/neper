@@ -36,6 +36,23 @@ neut_poly_free (struct POLY* pPoly)
 }
 
 void
+neut_poly_array_free (struct POLY** pPoly, int size)
+{
+  int i;
+
+  if ((*pPoly) == NULL)
+    return;
+
+  for (i = 1; i <= size; i++)
+    neut_poly_free (&((*pPoly)[i]));
+
+  free (*pPoly);
+  (*pPoly) = NULL;
+
+  return;
+}
+
+void
 neut_poly_bbox (struct POLY Poly, double* size)
 {
   int i, j;

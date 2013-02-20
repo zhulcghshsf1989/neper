@@ -26,6 +26,9 @@ add_library (neper_t
 ./net_vox/net_vox1.c
 ./net_vox/net_vox2.c
 ./net_utils/net_utils1.c
+./net_utils/net_polymod_poly/net_polymod_poly1.c
+./net_utils/net_polymod_poly/net_polymod_poly2.c
+./net_utils/net_polymod_poly/net_polymod_poly3.c
 ./net_tess/net_tess.c
 ./net_tess/net_tesl/net_tesl2.c
 ./net_tess/net_tesl/net_tesl4.c
@@ -33,19 +36,13 @@ add_library (neper_t
 ./net_tess/net_tesl/net_tesl1.c
 ./net_tess/net_tesl/net_tesl6.c
 ./net_tess/net_tesl/net_tesl3.c
-./net_tess/net_polycomp/PolyDet/PolyDet.c
-./net_tess/net_polycomp/PolyDet/PolyCalc/PolyCalc5.c
-./net_tess/net_polycomp/PolyDet/PolyCalc/PolyCalc4.c
-./net_tess/net_polycomp/PolyDet/PolyCalc/PolyCalc6.c
-./net_tess/net_polycomp/PolyDet/PolyCalc/PolyCalc3.c
-./net_tess/net_polycomp/PolyDet/PolyCalc/PolyCalc1.c
-./net_tess/net_polycomp/PolyDet/PolyCalc/PolyCalc2.c
-./net_tess/net_polycomp/PolyAlloc/PolyAlloc.c
-./net_tess/net_polycomp/PolyFree/PolyFree.c
-./net_tess/net_polycomp/PolyReg/PolyReg2.c
-./net_tess/net_polycomp/PolyReg/PolyReg1.c
-./net_tess/net_polycomp/PolyReg/PolyReg3.c
-./net_tess/net_polycomp/net_polycomp.c
+./net_tess/net_polycomp/net_polycomp1.c
+./net_tess/net_polycomp/net_polycomp2.c
+./net_tess/net_polycomp/net_polycomp3.c
+./net_tess/net_polycomp/net_polycomp4.c
+./net_tess/net_polycomp/net_polycomp5.c
+./net_tess/net_polycomp/net_polycomp6.c
+./net_tess/net_polycomp/net_polycomp7.c
 ./net_tess/net_centroid/net_centroid1.c
 ./net_input/net_input1.c
 ./net_input/net_input2.c
@@ -54,12 +51,13 @@ add_library (neper_t
 ./net_res/PointPoly/PointPoly1.c
 ./net_res/net_stat/net_stat1.c
 ./net_res/net_stat/net_stat2.c
-./net_germ/RegDistrib/RegDistrib1.c
-./net_germ/RandDistrib/RandDistrib2.c
-./net_germ/RandDistrib/RandDistrib1.c
-./net_germ/DefGermSet/DefGermSet1.c
-./net_germ/DefGermSet/DefGermSet2.c
-./net_germ/DefGermSet/DefGermSet3.c
+./net_germ/net_germ_reg/net_germ_reg1.c
+./net_germ/net_germ_rand/net_germ_rand1.c
+./net_germ/net_germ_rand/net_germ_rand2.c
+./net_germ/net_germ_custom/net_germ_custom1.c
+./net_germ/net_germ_neigh/net_germ_neigh1.c
+./net_germ/net_germ_neigh/net_germ_neigh2.c
+./net_germ/net_germ_neigh/net_germ_neigh3.c
 ./net_germ/net_germ1.c
 ./net_germ/net_germ2.c
 ./net_domain/net_domain1.c
@@ -73,7 +71,6 @@ add_library (neper_t
 set (EXTRA_LIBS ${EXTRA_LIBS} ut)
 set (EXTRA_LIBS ${EXTRA_LIBS} neut)
 set (EXTRA_LIBS ${EXTRA_LIBS} orilib)
-set (EXTRA_LIBS ${EXTRA_LIBS} neper_m)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 

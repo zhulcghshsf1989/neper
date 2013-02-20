@@ -28,7 +28,10 @@ TestVerEdgeQtyNNb (struct TESS Tess, int i, int verbosity)
   if (res != Tess.VerEdgeQty[i] - 1)
   {
     if (verbosity)
+    {
       ut_print_message (2, 3, "2 identical edges in edge list.\n");
+      ut_array_1d_int_fprintf (stdout, Tess.VerEdgeNb[i], Tess.VerEdgeQty[i], "%d");
+    }
 
     return 1;
   }

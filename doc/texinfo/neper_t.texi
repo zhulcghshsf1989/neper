@@ -1,40 +1,35 @@
 @node Module -T
 @chapter Tessellation Generation: neper -T
 
-@MT{} enables one to generate Voronoi tessellations of a space
-@dfn{domain}.  The domain can be cuboidal, cylindrical or of any other
-convex shape.  The centres of the polyhedra can be randomly distributed
-in the domain, which leads to @dfn{random Voronoi tessellations} (also
-called @dfn{Poisson Voronoi tessellations}).  It is also possible to
-generate columnar (2D) and bamboo (1D) grain morphologies, or regular,
-periodic, arrangment of polyhedra (truncated octahedra are currently
-available), or to use any pre-defined distribution of
-centres. Two other types of tessellation can be obtained:
-@dfn{periodic tessellations}, whose grains show periodicity conditions
-at the domain boundary, and @dfn{subdomain-type tessellations}.  The
-latter are cut out from tessellations of larger domains, and which have
-the same polyhedron volume density.  Thus, the tessellations contain
-grains with centres located outside the domain. This behaviour is
-controlled by option @option{-ttype} (periodic and subdomain
-tessellations are only available in @file{.vox} format.)
-It is possible to generate centroidal Voronoi tessellations.
+@MT{} enables one to generate Voronoi tessellations in a bounded
+@dfn{domain} of space,
+which can be cuboidal, cylindrical or of any other convex shape.  The
+centres of the polyhedra can be randomly distributed in the domain,
+which leads to @dfn{random Voronoi tessellations} (also called
+@dfn{Poisson Voronoi tessellations}).  It is also possible to distribute
+the polyhedron centres so as to get columnar (2D) and bamboo (1D) grain
+morphologies, or regular, periodic,
+arrangment of polyhedra (truncated octahedra are currently available).
+The last option is to load a pre-defined distribution of centres.
+It is also possible to generate centroidal Voronoi tessellations.
+Two other types of tessellation can be obtained: @dfn{periodic
+tessellations}, whose grains show periodicity conditions at the domain
+boundary, and @dfn{subdomain-type tessellations}, for which the
+polyhedron centres can also be located outside the domain. This
+behaviour is controlled by option @option{-ttype} (periodic and
+subdomain tessellations are only available in @file{.vox} format.)
 Neper also includes an advanced tessellation @dfn{regularization}
-capability.  It consists in
-removing the small features of the tessellation (the small edges and faces).
-@c which are smaller than the target element size and as a consequence
-@c would need local mesh over-refinements.
-This capability can be enabled by allowing some level of geometrical
-distortion, the face @dfn{flatness fault}, through option
-@option{-maxff} (value in degree).
-The tessellations can be scaled to generate morphological textures (flat
+capability, which consists in removing the small features (edges and
+faces) of the tessellation (option @option{-regularization}).  Finally,
+the tessellations can be scaled to generate morphological textures (flat
 or elongated grains).  The module generates as output a tessellation
 file @file{.tess} that describes exhaustively the polycrystal morphology
 (@pxref{File Formats}). Other file formats are available, including
 third-party software formats and the Neper voxel format @file{.vox}.
-The @file{.tess} file is an input file of the
-meshing module, -M (@pxref{Module -M}), and the orientation generation
-module, -O (@pxref{Module -O}).  The generated tessellation
-(@file{.tess} file) can be visualized with @mVS{} (@ref{Module -VS}).
+The @file{.tess} and @file{.vox} files are input files of the meshing
+module, -M (@pxref{Module -M}), and the crystal orientation generation
+module, -O (@pxref{Module -O}). The generated tessellations
+can be visualized using @mVS{} (@ref{Module -VS}).
 
 @sp 1
 Here is what a typical run of @mT{} looks like:
@@ -72,17 +67,22 @@ Here is what a typical run of @mT{} looks like:
 
 @subsection Input Data
 
-By default, the domain to tessellate is taken as a cube of unit size.
+By default, the domain to tessellate is taken as a cube of unit volume.
 See option @option{-domain} for other possibilities.
 
-@inp{-n,integer,
+@inp{-n,char_string,
 Number of polyhedra of the tessellation@comma{} except for regular
 morphologies (truncated octahedra@comma{} etc.@comma{} see option
-@option{-morpho} for details).,
+@option{-morpho} for details).
+The argument can be any mathematical expression based on the @var{vol}
+variable@comma{} which is the volume of the domain (for each
+tessellation).
+,
 any, none}
 
 @inp{-id,integer,
-Identifier of the tessellation.,
+Identifier of the tessellation.
+,
 any, @var{random}}
 
 @inp{-morpho,char_string,
@@ -90,14 +90,14 @@ Type of morphology of the polyhedra. For random Voronoi
 tessellations@comma{} it can be either equiaxed
 (@code{equiaxed})@comma{} columnar
 (@code{columnar@{x@comma{}y@comma{}z@}}) or bamboo-like
-(@code{bamboo@{x@comma{}y@comma{}z@}}).@*
-To load a particular set of polyhedron centres@comma{} use the syntax
-@samp{@@@var{file_name}} where @code{@var{file_name}} is the name of a
-file containing the @w{@math{3 * n}} coordinates.@*
+(@code{bamboo@{x@comma{}y@comma{}z@}}).
 Regular morphologies can also be obtained: truncated octahedra
 (@code{tocta})@comma{} in which case the value of option @option{-n}
 stands for the number of polyhedra along an edge of the domain instead
 of the total number of polyhedra.
+To load a particular set of polyhedron centres@comma{} use the syntax
+@samp{@@@var{file_name}} where @code{@var{file_name}} is the name of a
+file containing the @w{@math{3 * n}} coordinates.
 ,
 see above list, equiaxed}
 
@@ -117,7 +117,10 @@ Faber and M.@: Gunzburger@comma{} Centroidal Voronoi Tessellations:
 Applications and Algorithms@comma{} SIAM Review@comma{} 41@comma{}
 637--676@comma{} 1999.} is based on Lloyd's algorithm and can be two to
 three orders of magnitude as long as for the equivalent Voronoi
-tessellation.  See options @option{-centroidfact}@comma{}
+tessellation.  
+In case where no
+value is given@comma{} the default value is considered.
+See options @option{-centroidfact}@comma{}
 @option{-centroidconv} and @option{-centroiditermax} for convergence
 criteria.
 ,
@@ -220,12 +223,14 @@ any, 1000}
 
 @subsection Regularization Options
 
-A non-zero value of @var{maxff} is necessary to enable geometry
-regularization; the other options are for fine tuning.
+@opt{-regularization,logical,
+Enable geometry regularization.
+,
+0 or 1, 0}
 
 @opt{-maxff,real,
 Maximum face flatness fault which is allowed (in degree).,
-0 to 180 (recommended: 20),0}
+0 to 180,20}
 
 @optsec{-sel or -rsel,real,
 Absolute or relative small edge (maximum) length.
@@ -360,7 +365,7 @@ It contains a minimal description of the tessellation written under the
 Gmsh geometry file format @file{.geo}.  This file can be opened with
 Gmsh for visualization.  (Note that you can even get a mesh of the
 tessellation out from Gmsh, but it will be of lower quality than by
-using module @code{-FM}.)
+using module @code{-M}.)
 
 @item Ply file: @file{.ply}
 
@@ -419,16 +424,16 @@ at @url{http://neper.sourceforge.net/neper_t.html}.
 @com{neper -T -n 100 -id 1}
 @item    Generate a polycrystal made of 100 grains, with identifier = 1,
   and apply regularization.
-@com{neper -T -n 100 -id 1 -maxff 20}
+@com{neper -T -n 100 -id 1 -reg 1}
 @item    Use an elongated domain and generate a polycrystal made of 100 grains, with identifier = 1.
-@com{neper -T -n 100 -id 1 -maxff 20 -domain cube 3 1 0.33}
+@com{neper -T -n 100 -id 1 -reg 1 -domain cube 3 1 0.33}
 @item    Generate a polycrystal made of 100 grains, with identifier = 1, and stretch it to model a morphological texture.
-@com{neper -T -n 100 -id 1 -maxff 20 -scale 3 1 0.33}
+@com{neper -T -n 100 -id 1 -reg 1 -scale 3 1 0.33}
 @item    Generate a polycrystal made of 100 columnar grains.
-@com{neper -T -n 100 -id 1 -maxff 20 -morpho columnarz}
+@com{neper -T -n 100 -id 1 -reg 1 -morpho columnarz}
 @item    Generate a polycrystal made of approximately 5x5x5 truncated octahedra.
 @com{neper -T -n 5 -morpho tocta -o tocta5}
 @item    Generate a polycrystal made of 100 grains in a cylindrical domain of height 2 and diameter 1.
-@com{neper -T -n 100 -id 1 -maxff 20 -domain cylinder 2 1}
+@com{neper -T -n 100 -id 1 -reg 1 -domain cylinder 2 1}
 @c Example_end
 @end enumerate

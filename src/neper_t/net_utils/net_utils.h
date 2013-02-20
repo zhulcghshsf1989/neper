@@ -13,7 +13,3 @@
 #include "../net_tess/net_tess.h"
 
 #include"net_utils0.h"
-#include "../net_tess/net_polycomp/PolyAlloc/PolyAlloc0.h"
-#include "../net_tess/net_polycomp/PolyDet/PolyCalc/PolyCalc0.h"
-#include "../net_tess/net_polycomp/PolyReg/PolyReg0.h"
-#include "../net_tess/net_polycomp/PolyFree/PolyFree0.h"

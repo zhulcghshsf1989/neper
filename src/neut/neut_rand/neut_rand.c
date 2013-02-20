@@ -5,6 +5,35 @@
 #include "neut_rand.h"
 
 int
+neut_rand_nnid2rand (int N, int id, int level, int poly)
+{
+  time_t t;
+  int Rand;
+
+  /* Rand: long integer number calculated from (N,id,level,poly):
+   * Rand is 8 numbers long ; N is put at the left side, id at the
+   * right side. If N and id numbers cross, they are added.
+   * N=123  and id=12     --> Rand=12300012
+   * N=3000 and id=65433  --> Rand=30065433
+   * N=3333 and id=88888  --> Rand=33418888
+   * To this value is added the product level * poly.  It is put at the
+   * left hand side, but with a length of 7.
+   */
+
+  if (id >= 0)
+    Rand = N * pow (10, 7 - ut_num_tenlen (N))
+         + poly * level * pow (10, 6 - ut_num_tenlen (poly * level))
+	 + id;
+  else
+  {
+    time (&t);
+    Rand = t;
+  }
+
+  return Rand;
+}
+
+int
 neut_rand_poisson (double mu, int seed, int id)
 {
   int i;
@@ -21,29 +50,4 @@ neut_rand_poisson (double mu, int seed, int id)
   gsl_rng_free (r);
 
   return res;
-}
-
-int
-neut_rand_nnid2rand (int N, int id)
-{
-  time_t t;
-  int Rand;
-
-  /* Rand: long integer number calculated from (N,id):
-   * Rand is 8 numbers long ; N is put at the left side, id at the
-   * right side. If N and id numbers cross, they are added.
-   * N=123  and id=12     --> Rand=12300012
-   * N=3000 and id=65433  --> Rand=30065433
-   * N=3333 and id=88888  --> Rand=33418888
-   */
-
-  if (id >= 0)
-    Rand = N * pow (10, 7 - ut_num_tenlen (N)) + id;
-  else
-  {
-    time (&t);
-    Rand = t;
-  }
-
-  return Rand;
 }

@@ -9,6 +9,9 @@ neut_tess_fscanf_version (FILE* file, char* version)
 {
   int status = 0;
   char* tmp = ut_alloc_1d_char (1000);
+  fpos_t pos;
+
+  fgetpos (file, &pos);
 
   if (fscanf (file, "%s", tmp) != 1)
     status = -1;
@@ -39,7 +42,7 @@ neut_tess_fscanf_version (FILE* file, char* version)
     abort ();
   }
 
-  fseek (file, 0, 0);
+  fsetpos (file, &pos);
 
   ut_free_1d_char (tmp);
 
@@ -130,7 +133,6 @@ neut_tess_fscanf_ver (struct TESS* pTess, FILE * file)
    || fscanf (file, "%d", &((*pTess).VerQty)) != 1)
     abort ();
 
-
   (*pTess).VerDom   = ut_alloc_2d_int ((*pTess).VerQty + 1, 2);
   (*pTess).VerEdgeQty = ut_alloc_1d_int ((*pTess).VerQty + 1);
   (*pTess).VerEdgeNb  = ut_alloc_1d_pint ((*pTess).VerQty + 1);
@@ -178,6 +180,7 @@ neut_tess_fscanf_edge (struct TESS* pTess, FILE * file)
   for (i = 1; i <= (*pTess).EdgeQty; i++)
   {
     status = fscanf (file, "%d", &edge);
+
     ut_array_1d_int_fscanf (file, (*pTess).EdgeDom[edge], 2);
 
     ut_array_1d_int_fscanf (file, (*pTess).EdgeVerNb[edge], 2);
@@ -269,6 +272,10 @@ neut_tess_fscanf_poly (struct TESS* pTess, FILE * file)
   (*pTess).CenterCoo   = ut_alloc_2d      ((*pTess).PolyQty + 1, 3);
   (*pTess).PolyTrue    = ut_alloc_1d_int  ((*pTess).PolyQty + 1);
   (*pTess).PolyBody    = ut_alloc_1d_int  ((*pTess).PolyQty + 1);
+  (*pTess).PolyVerQty  = ut_alloc_1d_int  ((*pTess).PolyQty + 1);
+  (*pTess).PolyVerNb   = ut_alloc_1d_pint ((*pTess).PolyQty + 1);
+  (*pTess).PolyEdgeQty = ut_alloc_1d_int  ((*pTess).PolyQty + 1);
+  (*pTess).PolyEdgeNb  = ut_alloc_1d_pint ((*pTess).PolyQty + 1);
   (*pTess).PolyFaceQty = ut_alloc_1d_int  ((*pTess).PolyQty + 1);
   (*pTess).PolyFaceNb  = ut_alloc_1d_pint ((*pTess).PolyQty + 1);
   (*pTess).PolyFaceOri = ut_alloc_1d_pint ((*pTess).PolyQty + 1);
@@ -281,9 +288,28 @@ neut_tess_fscanf_poly (struct TESS* pTess, FILE * file)
 
     status += fscanf (file, "%d", &((*pTess).PolyTrue[poly]));
     status += fscanf (file, "%d", &((*pTess).PolyBody[poly]));
-    status += fscanf (file, "%d", &((*pTess).PolyFaceQty[poly]));
 
-    if (status != 4)
+    if (status != 3)
+      abort ();
+
+    /*
+    // Reading PolyVer*
+    if (fscanf (file, "%d", &((*pTess).PolyVerQty[poly])) != 1)
+      abort ();
+
+    (*pTess).PolyVerNb[poly]  = ut_alloc_1d_int ((*pTess).PolyVerQty[poly] + 1);
+    ut_array_1d_int_fscanf (file, (*pTess).PolyVerNb[poly] + 1, (*pTess).PolyVerQty[poly]);
+
+    // Reading PolyEdge*
+    if (fscanf (file, "%d", &((*pTess).PolyEdgeQty[poly])) != 1)
+      abort ();
+
+    (*pTess).PolyEdgeNb[poly]  = ut_alloc_1d_int ((*pTess).PolyEdgeQty[poly] + 1);
+    ut_array_1d_int_fscanf (file, (*pTess).PolyEdgeNb[poly] + 1, (*pTess).PolyEdgeQty[poly]);
+    */
+
+    // Reading PolyFace*
+    if (fscanf (file, "%d", &((*pTess).PolyFaceQty[poly])) != 1)
       abort ();
 
     (*pTess).PolyFaceNb[poly]  = ut_alloc_1d_int ((*pTess).PolyFaceQty[poly] + 1);

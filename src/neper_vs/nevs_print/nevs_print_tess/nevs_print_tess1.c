@@ -5,6 +5,21 @@
 #include"nevs_print_tess.h"
 
 void
+nevs_print_mtess (FILE* file, struct PRINT Print, struct PRINT* MPrint, struct MTESS MTess,
+                  struct TESS* Tess, struct TESSDATA* TessData)
+{
+  int i, id, level = Print.showtesslevel;
+
+  for (i = 1; i <= MTess.LevelTessQty[level]; i++)
+  {
+    id = MTess.LevelTess[level][i];
+    nevs_print_tess (file, MPrint[id], Tess[id], TessData[id]);
+  }
+
+  return;
+}
+
+void
 nevs_print_tess (FILE* file, struct PRINT Print, struct TESS Tess, struct TESSDATA TessData)
 {
   int i, j;

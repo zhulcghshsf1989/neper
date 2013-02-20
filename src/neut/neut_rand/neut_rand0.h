@@ -3,4 +3,4 @@
 /* See the COPYING file in the top-level directory. */
 
 extern int neut_rand_poisson (double, int, int);
-extern int neut_rand_nnid2rand (int, int);
+extern int neut_rand_nnid2rand (int, int, int, int);

@@ -2,6 +2,11 @@
 /* Copyright (C) 2003-2012, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
+#ifndef NEM_H
+#define NEM_H
+
 #include "nem_mesh_gmsh/nem_mesh_gmsh0.h"
 #include "nem_mesh_stellar/nem_mesh_stellar0.h"
 #include "nem_tess/nem_tess0.h"
+
+#endif /* NEM_H */

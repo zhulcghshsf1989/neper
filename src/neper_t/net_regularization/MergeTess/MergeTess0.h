@@ -2,4 +2,4 @@
 /* Copyright (C) 2003-2012, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-extern int MergeTess (struct TESS *, struct REG, int *, int);
+extern int MergeTess (struct TESS*, struct REG, int*);

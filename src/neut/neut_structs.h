@@ -7,6 +7,7 @@
 #include "neut_structs/neut_mesh_struct.h"
 #include "neut_structs/neut_nodes_struct.h"
 #include "neut_structs/neut_tess_struct.h"
+#include "neut_structs/neut_mtess_struct.h"
 #include "neut_structs/neut_vox_struct.h"
 #include "neut_structs/neut_part_struct.h"
 #include "neut_structs/neut_nset_struct.h"

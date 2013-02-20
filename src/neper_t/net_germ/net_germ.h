@@ -12,10 +12,12 @@
 #include"orilib.h"
 
 #include"net_utils/net_utils0.h"
-#include"RandDistrib/RandDistrib0.h"
-#include"RegDistrib/RegDistrib0.h"
-#include"DefGermSet/DefGermSet0.h"
+#include"net_germ_reg/net_germ_reg0.h"
+#include"net_germ_rand/net_germ_rand0.h"
+#include"net_germ_neigh/net_germ_neigh0.h"
 
 #include"net_germ0.h"
 
-extern void net_germ_randomize (struct IN, struct GERMSET* pGermSet, struct POLY, char* morpho);
+extern void net_germ_prop (struct IN In, struct TESS Tess, int poly, struct GERMSET* pGSet);
+extern void net_germ_randomize (struct IN, struct GERMSET* pGermSet, struct POLY);
+extern void net_germ_seed (int level, int poly, char* width, struct GERMSET* pGSet);

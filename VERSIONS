@@ -1,9 +1,7 @@
-New in 2.0.0-devel2-66:
-- module -T: fixed option -pointpoly, clean up code.
-- module -M: new module resulting from the merge of -FM and -MM; fixed
-  meshing of regularized tessellations; add -dupnodemerge function;
-  clean up code, init meshing of voxel data, fixed mesh output for Abaqus.
-- documentation: cleaning and fixes.
+New in :
+- Major code clean up.
+- Merged modules -FM and -MM into -M.
+- Moved regularization from -FM to -T.
 
 New in 1.10.3 (26 Nov 2012):
 - module -T: added 3dec geometry format, added option -checktess, minor

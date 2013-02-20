@@ -44,16 +44,16 @@ net_domain_cylinder_planes (double h, double rad, int qty, double** eq)
 }
 
 void
-net_domain_tesspoly_planes (struct TESS net_poly_tesl, int id, int* pqty, double** eq)
+net_domain_tesspoly_planes (struct TESS Tess, int id, int* pqty, double** eq)
 {
   int i, face;
 
-  (*pqty) = net_poly_tesl.PolyFaceQty[id]; 
-  for (i = 1; i <= net_poly_tesl.PolyFaceQty[id]; i++)
+  (*pqty) = Tess.PolyFaceQty[id]; 
+  for (i = 1; i <= Tess.PolyFaceQty[id]; i++)
   {
-    face = net_poly_tesl.PolyFaceNb[id][i];
-    ut_array_1d_memcpy (eq[i - 1], 4, net_poly_tesl.FaceEq[face]);
-    if (net_poly_tesl.PolyFaceOri[id][i] == -1)
+    face = Tess.PolyFaceNb[id][i];
+    ut_array_1d_memcpy (eq[i - 1], 4, Tess.FaceEq[face]);
+    if (Tess.PolyFaceOri[id][i] == -1)
       ut_array_1d_scale (eq[i - 1], 4, -1);
   }
 
@@ -79,7 +79,7 @@ net_domain_clip (struct POLY* pDomain, double** eq, int qty)
   for (i = 1; i <= 6; i++)
     (*pDomain).FacePoly[i] = -qty - 1;
 
-  PolymodAlloc (&Polymod);
+  neut_polymod_set_zero (&Polymod);
 
   neut_poly_polymod ((*pDomain), &Polymod);
 
@@ -105,10 +105,10 @@ net_domain_clip (struct POLY* pDomain, double** eq, int qty)
   neut_poly_free (pDomain);
 
   // neut_debug_polymod (stdout, Polymod);
-  PolyhedronRecording (0, Polymod, pDomain);
+  net_polymod_poly (Polymod, pDomain);
   // neut_debug_poly (stdout, *pDomain);
   
-  PolymodFree (&Polymod);
+  neut_polymod_free (&Polymod);
 
   ut_free_1d (cubesize);
 

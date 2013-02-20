@@ -4,7 +4,7 @@
 
 #include"DeleteEdge.h"
 
-// Delete an edge.  Returns 0 for success, -1 if the net_poly_tesl test fails
+// Delete an edge.  Returns 0 for success, -1 if the Tess test fails
 // and -2 if the edge deletion aborted.
 int
 DeleteEdge (struct TESS *pTess, int edge, int *pver, double *pmaxff)

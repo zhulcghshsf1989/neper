@@ -131,10 +131,10 @@ net_vox (struct IN In, struct TESS Domain, struct GERMSET GermSet, struct VOX* p
 	else
 	{
 	  for (l = 1; l <= GermSet.N; l++)
-	    GermDist[l] = ut_space_dist (coo, GermSet.GermsCoo[l] + 1);
+	    GermDist[l] = ut_space_dist (coo, GermSet.GermCoo[l]);
 
 	  for (l = 1; l <= GermSet.nN; l++)
-	    GermDist[GermSet.N + l] = ut_space_dist (coo, GermSet.nGermsCoo[l] + 1);
+	    GermDist[GermSet.N + l] = ut_space_dist (coo, GermSet.nGermCoo[l]);
 
 	  (*pVox).VoxPoly[i][j][k] =
 	    1 + ut_array_1d_min_index (GermDist + 1, GermSet.N + GermSet.nN);
@@ -152,7 +152,7 @@ net_vox (struct IN In, struct TESS Domain, struct GERMSET GermSet, struct VOX* p
 
 	  if (Germ >= GermSet.N + 1) // modifying Germ 
 	  {
-	    Germ = GermSet.GermToGerm[Germ - GermSet.N];
+	    Germ = GermSet.nMaster[Germ - GermSet.N];
 	    (*pVox).VoxPoly[i][j][k] = Germ;
 	  }
 	}

@@ -34,7 +34,7 @@ CalcOri (struct IN In, struct ORI *pOri)
       (*pOri).rngid[i] = i;
   }
 
-  (*pOri).Random = neut_rand_nnid2rand ((*pOri).N, (*pOri).id) - 1;
+  (*pOri).Random = neut_rand_nnid2rand ((*pOri).N, (*pOri).id, 0, 1) - 1;
 
   idmax = ut_array_1d_int_max ((*pOri).rngid + 1, (*pOri).N);
 

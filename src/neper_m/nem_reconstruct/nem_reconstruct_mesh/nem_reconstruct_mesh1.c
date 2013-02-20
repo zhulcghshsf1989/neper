@@ -83,10 +83,12 @@ nem_reconstruct_mesh (char* dim, struct NODES* pNodes, struct MESH *pMesh0D,
 
   if (input_dim >= 0 && recon_dim <= 0)
     nem_reconstruct_mesh_0d (*pNodes, pMesh0D, pMesh1D, pTessb);
-    // nem_reconstruct_mesh_0d (*pNodes, pMesh0D, pMesh1D, pTess ? pTessb : NULL);
 
-  if (pTess != NULL)
-    nem_reconstruct_mesh_finalizetess (pTessb, *pNodes, *pMesh0D, *pMesh1D, *pMesh2D, *pMesh3D);
+  if (pTess)
+  {
+    nem_tess_updatefrommesh_geom (pTessb, *pNodes, *pMesh0D, *pMesh1D, *pMesh2D, *pMesh3D);
+    nem_tess_updatefrommesh_polyfaceori (pTessb, *pNodes, *pMesh2D, *pMesh3D);
+  }
   else
     neut_tess_free (pTessb);
 
@@ -98,10 +100,6 @@ nem_reconstruct_mesh (char* dim, struct NODES* pNodes, struct MESH *pMesh0D,
 
   if (ut_string_inlist (dim, ',', "0") == 0)
     neut_mesh_free (pMesh0D);
-
-  if (pTess)
-    nem_reconstruct_mesh_tess_updating (pTess, *pNodes, *pMesh0D, *pMesh1D,
-	*pMesh2D, *pMesh3D);
 
   /*
   if (pTess != NULL && neut_tess_test (*pTess) != 0)

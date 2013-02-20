@@ -82,6 +82,13 @@ extern int neut_mesh_elt_neighelts (struct MESH Mesh, int elt, int**
 extern int neut_mesh_elt_elset_neighelts (struct MESH Mesh, int elt, int
     elset, int** pnelts, int* pneltqty);
 
+/// \brief Get the neighbouring elts of an elt, which are in a given elset and share at least minnodeqty nodes with the elt.
+///
+///
+///
+extern void neut_mesh_elt_elset_neighelts_minnodeqty (struct MESH Mesh,
+    int elt, int elset, int minnodeqty, int** pnelts, int* pneltqty);
+
 /// \brief Get the elts which are at the boundary of a set of elts.
 ///
 /// The output elements are part of the input set of elts.
@@ -124,6 +131,20 @@ extern int neut_mesh_nodes_elsets_comelts (struct MESH Mesh, int *nodes, int nod
 ///
 extern void neut_mesh_elts_comnodes (struct MESH Mesh, int *elts, int eltqty,
 		       int** pnodes, int *pnodeqty);
+
+/// \brief Get the common nodes of a pair of elts.
+///
+///
+///
+extern void neut_mesh_eltpair_comnodes (struct MESH Mesh, int elt1, int
+			elt2, int** pnodes, int *pnodeqty);
+
+/// \brief Get all nodes of elts.
+///
+///
+///
+extern void neut_mesh_elts_allnodes (struct MESH Mesh, int *elts, int
+    eltqty, int** pnodes, int *pnodeqty);
 
 /// \brief Get the nodes of an elset.
 ///
@@ -173,25 +194,25 @@ extern void neut_mesh_veredge (struct MESH Mesh0D, struct MESH Mesh1D,
 ///
 extern void neut_mesh_elt_boundmesh (struct NODES Nodes, struct MESH Mesh, int elt, struct MESH *pBMesh);
 
-/// \brief Get a 2D mesh from a 3D mesh. 
+/// \brief Get a 2D mesh from a 3D mesh.
 ///
-/// 
+///
 ///
 extern void neut_mesh3d_mesh2d (struct NODES Nodes, struct MESH Mesh3D,
 		    struct MESH *pMesh2D, int ***pFacePoly, int
 		    *pFaceQty, int verbosity);
 
-/// \brief Get a 1D mesh from a 2D mesh. 
+/// \brief Get a 1D mesh from a 2D mesh.
 ///
-/// 
+///
 ///
 extern void neut_mesh2d_mesh1d (struct MESH Mesh2D,
 		    struct MESH *pMesh1D, int ***pEdgeFaceNb,
 		    int** pEdgeFaceQty, int *pEdgeQty, int verbosity);
 
-/// \brief Get a 0D mesh from a 1D mesh. 
+/// \brief Get a 0D mesh from a 1D mesh.
 ///
-/// 
+///
 ///
 extern void neut_mesh1d_mesh0d (struct MESH Mesh1D,
 		    struct MESH *pMesh0D, int ***pVerEdgeNb,
@@ -199,9 +220,51 @@ extern void neut_mesh1d_mesh0d (struct MESH Mesh1D,
 
 /// \brief Get the dimension of a node of a mesh.
 ///
-/// 
+///
 ///
 extern int neut_mesh_node_dim (struct MESH Mesh0D, struct MESH Mesh1D, struct MESH
     Mesh2D, struct MESH Mesh3D, int node);
+
+/// \brief Get the dimension of a node of a mesh.
+///
+///
+///
+extern int neut_mesh_node_dim_min (struct MESH Mesh0D, struct MESH Mesh1D, struct MESH
+    Mesh2D, struct MESH Mesh3D, int node);
+
+/// \brief Get the neighbouring nodes of a node of a mesh.
+///
+///
+///
+extern void neut_mesh_node_neighnodes (struct MESH Mesh, int node, int**
+    pnodes, int* pnodeqty);
+
+/// \brief Get the elsets of a node of a mesh.
+///
+///
+///
+extern void neut_mesh_node_elsets (struct MESH Mesh, int node, int**
+    pelsets, int* pelsetqty);
+
+/// \brief Get the elsets and the elset elts of a node of a mesh.
+///
+///
+///
+extern void neut_mesh_node_elsets_elsetelts (struct MESH Mesh, int node, int**
+    pelsets, int* pelsetqty, int*** pelsetelts, int** pelseteltqty);
+
+/// \brief Get the nodes of a mesh.
+///
+///
+///
+extern void neut_mesh_nodes (struct MESH Mesh, int** pnodes, int*
+    pnodeqty);
+
+/// \brief Flip two elts of a mesh.
+///
+///
+///
+extern void neut_mesh_eltpair_flip (struct MESH* pMesh, int elt1, int
+    elt2);
 
 #endif /* UT_MESH_TOPO_H */

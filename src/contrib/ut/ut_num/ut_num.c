@@ -39,6 +39,17 @@ ut_num_max_int (int n1, int n2)
   return ((n1 > n2) ? n1 : n2);
 }
 
+int
+ut_num_bound_int (int n, int min, int max)
+{
+  if (n < min)
+    return min;
+  else if (n > max)
+    return max;
+  else
+    return n;
+}
+
 double
 ut_num_min (double n1, double n2)
 {
@@ -49,6 +60,17 @@ double
 ut_num_max (double n1, double n2)
 {
   return ((n1 > n2) ? n1 : n2);
+}
+
+double
+ut_num_bound (double n, double min, double max)
+{
+  if (n < min)
+    return min;
+  else if (n > max)
+    return max;
+  else
+    return n;
 }
 
 int

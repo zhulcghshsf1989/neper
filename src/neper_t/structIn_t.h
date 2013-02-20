@@ -7,15 +7,19 @@
 
 struct IN
 {
-  int n;
-  int id;
-  char* morpho;
+  char* nstring;
+  char** n;
+  char* idstring;
+  int* id;
+  char* morphostring;
+  char** morpho;
   char* ttype;
+  int levelqty;
 
   double randomize;
   int    randomize2;
   char*  randomizedir;
-  
+
   char* mode;    // running mode: tess or vox
   char* input;   // NULL (=none), n, tess, vox
 
@@ -36,6 +40,7 @@ struct IN
   char *load;
   char *tess;
   char *vox;
+  char *raw;
   char *geo;
   char *ply;
   char *stv;
@@ -53,7 +58,8 @@ struct IN
   char *point;			/* point or tesl file name */
   char *polyid;			/* polyid file name */
 
-  int centroid;
+  char* centroidstring;
+  int* centroid;
   int centroiditermax;
   double centroidfact;
   double centroidconv;

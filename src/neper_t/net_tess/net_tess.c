@@ -7,15 +7,16 @@
 int
 net_tess (int centroid, double centroidfact, int centroiditermax,
           double centroidconv, char* domain,
-	  struct TESS Domain, struct GERMSET* pGermSet, struct TESS* pTess)
+	  struct TESS PTess, int poly, struct GERMSET* pGermSet, int TessId,
+	  struct TESS* pTess, int verbosity)
 {
-  struct POLY DomainPoly;
+  struct POLY DomPoly;
   int i, iter;
   struct POLY* Poly = NULL;
   struct TESL Tesl;
 
-  neut_poly_set_zero (&DomainPoly);
-  net_tess_poly (Domain, 1, &DomainPoly);
+  neut_poly_set_zero (&DomPoly);
+  net_tess_poly (PTess, poly, &DomPoly);
 
   neut_tesl_set_zero (&Tesl);
 
@@ -23,64 +24,43 @@ net_tess (int centroid, double centroidfact, int centroiditermax,
   double rdistmax = -1;
   int status = 1;
 
-  // Printing message ###
-  if (centroid == 1)
-  {
-    printf ("\n");
-    ut_print_message (0, 1, "(centroidal, max = %d, conv = %.2f)\n", centroiditermax, centroidconv);
-    ut_print_message (0, 2, "iter      conv\n");
-    ut_print_message (0, 2, "");
-  }
-
   for (iter = 1; (status == 1) &&
 		 (iter <= ((centroid == 1) ? centroiditermax : 1)); iter++)
   {
-    if (iter > 1)
-    {
+    if (verbosity && iter > 1)
       for (i = 0; i < (int) strlen (message); i++)
 	printf ("\b");
-    }
 
-    if (centroid)
+    // Calculation of all polyhedra, one by one ###
+    net_polycomp (DomPoly, *pGermSet, &Poly, (verbosity && centroid
+	  == 0) ? 1 : 0);
+
+    // Sticking polyhedra into a single tessellation ###
+    net_tesl (*pGermSet, Poly, &Tesl);
+
+    // Free'ing Poly
+    neut_poly_array_free (&Poly, (*pGermSet).N);
+
+    // Moving GermSet to the centroids, if necessary
+    if (centroid == 1)
+      status = net_centroid (centroidfact, centroidconv, Tesl, pGermSet, &rdistmax);
+    else
+      status = 0;
+
+    if (verbosity && centroid)
     {
-      sprintf (message, "%4d", iter);
+      sprintf (message, "iter=%d, dist=%.3g", iter, rdistmax);
       printf ("%s", message);
       fflush (stdout);
     }
-
-    // Calculation of all polyhedra, one by one ###
-    net_polycomp (DomainPoly, *pGermSet, &Poly, (centroid == 0) ? 1 : 0);
-
-    // Sticking polyhedra into a single tessellation ###
-    if (iter > 1)
-      neut_tesl_free (&Tesl);
-
-    net_tesl (*pGermSet, Poly, &Tesl);
-
-    for (i = 1; i <= (*pGermSet).N; i++)
-      neut_poly_free (&(Poly[i]));
-    free (Poly);
-    Poly = NULL;
-
-    if (centroid == 1)
-      status = net_centroid (centroidfact, centroidconv, Tesl, pGermSet, &rdistmax);
-    else 
-      status = 0;
-
-    if (centroid)
-    {
-      printf ("  %8.3g", rdistmax);
-      fflush (stdout);
-      sprintf (message, "%s  %8.3g", message, rdistmax);
-    }
   }
 
-  printf ("\n");
-  
   neut_tesl_tess (Tesl, pTess);
+  (*pTess).Level  = PTess.Level + 1;
+  (*pTess).TessId = TessId;
   neut_tesl_free (&Tesl);
 
-  neut_tess_init_domain_poly (pTess, DomainPoly, domain);
+  neut_tess_init_domain_poly (pTess, DomPoly, domain);
 
   if (neut_tess_test (*pTess, 0) != 0 || neut_tess_test_dom (*pTess, 0) != 0)
   {
@@ -89,7 +69,7 @@ net_tess (int centroid, double centroidfact, int centroiditermax,
   }
   
   ut_free_1d_char (message);
-  neut_poly_free (&DomainPoly);
+  neut_poly_free (&DomPoly);
 
   return 0;
 }

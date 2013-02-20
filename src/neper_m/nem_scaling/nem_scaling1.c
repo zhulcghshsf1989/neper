@@ -109,7 +109,7 @@ nem_scaling_pre (char* elttype, struct TESS* pTess, struct VOX* pVox, struct NOD
       neut_nodes_scale (pRNodes, scale[0], scale[1], scale[2]);
 
     if (input == 'm')
-      nem_reconstruct_mesh_tess_updating
+      nem_tess_updatefrommesh_geom
 	(pTess, *pRNodes, RMesh0D, RMesh1D, RMesh2D, RMesh3D);
   }
 

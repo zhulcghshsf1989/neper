@@ -81,30 +81,30 @@ UpdTVNb (int **TVNb, int PNb, int VNb, int PrevP, int PrevS)
  * edges yet as so recorded.
  */
 int
-FaceEdges2PolyEdges (struct TESL *pnet_tesl, int PNb, int FNb, int qty)
+FaceEdges2PolyEdges (struct TESL *pTesl, int PNb, int FNb, int qty)
 {
   int i;
   int ENb;
 
   /* for every of the face edges
    */
-  for (i = 1; i <= (*pnet_tesl).FaceVerQty[FNb]; i++)
+  for (i = 1; i <= (*pTesl).FaceVerQty[FNb]; i++)
   {
     /* The edge number is recorded
      */
-    ENb = (*pnet_tesl).FaceEdgeNb[FNb][i];
+    ENb = (*pTesl).FaceEdgeNb[FNb][i];
     /* If the edge has not been recorded as belonging to the
      * polyhedron yet, it is recorded.
      */
-    if (oneDIntEltPos ((*pnet_tesl).PolyEdgeNb[PNb], 1, qty, ENb, 0) == -1)
+    if (oneDIntEltPos ((*pTesl).PolyEdgeNb[PNb], 1, qty, ENb, 0) == -1)
     {
       /* the qty of polyedron faces is incremented.
        */
       qty++;
-      (*pnet_tesl).PolyEdgeNb[PNb] = ut_realloc_1d_int ((*pnet_tesl).PolyEdgeNb[PNb], qty + 1);
+      (*pTesl).PolyEdgeNb[PNb] = ut_realloc_1d_int ((*pTesl).PolyEdgeNb[PNb], qty + 1);
       /* The polyhedron new edge number is recorded.
        */
-      (*pnet_tesl).PolyEdgeNb[PNb][qty] = ENb;
+      (*pTesl).PolyEdgeNb[PNb][qty] = ENb;
     }
   }
 

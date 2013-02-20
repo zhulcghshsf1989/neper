@@ -7,7 +7,7 @@
 void
 net_regularization (struct REG Reg, struct TESS *pTess)
 {
-  int i, DelId = 0;
+  int DelId = 0;
 
   (*pTess).maxff = Reg.maxff;
   (*pTess).sel = Reg.sel;
@@ -23,16 +23,15 @@ net_regularization (struct REG Reg, struct TESS *pTess)
 
   if (Reg.maxff > 1e-15 && Reg.mloop >= 1)
   {
-    ut_print_message (0, 1, "Regularizing tessellation ... (sel = %.3g", Reg.sel);
+    /*
+    printf ("(sel = %.3g", Reg.sel);
     if (Reg.dbound)
-      printf (", dboundsel = %.3g)\n", Reg.dboundsel);
+      printf (", dboundsel = %.3g)", Reg.dboundsel);
     else
-      printf (")\n");
+      printf (")");
+    */
 
-    ut_print_message (0, 2, "loop    length   deleted\n");
-    for (i = 1; i <= Reg.mloop; i++)
-      if (MergeTess (pTess, Reg, &DelId, i) <= 0)
-	break;
+    MergeTess (pTess, Reg, &DelId);
   }
 
   /*---------------------------------------------------------------------- 

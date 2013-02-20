@@ -3,4 +3,6 @@
 /* See the COPYING file in the top-level directory. */
 
 extern void nevs_tessdata_init (struct TESS, struct TESSDATA*);
+extern void nevs_tessdata_mtessdata (struct MTESS MTess, struct TESS*
+    Tess, int level, struct TESSDATA TessData, struct TESSDATA** pMTessData);
 extern void nevs_tessdata_fscanf (struct TESS, char*, char*, char*, struct TESSDATA*);

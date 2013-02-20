@@ -7,7 +7,7 @@ option (HAVE_LIBSCOTCH   "Use libscotch"                        OFF)
 
 include_directories("${PROJECT_BINARY_DIR}")
 
-add_definitions(-Wall -W -g -O3 -Werror)
+add_definitions(-Wall -W -g -O3)
 set (CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
 
 add_library (neper_m
@@ -46,7 +46,6 @@ add_library (neper_m
 ./nem_partition/nem_partition2.c
 ./nem_reconstruct/nem_reconstruct_mesh/nem_reconstruct_mesh1.c
 ./nem_reconstruct/nem_reconstruct_mesh/nem_reconstruct_mesh2.c
-./nem_reconstruct/nem_reconstruct_vox/nem_reconstruct_vox1.c
 ./nem_writemesh/nem_writemesh1.c
 ./nem_nsets/nem_nsets1.c
 ./nem_nsets/nem_nsets2.c

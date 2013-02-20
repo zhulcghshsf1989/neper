@@ -89,4 +89,11 @@ extern int neut_nodes_point_closestnode (struct NODES Nodes, double* coo, int* p
 ///
 extern double neut_nodes_dist_pair (struct NODES Nodes, int n1, int n2);
 
+/// \brief Get the barycenter of nodes
+///
+///
+///
+extern void neut_nodes_bary (struct NODES Nodes, int* nodes, int
+    nodeqty, double* coo);
+
 #endif

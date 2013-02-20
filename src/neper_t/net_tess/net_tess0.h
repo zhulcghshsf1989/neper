@@ -4,4 +4,5 @@
 
 extern int net_tess (int centroid, double centroidfact, int centroiditermax,
 		     double centroidconv, char* domain,
-                     struct TESS Domain, struct GERMSET* pGermSet, struct TESS* pTess);
+                     struct TESS PTess, int poly, struct GERMSET* pGermSet,
+		     int TessId, struct TESS* pTess, int verbosity);

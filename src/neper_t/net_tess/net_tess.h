@@ -17,3 +17,5 @@
 #include"net_centroid/net_centroid0.h"
 
 #include"net_tess0.h"
+
+extern void net_tess_lam_germset (struct GERMSET* pGermSet, struct POLY* Poly);

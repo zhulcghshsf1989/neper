@@ -263,3 +263,16 @@ neut_nodes_dist_pair (struct NODES Nodes, int n1, int n2)
 {
   return ut_space_dist (Nodes.NodeCoo[n1], Nodes.NodeCoo[n2]);
 }
+
+void
+neut_nodes_bary (struct NODES Nodes, int* nodes, int nodeqty, double* coo)
+{
+  int i;
+
+  ut_array_1d_set (coo, 3, 0);
+  for (i = 0; i < nodeqty; i++)
+    ut_array_1d_add (coo, Nodes.NodeCoo[nodes[i]], 3, coo);
+  ut_array_1d_scale (coo, 3, 1. / nodeqty);
+
+  return;
+}

@@ -28,6 +28,16 @@ neut_debug_nodes (FILE* file, struct NODES Nodes)
 }
 
 void
+neut_debug_nodes_name (char* filename, struct NODES Nodes)
+{
+  FILE* file = ut_file_open (filename, "w");
+  neut_debug_nodes (file, Nodes);
+  ut_file_close (file, filename, "w");
+
+  return;
+}
+
+void
 neut_debug_mesh (FILE* file, struct MESH Mesh)
 {
   int i;
@@ -42,7 +52,11 @@ neut_debug_mesh (FILE* file, struct MESH Mesh)
   if (Mesh.EltQty > 0)
   {
     fprintf (file, "EltNodes = \n");
-    ut_array_2d_int_fprintf (file, Mesh.EltNodes + 1, Mesh.EltQty, eltnodeqty, "%d");
+    for (i = 1; i <= Mesh.EltQty; i++)
+    {
+      fprintf (file, "%d ", i);
+      ut_array_1d_int_fprintf (file, Mesh.EltNodes[i], eltnodeqty, "%d");
+    }
     if (Mesh.EltElset != NULL)
       fprintf (file, "EltElset = \n");
     for (i = 1; i <= Mesh.EltQty; i++)
@@ -65,6 +79,16 @@ neut_debug_mesh (FILE* file, struct MESH Mesh)
   }
 
   fprintf (file, "====== End of Mesh =======================================\n");
+  return;
+}
+
+void
+neut_debug_mesh_name (char* filename, struct MESH Mesh)
+{
+  FILE* file = ut_file_open (filename, "w");
+  neut_debug_mesh (file, Mesh);
+  ut_file_close (file, filename, "w");
+
   return;
 }
 
@@ -93,38 +117,15 @@ neut_debug_nset (FILE* file, struct NSET NSet)
   return;
 }
 
-
 void
-neut_debug_fod (FILE* file, int** FoD)
+neut_debug_nset_name (char* filename, struct NSET NSet)
 {
-  int i;
-
-  fprintf (file, "====== Beginning of FoD ==================================\n");
-  fprintf (file, "FoD = (quantity then ids of faces)\n");
-  for (i = 1; i <= 6; i++)
-    ut_array_1d_int_fprintf (file, FoD[i], FoD[i][0] + 1, "%d");
-
-  fprintf (file, "====== End of FoD ========================================\n");
+  FILE* file = ut_file_open (filename, "w");
+  neut_debug_nset (file, NSet);
+  ut_file_close (file, filename, "w");
 
   return;
 }
-
-
-void
-neut_debug_fodnodes (FILE* file, int** FoDNodes)
-{
-  int i;
-
-  fprintf (file, "====== Beginning of FoDNodes =============================\n");
-  fprintf (file, "FoDNodes = (quantity then ids of faces)\n");
-  for (i = 1; i <= 6; i++)
-    ut_array_1d_int_fprintf (file, FoDNodes[i], FoDNodes[i][0] + 1, "%d");
-
-  fprintf (file, "====== End of FoDNodes ===================================\n");
-
-  return;
-}
-
 
 void
 neut_debug_tess (FILE* file, struct TESS Tess)
@@ -458,6 +459,16 @@ neut_debug_tess (FILE* file, struct TESS Tess)
   return;
 }
 
+void
+neut_debug_tess_name (char* filename, struct TESS Tess)
+{
+  FILE* file = ut_file_open (filename, "w");
+  neut_debug_tess (file, Tess);
+  ut_file_close (file, filename, "w");
+
+  return;
+}
+
 
 void
 neut_debug_germset (FILE* file, struct GERMSET GermSet)
@@ -470,11 +481,21 @@ neut_debug_germset (FILE* file, struct GERMSET GermSet)
   fprintf (file, "Id = %d\n", GermSet.Id);
   fprintf (file, "Random = %ld\n", GermSet.Random);
 
-  fprintf (file, "GermsCoo =\n");
+  fprintf (file, "GermCoo =\n");
   for (i = 1; i <= GermSet.N; i++)
-    ut_array_1d_fprintf (file, GermSet.GermsCoo[i] + 1, 3, "%f");
+    ut_array_1d_fprintf (file, GermSet.GermCoo[i], 3, "%f");
 
   fprintf (file, "NDensity = %d\n", GermSet.NDensity);
+
+  return;
+}
+
+void
+neut_debug_germset_name (char* filename, struct GERMSET GSet)
+{
+  FILE* file = ut_file_open (filename, "w");
+  neut_debug_germset (file, GSet);
+  ut_file_close (file, filename, "w");
 
   return;
 }
@@ -744,6 +765,15 @@ neut_debug_poly (FILE* file, struct POLY Poly)
   return;
 }
 
+void
+neut_debug_poly_name (char* filename, struct POLY Poly)
+{
+  FILE* file = ut_file_open (filename, "w");
+  neut_debug_poly (file, Poly);
+  ut_file_close (file, filename, "w");
+
+  return;
+}
 
 void
 neut_debug_polymod (FILE* file, struct POLYMOD Polymod)
@@ -781,6 +811,16 @@ neut_debug_polymod (FILE* file, struct POLYMOD Polymod)
   }
 
   fprintf (file, "====== End of Polymod ===================================\n");
+
+  return;
+}
+
+void
+neut_debug_polymod_name (char* filename, struct POLYMOD Polymod)
+{
+  FILE* file = ut_file_open (filename, "w");
+  neut_debug_polymod (file, Polymod);
+  ut_file_close (file, filename, "w");
 
   return;
 }

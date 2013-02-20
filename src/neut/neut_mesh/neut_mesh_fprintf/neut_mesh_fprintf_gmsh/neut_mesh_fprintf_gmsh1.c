@@ -7,25 +7,15 @@
 void
 neut_mesh_fprintf_gmsh (FILE* file, char* dim, struct NODES Nodes,
     struct MESH Mesh0D, struct MESH Mesh1D, struct MESH Mesh2D,
-    struct MESH Mesh3D, 
-    struct PART Part)
+    struct MESH Mesh3D, struct PART Part, char* numbering)
 {
   neut_meshheader_fprintf_gmsh (file);
 
   neut_nodes_fprintf_gmsh (file, Nodes);
 
-  neut_elts_fprintf_gmsh (file, Mesh0D, Mesh1D, Mesh2D, Mesh3D, Part, dim);
+  neut_elts_fprintf_gmsh (file, Mesh0D, Mesh1D, Mesh2D, Mesh3D, Part,
+      dim, numbering);
 
-/*----------------------------------------------------------------------
- * node sets */
-
-//  if (nset != NULL)
-//  {
-//    fprintf (file, "\n/* node sets\n");
-//    neut_mesh_fprintf_gmsh_nsets (file, nset, NSets, NSetNames);
-//    fprintf (file, "\n*/\n");
-//  }
-  
   return;
 }
 
@@ -47,10 +37,11 @@ void
 neut_elts_fprintf_gmsh (FILE* file, struct MESH Mesh0D,
                         struct MESH Mesh1D, struct MESH Mesh2D,
 			struct MESH Mesh3D, struct PART Part,
-			char* dim)
+			char* dim, char* numbering)
 {
-  int i, id, elt_type0D, elt_type1D, elt_type2D, elt_type3D;
+  int i, elt_type0D, elt_type1D, elt_type2D, elt_type3D;
   int eltnodeqty1D, eltnodeqty2D, eltnodeqty3D;
+  int* shift = ut_alloc_1d_int (4);
 
   eltnodeqty1D = neut_elt_nodeqty (Mesh1D.EltType, Mesh1D.Dimension, Mesh1D.EltOrder);
   eltnodeqty2D = neut_elt_nodeqty (Mesh2D.EltType, Mesh2D.Dimension, Mesh2D.EltOrder);
@@ -72,21 +63,48 @@ neut_elts_fprintf_gmsh (FILE* file, struct MESH Mesh0D,
 	Mesh3D.EltOrder, &elt_type3D) != 0)
     ut_error_reportbug ();
 
-
   fprintf (file, "$Elements\n");
   int eltqty = 0;
   if (ut_string_inlist (dim, ',', "0"))
+  {
+    shift[0] = 0;
     eltqty += Mesh0D.EltQty;
+  }
   if (ut_string_inlist (dim, ',', "1"))
+  {
+    if (numbering == NULL || ! strcmp (numbering, "contiguous"))
+      shift[1] = eltqty;
+    else if (! strcmp (numbering, "from1"))
+      shift[1] = 0;
+    else
+      ut_error_reportbug ();
+
     eltqty += Mesh1D.EltQty;
+  }
   if (ut_string_inlist (dim, ',', "2"))
+  {
+    if (numbering == NULL || ! strcmp (numbering, "contiguous"))
+      shift[2] = eltqty;
+    else if (! strcmp (numbering, "from1"))
+      shift[2] = 0;
+    else
+      ut_error_reportbug ();
+
     eltqty += Mesh2D.EltQty;
+  }
   if (ut_string_inlist (dim, ',', "3"))
+  {
+    if (numbering == NULL || ! strcmp (numbering, "contiguous"))
+      shift[3] = eltqty;
+    else if (! strcmp (numbering, "from1"))
+      shift[3] = 0;
+    else
+      ut_error_reportbug ();
+
     eltqty += Mesh3D.EltQty;
+  }
 
   fprintf (file, "%d\n", eltqty);
-
-  id = 1;
 
   // 0D mesh
   if (ut_string_inlist (dim, ',', "0"))
@@ -95,7 +113,7 @@ neut_elts_fprintf_gmsh (FILE* file, struct MESH Mesh0D,
       neut_mesh_init_eltelset (&Mesh0D, NULL);
     for (i = 1; i <= Mesh0D.EltQty; i++)
     {
-      fprintf (file, "%d %d 3 0 %d 0 ", id++, elt_type0D, Mesh0D.EltElset[i]);
+      fprintf (file, "%d %d 3 0 %d 0 ", i, elt_type0D, Mesh0D.EltElset[i]);
       ut_array_1d_int_fprintf (file, Mesh0D.EltNodes[i], 1, "%d");
     }
   }
@@ -108,7 +126,7 @@ neut_elts_fprintf_gmsh (FILE* file, struct MESH Mesh0D,
 
     for (i = 1; i <= Mesh1D.EltQty; i++)
     {
-      fprintf (file, "%d %d 3 0 %d 0 ", id++, elt_type1D, Mesh1D.EltElset[i]);
+      fprintf (file, "%d %d 3 0 %d 0 ", i + shift[1], elt_type1D, Mesh1D.EltElset[i]);
       ut_array_1d_int_fprintf (file, Mesh1D.EltNodes[i], eltnodeqty1D, "%d");
     }
   }
@@ -121,7 +139,7 @@ neut_elts_fprintf_gmsh (FILE* file, struct MESH Mesh0D,
 
     for (i = 1; i <= Mesh2D.EltQty; i++)
     {
-      fprintf (file, "%d %d 3 0 %d 0 ", id++, elt_type2D, Mesh2D.EltElset[i]);
+      fprintf (file, "%d %d 3 0 %d 0 ", i + shift[2], elt_type2D, Mesh2D.EltElset[i]);
       ut_array_1d_int_fprintf (file, Mesh2D.EltNodes[i], eltnodeqty2D, "%d");
     }
   }
@@ -132,18 +150,20 @@ neut_elts_fprintf_gmsh (FILE* file, struct MESH Mesh0D,
     if (Part.qty > 0)
       for (i = 1; i <= Mesh3D.EltQty; i++)
       {
-	fprintf (file, "%d %d 3 0 %d %d ", id++, elt_type3D, Mesh3D.EltElset[i], Part.elt_parts[i] + 1);
+	fprintf (file, "%d %d 3 0 %d %d ", i + shift[3], elt_type3D, Mesh3D.EltElset[i], Part.elt_parts[i] + 1);
 	ut_array_1d_int_fprintf (file, Mesh3D.EltNodes[i], eltnodeqty3D, "%d");
       }
     else
       for (i = 1; i <= Mesh3D.EltQty; i++)
       {
-	fprintf (file, "%d %d 3 0 %d 0 ", id++, elt_type3D, Mesh3D.EltElset[i]);
+	fprintf (file, "%d %d 3 0 %d 0 ", i + shift[3], elt_type3D, Mesh3D.EltElset[i]);
 	ut_array_1d_int_fprintf (file, Mesh3D.EltNodes[i], eltnodeqty3D, "%d");
       }
   }
 
   fprintf (file, "$EndElements\n");
+
+  ut_free_1d_int (shift);
   
   return;
 }

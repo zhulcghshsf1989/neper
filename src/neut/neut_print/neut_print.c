@@ -37,6 +37,7 @@ neut_print_set_default (struct PRINT* pPrint)
   (*pPrint).imageantialias = 0;
 
   (*pPrint).showtess  = -1;
+  (*pPrint).showtesslevel = -1;
   (*pPrint).showmesh  = -1;
   (*pPrint).showslice = NULL;
 

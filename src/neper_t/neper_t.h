@@ -6,6 +6,7 @@
 #include<stdlib.h>
 #include<math.h>
 #include<string.h>
+#include<limits.h>
 
 #include"ut.h"
 #include"neut_t.h"

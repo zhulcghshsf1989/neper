@@ -5,7 +5,7 @@
 #include "PointPoly.h"
 
 void
-PrintPointPoly (struct IN In, struct TESS net_poly_tesl)
+PrintPointPoly (struct IN In, struct TESS Tess)
 {
   int i, j, id;
   int qty = 0;
@@ -32,10 +32,10 @@ PrintPointPoly (struct IN In, struct TESS net_poly_tesl)
   id = 0;
   for (i = 0; i < qty; i++)
   {
-    for (j = 1; j <= net_poly_tesl.PolyQty; j++)
+    for (j = 1; j <= Tess.PolyQty; j++)
     {
       id = 0;
-      if (neut_tess_point_inpoly (net_poly_tesl, points[i], j) == 1)
+      if (neut_tess_point_inpoly (Tess, points[i], j) == 1)
       {
 	id = j;
 	break;
